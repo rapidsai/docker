@@ -1,0 +1,14 @@
+# Remove git repo data
+RUN find ${RAPIDS_SRC_DIR} -mindepth 2 -type d -name ".git" | xargs rm -rf
+
+# Remove test.sh since it depends on the notebooks, which are not in base
+RUN rm -f /test.sh
+
+WORKDIR /rapids
+
+# Dask Scheduler Bokeh port
+EXPOSE 8787
+EXPOSE 8786
+
+ENTRYPOINT [ "/usr/bin/tini", "--" ]
+CMD [ "/bin/bash" ]

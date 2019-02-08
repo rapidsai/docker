@@ -1,0 +1,14 @@
+ARG CUDA_VERSION=9.2
+ARG LINUX_VERSION=ubuntu16.04
+FROM nvidia/cuda:${CUDA_VERSION}-devel-${LINUX_VERSION}
+
+insertfile args
+insertfile env_ubuntu
+insertfile updateos_ubuntu
+insertfile setup_conda
+insertfile copy_and_build_rapids
+
+# Copy notebooks, remove git meta-data, EXPOSE ports, WORKDIR=/rapids/notebooks
+insertfile finalize_image_runtime
+
+

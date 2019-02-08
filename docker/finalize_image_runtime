@@ -1,0 +1,14 @@
+# Remove git repo data
+RUN find ${RAPIDS_SRC_DIR} -mindepth 2 -type d -name ".git" | xargs rm -rf
+
+COPY rapids/notebooks ${RAPIDS_SRC_DIR}/notebooks
+
+WORKDIR /rapids/notebooks
+# Jupyter notebook port
+EXPOSE 8888
+# Dask Scheduler Bokeh port
+EXPOSE 8787
+EXPOSE 8786
+
+ENTRYPOINT [ "/usr/bin/tini", "--" ]
+CMD [ "/bin/bash" ]

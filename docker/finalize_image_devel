@@ -1,0 +1,11 @@
+COPY rapids/notebooks ${RAPIDS_SRC_DIR}/notebooks
+
+WORKDIR /rapids/notebooks
+# Jupyter notebook port
+EXPOSE 8888
+# Dask Scheduler Bokeh port
+EXPOSE 8787
+EXPOSE 8786
+
+ENTRYPOINT [ "/usr/bin/tini", "--" ]
+CMD [ "/bin/bash" ]

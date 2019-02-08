@@ -1,0 +1,43 @@
+COPY utils ${RAPIDS_SRC_DIR}/${UTILS_DIR}
+
+# Assume a prior 'make clone' step has created the rapids dir to copy from
+RUN mkdir -p ${RAPIDS_SRC_DIR}
+COPY rapids/cudf ${RAPIDS_SRC_DIR}/cudf
+COPY rapids/dask-cudf ${RAPIDS_SRC_DIR}/dask-cudf
+COPY rapids/cuml ${RAPIDS_SRC_DIR}/cuml
+COPY rapids/dask-xgboost ${RAPIDS_SRC_DIR}/dask-xgboost
+COPY rapids/xgboost ${RAPIDS_SRC_DIR}/xgboost
+COPY rapids/dask-cuda ${RAPIDS_SRC_DIR}/dask-cuda
+
+# cuDF & libcudf build/install
+RUN source activate rapids && \
+    cd ${RAPIDS_SRC_DIR} && \
+    bash ${UTILS_DIR}/build-cudf.sh
+
+# cuML build/install
+RUN source activate rapids && \
+    cd ${RAPIDS_SRC_DIR} && \
+    bash ${UTILS_DIR}/build-cuml.sh
+
+# XGBoost build/install
+RUN source activate rapids && \
+    cd ${RAPIDS_SRC_DIR} && \
+    bash ${UTILS_DIR}/build-xgboost.sh
+
+# Dask-XGBoost build/install
+RUN source activate rapids && \
+    cd ${RAPIDS_SRC_DIR} && \
+    bash ${UTILS_DIR}/build-dask-xgboost.sh
+
+# Dask-cuDF build/install
+RUN source activate rapids && \
+    cd ${RAPIDS_SRC_DIR} && \
+    bash ${UTILS_DIR}/build-dask-cudf.sh
+
+# Dask-cuda build/install
+RUN source activate rapids && \
+    cd /rapids/dask-cuda && \
+    python setup.py install
+
+# Add test file for testing from within the container
+COPY support/test.sh /test.sh

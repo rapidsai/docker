@@ -1,0 +1,21 @@
+ARG CUDA_VERSION=9.2
+ARG LINUX_VERSION=centos7
+FROM nvidia/cuda:${CUDA_VERSION}-devel-${LINUX_VERSION}
+
+insertfile args
+insertfile env_centos7
+insertfile updateos_centos7
+insertfile build_gcc7_centos7
+insertfile setup_conda
+insertfile copy_and_build_rapids
+
+#
+# Change LD_LIBRARY_PATH to exclude /usr/local/cuda/* since
+# numba.cuda cannot load that, and instead have it load
+# /lib64/libcuda.so instead
+#
+ENV LD_LIBRARY_PATH=${GCC7_DIR}/lib64:$LD_LIBRARY_PATH_ORIG:$CONDA_PREFIX
+
+# Copy notebooks, leave git meta-data, EXPOSE ports, WORKDIR=/rapids/notebooks
+insertfile finalize_image_devel
+
