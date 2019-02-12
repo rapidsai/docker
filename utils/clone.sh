@@ -13,7 +13,7 @@ CUML_BRANCH=branch-0.5
 CUML_DIR=cuml
 
 XGBOOST_REPO="https://github.com/rapidsai/xgboost.git"
-XGBOOST_BRANCH=cudf-mnmg
+XGBOOST_BRANCH=cudf-mnmg-abi
 XGBOOST_DIR=xgboost
 
 DASK_XGBOOST_REPO="https://github.com/rapidsai/dask-xgboost.git"
