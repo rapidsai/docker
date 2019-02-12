@@ -39,25 +39,24 @@ fi
 
 DOCKER=nvidia-docker
 TIMESTAMP=$(date "+%Y%m%d%H%M%S")
-DEFAULTIMAGETAG=${TIMESTAMP}
 
-BUILDDOCKERIMAGE_HELPTEXT="buildDockerImage <templateName> [<imageName>] [<imageTag>] [<dockerBuildArgs>]
+BUILDDOCKERIMAGE_HELPTEXT="buildDockerImage <templateName> [<imageTagName>] [<dockerBuildArgs>]
    Runs 'genDockerfile' then 'clone' prior to creating a Docker image
    for <templateName> using the generated Dockerfile in
-   \"${RAPIDSAI_DIR}\", tagged with <imageName>:<imageTag>. If
-   <imageName> is not specified, <templateName> is used. If <imageTag>
-   is not specified, a timestamp is used. <dockerBuildArgs> can be
-   provided to pass docker args as-is to the build command.
+   \"${RAPIDSAI_DIR}\", tagged with <imageTagName>. If <imageTagName>
+   is \"\" or not specified, <templateName>-<timestamp> is used.
+   <dockerBuildArgs> can be provided to pass docker args as-is to the
+   build command.
 
    <templateName> must be one of: ${DOCKER_TEMPL_NAMES}
 "
 
-BUILDDOCKERIMAGEFROMFILE_HELPTEXT="buildDockerImageFromFile <dockerfile> <imageName> [<imageTag>] [<dockerBuildArgs>]
+BUILDDOCKERIMAGEFROMFILE_HELPTEXT="buildDockerImageFromFile <dockerfile> <imageTagName> [<dockerBuildArgs>]
    Unlike 'buildDockerImage', does not run 'genDockerfile' or 'clone'
    and instead only builds a Docker image from <dockerfile>, tagged
-   with <imageName>:<imageTag>. If <imageTag> is not specified, a
-   timestamp is used. <dockerBuildArgs> can be provided to pass docker
-   args as-is to the build command.
+   with <imageTagName>. If <imageTagName> is \"\" or not specified,
+   $USER-<timestamp> is used.  <dockerBuildArgs> can be provided to
+   pass docker args as-is to the build command.
 "
 
 CLONE_HELPTEXT="clone
@@ -115,8 +114,20 @@ function assertNumArgs {
     numArgsNeeded=$1
     helptext=$2
 
+    if (( ${NUMARGS} != ${numArgsNeeded} )); then
+        echo
+	echo "${helptext}"
+        exit 1
+    fi
+}
+
+function assertMinNumArgs {
+    numArgsNeeded=$1
+    helptext=$2
+
     if (( ${NUMARGS} < ${numArgsNeeded} )); then
-        echo "${helptext}"
+        echo
+	echo "${helptext}"
         exit 1
     fi
 }
@@ -144,16 +155,15 @@ function buildDockerImage {
     # This assumes everything needed by the image build is in place
     # (eg. clone was run)
     dockerfile=$1
-    imageName=$2
-    imageTag=${3:-${DEFAULTIMAGETAG}} # use DEFAULTIMAGETAG if not specified
-    buildArgs=$4
+    imageTagName=$2
+    shift 2
+    buildArgs=$@
     contextdir=$(dirname ${dockerfile})
-    logfile=${LOG_DIR}/${imageName}-${imageTag}_image--${TIMESTAMP}.buildlog
+    logfile=${LOG_DIR}/${imageTagName}_image--${TIMESTAMP}.buildlog
 
     ensureFileExists ${dockerfile}
-
     mkdir -p ${LOG_DIR} && \
-	((time ${DOCKER} build --tag ${imageName}:${imageTag} -f ${dockerfile} ${contextdir} ${buildArgs}) 2>&1|tee ${logfile})
+	((time ${DOCKER} build --tag ${imageTagName} ${buildArgs} -f ${dockerfile} ${contextdir}) 2>&1|tee ${logfile})
 }
 
 function clone {
@@ -165,13 +175,12 @@ function clone {
 
 function genDockerfileFromImageType {
     templateName=$1
-    template=${DOCKER_DIR}/Dockerfile_${templateName}.template
+    templateFile=${DOCKER_DIR}/Dockerfile_${templateName}.template
     newDockerfile=${RAPIDSAI_DIR}/Dockerfile.${templateName}
     
     ensureValidImageType ${templateName}
-    ensureFileExists ${template}
-    
-    ${UTIL_DIR}/gendockerfile.sh ${template} > ${newDockerfile}
+    ensureFileExists ${templateFile}
+    ${UTIL_DIR}/gendockerfile.sh ${templateFile} > ${newDockerfile}
 }
 
 function clean {
@@ -203,22 +212,20 @@ function listTemplNames {
 
 case "$1" in
     'buildDockerImage')
-        assertNumArgs 2 "${BUILDDOCKERIMAGE_HELPTEXT}"
+        assertMinNumArgs 2 "${BUILDDOCKERIMAGE_HELPTEXT}"
 	templateName=$2
-	imageName=${3:-${templateName}} # use templateName if not specified
-	imageTag=$4
-	shift 4
+	imageTagName=${3:-${templateName}-${TIMESTAMP}} # use default if needed
+	shift 3
 	newDockerFile=${RAPIDSAI_DIR}/Dockerfile.${templateName}
         genDockerfileFromImageType ${templateName} && clone && \
-	    buildDockerImage ${newDockerFile} ${imageName} ${imageTag} $@
+	    buildDockerImage ${newDockerFile} ${imageTagName} $@
         ;;
     'buildDockerImageFromFile')
-        assertNumArgs 3 "${BUILDDOCKERIMAGEFROMFILE_HELPTEXT}"
+        assertMinNumArgs 2 "${BUILDDOCKERIMAGEFROMFILE_HELPTEXT}"
 	dockerfile=$2
-	imageName=$3
-	imageTag=$4
-	shift 4
-        buildDockerImage ${dockerfile} ${imageName} ${imageTag} $@
+	imageTagName=${3:-${USER}-${TIMESTAMP}} # use default if needed
+	shift 3
+        buildDockerImage ${dockerfile} ${imageTagName} $@
         ;;
     'clone')
         assertNumArgs 1 "${CLONE_HELPTEXT}"
