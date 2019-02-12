@@ -28,7 +28,7 @@ echo "#"
 # otherwise print the line as-is to output
 #
 awk '
-    /^insertfile[[:blank:]]+.*$/ {
+    /^insertfile .*$/ {
        printf("#---------8<------------------8<---------\n")
        printf("# BEGIN CONTENTS OF %s\n\n", $2)
 
