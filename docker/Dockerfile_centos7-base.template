@@ -1,6 +1,10 @@
-ARG CUDA_VERSION=9.2
+ARG CUDA_VERSION=10.0
+ARG CUDA_MAJORMINOR_VERSION=${CUDA_VERSION}
 ARG LINUX_VERSION=centos7
+# Use the devel image since a CC compiler is needed for the build_gcc7 steps
 FROM nvidia/cuda:${CUDA_VERSION}-devel-${LINUX_VERSION}
+
+ARG CUDA_MAJORMINOR_VERSION
 
 insertfile args
 insertfile env_centos7

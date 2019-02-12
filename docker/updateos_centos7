@@ -18,9 +18,9 @@ RUN yum install -y ${RAPIDS_SRC_DIR}/tmp/*.rpm && \
       which \
       clang \
       make \
-      libnccl-2.4.2-1+cuda9.2 \
-      libnccl-devel-2.4.2-1+cuda9.2 \
-      libnccl-static-2.4.2-1+cuda9.2 \
+      libnccl-2.4.2-1+cuda${CUDA_MAJORMINOR_VERSION} \
+      libnccl-devel-2.4.2-1+cuda${CUDA_MAJORMINOR_VERSION} \
+      libnccl-static-2.4.2-1+cuda${CUDA_MAJORMINOR_VERSION} \
       gmp-devel mpfr-devel libmpc-devel file 
 
 RUN curl -L ${TINI_URL} -o /usr/bin/tini && \

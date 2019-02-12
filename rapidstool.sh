@@ -16,44 +16,48 @@ LOG_DIR=${RAPIDSAI_DIR}/logs
 DOCKERFILE_BASENAME=${RAPIDSAI_DIR}/Dockerfile
 DOCKERIMAGE_BUILDLOG_SUFFIX=.imageBuildLog
 
-# Figure out the valid image types based on the templates present in DOCKER_DIR
-# Template names must be of the form Dockerfile_<imageType>.template, and
-# <imageType> cannot contain a . or _.
-DOCKERIMAGE_TYPES=""
+# Figure out the valid template names based on the templates present
+# in DOCKER_DIR Template names must be of the form
+# Dockerfile_<templateName>.template, and <templateName> cannot contain a
+# . or _.
+DOCKER_TEMPL_NAMES=""
 if [ -d ${DOCKER_DIR} ]; then
     for templateFile in ${DOCKER_DIR}/*.template; do
 	if [ -e $templateFile ]; then
-	    imageType=${templateFile##*_}
-	    imageType=${imageType%%\.*}
-            DOCKERIMAGE_TYPES+="${imageType} "
+	    templateName=${templateFile##*_}
+	    templateName=${templateName%%\.*}
+            DOCKER_TEMPL_NAMES+="${templateName} "
 	fi
     done
 else 
     echo "
 
-WARNING: ${DOCKER_DIR} directory doesn't exist, valid image types can't be determined.
+WARNING: ${DOCKER_DIR} directory doesn't exist, valid template names can't be determined.
 
 "
 fi
 
 DOCKER=nvidia-docker
+TIMESTAMP=$(date "+%Y%m%d%H%M%S")
+DEFAULTIMAGETAG=${TIMESTAMP}
 
-IMAGETAG=$(date "+%Y%m%d-%H%M%S")
-
-BUILDDOCKERIMAGE_HELPTEXT="buildDockerImage <imageType>
+BUILDDOCKERIMAGE_HELPTEXT="buildDockerImage <templateName> [<imageName>] [<imageTag>] [<dockerBuildArgs>]
    Runs 'genDockerfile' then 'clone' prior to creating a Docker image
-   for <imageType> using the generated Dockerfile in
-   \"${RAPIDSAI_DIR}\"
+   for <templateName> using the generated Dockerfile in
+   \"${RAPIDSAI_DIR}\", tagged with <imageName>:<imageTag>. If
+   <imageName> is not specified, <templateName> is used. If <imageTag>
+   is not specified, a timestamp is used. <dockerBuildArgs> can be
+   provided to pass docker args as-is to the build command.
 
-   <imageType> must be one of: ${DOCKERIMAGE_TYPES}
+   <templateName> must be one of: ${DOCKER_TEMPL_NAMES}
 "
 
-BUILDDOCKERIMAGEFROMFILE_HELPTEXT="buildDockerImageFromFile <imageType> <dockerfile>
+BUILDDOCKERIMAGEFROMFILE_HELPTEXT="buildDockerImageFromFile <dockerfile> <imageName> [<imageTag>] [<dockerBuildArgs>]
    Unlike 'buildDockerImage', does not run 'genDockerfile' or 'clone'
-   and instead only builds a Docker image from
-   <dockerfile>. <imageType> must also be specified for generating the
-   tag and log file names, but does not have to be a valid imageType
-   as returned by 'listImageTypes'.
+   and instead only builds a Docker image from <dockerfile>, tagged
+   with <imageName>:<imageTag>. If <imageTag> is not specified, a
+   timestamp is used. <dockerBuildArgs> can be provided to pass docker
+   args as-is to the build command.
 "
 
 CLONE_HELPTEXT="clone
@@ -61,14 +65,14 @@ CLONE_HELPTEXT="clone
    to ${RAPIDS_SRC_DIR}.
 "
 
-GENDOCKERFILE_HELPTEXT="genDockerfile <imageType>
-   Generate a Dockerfile for <imageType> using the corresponding
+GENDOCKERFILE_HELPTEXT="genDockerfile <templateName>
+   Generate a Dockerfile for <templateName> using the corresponding
    template in ${DOCKER_DIR}.  The generated Dockerfile will be named
-   \"${RAPIDSAI_DIR}/Dockerfile.<imageType>\" Template names must be
-   of the form \"${DOCKER_DIR}/Dockerfile_<imageType>.template\", and
-   <imageType> cannot contain a . or _.
+   \"${RAPIDSAI_DIR}/Dockerfile.<templateName>\" Template names must be
+   of the form \"${DOCKER_DIR}/Dockerfile_<templateName>.template\", and
+   <templateName> cannot contain a . or _.
 
-   <imageType> must be one of: ${DOCKERIMAGE_TYPES}
+   <templateName> must be one of: ${DOCKER_TEMPL_NAMES}
 "
 
 CLEAN_HELPTEXT="clean <stuffToClean>
@@ -76,18 +80,18 @@ CLEAN_HELPTEXT="clean <stuffToClean>
    <stuffToClean> can be:
 
    dockerstuff
-      Removes only the generated Dockerfile(s) and Docker build logs
+      Removes only the generated Dockerfile(s)
 
    all
       Removes everything from dockerstuff plus
       ${RAPIDS_SRC_DIR} and ${LOG_DIR}
 "
 
-LISTIMAGETYPES_HELPTEXT="listImageTypes
-   Prints list of valid Docker image types that can be built, which is
+LISTTEMPLNAMES_HELPTEXT="listTemplNames
+   Prints list of valid Docker template names that can be built, which is
    currently:
 
-   ${DOCKERIMAGE_TYPES}
+   ${DOCKER_TEMPL_NAMES}
 
    The list is based on the presence of template files in ${DOCKER_DIR}.
 "
@@ -102,7 +106,7 @@ ${BUILDDOCKERIMAGEFROMFILE_HELPTEXT}
 ${CLONE_HELPTEXT}
 ${GENDOCKERFILE_HELPTEXT}
 ${CLEAN_HELPTEXT}
-${LISTIMAGETYPES_HELPTEXT}
+${LISTTEMPLNAMES_HELPTEXT}
 "
 
 ########################################
@@ -111,20 +115,20 @@ function assertNumArgs {
     numArgsNeeded=$1
     helptext=$2
 
-    if (( ${NUMARGS} != ${numArgsNeeded} )); then
+    if (( ${NUMARGS} < ${numArgsNeeded} )); then
         echo "${helptext}"
         exit 1
     fi
 }
 
 function ensureValidImageType {
-    imageType=$1
-    for validImageType in ${DOCKERIMAGE_TYPES}; do
-	if [ "${imageType}" == "${validImageType}" ]; then
+    templateName=$1
+    for validImageType in ${DOCKER_TEMPL_NAMES}; do
+	if [ "${templateName}" == "${validImageType}" ]; then
 	    return 0
 	fi
     done
-    echo "Unknown image type: \"${imageType}\" , must be one of: ${DOCKERIMAGE_TYPES}"
+    echo "Unknown template name: \"${templateName}\" , must be one of: ${DOCKER_TEMPL_NAMES}"
     exit 1
 }
 
@@ -139,20 +143,17 @@ function ensureFileExists {
 function buildDockerImage {
     # This assumes everything needed by the image build is in place
     # (eg. clone was run)
-    imageType=$1
-    dockerfile=$2
-
-    # Assume Dockerfile name if one not specified
-    if [ "${dockerfile}" == "" ]; then
-	dockerfile=${RAPIDSAI_DIR}/Dockerfile.${imageType}
-    fi
+    dockerfile=$1
+    imageName=$2
+    imageTag=${3:-${DEFAULTIMAGETAG}} # use DEFAULTIMAGETAG if not specified
+    buildArgs=$4
     contextdir=$(dirname ${dockerfile})
-    logfile=${LOG_DIR}/${imageType}_image-${IMAGETAG}.buildlog
+    logfile=${LOG_DIR}/${imageName}-${imageTag}_image--${TIMESTAMP}.buildlog
 
     ensureFileExists ${dockerfile}
 
     mkdir -p ${LOG_DIR} && \
-	((time ${DOCKER} build --tag ${imageType}:${IMAGETAG} -f ${dockerfile} ${contextdir}) 2>&1|tee ${logfile})
+	((time ${DOCKER} build --tag ${imageName}:${imageTag} -f ${dockerfile} ${contextdir} ${buildArgs}) 2>&1|tee ${logfile})
 }
 
 function clone {
@@ -163,11 +164,11 @@ function clone {
 }
 
 function genDockerfileFromImageType {
-    imageType=$1
-    template=${DOCKER_DIR}/Dockerfile_${imageType}.template
-    newDockerfile=${RAPIDSAI_DIR}/Dockerfile.${imageType}
+    templateName=$1
+    template=${DOCKER_DIR}/Dockerfile_${templateName}.template
+    newDockerfile=${RAPIDSAI_DIR}/Dockerfile.${templateName}
     
-    ensureValidImageType ${imageType}
+    ensureValidImageType ${templateName}
     ensureFileExists ${template}
     
     ${UTIL_DIR}/gendockerfile.sh ${template} > ${newDockerfile}
@@ -176,16 +177,15 @@ function genDockerfileFromImageType {
 function clean {
     case "$1" in
         'dockerstuff')
-            for imageType in ${DOCKERIMAGE_TYPES}; do
-                rm -f ${DOCKERFILE_BASENAME}.${imageType}
-                rm -f ${LOG_DIR}/${imageType}_image-*.buildlog
+            for templateName in ${DOCKER_TEMPL_NAMES}; do
+                rm -f ${DOCKERFILE_BASENAME}.${templateName}
             done
             ;;
         'all')
             rm -rf ${RAPIDS_SRC_DIR}
             rm -rf ${LOG_DIR}
-	    for imageType in ${DOCKERIMAGE_TYPES}; do
-                rm -f ${DOCKERFILE_BASENAME}.${imageType}
+	    for templateName in ${DOCKER_TEMPL_NAMES}; do
+                rm -f ${DOCKERFILE_BASENAME}.${templateName}
 	    done
             ;;
         *)
@@ -195,8 +195,8 @@ function clean {
     esac
 }
 
-function listImageTypes {
-    echo ${DOCKERIMAGE_TYPES}
+function listTemplNames {
+    echo ${DOCKER_TEMPL_NAMES}
 }
 
 ########################################
@@ -204,11 +204,21 @@ function listImageTypes {
 case "$1" in
     'buildDockerImage')
         assertNumArgs 2 "${BUILDDOCKERIMAGE_HELPTEXT}"
-        genDockerfileFromImageType $2 && clone && buildDockerImage $2
+	templateName=$2
+	imageName=${3:-${templateName}} # use templateName if not specified
+	imageTag=$4
+	shift 4
+	newDockerFile=${RAPIDSAI_DIR}/Dockerfile.${templateName}
+        genDockerfileFromImageType ${templateName} && clone && \
+	    buildDockerImage ${newDockerFile} ${imageName} ${imageTag} $@
         ;;
     'buildDockerImageFromFile')
         assertNumArgs 3 "${BUILDDOCKERIMAGEFROMFILE_HELPTEXT}"
-        buildDockerImage $2 $3
+	dockerfile=$2
+	imageName=$3
+	imageTag=$4
+	shift 4
+        buildDockerImage ${dockerfile} ${imageName} ${imageTag} $@
         ;;
     'clone')
         assertNumArgs 1 "${CLONE_HELPTEXT}"
@@ -216,15 +226,17 @@ case "$1" in
         ;;
     'genDockerfile')
         assertNumArgs 2 "${GENDOCKERFILE_HELPTEXT}"
-        genDockerfileFromImageType $2
+	templateName=$2
+        genDockerfileFromImageType ${templateName}
         ;;
     'clean')
         assertNumArgs 2 "${CLEAN_HELPTEXT}"
-        clean $2
+	mode=$2
+        clean ${mode}
         ;;
-    'listImageTypes')
-	assertNumArgs 1 "${LISTIMAGETYPES_HELPTEXT}"
-	listImageTypes
+    'listTemplNames')
+	assertNumArgs 1 "${LISTTEMPLNAMES_HELPTEXT}"
+	listTemplNames
 	;;
     *)
         echo "${HELPTEXT}"
