@@ -5,11 +5,11 @@ set -e
 
 # CONFIG
 CUDF_REPO="https://github.com/rapidsai/cudf.git"
-CUDF_BRANCH=branch-0.5
+CUDF_BRANCH=master
 CUDF_DIR=cudf
 
 CUML_REPO="https://github.com/rapidsai/cuml.git"
-CUML_BRANCH=branch-0.5
+CUML_BRANCH=master
 CUML_DIR=cuml
 
 XGBOOST_REPO="https://github.com/rapidsai/xgboost.git"
