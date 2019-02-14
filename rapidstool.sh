@@ -215,17 +215,27 @@ case "$1" in
         assertMinNumArgs 2 "${BUILDDOCKERIMAGE_HELPTEXT}"
 	templateName=$2
 	imageTagName=${3:-${templateName}-${TIMESTAMP}} # use default if needed
-	shift 3
+	if (( $# > 3 )); then
+	    shift 3
+	    buildArgs=$@
+	else
+	    buildArgs=""
+	fi
 	newDockerFile=${RAPIDSAI_DIR}/Dockerfile.${templateName}
         genDockerfileFromImageType ${templateName} && clone && \
-	    buildDockerImage ${newDockerFile} ${imageTagName} $@
+	    buildDockerImage ${newDockerFile} ${imageTagName} ${buildArgs}
         ;;
     'buildDockerImageFromFile')
         assertMinNumArgs 2 "${BUILDDOCKERIMAGEFROMFILE_HELPTEXT}"
 	dockerfile=$2
 	imageTagName=${3:-${USER}-${TIMESTAMP}} # use default if needed
-	shift 3
-        buildDockerImage ${dockerfile} ${imageTagName} $@
+	if (( $# > 3 )); then
+	    shift 3
+	    buildArgs=$@
+	else
+	    buildArgs=""
+	fi
+        buildDockerImage ${dockerfile} ${imageTagName} ${buildArgs}
         ;;
     'clone')
         assertNumArgs 1 "${CLONE_HELPTEXT}"
