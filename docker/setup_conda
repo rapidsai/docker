@@ -5,37 +5,41 @@ RUN curl ${MINICONDA_URL} -o /miniconda.sh && \
     sh /miniconda.sh -b -p /conda && \
     conda update -n base conda && \
     rm -f /miniconda.sh
-    
-# Enables "source activate conda"
-SHELL ["/bin/bash", "-c"]
 
 ########################################
 # conda environment
 # NOTE: use these mirrors for faster downloads
 #       -c http://10.33.227.188:88/numba \
 #       -c http://10.33.227.188:88/conda-forge \
-RUN conda create -y -n rapids python=${PYTHON_VERSION} && \
+RUN export CUDA_MAJOR=`echo $CUDA_VERSION | cut -d'.' -f1` && \
+    export CUDA_MINOR=`echo $CUDA_VERSION | cut -d'.' -f2` && \
+    conda create -n rapids python=${PYTHON_VERSION} && \
     conda install -n rapids -y \
       -c numba \
       -c conda-forge \
       -c ${NVIDIA_CONDA_LABEL} \
+      -c pytorch \
+      -c defaults \
+      arrow-cpp=${PYARROW_VERSION} \
       bokeh \
       cffi=${CFFI_VERSION} \
       cmake=${CMAKE_VERSION} \
+      cuda${CUDA_MAJOR}${CUDA_MINOR} \
       cython=${CYTHON_VERSION} \
-      dask \
+      dask=${DASK_VERSION} \
       distributed=${DISTRIBUTED_VERSION} \
+      faiss-gpu=${FAISSGPU_VERSION} \
       jupyterlab \
       numba=${NUMBA_VERSION} \
       numpy=${NUMPY_VERSION} \
-      numpy-base=${NUMPY_VERSION} \
       nvstrings \
       pandas=${PANDAS_VERSION} \
       pyarrow=${PYARROW_VERSION} \
       pytest \
       scikit-learn \
       scipy \
-    && conda install -n rapids -y \
-      -c pytorch \
-      faiss-gpu \
     && conda clean -a
+
+# Enables "source activate conda"
+SHELL ["/bin/bash", "-c"]
+

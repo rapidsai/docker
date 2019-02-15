@@ -51,7 +51,7 @@ BUILDDOCKERIMAGE_HELPTEXT="buildDockerImage <templateName> [<imageTagName>] [<do
    <templateName> must be one of: ${DOCKER_TEMPL_NAMES}
 "
 
-BUILDDOCKERIMAGEFROMFILE_HELPTEXT="buildDockerImageFromFile <dockerfile> <imageTagName> [<dockerBuildArgs>]
+BUILDDOCKERIMAGEFROMFILE_HELPTEXT="buildDockerImageFromFile <dockerfile> [<imageTagName>] [<dockerBuildArgs>]
    Unlike 'buildDockerImage', does not run 'genDockerfile' or 'clone'
    and instead only builds a Docker image from <dockerfile>, tagged
    with <imageTagName>. If <imageTagName> is \"\" or not specified,
