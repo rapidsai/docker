@@ -7,5 +7,8 @@ EXPOSE 8888
 EXPOSE 8787
 EXPOSE 8786
 
+# Automatically active conda env
+RUN echo "source activate rapids" > ~/.bashrc
+
 ENTRYPOINT [ "/usr/bin/tini", "--" ]
 CMD [ "/bin/bash" ]
