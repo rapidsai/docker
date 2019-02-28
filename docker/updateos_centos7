@@ -4,7 +4,7 @@ RUN mkdir -p ${RAPIDS_SRC_DIR}/tmp
 # for CentOS (among other things). Copy them to a temp dir and remove
 # after installed.
 #
-COPY support/*.rpm ${RAPIDS_SRC_DIR}/tmp
+COPY ${SUPPORT_FILES_DIR}/*.rpm ${RAPIDS_SRC_DIR}/tmp
 
 RUN yum install -y ${RAPIDS_SRC_DIR}/tmp/*.rpm && \
     yum upgrade -y && \

@@ -5,7 +5,8 @@ FROM nvidia/cuda:${CUDA_VERSION}-devel-${LINUX_VERSION}
 
 ARG CUDA_MAJORMINOR_VERSION
 
-insertfile args
+runcommand ../utils/dumpDockerArgsFromConfig
+insertfile commonargs
 insertfile env_centos7
 insertfile updateos_centos7
 insertfile build_gcc7_centos7

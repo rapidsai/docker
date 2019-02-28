@@ -180,7 +180,7 @@ function genDockerfileFromImageType {
     
     ensureValidImageType ${templateName}
     ensureFileExists ${templateFile}
-    ${UTIL_DIR}/gendockerfile.sh ${templateFile} > ${newDockerfile}
+    ${UTIL_DIR}/genfile.sh ${templateFile} > ${newDockerfile}
 }
 
 function clean {

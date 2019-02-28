@@ -40,4 +40,4 @@ RUN source activate rapids && \
     python setup.py install
 
 # Add test file for testing from within the container
-COPY support/test.sh /test.sh
+COPY ${SUPPORT_FILES_DIR}/test.sh /test.sh
