@@ -1,3 +1,6 @@
+#:# Dockerfile template for Ubuntu "devel" images.
+#:# See README for more information.
+#:#
 ARG CUDA_VERSION=9.2
 ARG CUDA_MAJORMINOR_VERSION=${CUDA_VERSION}
 ARG LINUX_VERSION=ubuntu16.04
@@ -5,7 +8,7 @@ FROM nvidia/cuda:${CUDA_VERSION}-devel-${LINUX_VERSION}
 
 ARG CUDA_MAJORMINOR_VERSION
 
-runcommand ../utils/dumpDockerArgsFromConfig
+runcommand ../../utils/dumpDockerArgsFromConfig
 insertfile commonargs
 insertfile env_ubuntu
 insertfile updateos_ubuntu

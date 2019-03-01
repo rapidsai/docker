@@ -1,0 +1,36 @@
+#!/bin/bash
+set -e
+# File downloads latest versions of git repos and packages them for importing
+# into Docker image to reduce build times and to make sure content is consistent
+
+WORK_DIR=`pwd`
+
+# Logger function
+function logger() {
+    TS=`date`
+    echo "[$TS] $@"
+}
+
+function clone() {
+  repo=$1
+  directory=$2
+  rm -rf $directory
+  
+  if [ $# -eq 2 ]; then
+    logger "Cloning $repo"
+    git clone --depth 1 --recurse-submodules $repo $directory
+  else
+    branch=$3
+    logger "Cloning '$branch' branch of $repo"
+    git clone --depth 1 --recurse-submodules --single-branch -b $branch $repo $directory
+  fi
+  cd $WORK_DIR/$directory
+  echo "$repo" > current-commit.hash
+  git rev-parse HEAD >> current-commit.hash
+  cd $WORK_DIR
+}
+
+#:# Insert calls to "clone" for each of the RAPIDS repos defined in the config
+runcommand ../../utils/dumpRapidsCloneCmdsFromConfig
+
+logger "Done"

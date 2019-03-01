@@ -13,25 +13,24 @@ CONFIGFILE=$(dirname $0)/../config
 
 #
 # awk script processes config file line-by-line.
-# If line is "insertfile <file>", then cat the file to the generated output,
-# If line is "runcommand <cmd> [<arg> ...]", then run the command with
-# args and add the command output to the output,
-# otherwise print the line as-is to the output.
+# Look for a specific section marker, then dump each line encountered
+# after it as-si unitl a different section marker or EOF.
+# Ignore blank lines.
 #
 awk --assign debug=${DEBUG} '
     BEGIN {
-       inDependenciesSection = 0
+       inSectionToDump = 0
     }
     /^# SECTION: DEPENDENCIES.*$/ {
-       inDependenciesSection = 1
+       inSectionToDump = 1
        next
     }      
     /^# SECTION: .*$/ {
-       inDependenciesSection = 0
+       inSectionToDump = 0
        next
     }      
     /^[^\ \t]+$/ {
-       if (inDependenciesSection) {
+       if (inSectionToDump) {
           printf( "ARG %s\n", $0 )
        }
     }

@@ -10,19 +10,20 @@ popd > /dev/null
 NUMARGS=$#
 UTIL_DIR=${RAPIDSAI_DIR}/utils
 RAPIDS_SRC_DIR=${RAPIDSAI_DIR}/rapids
-DOCKER_DIR=${RAPIDSAI_DIR}/docker
+TEMPL_DIR=${RAPIDSAI_DIR}/templates
+DOCKER_TEMPL_DIR=${TEMPL_DIR}/docker
 LOG_DIR=${RAPIDSAI_DIR}/logs
 
 DOCKERFILE_BASENAME=${RAPIDSAI_DIR}/Dockerfile
 DOCKERIMAGE_BUILDLOG_SUFFIX=.imageBuildLog
 
 # Figure out the valid template names based on the templates present
-# in DOCKER_DIR Template names must be of the form
+# in DOCKER_TEMPL_DIR Template names must be of the form
 # Dockerfile_<templateName>.template, and <templateName> cannot contain a
 # . or _.
 DOCKER_TEMPL_NAMES=""
-if [ -d ${DOCKER_DIR} ]; then
-    for templateFile in ${DOCKER_DIR}/*.template; do
+if [ -d ${DOCKER_TEMPL_DIR} ]; then
+    for templateFile in ${DOCKER_TEMPL_DIR}/*.template; do
 	if [ -e $templateFile ]; then
 	    templateName=${templateFile##*_}
 	    templateName=${templateName%%\.*}
@@ -32,7 +33,7 @@ if [ -d ${DOCKER_DIR} ]; then
 else 
     echo "
 
-WARNING: ${DOCKER_DIR} directory doesn't exist, valid template names can't be determined.
+WARNING: ${DOCKER_TEMPL_DIR} directory doesn't exist, valid template names can't be determined.
 
 "
 fi
@@ -66,9 +67,9 @@ CLONE_HELPTEXT="clone
 
 GENDOCKERFILE_HELPTEXT="genDockerfile <templateName>
    Generate a Dockerfile for <templateName> using the corresponding
-   template in ${DOCKER_DIR}.  The generated Dockerfile will be named
+   template in ${DOCKER_TEMPL_DIR}.  The generated Dockerfile will be named
    \"${RAPIDSAI_DIR}/Dockerfile.<templateName>\" Template names must be
-   of the form \"${DOCKER_DIR}/Dockerfile_<templateName>.template\", and
+   of the form \"${DOCKER_TEMPL_DIR}/Dockerfile_<templateName>.template\", and
    <templateName> cannot contain a . or _.
 
    <templateName> must be one of: ${DOCKER_TEMPL_NAMES}
@@ -92,7 +93,7 @@ LISTTEMPLNAMES_HELPTEXT="listTemplNames
 
    ${DOCKER_TEMPL_NAMES}
 
-   The list is based on the presence of template files in ${DOCKER_DIR}.
+   The list is based on the presence of template files in ${DOCKER_TEMPL_DIR}.
 "
 
 HELPTEXT="
@@ -175,7 +176,7 @@ function clone {
 
 function genDockerfileFromImageType {
     templateName=$1
-    templateFile=${DOCKER_DIR}/Dockerfile_${templateName}.template
+    templateFile=${DOCKER_TEMPL_DIR}/Dockerfile_${templateName}.template
     newDockerfile=${RAPIDSAI_DIR}/Dockerfile.${templateName}
     
     ensureValidImageType ${templateName}

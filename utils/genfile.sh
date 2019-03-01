@@ -65,17 +65,26 @@ awk --assign debug=${DEBUG} '
        for(i=3; i <= NF; i++) {
           cmd = cmd " " $i
        }
+       cmd = cmd "||echo FAILED!"
        if (debug) {
           printf("#---------8<------------------8<---------\n")
           printf("# BEGIN OUTPUT OF %s\n\n", cmd)
        }
        while ((cmd | getline output) > 0) {
+          if (output == "FAILED!") {
+             exit 1
+          }
           printf("%s\n", output)
        }
+       close(cmd)
        if (debug) {
           printf("\n# END OUTPUT OF %s\n", cmd)
           printf("#---------8<------------------8<---------\n")
        }
+       next
+    }
+
+    /^#:#.*$/ {
        next
     }
 

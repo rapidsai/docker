@@ -1,3 +1,6 @@
+#:# Dockerfile template for CentOS "base" images.
+#:# See README for more information.
+#:#
 ARG CUDA_VERSION=10.0
 ARG CUDA_MAJORMINOR_VERSION=${CUDA_VERSION}
 ARG LINUX_VERSION=centos7
@@ -6,7 +9,7 @@ FROM nvidia/cuda:${CUDA_VERSION}-devel-${LINUX_VERSION}
 
 ARG CUDA_MAJORMINOR_VERSION
 
-runcommand ../utils/dumpDockerArgsFromConfig
+runcommand ../../utils/dumpDockerArgsFromConfig
 insertfile commonargs
 insertfile env_centos7
 insertfile updateos_centos7
