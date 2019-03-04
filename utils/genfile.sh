@@ -29,13 +29,13 @@ cd $(dirname ${LASTARG})
 TEMPLATEDIR=$(pwd)
 TEMPLATEFILE=$(basename ${LASTARG})
 TIMESTAMP=$(date)
-
-echo "#"
-echo "# This file was generated! Edits made directly to this file may be lost."
-echo "#   Generator:    $0"
-echo "#   Timestamp:    ${TIMESTAMP}"
-echo "#   Template Dir: ${TEMPLATEDIR}"
-echo "#"
+HEADER=\
+"#\n\
+# This file was generated! Edits made directly to this file may be lost.\n\
+#   Generator:    $0\n\
+#   Timestamp:    ${TIMESTAMP}\n\
+#   Template Dir: ${TEMPLATEDIR}\n\
+#"
 
 #
 # awk script processes template file line-by-line.
@@ -44,7 +44,20 @@ echo "#"
 # args and add the command output to the output,
 # otherwise print the line as-is to the output.
 #
-awk --assign debug=${DEBUG} '
+awk --assign debug=${DEBUG} \
+    --assign header="${HEADER}" \
+    '
+    # special case: ensure the header is printed after a shebang, if present.
+    NR == 1 {
+       if (index($0, "#!") == 1) {
+          printf("%s\n", $0)
+          printf("%s\n", header)
+          next
+       } else {
+          printf("%s\n", header)
+       }
+    }
+
     /^insertfile .*$/ {
        if (debug) {
           printf("#---------8<------------------8<---------\n")

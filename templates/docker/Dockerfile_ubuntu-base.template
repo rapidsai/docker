@@ -9,7 +9,7 @@ FROM nvidia/cuda:${CUDA_VERSION}-devel-${LINUX_VERSION}
 
 ARG CUDA_MAJORMINOR_VERSION
 
-runcommand ../../utils/dumpDockerArgsFromConfig
+runcommand ../../utils/dumpDockerArgsFromConfig.sh
 insertfile commonargs
 insertfile env_ubuntu
 insertfile updateos_ubuntu
