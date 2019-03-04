@@ -1,0 +1,10 @@
+#!/bin/bash
+set -e
+
+# Assume this scrip resides in the "rapids" dir which contains the
+# cloned repos.
+
+WORK_DIR=`pwd`
+
+#:# Insert calls to "clone" for each of the RAPIDS repos defined in the config
+runcommand ../../utils/dumpRapidsBuildCmdsFromConfig.sh
