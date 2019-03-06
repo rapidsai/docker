@@ -9,7 +9,9 @@ if (( $# > 0 )); then
     exit 1
 fi
 
-CONFIGFILE=$(dirname $0)/../config
+THISDIR=$(dirname $0)
+RAPIDSDEVTOOL_DIR=${THISDIR}/../..
+source ${THISDIR}/common.sh
 
 #
 # awk script processes config file line-by-line.
@@ -24,14 +26,14 @@ awk --assign debug=${DEBUG} '
     /^# SECTION: DEPENDENCIES.*$/ {
        inSectionToDump = 1
        next
-    }      
+    }
     /^# SECTION: .*$/ {
        inSectionToDump = 0
        next
-    }      
+    }
     /^[^\ \t]+$/ {
        if (inSectionToDump) {
           printf( "ARG %s\n", $0 )
        }
     }
-    ' ${CONFIGFILE}
+    ' ${CONFIG_FILE_NAME}

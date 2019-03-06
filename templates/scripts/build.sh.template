@@ -7,4 +7,4 @@ set -e
 WORK_DIR=`pwd`
 
 #:# Insert calls to "clone" for each of the RAPIDS repos defined in the config
-runcommand ../../utils/dumpRapidsBuildCmdsFromConfig.sh
+runcommand ../../commands/utils/dumpRapidsBuildCmdsFromConfig.sh

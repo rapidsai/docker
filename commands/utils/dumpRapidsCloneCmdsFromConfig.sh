@@ -9,7 +9,9 @@ if (( $# > 0 )); then
     exit 1
 fi
 
-CONFIGFILE=$(dirname $0)/../config
+THISDIR=$(dirname $0)
+RAPIDSDEVTOOL_DIR=${THISDIR}/../..
+source ${THISDIR}/common.sh
 
 #
 # awk script processes config file line-by-line.
@@ -21,11 +23,11 @@ awk --assign debug=${DEBUG} '
     /^# SECTION: RAPIDS.*$/ {
        inRapidsSection = 1
        next
-    }      
+    }
     /^# SECTION: .*$/ {
        inRapidsSection = 0
        next
-    }      
+    }
     /^[a-zA-Z0-9_\-]+_REPO=.+$/ {
        if (inRapidsSection == 0) {
           next
@@ -61,4 +63,4 @@ awk --assign debug=${DEBUG} '
           printf("clone %s %s %s\n",url, dir, branch)
        }
     }
-    ' ${CONFIGFILE}
+    ' ${CONFIG_FILE_NAME}

@@ -12,7 +12,7 @@ function clone() {
   repo=$1
   directory=$2
   rm -rf ${directory}
-  
+
   if [ $# -eq 2 ]; then
     logger "Cloning $repo"
     git clone --depth 1 --recurse-submodules ${repo} ${directory}
@@ -28,6 +28,6 @@ function clone() {
 }
 
 #:# Insert calls to "clone" for each of the RAPIDS repos defined in the config
-runcommand ../../utils/dumpRapidsCloneCmdsFromConfig.sh
+runcommand ../../commands/utils/dumpRapidsCloneCmdsFromConfig.sh
 
 logger "Done"

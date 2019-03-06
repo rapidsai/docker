@@ -1,7 +1,7 @@
 #!/bin/bash
 set -e
 
-# Assume this script is in a subdir of the dir containing rapidstool.sh
+# Assume this script is in a subdir of the dir containing rapidsdevtool.sh
 THISDIR=$(dirname $0)
 RAPIDSDEVTOOL_DIR=${THISDIR}/..
 pushd ${RAPIDSDEVTOOL_DIR} > /dev/null
@@ -13,7 +13,8 @@ source ${THISDIR}/utils/common.sh
 IMAGE_TAG_NAME=""
 DOCKERFILE=""
 
-HELPTEXT="$0 -f <dockerFile> [-i <imageTagName>] [<dockerBuildArgs>]
+SHORTHELP="$0 [-h|-H] -f <dockerFile> [-i <imageTagName>] [<dockerBuildArgs>]"
+LONGHELP="${SHORTHELP}
    Creates a Docker image using ${DOCKER} and <dockerFile>, tagged with
    <imageTagName>. <dockerBuildArgs> can be provided to pass docker args as-is
    to the build command.
@@ -30,10 +31,14 @@ HELPTEXT="$0 -f <dockerFile> [-i <imageTagName>] [<dockerBuildArgs>]
                                        linux version
 "
 
-while getopts ":hf:i:" option; do
+while getopts ":hHf:i:" option; do
     case "${option}" in
         h)
-            echo "${HELPTEXT}"
+            echo "${SHORTHELP}"
+            exit 0
+            ;;
+        H)
+            echo "${LONGHELP}"
             exit 0
             ;;
 	f)
@@ -43,13 +48,13 @@ while getopts ":hf:i:" option; do
             IMAGE_TAG_NAME=${OPTARG}
             ;;
 	*)
-	    echo "${HELPTEXT}"
+	    echo "${SHORTHELP}"
 	    exit 1
     esac
 done
 
 if (( $# == 0 )); then
-    echo "${HELPTEXT}"
+    echo "${SHORTHELP}"
     exit 0
 fi
 
