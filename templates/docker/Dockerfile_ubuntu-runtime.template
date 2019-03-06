@@ -1,5 +1,7 @@
 #:# Dockerfile template for Ubuntu "runtime" images.
 #:# See README for more information.
+#:# Do not remove the following "tag" comments:
+#:# tag:type runtime
 #:#
 ARG CUDA_VERSION=9.2
 ARG CUDA_MAJORMINOR_VERSION=${CUDA_VERSION}
@@ -18,5 +20,3 @@ insertfile copy_and_build_rapids
 
 # Copy notebooks, remove git meta-data, EXPOSE ports, WORKDIR=/rapids/notebooks
 insertfile finalize_image_runtime
-
-

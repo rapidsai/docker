@@ -1,5 +1,7 @@
 #:# Dockerfile template for CentOS "base" images.
 #:# See README for more information.
+#:# Do not remove the following "tag" comments:
+#:# tag:type base
 #:#
 ARG CUDA_VERSION=10.0
 ARG CUDA_MAJORMINOR_VERSION=${CUDA_VERSION}
@@ -26,4 +28,3 @@ ENV LD_LIBRARY_PATH=${GCC7_DIR}/lib64:$LD_LIBRARY_PATH_ORIG:$CONDA_PREFIX
 
 # No notebooks, remove git meta-data, no EXPOSE ports, WORKDIR=/rapids
 insertfile finalize_image_base
-
