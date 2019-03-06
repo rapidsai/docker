@@ -15,8 +15,10 @@ source ${THISDIR}/common.sh
 
 #
 # awk script processes config file line-by-line.
+# Extract the URLs
 #
-awk --assign debug=${DEBUG} '
+awk --assign debug=${DEBUG} \
+    --assign utilsDir=${UTILS_DIR} '
     BEGIN {
        inRapidsSection = 0
     }
@@ -45,7 +47,20 @@ awk --assign debug=${DEBUG} '
        for (i in buildorder) {
           comp = buildorder[i]
           if (comp in rapidscomps) {
-             printf("build-%s.sh\n", comp)
+             script = utilsDir "/build-" comp ".sh"
+             # Not all comps have a build script, so skip if script DNE
+             if (system("ls " script ">/dev/null 2>&1") != 0) {
+                continue
+             }
+             printf("####################\n# %s\n\n", comp)
+             while ((getline line < script) > 0) {
+                # Only print lines not starting with #!
+                if (index(line, "#!") == 1) {
+                   continue
+                }
+                   printf("%s\n", line)
+             }
+             printf("\n")
           }
        }
     }

@@ -14,7 +14,7 @@ DEBUGFLAG=""
 TEMPL_FILE_NAME=${SCRIPTS_TEMPL_DIR}/build.sh.template
 OUTPUT_FILE_NAME=${RAPIDSDEVTOOL_DIR}/build.sh
 
-SHORTHELP="$0 [-h|-H] -t <templateName> [-o <outputFileName>]"
+SHORTHELP="$0 [-h|-H] [-o <outputFileName>]"
 LONGHELP="${SHORTHELP}
    Generate a script to build the RAPIDS components specified in
    ${CONFIG_FILE_NAME}
