@@ -82,17 +82,17 @@ genDockerfile [-h|-H] -t <templateName> [-o <outputFileName>]
    . and named after <templateName>
 ```
 
-Edit the file named "config" to customize a build with specific RAPIDS components, branches, and dependencies.
+Edit the `config` file to customize a build with specific RAPIDS components, branches, and dependencies.
 
-Copy and modify existing Dockerfile templates in "templates/docker" to create custom Docker images. Follow the naming convention in order for the rapidsdevtool.sh commands to recognize the new Dockerfile template (see the section on templates below).
+Copy and modify existing Dockerfile templates in `templates/docker` to create custom Docker images. Follow the naming convention in order for the rapidsdevtool.sh commands to recognize the new Dockerfile template (see the section on templates below).
 
 ## Templates and the config file
 
-rapidsdevtool.sh utilizes several code generators for creating Dockerfiles and utility scripts for users that are specific to the environment they're using. The templates in the "templates" subdir, along with the file named "config" are intended to be edited to customize the generated files.
+rapidsdevtool.sh utilizes several code generators for creating Dockerfiles and utility scripts for users that are specific to the environment they're using. The templates in the `templates` subdir, along with the `config` file are intended to be edited to customize the generated files.
 
-To create additional Docker image types, simply create a new template in the "templates/docker" subdir named using the convention Dockerfile_<imageName>.template
+To create additional Docker image types, simply create a new template in the `templates/docker` subdir named using the convention Dockerfile_<imageName>.template
 
-Similar in convention to Dockerfiles, script templates are located in "templates/scripts".
+Similar in convention to Dockerfiles, script templates are located in `templates/scripts`.
 
 All templates have the ability to identify the following keywords when being used with the file generator:
 
@@ -100,15 +100,15 @@ insertfile <fileName>
    Inserts <fileName> inline into the generated output, just like #include is treated by the C preprocessor.
    
 runcommand <command>
-   Runs <command> and inserts the output of command inline into the generated output. <command> is typically a shell script, but can also be any command you would run in a shell, such as "ls -l".
-   Existing templates make use of the scripts in "commands/utils" for generating output, in particular, output based on the contents of the config file.
+   Runs <command> and inserts the output of command inline into the generated output. <command> is typically a shell script, but can also be any command you would run in a shell, such as `ls -l`.
+   Existing templates make use of the scripts in `commands/utils` for generating output, in particular, output based on the contents of the config file.
 
 ## Extending rapidsdevtool.sh
 
-rapidsdevtool.sh is a shell script that simplifies how users interact with the collection of underlying scripts contained in the "commands" subdir. To add functionality to rapidsdevtool.sh, simply add your script to the "commands" subdir, and make sure it conforms to the following minimum requirements:
-* It responds to the '-h' arg by outputting a "short" help that simply shows the command and all the available options. Run rapidsdevtool.sh -h for an example.
-* It responds to the '-H' arg by outputting the short help plus more detailed help, similar to a man page. Run rapidsdevtool.sh -H for an example.
+rapidsdevtool.sh is a shell script that simplifies how users interact with the collection of underlying scripts contained in the `commands` subdir. To add functionality to rapidsdevtool.sh, simply add your script to the `commands` subdir, and make sure it conforms to the following minimum requirements:
+* It responds to the `-h` arg by outputting a "short" help that simply shows the command and all the available options. Run `rapidsdevtool.sh -h` for an example.
+* It responds to the `-H` arg by outputting the short help plus more detailed help, similar to a man page. Run `rapidsdevtool.sh -H` for an example.
 
 All other args your script needs are passed straight through from rapidsdevtool.sh to your script.
 
-Your script may access the "commands/utils" subdir which contains utilities shared by all the command scripts. See any of the existing scripts in "commands" for examples.
+Your script may access the `commands/utils` subdir which contains utilities shared by all the command scripts. See any of the existing scripts in `commands` for examples.
