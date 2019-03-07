@@ -10,28 +10,20 @@ popd > /dev/null
 
 source ${THISDIR}/utils/common.sh
 
+LOG_DIR=${RAPIDSDEVTOOL_DIR}/logs
 IMAGE_TAG_NAME=""
 DOCKERFILE=""
 
-SHORTHELP="$0 [-h|-H] -f <dockerFile> [-i <imageTagName>] [<dockerBuildArgs>]"
+SHORTHELP="$0 [-h|-H] -f <dockerFile> -i <imageTagName> [-l <logDir>] [<dockerBuildArgs>]"
 LONGHELP="${SHORTHELP}
    Creates a Docker image using ${DOCKER} and <dockerFile>, tagged with
    <imageTagName>. <dockerBuildArgs> can be provided to pass docker args as-is
    to the build command.
 
-   If <imageTagName> is \"\" or not specified, a default image name of the form
-   shown below is used.
-
-   rapids_<username>-cuda9.2-devel-ubuntu16.04-gcc5-py3.6
-                        ^      ^       ^         ^    ^
-                        |      type    |         |    python version
-                        |              |         |
-                        cuda version   |         gcc version
-                                       |
-                                       linux version
+   If <logDir> is not specified, it defaults to ${LOG_DIR}
 "
 
-while getopts ":hHf:i:" option; do
+while getopts ":hHl:f:i:" option; do
     case "${option}" in
         h)
             echo "${SHORTHELP}"
@@ -47,6 +39,9 @@ while getopts ":hHf:i:" option; do
         i)
             IMAGE_TAG_NAME=${OPTARG}
             ;;
+	l)
+	    LOG_DIR=${OPTARG}
+	    ;;
 	*)
 	    echo "${SHORTHELP}"
 	    exit 1
@@ -64,20 +59,12 @@ if [[ ${DOCKERFILE} == "" ]]; then
     echo "ERROR: <dockerFile> must be specified."
     ERROR=1
 fi
+if [[ ${IMAGE_TAG_NAME} == "" ]]; then
+    echo "ERROR: <imageTagName> must be specified."
+    ERROR=1
+fi
 if (( ${ERROR} != 0 )); then
     exit ${ERROR}
-fi
-
-if [[ ${IMAGE_TAG_NAME} == "" ]]; then
-    # TODO: include any overrides specified in Docker build args, if specified.
-    # TODO: provide an error message if these greps fail
-    cudaVersion=$(grep "^ARG CUDA_VERSION=" ${DOCKERFILE} | cut -d'=' -f2)
-    templType=$(grep "^#:# tag:type " ${DOCKERFILE} | cut -d' ' -f3)
-    linuxVersion=$(grep "^ARG LINUX_VERSION=" ${DOCKERFILE} | cut -d'=' -f2)
-    gccVersion=$(grep "^CXX_VERSION=" ${DOCKERFILE} | cut -d'=' -f2)
-    pyVersion=$(grep "^PYTHON_VERSION=" ${DOCKERFILE} | cut -d'=' -f2)
-
-    IMAGE_TAG_NAME="rapids_${USER}-cuda${cudaVersion}-${templType}-${linuxVersion}-gcc${gccVersion}-py${pyVersion}"
 fi
 
 LOGFILE_NAME=${LOG_DIR}/${IMAGE_TAG_NAME}_image--${TIMESTAMP}.buildlog

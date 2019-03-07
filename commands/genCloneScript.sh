@@ -47,3 +47,4 @@ done
 
 # TODO: check that OUTPUT_FILE_NAME can be written
 ${COMMANDSUTILS_DIR}/genfile.sh ${DEBUGFLAG} ${TEMPL_FILE_NAME} > ${OUTPUT_FILE_NAME}
+chmod ugo+x ${OUTPUT_FILE_NAME}

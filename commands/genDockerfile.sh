@@ -14,6 +14,7 @@ DEBUGFLAG=""
 TEMPL_NAME=""
 TEMPL_FILE_NAME=""
 DOCKER_TEMPL_DIR_EXISTS=1
+OUTPUT_FILE_NAME=""
 
 # Figure out the valid template names based on the templates present in
 # DOCKER_TEMPL_DIR.
@@ -73,7 +74,10 @@ while getopts ":hHdt:o:" option; do
     esac
 done
 
-# FIXME: Add backwards-compat: support genDockerfile.sh <templateName> usage
+# backwards-compat: support genDockerfile.sh <templateName> usage
+if (( $# == 1 )); then
+    TEMPL_NAME=$1
+fi
 
 # Enforce all required conditions
 ERROR=0
@@ -105,9 +109,12 @@ if (( ${ERROR} != 0 )); then
     exit ${ERROR}
 fi
 
+if [[ ${OUTPUT_FILE_NAME} == "" ]]; then
+    OUTPUT_FILE_NAME=${RAPIDSDEVTOOL_DIR}/${DOCKERFILE_BASENAME}.${TEMPL_NAME}
+fi
+
 # Safe to assume this exists if a valid templ name was given.
 TEMPL_FILE_NAME=${DOCKER_TEMPL_DIR}/${DOCKERFILE_BASENAME}_${TEMPL_NAME}.template
 
 # TODO: check that OUTPUT_FILE_NAME can be written
-OUTPUT_FILE_NAME=${RAPIDSDEVTOOL_DIR}/${DOCKERFILE_BASENAME}.${TEMPL_NAME}
 ${COMMANDSUTILS_DIR}/genfile.sh ${DEBUGFLAG} ${TEMPL_FILE_NAME} > ${OUTPUT_FILE_NAME}

@@ -13,7 +13,6 @@ SCRIPTS_TEMPL_DIR=${TEMPL_DIR}/scripts
 DOCKERFILE_BASENAME=Dockerfile
 DOCKERIMAGE_BUILDLOG_SUFFIX=.imageBuildLog
 CONFIG_FILE_NAME=${RAPIDSDEVTOOL_DIR}/config
-LOG_DIR=${RAPIDSDEVTOOL_DIR}/logs
 
 # TODO: check that each of the dirs referenced in vars exist
 
