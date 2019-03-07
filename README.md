@@ -90,17 +90,17 @@ Copy and modify existing Dockerfile templates in `templates/docker` to create cu
 
 rapidsdevtool.sh utilizes several code generators for creating Dockerfiles and utility scripts for users that are specific to the environment they're using. The templates in the `templates` subdir, along with the `config` file are intended to be edited to customize the generated files.
 
-To create additional Docker image types, simply create a new template in the `templates/docker` subdir named using the convention Dockerfile_<imageName>.template
+To create additional Docker image types, simply create a new template in the `templates/docker` subdir named using the convention `Dockerfile_<imageName>.template`
 
 Similar in convention to Dockerfiles, script templates are located in `templates/scripts`.
 
 All templates have the ability to identify the following keywords when being used with the file generator:
 
-insertfile <fileName>
-   Inserts <fileName> inline into the generated output, just like #include is treated by the C preprocessor.
+`insertfile <fileName>`
+   Inserts `<fileName>` inline into the generated output, just like #include is treated by the C preprocessor.
    
-runcommand <command>
-   Runs <command> and inserts the output of command inline into the generated output. <command> is typically a shell script, but can also be any command you would run in a shell, such as `ls -l`.
+`runcommand <command>`
+   Runs `<command>` and inserts the output of command inline into the generated output. `<command>` is typically a shell script, but can also be any command you would run in a shell, such as `ls -l`.
    Existing templates make use of the scripts in `commands/utils` for generating output, in particular, output based on the contents of the config file.
 
 ## Extending rapidsdevtool.sh
