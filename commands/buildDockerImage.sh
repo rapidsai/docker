@@ -11,12 +11,13 @@ popd > /dev/null
 source ${THISDIR}/utils/common.sh
 
 TIMESTAMP=$(date "+%Y%m%d%H%M%S")
-OUTPUT_DIR=${RAPIDSDEVTOOL_DIR}/rapids_${USER}-${TIMESTAMP}
+OUTPUT_DIR=${RAPIDSDEVTOOL_DIR}/build-${TIMESTAMP}
+RAPIDS_SOURCES_DIR=${OUTPUT_DIR}/rapids
 LOG_DIR=${OUTPUT_DIR}/logs
 DEBUGFLAG=""
 TEMPL_NAME=""
 IMAGE_TAG_NAME=""
-GEND_CLONESCRIPT=${OUTPUT_DIR}/clone.sh
+GEND_CLONESCRIPT=${RAPIDS_SOURCES_DIR}/clone.sh
 GEND_BUILDSCRIPT=${OUTPUT_DIR}/build.sh
 GENDOCKERFILE_CMD=${THISDIR}/genDockerfile.sh
 GENCLONESCRIPT_CMD=${THISDIR}/genCloneScript.sh
@@ -25,12 +26,17 @@ BUILDDOCKERIMAGEFROMFILE_CMD=${THISDIR}/buildDockerImageFromFile.sh
 
 SHORTHELP="$0 [-h|-H] [-d] -t <templateName> [-i <imageTagName>] [<dockerBuildArgs>]"
 LONGHELP="${SHORTHELP}
-   This command automates running the following commands:
+   This command automates the following:
+      (setting up a unique build dir)
       ${GENDOCKERFILE_CMD}
       ${GENCLONESCRIPT_CMD}
       (running the generated clone script)
       ${GENBUILDSCRIPT_CMD}
+      (copying the developer 'utils' dir)
       ${BUILDDOCKERIMAGEFROMFILE_CMD}
+
+   The scripts are generated based on the config file, and the Dockerfile is
+   generated based on <templateName> and the config file.
 
    If <imageTagName> is \"\" or not specified, a default image name of the form
    shown below is used.
@@ -42,6 +48,9 @@ LONGHELP="${SHORTHELP}
                         cuda version   |         gcc version
                                        |
                                        linux version
+
+   <dockerBuildArgs> can be provided to pass docker args as-is to the build
+   command.
 "
 
 while getopts ":hHdt:i:" option; do
@@ -77,10 +86,10 @@ fi
 # Create the working directory
 # TODO: make this configurable
 # TODO: should this complain if it already exists?
-mkdir -p ${OUTPUT_DIR}
+mkdir -p ${RAPIDS_SOURCES_DIR}
 
 # Generate the Dockerfile
-GEND_DOCKERFILE=${OUTPUT_DIR}/${DOCKERFILE_BASENAME}.${TEMPL_NAME}
+GEND_DOCKERFILE=${RAPIDS_SOURCES_DIR}/${DOCKERFILE_BASENAME}.${TEMPL_NAME}
 ${GENDOCKERFILE_CMD} ${DEBUGFLAG} -t ${TEMPL_NAME} -o ${GEND_DOCKERFILE}
 
 # Compute the image tag name if not specified
@@ -104,9 +113,10 @@ fi
 
 # Clone RAPIDS
 ${GENCLONESCRIPT_CMD} ${DEBUGFLAG} -o ${GEND_CLONESCRIPT}
-(cd ${OUTPUT_DIR}; ${GEND_CLONESCRIPT})
+(cd ${RAPIDS_SOURCES_DIR}; ${GEND_CLONESCRIPT})
 
 # Add a build script
+# FIXME: update the Dockerfiles to use this build script!
 ${GENBUILDSCRIPT_CMD} ${DEBUGFLAG} -o ${GEND_BUILDSCRIPT}
 
 # Copy the developer utils dir since many Dockerfiles expect to copy
@@ -114,6 +124,7 @@ ${GENBUILDSCRIPT_CMD} ${DEBUGFLAG} -o ${GEND_BUILDSCRIPT}
 cp -a ${RAPIDSDEVTOOL_DIR}/utils ${OUTPUT_DIR}
 
 # Create the Docker image
+# FIXME: pass docker build args!
 if [[ ${IMAGE_TAG_NAME} != "" ]]; then
     (cd ${OUTPUT_DIR}; ${BUILDDOCKERIMAGEFROMFILE_CMD} -f ${GEND_DOCKERFILE} -l ${LOG_DIR} -i ${IMAGE_TAG_NAME})
 else

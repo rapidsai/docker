@@ -10,9 +10,11 @@ HELPTEXT="
 USAGE:
    $0 [-h|-H] <command> [<arg> ...]
 
-where command is one of:
-"
+ -h   print brief help
+ -H   print detailed help
 
+ command is one of:
+"
 HELPFLAG_GIVEN=0
 HELPFLAG=-h
 COMMANDS_DIR=${RAPIDSDEVTOOL_DIR}/commands
@@ -33,18 +35,22 @@ while getopts ":hH" option; do
     esac
 done
 
+# Create a list of command scripts, with the "buildDockerImage" script first
+# since this is currently the expected most-frequently used command
+COMMAND_SCRIPTS="${COMMANDS_DIR}/buildDockerImage.sh $(echo ${COMMANDS_DIR}/*.sh|sed 's![^ ]*/buildDockerImage\.sh!!')"
+
 # Generate the help text by running help on each command
-for cmdScript in ${COMMANDS_DIR}/*.sh; do
+for cmdScript in ${COMMAND_SCRIPTS}; do
     cmdHelp=$(${cmdScript} ${HELPFLAG})
     HELPTEXT="${HELPTEXT}
 ${cmdHelp}
 "
 done
 
-# Build a list of commands and also convert command script names into commands
-# using sed
-for cmdScript in ${COMMANDS_DIR}/*.sh; do
-    cmdName=${cmdScript##*/}       # remove path up to and including last /
+# Build a list of commands and also convert the full command script paths in the
+# help text into commands using sed
+for cmdScript in ${COMMAND_SCRIPTS}; do
+    cmdName=${cmdScript##*/} # remove path up to and including last /
     cmdName=${cmdName%%\.*}  # remove .sh
     COMMAND_NAMES="${COMMAND_NAMES} ${cmdName}"
     HELPTEXT=$(echo "${HELPTEXT}" | sed "s!${cmdScript}!${cmdName}!g")
@@ -69,7 +75,6 @@ if [[ ${VALID_COMMAND_GIVEN} == "" ]]; then
     echo "${HELPTEXT}"
     exit 1
 fi
-
 
 # Run the subcommand with the remaining args
 shift
