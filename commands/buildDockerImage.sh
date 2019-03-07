@@ -18,7 +18,7 @@ DEBUGFLAG=""
 TEMPL_NAME=""
 IMAGE_TAG_NAME=""
 GEND_CLONESCRIPT=${RAPIDS_SOURCES_DIR}/clone.sh
-GEND_BUILDSCRIPT=${OUTPUT_DIR}/build.sh
+GEND_BUILDSCRIPT=${RAPIDS_SOURCES_DIR}/build.sh
 GENDOCKERFILE_CMD=${THISDIR}/genDockerfile.sh
 GENCLONESCRIPT_CMD=${THISDIR}/genCloneScript.sh
 GENBUILDSCRIPT_CMD=${THISDIR}/genBuildScript.sh
@@ -28,11 +28,12 @@ SHORTHELP="$0 [-h|-H] [-d] -t <templateName> [-i <imageTagName>] [<dockerBuildAr
 LONGHELP="${SHORTHELP}
    This command automates the following:
       (setting up a unique build dir)
+      (copying the 'supportfiles' dir)
+      (copying the developer 'utils' dir)
       ${GENDOCKERFILE_CMD}
+      ${GENBUILDSCRIPT_CMD}
       ${GENCLONESCRIPT_CMD}
       (running the generated clone script)
-      ${GENBUILDSCRIPT_CMD}
-      (copying the developer 'utils' dir)
       ${BUILDDOCKERIMAGEFROMFILE_CMD}
 
    The scripts are generated based on the config file, and the Dockerfile is
@@ -83,22 +84,39 @@ if (( $# == 0 )); then
     exit 0
 fi
 
-# Create the working directory
-# TODO: make this configurable
-# TODO: should this complain if it already exists?
-mkdir -p ${RAPIDS_SOURCES_DIR}
-
-# Generate the Dockerfile
-GEND_DOCKERFILE=${RAPIDS_SOURCES_DIR}/${DOCKERFILE_BASENAME}.${TEMPL_NAME}
-${GENDOCKERFILE_CMD} ${DEBUGFLAG} -t ${TEMPL_NAME} -o ${GEND_DOCKERFILE}
-
-# Compute the image tag name if not specified
+# Enforce all required conditions
+ERROR=0
+if [[ ${TEMPL_NAME} == "" ]]; then
+    echo "ERROR: <templateName> must be specified."
+    ERROR=1
+fi
+if (( ${ERROR} != 0 )); then
+    exit ${ERROR}
+fi
 
 TEMPL_FILE_NAME=${DOCKER_TEMPL_DIR}/${DOCKERFILE_BASENAME}_${TEMPL_NAME}.template
 if [ ! -r ${TEMPL_FILE_NAME} ]; then
     echo "ERROR: ${TEMPL_FILE_NAME} is not a readable file."
     exit 1
 fi
+
+# Create the dir to clone into and the build working directory
+# Generated files will go in these dirs so they must be created upfront
+# TODO: make this configurable
+# TODO: should this complain if it already exists?
+mkdir -p ${RAPIDS_SOURCES_DIR}
+
+# Copy other dirs that many Dockerfiles expect to copy from their CWD
+# FIXME: ensure the copy succeeds
+cp -a ${RAPIDSDEVTOOL_DIR}/supportfiles ${OUTPUT_DIR}
+cp -a ${RAPIDSDEVTOOL_DIR}/utils ${OUTPUT_DIR}
+
+# Generate the Dockerfile
+GEND_DOCKERFILE=${OUTPUT_DIR}/${DOCKERFILE_BASENAME}.${TEMPL_NAME}
+${GENDOCKERFILE_CMD} ${DEBUGFLAG} -t ${TEMPL_NAME} -o ${GEND_DOCKERFILE}
+
+# Compute the default image tag name if not specified
+# This must be done post-gen since it uses the generated Dockerfile
 if [[ ${IMAGE_TAG_NAME} == "" ]]; then
     # TODO: include any overrides specified in Docker build args, if specified.
     # TODO: provide an error message if these greps fail
@@ -111,22 +129,14 @@ if [[ ${IMAGE_TAG_NAME} == "" ]]; then
     IMAGE_TAG_NAME="rapids_${USER}-cuda${cudaVersion}-${templType}-${linuxVersion}-gcc${gccVersion}-py${pyVersion}"
 fi
 
-# Clone RAPIDS
-${GENCLONESCRIPT_CMD} ${DEBUGFLAG} -o ${GEND_CLONESCRIPT}
-(cd ${RAPIDS_SOURCES_DIR}; ${GEND_CLONESCRIPT})
-
 # Add a build script
 # FIXME: update the Dockerfiles to use this build script!
 ${GENBUILDSCRIPT_CMD} ${DEBUGFLAG} -o ${GEND_BUILDSCRIPT}
 
-# Copy the developer utils dir since many Dockerfiles expect to copy
-# it from the CWD
-cp -a ${RAPIDSDEVTOOL_DIR}/utils ${OUTPUT_DIR}
+# Clone RAPIDS
+${GENCLONESCRIPT_CMD} ${DEBUGFLAG} -o ${GEND_CLONESCRIPT}
+(cd ${RAPIDS_SOURCES_DIR}; ${GEND_CLONESCRIPT})
 
 # Create the Docker image
 # FIXME: pass docker build args!
-if [[ ${IMAGE_TAG_NAME} != "" ]]; then
-    (cd ${OUTPUT_DIR}; ${BUILDDOCKERIMAGEFROMFILE_CMD} -f ${GEND_DOCKERFILE} -l ${LOG_DIR} -i ${IMAGE_TAG_NAME})
-else
-    (cd ${OUTPUT_DIR}; ${BUILDDOCKERIMAGEFROMFILE_CMD} -f ${GEND_DOCKERFILE} -l ${LOG_DIR})
-fi
+(cd ${OUTPUT_DIR}; ${BUILDDOCKERIMAGEFROMFILE_CMD} -f ${GEND_DOCKERFILE} -l ${LOG_DIR} -i ${IMAGE_TAG_NAME})
