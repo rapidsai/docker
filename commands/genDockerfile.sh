@@ -13,26 +13,7 @@ source ${THISDIR}/utils/common.sh
 DEBUGFLAG=""
 TEMPL_NAME=""
 TEMPL_FILE_NAME=""
-DOCKER_TEMPL_DIR_EXISTS=1
 OUTPUT_FILE_NAME=""
-
-# Figure out the valid template names based on the templates present in
-# DOCKER_TEMPL_DIR.
-# Template names must be of the form Dockerfile_<templateName>.template, and
-# <templateName> cannot contain a . or _.
-DOCKER_TEMPL_NAMES=""
-if [ -d ${DOCKER_TEMPL_DIR} ]; then
-    for templateFile in ${DOCKER_TEMPL_DIR}/*.template; do
-	if [ -e $templateFile ]; then
-	    templateName=${templateFile##*_} # remove everything up to and including last _
-	    templateName=${templateName%%\.*} # remove everything after and including last .
-            DOCKER_TEMPL_NAMES+="${templateName} "
-	fi
-    done
-else
-    DOCKER_TEMPL_DIR_EXISTS=0
-    DOCKER_TEMPL_NAMES="<ERROR: ${DOCKER_TEMPL_DIR} directory doesn't exist, valid template names can't be determined!>"
-fi
 
 SHORTHELP="$0 [-h|-H] -t <templateName> [-o <outputFileName>]"
 LONGHELP="${SHORTHELP}

@@ -53,12 +53,14 @@ function process {
         '
         # special case: ensure the header is printed after a shebang, if present.
         NR == 1 {
-           if (index($0, "#!") == 1) {
-              printf("%s\n", $0)
-              printf("%s\n", header)
-              next
-           } else if (header != "") {
-              printf("%s\n", header)
+           if (header != "") {
+              if (index($0, "#!") == 1) {
+                 printf("%s\n", $0)
+                 printf("%s\n", header)
+                 next
+              } else {
+                 printf("%s\n", header)
+              }
            }
         }
 
@@ -86,9 +88,9 @@ function process {
               printf("#---------8<------------------8<---------\n")
               printf("# BEGIN OUTPUT OF %s\n", cmd)
            }
-           cmdToRun = cmd "||echo FAILED!"
+           cmdToRun = cmd "||echo GENFILE_CMD_FAILED!"
            while ((cmdToRun | getline output) > 0) {
-              if (output == "FAILED!") {
+              if (output == "GENFILE_CMD_FAILED!") {
                  exit 1
               }
               printf("%s\n", output)
@@ -101,6 +103,7 @@ function process {
            next
         }
 
+        # Ignore template comments
         /^#:#.*$/ {
            next
         }
@@ -118,6 +121,7 @@ function process {
 # output to contain additional template commands which will themselves get
 # processed too. Watch out for infinite loops!
 # Use a tmp var to insert the header only once.
+# The output of the "process" function is in PROCESSED_OUTPUT
 PROCESSED_OUTPUT=$(cat ${TEMPLATEFILE})
 INPUT=""
 hdr="${HEADER}"

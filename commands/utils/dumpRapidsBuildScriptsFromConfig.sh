@@ -70,7 +70,7 @@ awk --assign debug=${DEBUG} \
                    printf("    %s\n", line)
              }
              printf("\n    exitCode=$?\n")
-             printf("    if (( ${exitCode} != 0 )); then\n        exit ${exitCode}\n    }\n")
+             printf("    if (( ${exitCode} != 0 )); then\n        exit ${exitCode}\n    fi\n")
              printf("fi\n")
           }
        }

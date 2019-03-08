@@ -16,7 +16,7 @@ source ${THISDIR}/common.sh
 #
 # awk script processes config file line-by-line.
 # Look for a specific section marker, then dump each line encountered
-# after it as-si unitl a different section marker or EOF.
+# after it as-is unitl a different section marker or EOF.
 # Ignore blank lines.
 #
 awk --assign debug=${DEBUG} '

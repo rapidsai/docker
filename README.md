@@ -80,6 +80,16 @@ genDockerfile [-h|-H] -t <templateName> [-o <outputFileName>]
    Use -o <outputFileName> to specify the name of the generated Dockerfile, but
    if not specified, the default generated Dockerfile will be placed in
    . and named after <templateName>
+
+listDockerTemplNames [-h|-H]
+   Prints a list of valid Docker template names found in templates/docker
+
+   Template file names must be of the form
+   "templates/docker/Dockerfile_<templateName>.template", and
+   <templateName> cannot contain a . or _.
+
+   The current list of valid templates found is:
+      centos7-base centos7-devel centos7-runtime ubuntu-base ubuntu-devel ubuntu-runtime
 ```
 
 Edit the `config` file to customize a build with specific RAPIDS components, branches, and dependencies.

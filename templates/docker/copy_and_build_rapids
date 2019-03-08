@@ -1,9 +1,20 @@
 COPY utils ${RAPIDS_SRC_DIR}/${UTILS_DIR}
 
-# Assume a prior 'make clone' step has created the rapids dir to copy from
+# Assume the RAPIDS repos have been cloned to the 'rapids' dir
+# (this can be done using 'rapidsdevtool.sh buildDockerImage', see
+#  rapidsdevtool.sh help for more details)
+#:#
+#:# Note: an alternative proposal is to clone the repos as part of the
+#:# image building step, instead of ahead of time using the host
+#:# machine. This will require git to be installed in the image, but
+#:# would allow the host to not require it
 RUN mkdir -p ${RAPIDS_SRC_DIR}
 COPY rapids ${RAPIDS_SRC_DIR}
 
+# Assume the build.sh script is present.
+# (this can be done using 'rapidsdevtool.sh buildDockerImage', see
+#  rapidsdevtool.sh help for more details)
+#:#
 #:# This is only in place to allow individual RAPIDS comps to be built
 #:# one-at-a-time, to allow for better caching (if a comp fails to build then
 #:# all prior successful builds are cached). If this isn't needed, then simply

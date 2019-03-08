@@ -1,6 +1,9 @@
 #!/bin/bash
 set -e
 
-#:# Insert the contents of the build script in utils for each RAPIDS component
-#:# listed in the config
+#:# Insert the contents of the build script in utils for each RAPIDS
+#:# component listed in the config
+#:#
+#:# FIXME: If build.sh just looked for all possible known directories,
+#:# would this template and the script it calls be necessary?
 runcommand ../../commands/utils/dumpRapidsBuildScriptsFromConfig.sh
