@@ -17,7 +17,7 @@ while getopts ":d" option; do
     esac
 done
 
-if (( $# > 2 )); then
+if (( $# > 2 )) || (( $# == 0 )); then
     echo "${USAGE}"
     exit 1
 fi
@@ -36,72 +36,96 @@ HEADER=\
 #   Timestamp:    ${TIMESTAMP}\n\
 #   Template Dir: ${TEMPLATEDIR}\n\
 #"
+PROCESSED_OUTPUT=""
 
-#
-# awk script processes template file line-by-line.
-# If line is "insertfile <file>", then cat the file to the generated output,
-# If line is "runcommand <cmd> [<arg> ...]", then run the command with
-# args and add the command output to the output,
-# otherwise print the line as-is to the output.
-#
-awk --assign debug=${DEBUG} \
-    --assign header="${HEADER}" \
-    '
-    # special case: ensure the header is printed after a shebang, if present.
-    NR == 1 {
-       if (index($0, "#!") == 1) {
-          printf("%s\n", $0)
-          printf("%s\n", header)
-          next
-       } else {
-          printf("%s\n", header)
-       }
-    }
+# "process" the template, put processed output in PROCESSED_OUTPUT
+function process {
+    string="$1"
+    header="$2"
 
-    /^insertfile .*$/ {
-       if (debug) {
-          printf("#---------8<------------------8<---------\n")
-          printf("# BEGIN CONTENTS OF %s\n\n", $2)
-       }
-       while ((getline line < $2) > 0) {
-          printf("%s\n", line)
-       }
-       if (debug) {
-          printf("\n# END CONTENTS OF %s\n", $2)
-          printf("#---------8<------------------8<---------\n")
-       }
-       next
-    }
+    # awk script processes string line-by-line.
+    # If line is "insertfile <file>", then cat the file to the generated output,
+    # If line is "runcommand <cmd> [<arg> ...]", then run the command with args
+    # and add the command output to the output, otherwise print the line as-is
+    # to the output.
+    PROCESSED_OUTPUT=$(echo "${string}" | awk --assign debug=${DEBUG} \
+                                              --assign header="${header}" \
+        '
+        # special case: ensure the header is printed after a shebang, if present.
+        NR == 1 {
+           if (index($0, "#!") == 1) {
+              printf("%s\n", $0)
+              printf("%s\n", header)
+              next
+           } else if (header != "") {
+              printf("%s\n", header)
+           }
+        }
 
-    /^runcommand .*$/ {
-       cmd = $2
-       for(i=3; i <= NF; i++) {
-          cmd = cmd " " $i
-       }
-       if (debug) {
-          printf("#---------8<------------------8<---------\n")
-          printf("# BEGIN OUTPUT OF %s\n\n", cmd)
-       }
-       cmdToRun = cmd "||echo FAILED!"
-       while ((cmdToRun | getline output) > 0) {
-          if (output == "FAILED!") {
-             exit 1
-          }
-          printf("%s\n", output)
-       }
-       close(cmdToRun)
-       if (debug) {
-          printf("\n# END OUTPUT OF %s\n", cmd)
-          printf("#---------8<------------------8<---------\n")
-       }
-       next
-    }
+        /^insertfile .*$/ {
+           if (debug) {
+              printf("#---------8<------------------8<---------\n")
+              printf("# BEGIN CONTENTS OF %s\n", $2)
+           }
+           while ((getline line < $2) > 0) {
+              printf("%s\n", line)
+           }
+           if (debug) {
+              printf("# END CONTENTS OF %s\n", $2)
+              printf("#---------8<------------------8<---------\n")
+           }
+           next
+        }
 
-    /^#:#.*$/ {
-       next
-    }
+        /^runcommand .*$/ {
+           cmd = $2
+           for(i=3; i <= NF; i++) {
+              cmd = cmd " " $i
+           }
+           if (debug) {
+              printf("#---------8<------------------8<---------\n")
+              printf("# BEGIN OUTPUT OF %s\n", cmd)
+           }
+           cmdToRun = cmd "||echo FAILED!"
+           while ((cmdToRun | getline output) > 0) {
+              if (output == "FAILED!") {
+                 exit 1
+              }
+              printf("%s\n", output)
+           }
+           close(cmdToRun)
+           if (debug) {
+              printf("# END OUTPUT OF %s\n", cmd)
+              printf("#---------8<------------------8<---------\n")
+           }
+           next
+        }
 
-    // {
-       print $0
-    }
-    ' ${TEMPLATEFILE}
+        /^#:#.*$/ {
+           next
+        }
+
+        // {
+           print $0
+        }
+        ')
+}
+
+########################################
+
+# Set up a loop that continues to process the contents of the file until there
+# are no remaining lines to expand, commands to run, etc. This allows processed
+# output to contain additional template commands which will themselves get
+# processed too. Watch out for infinite loops!
+# Use a tmp var to insert the header only once.
+PROCESSED_OUTPUT=$(cat ${TEMPLATEFILE})
+INPUT=""
+hdr="${HEADER}"
+
+until [[ "${PROCESSED_OUTPUT}" == "${INPUT}" ]]; do
+    INPUT="${PROCESSED_OUTPUT}"
+    process "${INPUT}" "${hdr}"
+    hdr=""
+done
+
+echo "${PROCESSED_OUTPUT}"

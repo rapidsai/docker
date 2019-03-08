@@ -1,5 +1,8 @@
 #!/bin/bash
 
+# TODO: This script is almost identical to dumpRapidsBuildScriptsFromConfig.sh -
+# consider refactoring
+
 USAGE="
 USAGE: $0
 "
@@ -43,12 +46,8 @@ awk --assign debug=${DEBUG} \
        next
     }
     END {
-       # Generate the build script using the components discovered in the
+       # Generate the individual Docker "RUN" calls based on the RAPIDS comps in
        # config, which are now saved in rapidscomps
-       printf("#!/bin/bash\n\n")
-       printf("NUMARGS=$#\n")
-       printf("ARGS=$*\n")
-       printf("function shouldBuild {\n    (( ${NUMARGS} == 0 )) || (echo \" ${ARGS} \" | grep -q \" $1 \")\n}\n\n")
 
        # Enforce a specific build order
        split("cudf cuml xgboost dask-xgboost dask-cudf dask-cuda", buildorder)
@@ -60,18 +59,8 @@ awk --assign debug=${DEBUG} \
              if (system("ls " script ">/dev/null 2>&1") != 0) {
                 continue
              }
-             printf("####################\n# %s\n", comp)
-             printf("if shouldBuild " comp "; then\n")
-             while ((getline line < script) > 0) {
-                # Only print lines not starting with #!
-                if (index(line, "#!") == 1) {
-                   continue
-                }
-                   printf("    %s\n", line)
-             }
-             printf("\n    exitCode=$?\n")
-             printf("    if (( ${exitCode} != 0 )); then\n        exit ${exitCode}\n    }\n")
-             printf("fi\n")
+             printf("RUN source activate rapids && cd ${RAPIDS_SRC_DIR} && \\\n")
+             printf("    ./build.sh " comp "\n")
           }
        }
     }
