@@ -44,8 +44,8 @@ HEADER=\
 # args and add the command output to the output,
 # otherwise print the line as-is to the output.
 #
-awk --assign debug=${DEBUG} \
-    --assign header="${HEADER}" \
+awk -v "debug=${DEBUG}" \
+    -v "header=${HEADER}" \
     '
     # special case: ensure the header is printed after a shebang, if present.
     NR == 1 {

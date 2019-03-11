@@ -16,7 +16,7 @@ source ${THISDIR}/common.sh
 #
 # awk script processes config file line-by-line.
 #
-awk --assign debug=${DEBUG} '
+awk -v "debug=${DEBUG}" '
     BEGIN {
        inRapidsSection = 0
     }
