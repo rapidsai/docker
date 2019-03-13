@@ -48,8 +48,8 @@ function process {
     # If line is "runcommand <cmd> [<arg> ...]", then run the command with args
     # and add the command output to the output, otherwise print the line as-is
     # to the output.
-    PROCESSED_OUTPUT=$(echo "${string}" | awk --assign debug=${DEBUG} \
-                                              --assign header="${header}" \
+    PROCESSED_OUTPUT=$(echo "${string}" | awk -v "debug=${DEBUG}" \
+                                              -v "header=${header}" \
         '
         # special case: ensure the header is printed after a shebang, if present.
         NR == 1 {

@@ -19,7 +19,7 @@ source ${THISDIR}/common.sh
 # after it as-is unitl a different section marker or EOF.
 # Ignore blank lines.
 #
-awk --assign debug=${DEBUG} '
+awk -v "debug=${DEBUG}" '
     BEGIN {
        inSectionToDump = 0
     }

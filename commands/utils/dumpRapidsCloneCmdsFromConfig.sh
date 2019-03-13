@@ -16,7 +16,7 @@ source ${THISDIR}/common.sh
 #
 # awk script processes config file line-by-line.
 #
-awk --assign debug=${DEBUG} '
+awk -v "debug=${DEBUG}" '
     BEGIN {
        inRapidsSection = 0
     }
@@ -36,8 +36,8 @@ awk --assign debug=${DEBUG} '
        var = fields[1]
        url = fields[2] # Assume url is similar to https://github.com/rapidsai/cudf.git
        repo = substr(var, 1, length(var)-length("_REPO"))
-       split(url, fields, "/")
-       last = fields[length(fields)]
+       numFields = split(url, fields, "/")
+       last = fields[numFields]
        split(last, fields, ".")
        dir = fields[1]
        repourls[repo] = url
