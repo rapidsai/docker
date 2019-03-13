@@ -35,8 +35,8 @@ awk -v "debug=${DEBUG}" \
           next
        }
        # Assume repo is a URL similar to https://github.com/rapidsai/cudf.git
-       split($0, fields, "/")
-       last = fields[length(fields)]
+       numFields = split($0, fields, "/")
+       last = fields[numFields]
        split(last, fields, ".")
        comp = fields[1]
        rapidscomps[comp] = 1

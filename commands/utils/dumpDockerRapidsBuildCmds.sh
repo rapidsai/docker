@@ -20,8 +20,8 @@ source ${THISDIR}/common.sh
 # awk script processes config file line-by-line.
 # Extract the URLs
 #
-awk --assign debug=${DEBUG} \
-    --assign utilsDir=${UTILS_DIR} '
+awk -v "debug=${DEBUG}" \
+    -v "utilsDir=${UTILS_DIR}" '
     BEGIN {
        inRapidsSection = 0
     }
@@ -38,8 +38,8 @@ awk --assign debug=${DEBUG} \
           next
        }
        # Assume repo is a URL similar to https://github.com/rapidsai/cudf.git
-       split($0, fields, "/")
-       last = fields[length(fields)]
+       numFields = split($0, fields, "/")
+       last = fields[numFields]
        split(last, fields, ".")
        comp = fields[1]
        rapidscomps[comp] = 1
