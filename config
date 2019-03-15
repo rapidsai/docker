@@ -18,15 +18,16 @@ TINI_URL=https://github.com/krallin/tini/releases/download/v0.18.0/tini
    
 # SECTION: RAPIDS (do not remove or modify this comment)
 CUDF_REPO=https://github.com/rapidsai/cudf.git
-CUDF_BRANCH=master
+CUDF_BRANCH=branch-0.6
 CUML_REPO=https://github.com/rapidsai/cuml.git
-CUML_BRANCH=master
+CUML_BRANCH=branch-0.6
 XGBOOST_REPO=https://github.com/rapidsai/xgboost.git
 XGBOOST_BRANCH=cudf-interop
 DASK_XGBOOST_REPO=https://github.com/rapidsai/dask-xgboost.git
 DASK_XGBOOST_BRANCH=dask-cudf
 DASKCUDF_REPO=https://github.com/rapidsai/dask-cudf.git
-DASKCUDF_BRANCH=master
+DASKCUDF_BRANCH=branch-0.6
 DASKCUDA_REPO=https://github.com/rapidsai/dask-cuda.git
+DASKCUDA_BRANCH=branch-0.6
 NOTE_REPO=https://github.com/rapidsai/notebooks.git
 
