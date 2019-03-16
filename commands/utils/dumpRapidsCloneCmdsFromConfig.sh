@@ -61,7 +61,12 @@ awk -v "debug=${DEBUG}" '
           dir = repodirs[repo]
           branch = repobranches[repo]
           # NOTE: THIS ASSUMES FUNCTIONS clone AND shouldClone ARE DEFINED!
-          printf("if shouldClone %s; then\n   clone %s %s %s\nfi\n", dir, url, dir, branch)
+          # FIXME: This is a hack to support cuML and xgboost until they change/fix how they use submodules
+          if ((dir == "cuml") || (dir == "xgboost")) {
+             printf("if shouldClone %s; then\n   git clone --depth 1 --recurse-submodules --single-branch -b %s %s %s\nfi\n", dir, branch, url, dir)
+          } else {
+             printf("if shouldClone %s; then\n   clone %s %s %s\nfi\n", dir, url, dir, branch)
+          }
        }
     }
     ' ${CONFIG_FILE_NAME}

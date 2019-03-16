@@ -17,17 +17,24 @@ function clone() {
 
   if [ $# -eq 2 ]; then
     logger "Cloning $repo"
-    git clone --depth 1 ${repo} ${directory}
+    # FIXME: --depth 1 is breaking builds - investigate
+    #git clone --depth 1 ${repo} ${directory}
+    git clone ${repo} ${directory}
   else
     branch=$3
     logger "Cloning '$branch' branch of $repo"
-    git clone --depth 1 --single-branch -b ${branch} ${repo} ${directory}
+    # FIXME: --depth 1 is breaking builds - investigate
+    #git clone --depth 1 --single-branch -b ${branch} ${repo} ${directory}
+    git clone --single-branch -b ${branch} ${repo} ${directory}
   fi
   cd ${WORK_DIR}/${directory}
-  git submodule update --init --remote --recursive
+  # FIXME: --remote is causing us to get the wrong submodules - investigate
+  #git submodule update --init --remote --recursive
+  git submodule update --init --recursive
   git fetch --tags
-  echo "${repo}" > current-commit.hash
-  git rev-parse HEAD >> current-commit.hash
+  # FIXME: These lines result in an uncommitted file, and a 'dirty' tag to be added to some version strings - are they needed?
+  #echo "${repo}" > current-commit.hash
+  #git rev-parse HEAD >> current-commit.hash
   cd ${WORK_DIR}
 }
 
