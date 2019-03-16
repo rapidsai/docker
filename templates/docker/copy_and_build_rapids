@@ -1,8 +1,7 @@
-COPY utils ${RAPIDS_SRC_DIR}/${UTILS_DIR}
-
 # Assume the RAPIDS repos have been cloned to the 'rapids' dir.
 # (this is done automatically when using 'rapidsdevtool.sh buildDockerImage',
 #  see rapidsdevtool.sh help for more details)
+# FIXME: FYI, the container build process is now also cloning.
 #:#
 #:# Note: an alternative proposal is to clone the repos as part of the
 #:# image building step, instead of ahead of time using the host
@@ -11,6 +10,7 @@ COPY utils ${RAPIDS_SRC_DIR}/${UTILS_DIR}
 RUN rm -rf ${RAPIDS_SRC_DIR}
 RUN mkdir -p ${RAPIDS_SRC_DIR}
 COPY rapids ${RAPIDS_SRC_DIR}
+COPY utils ${RAPIDS_SRC_DIR}/${UTILS_DIR}
 
 RUN cd ${RAPIDS_SRC_DIR} && ./clone.sh
 
