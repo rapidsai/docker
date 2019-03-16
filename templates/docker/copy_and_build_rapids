@@ -11,6 +11,8 @@ COPY utils ${RAPIDS_SRC_DIR}/${UTILS_DIR}
 RUN mkdir -p ${RAPIDS_SRC_DIR}
 COPY rapids ${RAPIDS_SRC_DIR}
 
+RUN cd ${RAPIDS_SRC_DIR} && ./clone.sh
+
 # Assume the build.sh script is present.
 # (this is done automatically when using 'rapidsdevtool.sh buildDockerImage',
 #  see rapidsdevtool.sh help for more details)

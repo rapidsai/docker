@@ -1,7 +1,9 @@
 # Remove git repo data
 RUN find ${RAPIDS_SRC_DIR} -mindepth 2 -type d -name ".git" | xargs rm -rf
 
-COPY rapids/notebooks ${RAPIDS_SRC_DIR}/notebooks
+# FIXME: RAPIDS notebooks are now cloned in the container during
+# container build, but maybe they should be copied instead.
+#COPY rapids/notebooks ${RAPIDS_SRC_DIR}/notebooks
 
 WORKDIR /rapids/notebooks
 # Jupyter notebook port

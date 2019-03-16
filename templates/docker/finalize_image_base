@@ -1,6 +1,11 @@
 # Remove git repo data
 RUN find ${RAPIDS_SRC_DIR} -mindepth 2 -type d -name ".git" | xargs rm -rf
 
+# FIXME: RAPIDS notebooks are now cloned in the container during
+# container build, but maybe they should be copied instead if
+# needed. This rm shouldn't be needed.
+RUN rm -rf ${RAPIDS_SRC_DIR}/notebooks
+
 # Remove test.sh since it depends on the notebooks, which are not in base
 RUN rm -f /test.sh
 

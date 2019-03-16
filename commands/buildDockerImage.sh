@@ -135,7 +135,8 @@ ${GENBUILDSCRIPT_CMD} ${DEBUGFLAG} -o ${GEND_BUILDSCRIPT}
 
 # Clone RAPIDS
 ${GENCLONESCRIPT_CMD} ${DEBUGFLAG} -o ${GEND_CLONESCRIPT}
-(cd ${RAPIDS_SOURCES_DIR}; ${GEND_CLONESCRIPT})
+# FIXME: cloning is happening in the container build now - investigate
+#(cd ${RAPIDS_SOURCES_DIR}; ${GEND_CLONESCRIPT})
 
 # Create the Docker image
 # FIXME: pass docker build args!
