@@ -2,6 +2,8 @@
 set -e
 
 WORK_DIR=`pwd`
+NUMARGS=$#
+ARGS=$*
 
 function logger() {
     TS=`date`
@@ -25,6 +27,10 @@ function clone() {
   echo "${repo}" > current-commit.hash
   git rev-parse HEAD >> current-commit.hash
   cd ${WORK_DIR}
+}
+
+function shouldClone {
+    (( ${NUMARGS} == 0 )) || (echo " ${ARGS} " | grep -q " $1 ")
 }
 
 #:# Insert calls to "clone" for each of the RAPIDS repos defined in the config

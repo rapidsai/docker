@@ -45,13 +45,15 @@ awk -v "debug=${DEBUG}" \
     END {
        # Generate the build script using the components discovered in the
        # config, which are now saved in rapidscomps
-       printf("#!/bin/bash\n\n")
        printf("NUMARGS=$#\n")
        printf("ARGS=$*\n")
        printf("function shouldBuild {\n    (( ${NUMARGS} == 0 )) || (echo \" ${ARGS} \" | grep -q \" $1 \")\n}\n\n")
 
        # Enforce a specific build order
-       split("cudf cuml xgboost dask-xgboost dask-cudf dask-cuda", buildorder)
+       # FIXME: change script to allow for comps that are not in this
+       # list. For those, simply do them in any order afterwards. Otherwise
+       # this list will need to be updated when new RAPIDS comps are added.
+       split("cudf cuml cugraph xgboost dask-xgboost dask-cudf dask-cuda", buildorder)
        for (i in buildorder) {
           comp = buildorder[i]
           if (comp in rapidscomps) {
@@ -62,6 +64,7 @@ awk -v "debug=${DEBUG}" \
              }
              printf("####################\n# %s\n", comp)
              printf("if shouldBuild " comp "; then\n")
+             printf("    pushd .\n")
              while ((getline line < script) > 0) {
                 # Only print lines not starting with #!
                 if (index(line, "#!") == 1) {
@@ -71,6 +74,7 @@ awk -v "debug=${DEBUG}" \
              }
              printf("\n    exitCode=$?\n")
              printf("    if (( ${exitCode} != 0 )); then\n        exit ${exitCode}\n    fi\n")
+             printf("    popd\n")
              printf("fi\n")
           }
        }

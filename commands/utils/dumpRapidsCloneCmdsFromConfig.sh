@@ -60,7 +60,8 @@ awk -v "debug=${DEBUG}" '
           url = repourls[repo]
           dir = repodirs[repo]
           branch = repobranches[repo]
-          printf("clone %s %s %s\n",url, dir, branch)
+          # NOTE: THIS ASSUMES FUNCTIONS clone AND shouldClone ARE DEFINED!
+          printf("if shouldClone %s; then\n   clone %s %s %s\nfi\n", dir, url, dir, branch)
        }
     }
     ' ${CONFIG_FILE_NAME}

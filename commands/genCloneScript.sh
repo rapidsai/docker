@@ -12,7 +12,7 @@ source ${THISDIR}/utils/common.sh
 
 DEBUGFLAG=""
 TEMPL_FILE_NAME=${SCRIPTS_TEMPL_DIR}/clone.sh.template
-OUTPUT_FILE_NAME=${RAPIDSDEVTOOL_DIR}/clone.sh
+OUTPUT_FILE_NAME=${PWD}/clone.sh
 
 SHORTHELP="$0 [-h|-H] [-o <outputFileName>]"
 LONGHELP="${SHORTHELP}

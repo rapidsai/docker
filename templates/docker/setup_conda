@@ -20,6 +20,7 @@ RUN export CUDA_MAJOR=`echo $CUDA_VERSION | cut -d'.' -f1` && \
       -c ${NVIDIA_CONDA_LABEL} \
       -c pytorch \
       -c defaults \
+      -c rapidsai \
       arrow-cpp=${PYARROW_VERSION} \
       bokeh \
       cffi=${CFFI_VERSION} \
@@ -32,7 +33,8 @@ RUN export CUDA_MAJOR=`echo $CUDA_VERSION | cut -d'.' -f1` && \
       jupyterlab \
       numba=${NUMBA_VERSION} \
       numpy=${NUMPY_VERSION} \
-      nvstrings \
+#      nvgraph \
+      nvstrings=0.3* \
       pandas=${PANDAS_VERSION} \
       pyarrow=${PYARROW_VERSION} \
       pytest \

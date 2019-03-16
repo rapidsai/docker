@@ -91,7 +91,7 @@ if (( ${ERROR} != 0 )); then
 fi
 
 if [[ ${OUTPUT_FILE_NAME} == "" ]]; then
-    OUTPUT_FILE_NAME=${RAPIDSDEVTOOL_DIR}/${DOCKERFILE_BASENAME}.${TEMPL_NAME}
+    OUTPUT_FILE_NAME=${PWD}/${DOCKERFILE_BASENAME}.${TEMPL_NAME}
 fi
 
 # Safe to assume this exists if a valid templ name was given.

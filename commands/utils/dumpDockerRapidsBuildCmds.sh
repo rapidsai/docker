@@ -50,7 +50,10 @@ awk -v "debug=${DEBUG}" \
        # config, which are now saved in rapidscomps
 
        # Enforce a specific build order
-       split("cudf cuml xgboost dask-xgboost dask-cudf dask-cuda", buildorder)
+       # FIXME: change script to allow for comps that are not in this
+       # list. For those, simply do them in any order afterwards. Otherwise
+       # this list will need to be updated when new RAPIDS comps are added.
+       split("cudf cuml cugraph xgboost dask-xgboost dask-cudf dask-cuda", buildorder)
        for (i in buildorder) {
           comp = buildorder[i]
           if (comp in rapidscomps) {
