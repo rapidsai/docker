@@ -15,7 +15,6 @@ RUN export CUDA_MAJOR=`echo $CUDA_VERSION | cut -d'.' -f1` && \
     export CUDA_MINOR=`echo $CUDA_VERSION | cut -d'.' -f2` && \
     conda create -n rapids python=${PYTHON_VERSION} && \
     conda install -n rapids -y \
-      -c rapidsai \
       -c numba \
       -c conda-forge \
       -c ${NVIDIA_CONDA_LABEL} \

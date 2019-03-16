@@ -7,7 +7,6 @@
 #:# image building step, instead of ahead of time using the host
 #:# machine. This will require git to be installed in the image, but
 #:# would allow the host to not require it
-RUN rm -rf ${RAPIDS_SRC_DIR}
 RUN mkdir -p ${RAPIDS_SRC_DIR}
 COPY rapids ${RAPIDS_SRC_DIR}
 COPY utils ${RAPIDS_SRC_DIR}/${UTILS_DIR}

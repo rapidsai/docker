@@ -6,6 +6,8 @@ ENV PATH=$PATH:/conda/bin
 
 # devtoolset-7 ENV vars
 # devtoolset-7-* packages will need to be seen first, update PATH accordingly
+# NOTE: These are commented out since gcc is being built from source
+#   If devtoolset-7 is used, uncomment these vars.
 # ENV PATH=/opt/rh/devtoolset-7/root/usr/bin:$PATH:/conda/bin
 # ENV CC=/opt/rh/devtoolset-7/root/usr/bin/gcc
 # ENV CXX=/opt/rh/devtoolset-7/root/usr/bin/g++
