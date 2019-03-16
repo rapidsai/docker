@@ -17,13 +17,15 @@ function clone() {
 
   if [ $# -eq 2 ]; then
     logger "Cloning $repo"
-    git clone --depth 1 --recurse-submodules ${repo} ${directory}
+    git clone --depth 1 ${repo} ${directory}
   else
     branch=$3
     logger "Cloning '$branch' branch of $repo"
-    git clone --depth 1 --recurse-submodules --single-branch -b ${branch} ${repo} ${directory}
+    git clone --depth 1 --single-branch -b ${branch} ${repo} ${directory}
   fi
   cd ${WORK_DIR}/${directory}
+  git submodule update --init --remote --recursive
+  git fetch --tags
   echo "${repo}" > current-commit.hash
   git rev-parse HEAD >> current-commit.hash
   cd ${WORK_DIR}
