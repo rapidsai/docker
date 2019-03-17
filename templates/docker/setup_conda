@@ -33,7 +33,7 @@ RUN export CUDA_MAJOR=`echo $CUDA_VERSION | cut -d'.' -f1` && \
       jupyterlab \
       numba=${NUMBA_VERSION} \
       numpy=${NUMPY_VERSION} \
-#      nvgraph \
+      nvgraph \
       nvstrings=0.3* \
       pandas=${PANDAS_VERSION} \
       pyarrow=${PYARROW_VERSION} \
