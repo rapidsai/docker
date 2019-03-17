@@ -32,5 +32,5 @@ DASKCUDF_REPO=https://github.com/rapidsai/dask-cudf.git
 DASKCUDF_BRANCH=branch-0.6
 DASKCUDA_REPO=https://github.com/rapidsai/dask-cuda.git
 DASKCUDA_BRANCH=branch-0.6
-NOTE_REPO=https://github.com/rapidsai/notebooks.git
-
+NOTEBOOKS_REPO=https://github.com/rapidsai/notebooks.git
+NOTEBOOKS_BRANCH=branch-0.6
