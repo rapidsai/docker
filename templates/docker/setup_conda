@@ -15,9 +15,10 @@ RUN export CUDA_MAJOR=`echo $CUDA_VERSION | cut -d'.' -f1` && \
     export CUDA_MINOR=`echo $CUDA_VERSION | cut -d'.' -f2` && \
     conda create -n rapids python=${PYTHON_VERSION} && \
     conda install -n rapids -y \
+      -c ${RAPIDSAI_CONDA_LABEL} \
+      -c ${NVIDIA_CONDA_LABEL} \
       -c numba \
       -c conda-forge \
-      -c ${NVIDIA_CONDA_LABEL} \
       -c pytorch \
       -c defaults \
       arrow-cpp=${PYARROW_VERSION} \
@@ -40,6 +41,9 @@ RUN export CUDA_MAJOR=`echo $CUDA_VERSION | cut -d'.' -f1` && \
       scikit-learn \
       scipy \
     && conda clean -a
+
+# Special case: libcumlmg is not available for CUDA 9.2
+RUN if [ "${CUDA_MAJORMINOR_VERSION}" != "9.2" ]; then conda install -n rapids -y --no-deps -c rapidsai-nightly -c ${NVIDIA_CONDA_LABEL} libcumlmg; fi
 
 # Enables "source activate conda"
 SHELL ["/bin/bash", "-c"]

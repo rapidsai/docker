@@ -10,13 +10,13 @@ FAISSGPU_VERSION=1.5.0
 MINICONDA_URL=https://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh
 NUMBA_VERSION=0.42
 NUMPY_VERSION=1.15.4
-#NVIDIA_CONDA_LABEL=nvidia/label/cuda${CUDA_MAJORMINOR_VERSION}
-NVIDIA_CONDA_LABEL=rapidsai/label/cuda${CUDA_MAJORMINOR_VERSION}
+NVIDIA_CONDA_LABEL=nvidia/label/cuda${CUDA_MAJORMINOR_VERSION}
+RAPIDSAI_CONDA_LABEL=rapidsai/label/cuda${CUDA_MAJORMINOR_VERSION}
 PANDAS_VERSION=0.23.4
 PYARROW_VERSION=0.12.1
 PYTHON_VERSION=3.6
 TINI_URL=https://github.com/krallin/tini/releases/download/v0.18.0/tini
-   
+
 # SECTION: RAPIDS (do not remove or modify this comment)
 CUDF_REPO=https://github.com/rapidsai/cudf.git
 CUDF_BRANCH=branch-0.6

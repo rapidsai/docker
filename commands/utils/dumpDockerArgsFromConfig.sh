@@ -31,7 +31,7 @@ awk -v "debug=${DEBUG}" '
        inSectionToDump = 0
        next
     }
-    /^[^\ \t]+$/ {
+    /^[^\ \t\#]+$/ {
        if (inSectionToDump) {
           printf( "ARG %s\n", $0 )
        }

@@ -5,6 +5,7 @@ ENV PATH=$PATH:/conda/bin
 ENV CC=/usr/bin/gcc-${CC_VERSION}
 ENV CXX=/usr/bin/g++-${CXX_VERSION}
 ENV CUDAHOSTCXX=$CXX
+ENV CUDA_VERSION=${CUDA_MAJORMINOR_VERSION}
 
 # FIXME: verify if this is needed
 ENV DEBIAN_FRONTEND=noninteractive

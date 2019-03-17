@@ -3,6 +3,7 @@ ENV LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/usr/local/cuda/lib64:/usr/local/cuda/lib64
 ENV NUMBAPRO_NVVM=/usr/local/cuda/nvvm/lib64/libnvvm.so
 ENV NUMBAPRO_LIBDEVICE=/usr/local/cuda/nvvm/libdevice
 ENV PATH=$PATH:/conda/bin
+ENV CUDA_VERSION=${CUDA_MAJORMINOR_VERSION}
 
 # devtoolset-7 ENV vars
 # devtoolset-7-* packages will need to be seen first, update PATH accordingly
