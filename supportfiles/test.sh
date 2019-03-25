@@ -9,10 +9,6 @@ env
 ## Activate conda env
 source activate rapids
 
-# Extract cuML data
-cd /rapids/notebooks/cuml/data
-gunzip mortgage.npy.gz
-
 # Test cuML notebooks
 cd /rapids/notebooks/cuml
 
@@ -24,9 +20,9 @@ python /tmp/dbscan_demo-test.py
 
 # Test knn notebook
 ## filter out magics first
-#cat knn_demo.ipynb | grep -v "%%" > /tmp/knn_demo-test.ipynb
-#jupyter nbconvert --to script /tmp/knn_demo-test.ipynb --output /tmp/knn_demo-test
-#python /tmp/knn_demo-test.py
+cat knn_demo.ipynb | grep -v "%%" > /tmp/knn_demo-test.ipynb
+jupyter nbconvert --to script /tmp/knn_demo-test.ipynb --output /tmp/knn_demo-test
+python /tmp/knn_demo-test.py
 
 # Test pca notebook
 ## filter out magics first
