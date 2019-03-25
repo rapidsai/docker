@@ -7,4 +7,5 @@ cmake -DCMAKE_INSTALL_PREFIX=$CONDA_PREFIX \
       -DCMAKE_CXX11_ABI=ON \
       -DCMAKE_BUILD_TYPE=release .. && \
 make -j && make -j install && \
-cd ../python-package && python setup.py install
+cd ../python-package && python setup.py install && \
+cd ../../ && git clean -xdff
