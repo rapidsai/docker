@@ -28,9 +28,10 @@ function clone() {
     git clone --single-branch -b ${branch} ${repo} ${directory}
   fi
   cd ${WORK_DIR}/${directory}
-  # FIXME: --remote is causing us to get the wrong submodules - investigate
-  #git submodule update --init --remote --recursive
-  git submodule update --init --recursive
+  case "${repo}" in
+    *cuml*) git submodule update --init --recursive ;;
+    *) git submodule update --init --remote --recursive ;;
+  esac
   git fetch --tags
   # FIXME: These lines result in an uncommitted file, and a 'dirty' tag to be added to some version strings - are they needed?
   #echo "${repo}" > current-commit.hash
