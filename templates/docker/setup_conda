@@ -43,7 +43,7 @@ RUN export CUDA_MAJOR=`echo $CUDA_VERSION | cut -d'.' -f1` && \
     && conda clean -a
 
 # Special case: libcumlmg is not available for CUDA 9.2
-RUN if [ "${CUDA_MAJORMINOR_VERSION}" != "9.2" ]; then conda install -n rapids -y --no-deps -c rapidsai-nightly -c ${NVIDIA_CONDA_LABEL} libcumlmg; fi
+RUN if [ "${CUDA_MAJORMINOR_VERSION}" != "9.2" ]; then conda install -n rapids -y --no-deps -c ${NVIDIA_CONDA_LABEL} -c conda-forge libcumlmg; fi
 
 # Enables "source activate conda"
 SHELL ["/bin/bash", "-c"]
