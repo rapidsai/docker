@@ -14,5 +14,4 @@ cmake -DCMAKE_INSTALL_PREFIX=$CONDA_PREFIX \
       -DCMAKE_BUILD_TYPE=release .. && \
 make -j && make -j install && \
 cd ../../python && python setup.py build_ext --inplace ${MULTIGPU_OPTION} && \
-python setup.py install ${MULTIGPU_OPTION} && \
-cd ../ && git clean -xdff
+python setup.py install ${MULTIGPU_OPTION}

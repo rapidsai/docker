@@ -7,5 +7,4 @@ cmake -DCMAKE_INSTALL_PREFIX=$CONDA_PREFIX \
 make -j && make -j install && \
 make python_cffi && make install_python && \
 cd ../../python && python setup.py build_ext --inplace && \
-python setup.py install && \
-cd ../ && git clean -xdff
+python setup.py install

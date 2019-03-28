@@ -63,7 +63,8 @@ awk -v "debug=${DEBUG}" \
                 continue
              }
              printf("RUN source activate rapids && cd ${RAPIDS_SRC_DIR} && \\\n")
-             printf("    ./build.sh " comp "\n")
+             printf("    ./build.sh " comp " && \\\n")
+             printf("    cd " comp " && git clean -xdff\n")
           }
        }
     }
