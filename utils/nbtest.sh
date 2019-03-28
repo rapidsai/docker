@@ -14,7 +14,7 @@ for nb in $*; do
     echo --------------------
     cat ${NBFILENAME} | grep -v "%%" > ${NBTESTFILENAME}
     jupyter nbconvert --to script ${NBTESTFILENAME} --output /tmp/${NBNAME}-test
-    echo "Running \"python ${NBTESTSCRIPT}\":"
+    echo "Running \"python ${NBTESTSCRIPT}\" on $(date)"
     echo 
     time python ${NBTESTSCRIPT}
     NBEXITCODE=$?
