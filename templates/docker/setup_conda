@@ -30,6 +30,7 @@ RUN export CUDA_MAJOR=`echo $CUDA_VERSION | cut -d'.' -f1` && \
       dask=${DASK_VERSION} \
       distributed=${DISTRIBUTED_VERSION} \
       faiss-gpu=${FAISSGPU_VERSION} \
+      ipython=${IPYTHON_VERSION} \
       jupyterlab \
       numba=${NUMBA_VERSION} \
       numpy=${NUMPY_VERSION} \
