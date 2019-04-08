@@ -3,7 +3,7 @@
 #:# Do not remove the following "tag" comments:
 #:# tag:type devel
 #:#
-ARG CUDA_VERSION=9.2
+ARG CUDA_VERSION=10.0
 ARG CUDA_MAJORMINOR_VERSION=${CUDA_VERSION}
 ARG LINUX_VERSION=ubuntu16.04
 FROM nvidia/cuda:${CUDA_VERSION}-devel-${LINUX_VERSION}

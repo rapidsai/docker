@@ -34,13 +34,13 @@ buildDockerImage [-h|-H] [-d] -t <templateName> [-i <imageTagName>] [<dockerBuil
    If <imageTagName> is "" or not specified, a default image name of the form
    shown below is used.
 
-   rapids_<username>-cuda9.2-devel-ubuntu16.04-gcc5-py3.6
-                        ^      ^       ^         ^    ^
-                        |      type    |         |    python version
-                        |              |         |
-                        cuda version   |         gcc version
-                                       |
-                                       linux version
+   rapids_<username>-cuda10.0-devel-ubuntu16.04-gcc5-py3.6
+                        ^       ^       ^         ^    ^
+                        |       type    |         |    python version
+                        |               |         |
+                        cuda version    |         gcc version
+                                        |
+                                        linux version
 
    <dockerBuildArgs> can be provided to pass docker args as-is to the build
    command.
