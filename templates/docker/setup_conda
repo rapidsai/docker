@@ -39,6 +39,7 @@ RUN export CUDA_MAJOR=`echo $CUDA_VERSION | cut -d'.' -f1` && \
       pandas=${PANDAS_VERSION} \
       pyarrow=${PYARROW_VERSION} \
       pytest \
+      rmm=${RMM_VERSION} \
       scikit-learn \
       scipy \
     && conda clean -a
