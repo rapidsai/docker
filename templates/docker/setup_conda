@@ -16,6 +16,7 @@ RUN export CUDA_MAJOR=`echo $CUDA_VERSION | cut -d'.' -f1` && \
     conda create -n rapids python=${PYTHON_VERSION} && \
     conda install -n rapids -y \
       -c ${RAPIDSAI_CONDA_LABEL} \
+      -c rapidsai-nightly/label/cuda${CUDA_MAJORMINOR_VERSION} \
       -c ${NVIDIA_CONDA_LABEL} \
       -c numba \
       -c conda-forge \
