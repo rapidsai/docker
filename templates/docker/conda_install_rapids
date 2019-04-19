@@ -1,0 +1,23 @@
+# NOTE: Many/all of the package versions used below are defined in the
+# "args" insertfile
+
+# NOTE: assumes steps in "setup_conda" were run!
+
+ARG RAPIDSAI_NIGHTLY_CONDA_LABEL=rapidsai-nightly/label/cuda${CUDA_MAJORMINOR_VERSION}
+
+RUN conda install -n rapids -y \
+      -c ${RAPIDSAI_NIGHTLY_CONDA_LABEL} \
+      -c ${NVIDIA_CONDA_LABEL} \
+      -c numba \
+      -c conda-forge \
+      -c pytorch \
+      -c defaults \
+      dask-cuml \
+   && conda clean -a
+
+# Special case: libcumlmg is not available for CUDA 9.2
+#RUN if [ "${CUDA_MAJORMINOR_VERSION}" != "9.2" ]; then conda install -n rapids -y --no-deps -c ${NVIDIA_CONDA_LABEL} -c conda-forge libcumlmg; fi
+
+# Enables "source activate conda"
+SHELL ["/bin/bash", "-c"]
+
