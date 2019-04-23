@@ -39,6 +39,12 @@ LONGHELP="${SHORTHELP}
    The scripts are generated based on the config file, and the Dockerfile is
    generated based on <templateName> and the config file.
 
+   The generated scripts are included in the Docker image where they
+   are called as part of the 'docker build' step. Including them in
+   the image allows for users to update and/or call them again later
+   from inside a container.  See the generated Dockerfile for details
+   on how the scripts will be called.
+
    If <imageTagName> is \"\" or not specified, a default image name of the form
    shown below is used.
 
@@ -135,8 +141,6 @@ ${GENBUILDSCRIPT_CMD} ${DEBUGFLAG} -o ${GEND_BUILDSCRIPT}
 
 # Clone RAPIDS
 ${GENCLONESCRIPT_CMD} ${DEBUGFLAG} -o ${GEND_CLONESCRIPT}
-# FIXME: cloning is happening in the container build now - investigate
-#(cd ${RAPIDS_SOURCES_DIR}; ${GEND_CLONESCRIPT})
 
 # Create the Docker image
 # FIXME: pass docker build args!
