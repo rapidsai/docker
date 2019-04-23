@@ -63,7 +63,7 @@ awk -v "debug=${DEBUG}" '
           # NOTE: THIS ASSUMES FUNCTIONS clone AND shouldClone ARE DEFINED!
           # FIXME: This is a hack to support cuML and xgboost until they change/fix how they use submodules
           if ((dir == "cuml") || (dir == "xgboost")) {
-             printf("if shouldClone %s; then\n   git clone --recurse-submodules --single-branch -b %s %s %s\nfi\n", dir, branch, url, dir)
+             printf("if shouldClone %s; then\n   clone %s %s %s noremote\nfi\n", dir, url, dir, branch)
           } else {
              printf("if shouldClone %s; then\n   clone %s %s %s\nfi\n", dir, url, dir, branch)
           }

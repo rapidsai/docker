@@ -40,7 +40,7 @@ LONGHELP="${SHORTHELP}
    generated based on <templateName> and the config file.
 
    The generated scripts are included in the Docker image where they
-   are called as part of the `docker build` step. Including them in
+   are called as part of the 'docker build' step. Including them in
    the image allows for users to update and/or call them again later
    from inside a container.  See the generated Dockerfile for details
    on how the scripts will be called.
