@@ -15,9 +15,9 @@ runcommand ../../commands/utils/dumpDockerArgsFromConfig.sh
 insertfile commonargs
 insertfile env_centos7
 insertfile updateos_centos7
-#:# Still need gcc7 for building xgboost in "conda_install_rapids"
 insertfile build_gcc7_centos7
-insertfile conda_install_rapids
+insertfile setup_conda
+insertfile copy_and_build_rapids
 
 #
 # Change LD_LIBRARY_PATH to exclude /usr/local/cuda/* since

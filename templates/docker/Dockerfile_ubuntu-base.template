@@ -15,7 +15,8 @@ runcommand ../../commands/utils/dumpDockerArgsFromConfig.sh
 insertfile commonargs
 insertfile env_ubuntu
 insertfile updateos_ubuntu
-insertfile conda_install_rapids
+insertfile setup_conda
+insertfile copy_and_build_rapids
 
 # No notebooks, remove git meta-data, no EXPOSE ports, WORKDIR=/rapids
 insertfile finalize_image_base
