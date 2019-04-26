@@ -15,7 +15,8 @@ runcommand ../../commands/utils/dumpDockerArgsFromConfig.sh
 insertfile commonargs
 insertfile env_centos7
 insertfile updateos_centos7
-insertfile setup_conda
+#:# Still need gcc7 for building xgboost in "conda_install_rapids"
+insertfile build_gcc7_centos7
 insertfile conda_install_rapids
 
 #

@@ -5,19 +5,59 @@
 
 ARG RAPIDSAI_NIGHTLY_CONDA_LABEL=rapidsai-nightly/label/cuda${CUDA_MAJORMINOR_VERSION}
 
-RUN conda install -n rapids -y \
-      -c ${RAPIDSAI_NIGHTLY_CONDA_LABEL} \
+RUN mkdir -p ${RAPIDS_SRC_DIR}
+COPY rapids ${RAPIDS_SRC_DIR}
+COPY utils ${RAPIDS_SRC_DIR}/${UTILS_DIR}
+
+RUN curl ${MINICONDA_URL} -o /miniconda.sh && \
+    sh /miniconda.sh -b -p /conda && \
+    conda update -n base conda && \
+    rm -f /miniconda.sh
+
+########################################
+# conda environment
+# NOTE: use these mirrors for faster downloads
+#       -c http://10.33.227.188:88/numba \
+#       -c http://10.33.227.188:88/conda-forge \
+RUN export CUDA_MAJOR=`echo $CUDA_VERSION | cut -d'.' -f1` && \
+    export CUDA_MINOR=`echo $CUDA_VERSION | cut -d'.' -f2` && \
+    conda create -n rapids python=${PYTHON_VERSION} && \
+    conda install -n rapids -y \
+      -c ${RAPIDSAI_CONDA_LABEL} \
+      -c rapidsai-nightly/label/cuda${CUDA_MAJORMINOR_VERSION} \
       -c ${NVIDIA_CONDA_LABEL} \
       -c numba \
       -c conda-forge \
       -c pytorch \
       -c defaults \
-      dask-cuml \
-   && conda clean -a
+      cmake=${CMAKE_VERSION} \
+    && conda clean -a
 
-# Special case: libcumlmg is not available for CUDA 9.2
-#RUN if [ "${CUDA_MAJORMINOR_VERSION}" != "9.2" ]; then conda install -n rapids -y --no-deps -c ${NVIDIA_CONDA_LABEL} -c conda-forge libcumlmg; fi
+RUN conda install -n rapids -y \
+      -c ${RAPIDSAI_NIGHTLY_CONDA_LABEL} \
+      -c ${NVIDIA_CONDA_LABEL} \
+      -c numba \
+      -c conda-forge \
+      -c defaults \
+      cudf \
+      cuml \
+      cugraph \
+      dask-cuda \
+      dask-cudf \
+   && conda clean -a
 
 # Enables "source activate conda"
 SHELL ["/bin/bash", "-c"]
+
+# xgboost is not available as a conda package, so build from source
+RUN cd ${RAPIDS_SRC_DIR} && \
+    ./clone.sh xgboost
+RUN source activate rapids && \
+    cd ${RAPIDS_SRC_DIR} && \
+    ./build.sh xgboost && \
+    cd xgboost && \
+    git clean -xdff
+
+# Special case: libcumlmg is not available for CUDA 9.2
+#RUN if [ "${CUDA_MAJORMINOR_VERSION}" != "9.2" ]; then conda install -n rapids -y --no-deps -c ${NVIDIA_CONDA_LABEL} -c conda-forge libcumlmg; fi
 

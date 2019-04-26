@@ -20,6 +20,10 @@ PYTHON_VERSION=3.6
 TINI_URL=https://github.com/krallin/tini/releases/download/v0.18.0/tini
 
 # SECTION: RAPIDS (do not remove or modify this comment)
+RMM_REPO=https://github.com/rapidsai/rmm.git
+RMM_BRANCH=branch-0.7
+CUSTRINGS_REPO=https://github.com/rapidsai/custrings.git
+CUSTRINGS_BRANCH=branch-0.4
 CUDF_REPO=https://github.com/rapidsai/cudf.git
 CUDF_BRANCH=branch-0.7
 CUML_REPO=https://github.com/rapidsai/cuml.git
