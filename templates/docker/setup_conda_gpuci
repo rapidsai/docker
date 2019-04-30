@@ -1,0 +1,47 @@
+# NOTE: Many/all of the package versions used below are defined in the
+# "args" insertfile
+
+# Install conda
+## Build combined libgdf/pygdf conda env
+RUN curl ${MINICONDA_URL} -o /miniconda.sh && \
+    sh /miniconda.sh -b -p /conda && \
+    rm -f /miniconda.sh && \
+    conda update -y -n base -c conda-forge conda
+
+# Add a condarc to remove blacklist
+ADD .condarc-cuda${CUDA_SHORT_VERSION} /conda/.condarc
+
+RUN conda create --no-default-packages -n gdf \
+      python=${PYTHON_VERSION} \
+      anaconda-client \
+      arrow-cpp=${ARROW_CPP_VERSION} \
+      cmake=${CMAKE_VERSION} \
+      cmake_setuptools \
+      conda-build \
+      conda-verify \
+      cffi=${CFFI_VERSION} \
+      cmake=${CMAKE_VERSION} \
+      cython=${CYTHON_VERSION} \
+      flake8 \
+      make \
+      numba=${NUMBA_VERSION} \
+      numpy=${NUMPY_VERSION} \
+      pandas=${PANDAS_VERSION} \
+      pyarrow=${PYARROW_VERSION} \
+      pytest \
+      pytest-cov \
+      scikit-learn=${SKLEARN_VERSION} \
+      scipy=${SCIPY_VERSION} \
+      conda-forge::blas=1.1=openblas \
+      libgcc-ng=${LIBGCC_NG_VERSION} \
+      libgfortran-ng=${LIBGFORTRAIN_NG_VERSION} \
+      libstdcxx-ng=${LIBSTDCXX_NG_VERSION} \
+    && conda clean -a && \
+    chmod 777 -R /conda
+
+# Special case: libcumlmg is not available for CUDA 9.2
+RUN if [ "${CUDA_MAJORMINOR_VERSION}" != "9.2" ]; then conda install -n gdf -y --no-deps -c ${NVIDIA_CONDA_LABEL} -c conda-forge libcumlmg; fi
+
+# Enables "source activate conda"
+SHELL ["/bin/bash", "-c"]
+

@@ -114,7 +114,10 @@ mkdir -p ${RAPIDS_SOURCES_DIR}
 
 # Copy other dirs that many Dockerfiles expect to copy from their CWD
 # FIXME: ensure the copy succeeds
+# FIXME: copy the .condarc files directly to the OUTPUT_DIR since
+# certain Dockerfiles require this.
 cp -a ${RAPIDSDEVTOOL_DIR}/supportfiles ${OUTPUT_DIR}
+cp -a ${RAPIDSDEVTOOL_DIR}/supportfiles/.condarc* ${OUTPUT_DIR}
 cp -a ${RAPIDSDEVTOOL_DIR}/utils ${OUTPUT_DIR}
 
 # Generate the Dockerfile

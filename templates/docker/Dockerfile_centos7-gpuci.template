@@ -1,0 +1,30 @@
+#:# Dockerfile template for CentOS "gpuCI" images.
+#:# See README for more information.
+#:# Do not remove the following "tag" comments:
+#:# tag:type gpuci
+#:#
+ARG CUDA_VERSION=10.0
+ARG CUDA_SHORT_VERSION=${CUDA_VERSION}
+ARG CUDA_MAJORMINOR_VERSION=${CUDA_VERSION}
+ARG LINUX_VERSION=centos7
+FROM nvidia/cuda:${CUDA_VERSION}-devel-${LINUX_VERSION}
+
+ARG CUDA_SHORT_VERSION
+ARG CUDA_MAJORMINOR_VERSION
+
+runcommand ../../commands/utils/dumpDockerArgsFromConfig.sh
+insertfile commonargs
+insertfile env_centos7
+insertfile updateos_centos7
+insertfile build_gcc7_centos7
+insertfile setup_conda_gpuci
+
+#
+# Change LD_LIBRARY_PATH to exclude /usr/local/cuda/* since
+# numba.cuda cannot load that, and instead have it load
+# /lib64/libcuda.so instead
+#
+ENV LD_LIBRARY_PATH=${GCC7_DIR}/lib64:$LD_LIBRARY_PATH_ORIG:$CONDA_PREFIX
+
+# Copy notebooks, leave git meta-data, EXPOSE ports, WORKDIR=/rapids/notebooks
+insertfile finalize_image_devel
