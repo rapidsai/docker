@@ -19,10 +19,9 @@ insertfile updateos_centos7
 insertfile build_gcc7_centos7
 insertfile setup_conda_gpuci
 
-# Change LD_LIBRARY_PATH to exclude /usr/local/cuda/* since
-# numba.cuda cannot load that, and instead have it load
-# /lib64/libcuda.so instead
-ENV LD_LIBRARY_PATH=${GCC7_DIR}/lib64:$LD_LIBRARY_PATH_ORIG:$CONDA_PREFIX
+# Change LD_LIBRARY_PATH to the _POSTBUILD version (plus CONDA_PREFIX)
+# in order to exclude /usr/local/cuda/* since numba.cuda cannot load
+# those libs
+ENV LD_LIBRARY_PATH=$LD_LIBRARY_PATH_POSTBUILD:$CONDA_PREFIX
 
-# Copy notebooks, leave git meta-data, EXPOSE ports, WORKDIR=/rapids/notebooks
 insertfile finalize_image_gpuci

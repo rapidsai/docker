@@ -31,5 +31,11 @@ RUN rm -r ${GCC7_DIR}/gcc-7.2.0 ${GCC7_DIR}/gcc-7.2.0.tar.gz
 ENV CC=${GCC7_DIR}/bin/gcc
 ENV CXX=${GCC7_DIR}/bin/g++
 ENV PATH=${GCC7_DIR}/bin:$PATH
-ENV LD_LIBRARY_PATH=${GCC7_DIR}/lib64:$LD_LIBRARY_PATH
 ENV CUDAHOSTCXX=${GCC7_DIR}/bin/g++
+
+# Update the current LD_LIBRARY_PATH with the new lib64 dir for
+# remaining build steps and LD_LIBRARY_PATH_POSTBUILD for runtime use
+# after building the container.
+ENV LD_LIBRARY_PATH=${GCC7_DIR}/lib64:$LD_LIBRARY_PATH
+ENV LD_LIBRARY_PATH_POSTBUILD=${GCC7_DIR}/lib64:$LD_LIBRARY_PATH_POSTBUILD
+

@@ -1,5 +1,7 @@
-ENV LD_LIBRARY_PATH_ORIG=$LD_LIBRARY_PATH
-ENV LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/usr/local/cuda/lib64:/usr/local/cuda/lib64/stubs:$CONDA_PREFIX
+# Add /usr/local/cuda/* temporarily to LD_LIBRARY_PATH to support various build steps
+# This will need to be removed later since it causes problems with certain runtime libs (numba.cuda)
+ENV LD_LIBRARY_PATH_POSTBUILD=$LD_LIBRARY_PATH
+ENV LD_LIBRARY_PATH=$LD_LIBRARY_PATH_POSTBUILD:/usr/local/cuda/lib64:/usr/local/cuda/lib64/stubs
 ENV NUMBAPRO_NVVM=/usr/local/cuda/nvvm/lib64/libnvvm.so
 ENV NUMBAPRO_LIBDEVICE=/usr/local/cuda/nvvm/libdevice
 ENV PATH=$PATH:/conda/bin

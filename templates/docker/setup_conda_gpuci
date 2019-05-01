@@ -8,7 +8,6 @@ RUN curl ${MINICONDA_URL} -o /miniconda.sh && \
     rm -f /miniconda.sh && \
     conda update -y -n base -c conda-forge conda
 
-# Add a condarc to remove blacklist
 ADD .condarc-cuda${CUDA_SHORT_VERSION} /conda/.condarc
 
 RUN conda create --no-default-packages -n gdf \
@@ -38,9 +37,6 @@ RUN conda create --no-default-packages -n gdf \
       libstdcxx-ng=${LIBSTDCXX_NG_VERSION} \
     && conda clean -a && \
     chmod 777 -R /conda
-
-# Special case: libcumlmg is not available for CUDA 9.2
-RUN if [ "${CUDA_MAJORMINOR_VERSION}" != "9.2" ]; then conda install -n gdf -y --no-deps -c ${NVIDIA_CONDA_LABEL} -c conda-forge libcumlmg; fi
 
 # Enables "source activate conda"
 SHELL ["/bin/bash", "-c"]
