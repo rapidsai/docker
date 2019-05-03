@@ -19,6 +19,3 @@ cd cuml/cuML && mkdir -p build && cd build && \
 make -j && make -j install && \
 cd ../../python && python setup.py build_ext --inplace ${MULTIGPU_OPTION} && \
 python setup.py install ${MULTIGPU_OPTION}
-
-
-cmake -DCMAKE_INSTALL_PREFIX=$CONDA_PREFIX -DCMAKE_CXX11_ABI=ON  $GPU_ARCH ..

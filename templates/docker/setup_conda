@@ -34,7 +34,7 @@ RUN export CUDA_MAJOR=`echo $CUDA_VERSION | cut -d'.' -f1` && \
       faiss-gpu=${FAISSGPU_VERSION} \
       ipython=${IPYTHON_VERSION} \
       jupyterlab \
-      conda-forge::blas=1.1=openblas \
+      openblas \
       matplotlib \
       networkx \
       numba=${NUMBA_VERSION} \
