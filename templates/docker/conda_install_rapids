@@ -44,6 +44,7 @@ RUN conda install -n rapids -y \
       cugraph \
       dask-cuda \
       dask-cudf \
+      dask-cuml \
    && conda clean -a
 
 # Enables "source activate conda"
