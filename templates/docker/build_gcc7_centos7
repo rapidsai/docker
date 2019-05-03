@@ -22,7 +22,7 @@ RUN cd ${GCC7_DIR} && wget -q http://ftp.gnu.org/gnu/gcc/gcc-7.2.0/gcc-7.2.0.tar
 RUN cd ${GCC7_DIR} && tar zxf gcc-7.2.0.tar.gz
 RUN cd ${GCC7_DIR}/gcc-7.2.0 && \
     ./configure --prefix=${GCC7_DIR} --disable-multilib && \
-    make -j && make install
+    make -j${NUM_BUILD_CPUS} && make install
 
 # Remove gcc source dir and tarfile
 RUN rm -r ${GCC7_DIR}/gcc-7.2.0 ${GCC7_DIR}/gcc-7.2.0.tar.gz
