@@ -48,4 +48,4 @@ DASKCUDA_BRANCH=branch-0.8
 DASKCUML_REPO=https://github.com/rapidsai/dask-cuml.git
 DASKCUML_BRANCH=branch-0.8
 NOTEBOOKS_REPO=https://github.com/rapidsai/notebooks.git
-NOTEBOOKS_BRANCH=branch-0.8
+NOTEBOOKS_BRANCH=branch-0.7
