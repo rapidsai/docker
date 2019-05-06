@@ -12,8 +12,8 @@ fi
 # around a cuML bug.
 cd cuml/cuML && mkdir -p build && cd build && \
    cmake -DCMAKE_INSTALL_PREFIX=$CONDA_PREFIX \
-         -DBLAS_LIBRARIES=$CONDA_PREFIX/lib/libopenblas.a \
-         -DLAPACK_LIBRARIES=$CONDA_PREFIX/lib/libopenblas.a \
+         -DBLAS_LIBRARIES=$CONDA_PREFIX/lib/libopenblas.so \
+         -DLAPACK_LIBRARIES=$CONDA_PREFIX/lib/libopenblas.so \
          -DCMAKE_CXX11_ABI=ON \
          -DCMAKE_BUILD_TYPE=debug .. && \
 make -j && make -j install && \
