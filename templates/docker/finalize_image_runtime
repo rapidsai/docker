@@ -6,6 +6,7 @@ RUN cd ${RAPIDS_SRC_DIR} && ./clone.sh notebooks
 COPY ${SUPPORT_FILES_DIR}/test.sh /test.sh
 
 # Add packages need by notebooks
+#:# FIXME: this is largely a copy of "setup_conda" - refactor
 RUN export CUDA_MAJOR=`echo $CUDA_VERSION | cut -d'.' -f1` && \
     export CUDA_MINOR=`echo $CUDA_VERSION | cut -d'.' -f2` && \
     conda create -n rapids python=${PYTHON_VERSION} && \
@@ -17,7 +18,21 @@ RUN export CUDA_MAJOR=`echo $CUDA_VERSION | cut -d'.' -f1` && \
       -c conda-forge \
       -c pytorch \
       -c defaults \
+      bokeh \
+      cuda${CUDA_MAJOR}${CUDA_MINOR} \
+      dask=${DASK_VERSION} \
+      distributed=${DISTRIBUTED_VERSION} \
+      ipython=${IPYTHON_VERSION} \
+      jupyterlab \
       matplotlib \
+      networkx \
+      numba=${NUMBA_VERSION} \
+      numpy=${NUMPY_VERSION} \
+      pandas=${PANDAS_VERSION} \
+      pyarrow=${PYARROW_VERSION} \
+      pytest \
+      scikit-learn \
+      scipy \
       seaborn \
     && conda clean -a
 
