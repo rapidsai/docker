@@ -5,6 +5,21 @@ RUN find ${RAPIDS_SRC_DIR} -mindepth 2 -type d -name ".git" | xargs rm -rf
 # container build, but maybe they should be copied instead.
 #COPY rapids/notebooks ${RAPIDS_SRC_DIR}/notebooks
 
+RUN export CUDA_MAJOR=`echo $CUDA_VERSION | cut -d'.' -f1` && \
+    export CUDA_MINOR=`echo $CUDA_VERSION | cut -d'.' -f2` && \
+    conda create -n rapids python=${PYTHON_VERSION} && \
+    conda install -n rapids -y \
+      -c ${RAPIDSAI_CONDA_LABEL} \
+      -c ${RAPIDSAI_NIGHTLY_CONDA_LABEL} \
+      -c ${NVIDIA_CONDA_LABEL} \
+      -c numba \
+      -c conda-forge \
+      -c pytorch \
+      -c defaults \
+      matplotlib \
+      seaborn \
+    && conda clean -a
+
 WORKDIR /rapids/notebooks
 # Jupyter notebook port
 EXPOSE 8888
