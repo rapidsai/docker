@@ -1,10 +1,11 @@
 # Remove git repo data
 RUN find ${RAPIDS_SRC_DIR} -mindepth 2 -type d -name ".git" | xargs rm -rf
 
-# FIXME: RAPIDS notebooks are now cloned in the container during
-# container build, but maybe they should be copied instead.
-#COPY rapids/notebooks ${RAPIDS_SRC_DIR}/notebooks
+# Add notebooks and test script
+RUN cd ${RAPIDS_SRC_DIR} && ./clone.sh notebooks
+COPY ${SUPPORT_FILES_DIR}/test.sh /test.sh
 
+# Add packages need by notebooks
 RUN export CUDA_MAJOR=`echo $CUDA_VERSION | cut -d'.' -f1` && \
     export CUDA_MINOR=`echo $CUDA_VERSION | cut -d'.' -f2` && \
     conda create -n rapids python=${PYTHON_VERSION} && \
