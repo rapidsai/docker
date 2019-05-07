@@ -4,8 +4,7 @@ set -ex
 RAPIDS_DIR=/rapids
 NOTEBOOKS_DIR=${RAPIDS_DIR}/notebooks
 NBTEST=${RAPIDS_DIR}/utils/nbtest.sh
-
-# Test script used by Jenkins to check that builds are ready to publish
+NBDIRS="cuml cugraph"
 
 ## Check env
 env
@@ -13,8 +12,14 @@ env
 ## Activate conda env
 source activate rapids
 
-# Test cuML notebooks
-# nbtest always tests all NBs passed to it, but exit code of nbtest is
-# non-zero if any NB fails.
-cd ${NOTEBOOKS_DIR}/cuml
-${NBTEST} *.ipynb 2>&1 | tee nbtestresults.txt
+EXITCODE=0
+
+# Always run nbtest in all NBDIRS, set EXITCODE to failure if any run
+# fails
+for nbdirname in ${NBDIRS}; do
+    cd ${NOTEBOOKS_DIR}/${nbdirname}
+    ${NBTEST} *.ipynb
+    EXITCODE=$((EXITCODE | $?))
+done
+
+exit ${EXITCODE}
