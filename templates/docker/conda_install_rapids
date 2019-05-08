@@ -39,12 +39,12 @@ RUN conda install -n rapids -y \
       -c numba \
       -c conda-forge \
       -c defaults \
-      cudf \
-      cuml \
-      cugraph \
-      dask-cuda \
-      dask-cudf \
-      dask-cuml \
+      cudf=${RAPIDS_CONDA_VERSION_SPEC} \
+      cuml=${RAPIDS_CONDA_VERSION_SPEC} \
+      cugraph=${RAPIDS_CONDA_VERSION_SPEC} \
+      dask-cuda=${RAPIDS_CONDA_VERSION_SPEC} \
+      dask-cudf=${RAPIDS_CONDA_VERSION_SPEC} \
+      dask-cuml=${RAPIDS_CONDA_VERSION_SPEC} \
    && conda clean -a
 
 # Enables "source activate conda"
