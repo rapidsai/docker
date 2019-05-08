@@ -1,5 +1,4 @@
 #!/bin/bash
-set -ex
 
 RAPIDS_DIR=/rapids
 NOTEBOOKS_DIR=${RAPIDS_DIR}/notebooks
