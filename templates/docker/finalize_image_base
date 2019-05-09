@@ -15,7 +15,7 @@ RUN export CUDA_MAJOR=`echo $CUDA_VERSION | cut -d'.' -f1` && \
       -c pytorch \
       -c defaults \
       cmake=${CMAKE_VERSION} \
-      cudatoolkit${CUDA_MAJOR}${CUDA_MINOR} \
+      cudatoolkit=${CUDA_MAJOR}.${CUDA_MINOR} \
       cudf=${RAPIDS_CONDA_VERSION_SPEC} \
       cuml=${RAPIDS_CONDA_VERSION_SPEC} \
       cugraph=${RAPIDS_CONDA_VERSION_SPEC} \
