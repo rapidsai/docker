@@ -1,0 +1,195 @@
+#
+# This file was generated! Edits made directly to this file may be lost.
+#   Generator:    /home/nfs/rratzel/Projects/build/commands/utils/genfile.sh
+#   Timestamp:    Thu May  9 13:53:41 PDT 2019
+#   Template Dir: /home/nfs/rratzel/Projects/build/templates/docker
+#
+ARG CUDA_VERSION=10.0
+ARG CUDA_MAJORMINOR_VERSION=${CUDA_VERSION}
+ARG LINUX_VERSION=ubuntu18.04
+FROM nvidia/cuda:${CUDA_VERSION}-devel-${LINUX_VERSION}
+
+ARG CUDA_MAJORMINOR_VERSION
+
+ARG ARROW_CPP_VERSION=0.12.1
+ARG CC_VERSION=7
+ARG CXX_VERSION=7
+ARG CFFI_VERSION=1.11.5
+ARG CMAKE_VERSION=3.12.4
+ARG CYTHON_VERSION=0.29.*
+ARG DASK_VERSION=1.1.1
+ARG DISTRIBUTED_VERSION=1.25.3
+ARG FAISSGPU_VERSION=1.5.0
+ARG HASH_JOIN=ON
+ARG IPYTHON_VERSION=7.3*
+ARG LIBGCC_NG_VERSION=7.3.0
+ARG LIBGFORTRAIN_NG_VERSION=7.3.0
+ARG LIBSTDCXX_NG_VERSION=7.3.0
+ARG MINICONDA_URL=https://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh
+ARG NUMBA_VERSION=0.41
+ARG NUMPY_VERSION=1.16.2
+ARG NVIDIA_CONDA_LABEL=nvidia/label/cuda${CUDA_MAJORMINOR_VERSION}
+ARG RAPIDSAI_CONDA_LABEL=rapidsai/label/cuda${CUDA_MAJORMINOR_VERSION}
+ARG RAPIDS_CONDA_VERSION_SPEC=0.7*
+ARG PANDAS_VERSION=0.23.4
+ARG PYARROW_VERSION=0.12.1
+ARG PYTHON_VERSION=3.6
+ARG SCIPY_VERSION=1.2.1
+ARG SKLEARN_VERSION=0.20.3
+ARG TINI_URL=https://github.com/krallin/tini/releases/download/v0.18.0/tini
+ARG NUM_BUILD_CPUS=""
+ARG UTILS_DIR=utils
+ARG SUPPORT_FILES_DIR=supportfiles
+ARG RAPIDS_SRC_DIR=/rapids
+
+ENV LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/usr/local/cuda/lib64
+ENV NUMBAPRO_NVVM=/usr/local/cuda/nvvm/lib64/libnvvm.so
+ENV NUMBAPRO_LIBDEVICE=/usr/local/cuda/nvvm/libdevice
+ENV PATH=$PATH:/conda/bin
+ENV CC=/usr/bin/gcc-${CC_VERSION}
+ENV CXX=/usr/bin/g++-${CXX_VERSION}
+ENV CUDAHOSTCXX=$CXX
+ENV CUDA_VERSION=${CUDA_MAJORMINOR_VERSION}
+
+# FIXME: verify if this is needed
+ENV DEBIAN_FRONTEND=noninteractive
+
+# Update and add pkgs + user
+RUN apt-get update -y --fix-missing && \
+    apt-get upgrade -y && \
+    apt-get -qq install apt-utils -y --no-install-recommends && \
+    apt-get install -y \
+      curl \
+      gcc-${CC_VERSION} \
+      g++-${CXX_VERSION} \
+      git \
+      libboost-all-dev \
+      screen \
+      tzdata \
+      vim \
+      wget \
+      zlib1g-dev
+
+RUN rm -rf /var/lib/apt/lists/*
+RUN curl -L ${TINI_URL} -o /usr/bin/tini && \
+    chmod +x /usr/bin/tini
+# NOTE: Many/all of the package versions used below are defined in the
+# "args" insertfile
+
+RUN curl ${MINICONDA_URL} -o /miniconda.sh && \
+    sh /miniconda.sh -b -p /conda && \
+    conda update -n base conda && \
+    rm -f /miniconda.sh
+
+########################################
+# conda environment
+# NOTE: use these mirrors for faster downloads
+#       -c http://10.33.227.188:88/numba \
+#       -c http://10.33.227.188:88/conda-forge \
+RUN export CUDA_MAJOR=`echo $CUDA_VERSION | cut -d'.' -f1` && \
+    export CUDA_MINOR=`echo $CUDA_VERSION | cut -d'.' -f2` && \
+    conda create -n rapids python=${PYTHON_VERSION} && \
+    conda install -n rapids -y \
+      -c ${RAPIDSAI_CONDA_LABEL} \
+      -c rapidsai-nightly/label/cuda${CUDA_MAJORMINOR_VERSION} \
+      -c ${NVIDIA_CONDA_LABEL} \
+      -c numba \
+      -c conda-forge \
+      -c pytorch \
+      -c defaults \
+      arrow-cpp=${PYARROW_VERSION} \
+      bokeh \
+      cffi=${CFFI_VERSION} \
+      cmake=${CMAKE_VERSION} \
+      cmake_setuptools>=0.1.3 \
+      cuda${CUDA_MAJOR}${CUDA_MINOR} \
+      cython=${CYTHON_VERSION} \
+      dask=${DASK_VERSION} \
+      distributed=${DISTRIBUTED_VERSION} \
+      faiss-gpu=${FAISSGPU_VERSION} \
+      ipython=${IPYTHON_VERSION} \
+      jupyterlab \
+      openblas \
+      matplotlib \
+      networkx \
+      numba=${NUMBA_VERSION} \
+      numpy=${NUMPY_VERSION} \
+      nvgraph \
+      pandas=${PANDAS_VERSION} \
+      pyarrow=${PYARROW_VERSION} \
+      pytest \
+      scikit-learn \
+      scipy \
+      seaborn \
+    && conda clean -a
+
+# Special case: libcumlmg is not available for CUDA 9.2
+RUN if [ "${CUDA_MAJORMINOR_VERSION}" != "9.2" ]; then conda install -n rapids -y --no-deps -c ${NVIDIA_CONDA_LABEL} -c conda-forge libcumlmg; fi
+
+# Enables "source activate conda"
+SHELL ["/bin/bash", "-c"]
+
+# Assume the RAPIDS repos have been cloned to the 'rapids' dir.
+# (this is done automatically when using 'rapidsdevtool.sh buildDockerImage',
+#  see rapidsdevtool.sh help for more details)
+# FIXME: FYI, the container build process is now also cloning.
+RUN mkdir -p ${RAPIDS_SRC_DIR}
+COPY rapids ${RAPIDS_SRC_DIR}
+COPY utils ${RAPIDS_SRC_DIR}/${UTILS_DIR}
+
+RUN cd ${RAPIDS_SRC_DIR} && ./clone.sh
+
+# Assume the build.sh script is present.
+# (this is done automatically when using 'rapidsdevtool.sh buildDockerImage',
+#  see rapidsdevtool.sh help for more details)
+RUN source activate rapids && cd ${RAPIDS_SRC_DIR} && \
+    ./build.sh rmm && \
+    cd rmm && git clean -xdff
+RUN source activate rapids && cd ${RAPIDS_SRC_DIR} && \
+    ./build.sh custrings && \
+    cd custrings && git clean -xdff
+RUN source activate rapids && cd ${RAPIDS_SRC_DIR} && \
+    ./build.sh cudf && \
+    cd cudf && git clean -xdff
+RUN source activate rapids && cd ${RAPIDS_SRC_DIR} && \
+    ./build.sh cuml && \
+    cd cuml && git clean -xdff
+RUN source activate rapids && cd ${RAPIDS_SRC_DIR} && \
+    ./build.sh cugraph && \
+    cd cugraph && git clean -xdff
+RUN source activate rapids && cd ${RAPIDS_SRC_DIR} && \
+    ./build.sh xgboost && \
+    cd xgboost && git clean -xdff
+RUN source activate rapids && cd ${RAPIDS_SRC_DIR} && \
+    ./build.sh dask-xgboost && \
+    cd dask-xgboost && git clean -xdff
+RUN source activate rapids && cd ${RAPIDS_SRC_DIR} && \
+    ./build.sh dask-cudf && \
+    cd dask-cudf && git clean -xdff
+RUN source activate rapids && cd ${RAPIDS_SRC_DIR} && \
+    ./build.sh dask-cuda && \
+    cd dask-cuda && git clean -xdff
+RUN source activate rapids && cd ${RAPIDS_SRC_DIR} && \
+    ./build.sh dask-cuml && \
+    cd dask-cuml && git clean -xdff
+
+# Add test file for testing from within the container
+COPY ${SUPPORT_FILES_DIR}/test.sh /test.sh
+
+# Copy notebooks, leave git meta-data, EXPOSE ports, WORKDIR=/rapids/notebooks
+# FIXME: RAPIDS notebooks are now cloned in the container during
+# container build, but maybe they should be copied instead.
+#COPY rapids/notebooks ${RAPIDS_SRC_DIR}/notebooks
+
+WORKDIR /rapids/notebooks
+# Jupyter notebook port
+EXPOSE 8888
+# Dask Scheduler Bokeh port
+EXPOSE 8787
+EXPOSE 8786
+
+# Automatically active conda env
+RUN echo "source activate rapids" > ~/.bashrc
+
+ENTRYPOINT [ "/usr/bin/tini", "--" ]
+CMD [ "/bin/bash" ]
