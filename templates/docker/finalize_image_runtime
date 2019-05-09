@@ -9,7 +9,6 @@ COPY ${SUPPORT_FILES_DIR}/test.sh /test.sh
 #:# FIXME: this is largely a copy of "setup_conda" - refactor
 RUN export CUDA_MAJOR=`echo $CUDA_VERSION | cut -d'.' -f1` && \
     export CUDA_MINOR=`echo $CUDA_VERSION | cut -d'.' -f2` && \
-    conda create -n rapids python=${PYTHON_VERSION} && \
     conda install -n rapids -y \
       -c ${RAPIDSAI_CONDA_LABEL} \
       -c ${RAPIDSAI_NIGHTLY_CONDA_LABEL} \
@@ -19,9 +18,6 @@ RUN export CUDA_MAJOR=`echo $CUDA_VERSION | cut -d'.' -f1` && \
       -c pytorch \
       -c defaults \
       bokeh \
-      cuda${CUDA_MAJOR}${CUDA_MINOR} \
-      dask=${DASK_VERSION} \
-      distributed=${DISTRIBUTED_VERSION} \
       ipython=${IPYTHON_VERSION} \
       jupyterlab \
       matplotlib \

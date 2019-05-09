@@ -31,6 +31,8 @@ RUN export CUDA_MAJOR=`echo $CUDA_VERSION | cut -d'.' -f1` && \
       -c pytorch \
       -c defaults \
       cmake=${CMAKE_VERSION} \
+      cuda${CUDA_MAJOR}${CUDA_MINOR} \
+      dask=${DASK_VERSION} \
     && conda clean -a
 
 RUN conda install -n rapids -y \
@@ -50,14 +52,16 @@ RUN conda install -n rapids -y \
 # Enables "source activate conda"
 SHELL ["/bin/bash", "-c"]
 
-# xgboost is not available as a conda package, so build from source
+# xgboost and dask-xgboost are either not available as a conda package
+# or very old, so build from source
 RUN cd ${RAPIDS_SRC_DIR} && \
-    ./clone.sh xgboost
-RUN source activate rapids && \
-    cd ${RAPIDS_SRC_DIR} && \
+    ./clone.sh xgboost dask-xgboost
+RUN source activate rapids && cd ${RAPIDS_SRC_DIR} && \
     ./build.sh xgboost && \
-    cd xgboost && \
-    git clean -xdff
+    cd xgboost && git clean -xdff
+RUN source activate rapids && cd ${RAPIDS_SRC_DIR} && \
+    ./build.sh dask-xgboost && \
+    cd dask-xgboost && git clean -xdff
 
 # Special case: libcumlmg is not available for CUDA 9.2
 #RUN if [ "${CUDA_MAJORMINOR_VERSION}" != "9.2" ]; then conda install -n rapids -y --no-deps -c ${NVIDIA_CONDA_LABEL} -c conda-forge libcumlmg; fi
