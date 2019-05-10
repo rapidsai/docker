@@ -1,7 +1,7 @@
 #
 # This file was generated! Edits made directly to this file may be lost.
 #   Generator:    /home/nfs/rratzel/Projects/build/commands/utils/genfile.sh
-#   Timestamp:    Thu May  9 14:29:41 PDT 2019
+#   Timestamp:    Fri May 10 08:59:41 PDT 2019
 #   Template Dir: /home/nfs/rratzel/Projects/build/templates/docker
 #
 ARG CUDA_VERSION=10.0
@@ -18,8 +18,8 @@ ARG CXX_VERSION=7
 ARG CFFI_VERSION=1.11.5
 ARG CMAKE_VERSION=3.12.4
 ARG CYTHON_VERSION=0.29.*
-ARG DASK_VERSION=1.1.1
-ARG DISTRIBUTED_VERSION=1.25.3
+ARG DASK_VERSION=1.2.2
+ARG DISTRIBUTED_VERSION=1.28.0
 ARG FAISSGPU_VERSION=1.5.0
 ARG HASH_JOIN=ON
 ARG IPYTHON_VERSION=7.3*
