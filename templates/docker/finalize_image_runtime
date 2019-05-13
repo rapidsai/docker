@@ -1,9 +1,65 @@
+########################################
+# conda environment
+# NOTE: use these mirrors for faster downloads
+#       -c http://10.33.227.188:88/numba \
+#       -c http://10.33.227.188:88/conda-forge \
+RUN export CUDA_MAJOR=`echo $CUDA_VERSION | cut -d'.' -f1` && \
+    export CUDA_MINOR=`echo $CUDA_VERSION | cut -d'.' -f2` && \
+    conda create -n rapids python=${PYTHON_VERSION} && \
+    conda install -n rapids -y \
+      -c ${RAPIDSAI_CONDA_LABEL} \
+      -c ${RAPIDSAI_NIGHTLY_CONDA_LABEL} \
+      -c ${NVIDIA_CONDA_LABEL} \
+      -c numba \
+      -c conda-forge \
+      -c pytorch \
+      -c defaults \
+      bokeh \
+      ipython=${IPYTHON_VERSION} \
+      jupyterlab \
+      matplotlib \
+      networkx \
+      numba=${NUMBA_VERSION} \
+      numpy=${NUMPY_VERSION} \
+      pandas=${PANDAS_VERSION} \
+      pyarrow=${PYARROW_VERSION} \
+      pytest \
+      scikit-learn \
+      scipy \
+      seaborn \
+      cmake=${CMAKE_VERSION} \
+      cudatoolkit=${CUDA_MAJOR}.${CUDA_MINOR} \
+      cudf=${RAPIDS_CONDA_VERSION_SPEC} \
+      cuml=${RAPIDS_CONDA_VERSION_SPEC} \
+      cugraph=${RAPIDS_CONDA_VERSION_SPEC} \
+      dask-cuda=${RAPIDS_CONDA_VERSION_SPEC} \
+      dask-cudf=${RAPIDS_CONDA_VERSION_SPEC} \
+      dask-cuml=${RAPIDS_CONDA_VERSION_SPEC} \
+   && conda clean -a
+
+# Enables "source activate conda"
+SHELL ["/bin/bash", "-c"]
+
+# xgboost and dask-xgboost are either not available as a conda package
+# or very old, so build from source
+RUN cd ${RAPIDS_SRC_DIR} && \
+    ./clone.sh xgboost dask-xgboost
+RUN source activate rapids && cd ${RAPIDS_SRC_DIR} && \
+    ./build.sh xgboost && \
+    cd xgboost && git clean -xdff
+RUN source activate rapids && cd ${RAPIDS_SRC_DIR} && \
+    ./build.sh dask-xgboost && \
+    cd dask-xgboost && git clean -xdff
+
+# Special case: libcumlmg is not available for CUDA 9.2
+#RUN if [ "${CUDA_MAJORMINOR_VERSION}" != "9.2" ]; then conda install -n rapids -y --no-deps -c ${NVIDIA_CONDA_LABEL} -c conda-forge libcumlmg; fi
+
 # Remove git repo data
 RUN find ${RAPIDS_SRC_DIR} -mindepth 2 -type d -name ".git" | xargs rm -rf
 
-# FIXME: RAPIDS notebooks are now cloned in the container during
-# container build, but maybe they should be copied instead.
-#COPY rapids/notebooks ${RAPIDS_SRC_DIR}/notebooks
+# Add notebooks and test script
+RUN cd ${RAPIDS_SRC_DIR} && ./clone.sh notebooks
+COPY ${SUPPORT_FILES_DIR}/test.sh /test.sh
 
 WORKDIR /rapids/notebooks
 # Jupyter notebook port
