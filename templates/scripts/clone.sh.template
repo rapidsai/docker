@@ -1,6 +1,7 @@
 #!/bin/bash
 set -e
 
+# Clone to the current working dir!
 WORK_DIR=`pwd`
 NUMARGS=$#
 ARGS=$*

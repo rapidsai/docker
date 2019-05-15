@@ -64,7 +64,7 @@ awk -v "debug=${DEBUG}" \
              }
              printf("####################\n# %s\n", comp)
              printf("if shouldBuild " comp "; then\n")
-             printf("    pushd .\n")
+             printf("    pushd ${RAPIDS_DIR}\n")
              while ((getline line < script) > 0) {
                 # Only print lines not starting with #!
                 if (index(line, "#!") == 1) {
