@@ -1,10 +1,12 @@
 #!/bin/bash
 set -e
 
-# Clone to the current working dir!
-WORK_DIR=`pwd`
 NUMARGS=$#
 ARGS=$*
+
+# This assumes the script resides in the rapids dir that will contain the cloned repos!
+cd $(dirname $0)
+RAPIDSDIR=$(pwd)
 
 function logger() {
     TS=`date`
@@ -16,7 +18,7 @@ function clone() {
   directory=$2
   branch=${3:-""}
   noremote=${4:-""}
-  
+
   rm -rf ${directory}
 
   if [[ ${branch} != "" ]]; then
@@ -30,7 +32,7 @@ function clone() {
       #git clone --depth 1 ${repo} ${directory}
       git clone ${repo} ${directory}
   fi
-  cd ${WORK_DIR}/${directory}
+  cd ${RAPIDSDIR}/${directory}
 
   if [[ ${noremote} == "noremote" ]]; then
       git submodule update --init --recursive
@@ -41,7 +43,7 @@ function clone() {
   # FIXME: These lines result in an uncommitted file, and a 'dirty' tag to be added to some version strings - are they needed?
   #echo "${repo}" > current-commit.hash
   #git rev-parse HEAD >> current-commit.hash
-  cd ${WORK_DIR}
+  cd ${RAPIDSDIR}
 }
 
 function shouldClone {
