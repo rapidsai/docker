@@ -1,7 +1,7 @@
 #
 # This file was generated! Edits made directly to this file may be lost.
-#   Generator:    /home/nfs/rratzel/Projects/build/commands/utils/genfile.sh
-#   Timestamp:    Fri May 10 08:59:42 PDT 2019
+#   Generator:    /home/nfs/rratzel/Projects/build/commands/../commands/utils/genfile.sh
+#   Timestamp:    Fri May 17 15:30:36 PDT 2019
 #   Template Dir: /home/nfs/rratzel/Projects/build/templates/docker
 #
 ARG CUDA_VERSION=10.0
@@ -13,10 +13,10 @@ FROM nvidia/cuda:${CUDA_VERSION}-devel-${LINUX_VERSION}
 ARG CUDA_MAJORMINOR_VERSION
 
 ARG ARROW_CPP_VERSION=0.12.1
-ARG CC_VERSION=7
-ARG CXX_VERSION=7
+ARG CC_VERSION=5
+ARG CXX_VERSION=5
 ARG CFFI_VERSION=1.11.5
-ARG CMAKE_VERSION=3.12.4
+ARG CMAKE_VERSION=3.14.3
 ARG CYTHON_VERSION=0.29.*
 ARG DASK_VERSION=1.2.2
 ARG DISTRIBUTED_VERSION=1.28.0

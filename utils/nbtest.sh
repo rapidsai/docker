@@ -7,8 +7,8 @@ def my_run_line_magic(*args, **kwargs):
     for a in args:
         try:
             exec(str(a),g,l)
-        except:
-            pass
+        except Exception as e:
+            print('WARNING: %s\n   While executing this magic function code:\n%s\n   continuing...\n' % (e, a))
         else:
             g.update(l)
 
@@ -37,7 +37,7 @@ for nb in $*; do
     mv /tmp/tmpfile ${NBTESTSCRIPT}
 
     echo "Running \"ipython ${NBTESTSCRIPT}\" on $(date)"
-    echo 
+    echo
     time ipython ${NBTESTSCRIPT}
     NBEXITCODE=$?
     echo EXIT CODE: ${NBEXITCODE}
