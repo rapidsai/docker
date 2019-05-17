@@ -1,5 +1,7 @@
 #!/bin/bash
 
+# Copyright (c) 2019, NVIDIA CORPORATION.
+
 USAGE="
 USAGE: $0
 "
@@ -9,7 +11,7 @@ if (( $# > 0 )); then
     exit 1
 fi
 
-THISDIR=$(dirname $0)
+THISDIR=$(cd $(dirname $0); pwd)
 RAPIDSDEVTOOL_DIR=${THISDIR}/../..
 source ${THISDIR}/common.sh
 
@@ -47,6 +49,9 @@ awk -v "debug=${DEBUG}" \
        # config, which are now saved in rapidscomps
        printf("NUMARGS=$#\n")
        printf("ARGS=$*\n")
+       printf("# This assumes the script resides in the rapids dir that contains the cloned repos!\n")
+       printf("cd $(dirname $0)\n")
+       printf("\n")
        printf("function shouldBuild {\n    (( ${NUMARGS} == 0 )) || (echo \" ${ARGS} \" | grep -q \" $1 \")\n}\n\n")
 
        # Enforce a specific build order

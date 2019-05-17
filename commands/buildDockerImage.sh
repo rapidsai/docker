@@ -1,12 +1,12 @@
 #!/bin/bash
+
+# Copyright (c) 2019, NVIDIA CORPORATION.
+
 set -e
 
 # Assume this script is in a subdir of the dir containing rapidsdevtool.sh
-THISDIR=$(dirname $0)
+THISDIR=$(cd $(dirname $0); pwd)
 RAPIDSDEVTOOL_DIR=${THISDIR}/..
-pushd ${RAPIDSDEVTOOL_DIR} > /dev/null
-RAPIDSDEVTOOL_DIR=$(pwd)
-popd > /dev/null
 
 source ${THISDIR}/utils/common.sh
 

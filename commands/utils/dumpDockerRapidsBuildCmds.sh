@@ -1,5 +1,7 @@
 #!/bin/bash
 
+# Copyright (c) 2019, NVIDIA CORPORATION.
+
 # TODO: This script is almost identical to dumpRapidsBuildScriptsFromConfig.sh -
 # consider refactoring
 
@@ -12,7 +14,7 @@ if (( $# > 0 )); then
     exit 1
 fi
 
-THISDIR=$(dirname $0)
+THISDIR=$(cd $(dirname $0); pwd)
 RAPIDSDEVTOOL_DIR=${THISDIR}/../..
 source ${THISDIR}/common.sh
 

@@ -1,3 +1,7 @@
+# Copyright (c) 2019, NVIDIA CORPORATION.
+
+# Common shared script vars
+#
 # * This file is not intended to be a standalone script, and should
 #   not run commands.
 #

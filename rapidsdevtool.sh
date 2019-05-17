@@ -1,10 +1,10 @@
 #!/bin/bash
+
+# Copyright (c) 2019, NVIDIA CORPORATION.
+
 set -e
 
-RAPIDSDEVTOOL_DIR=$(dirname $0)
-pushd ${RAPIDSDEVTOOL_DIR} > /dev/null
-RAPIDSDEVTOOL_DIR=$(pwd)
-popd > /dev/null
+RAPIDSDEVTOOL_DIR=$(cd $(dirname $0); pwd)
 
 HELPTEXT="
 USAGE:

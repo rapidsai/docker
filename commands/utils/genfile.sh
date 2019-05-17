@@ -1,5 +1,7 @@
 #!/bin/bash
 
+# Copyright (c) 2019, NVIDIA CORPORATION.
+
 USAGE="
 USAGE: $0 [-d] <template>
    -d    add debug info to generated output
