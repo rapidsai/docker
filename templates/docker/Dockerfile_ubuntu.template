@@ -1,0 +1,314 @@
+# RAPIDS Dockerfile for Ubuntu
+# This multi-stage Dockerfile creates 3 images: devel, runtime, and base
+#
+# devel: RAPIDS is built from-source and installed in the 'rapids' conda
+# environment. The sources and toolchains to build RAPIDS is included in this
+# image. RAPIDS jupyter notebooks are also provided, as well as jupyterlab and
+# all the dependencies required to run them.
+#
+# runtime: RAPIDS is installed from published conda packages to the 'rapids'
+# conda environment. RAPIDS jupyter notebooks are also provided, as well as
+# jupyterlab and all the dependencies required to run them.
+#
+# base: RAPIDS is installed from published conda packages to the 'rapids' conda
+# environment.
+#
+#
+# Copyright (c) 2019, NVIDIA CORPORATION.
+
+# These ARGs are used in multiple stages and must be defined prior to first FROM
+ARG CUDA_VERSION=10.0
+ARG CUDA_MAJORMINOR_VERSION=${CUDA_VERSION}
+ARG LINUX_VERSION=ubuntu18.04
+runcommand ../../commands/utils/dumpDockerArgsFromConfig.sh
+
+# The first stage is a configuration common to all stages: "rapids_ready"
+FROM nvidia/cuda:${CUDA_VERSION}-devel-${LINUX_VERSION} AS rapids_ready
+
+ARG CC_VERSION
+ARG CXX_VERSION
+ARG TINI_URL
+ARG MINICONDA_URL
+
+ARG UTILS_DIR=utils
+ARG SUPPORT_FILES_DIR=supportfiles
+
+ENV RAPIDS_DIR=/rapids
+ENV PATH=$PATH:/conda/bin
+ENV DEBIAN_FRONTEND=noninteractive
+
+# Update and add pkgs common to all images
+RUN apt-get update -y --fix-missing && \
+    apt-get upgrade -y && \
+    apt-get -qq install apt-utils -y --no-install-recommends && \
+    apt-get install -y \
+      curl \
+      git \
+      screen \
+      tzdata \
+      vim \
+      wget
+
+RUN rm -rf /var/lib/apt/lists/*
+RUN curl -L ${TINI_URL} -o /usr/bin/tini && \
+    chmod +x /usr/bin/tini
+
+RUN curl ${MINICONDA_URL} -o /miniconda.sh && \
+    sh /miniconda.sh -b -p /conda && \
+    conda update -n base conda && \
+    rm -f /miniconda.sh
+
+# Enables "source activate conda"
+SHELL ["/bin/bash", "-c"]
+
+# 'rapidsdevtool.sh buildDockerImage' sets up the rapids directory being COPY'd
+#  below. See rapidsdevtool.sh help for more details.
+RUN mkdir -p ${RAPIDS_DIR}
+COPY rapids ${RAPIDS_DIR}
+COPY utils ${RAPIDS_DIR}/${UTILS_DIR}
+# Add test file for testing notebooks from within the container
+COPY ${SUPPORT_FILES_DIR}/test.sh /test.sh
+
+WORKDIR ${RAPIDS_DIR}
+
+# Automatically active conda env
+RUN echo "source activate rapids" > ~/.bashrc
+
+ENTRYPOINT [ "/usr/bin/tini", "--" ]
+CMD [ "/bin/bash" ]
+
+
+################################################################################
+FROM rapids_ready AS devel
+
+# Retrieve values set prior to first FROM command for use below
+ARG CC_VERSION
+ARG CXX_VERSION
+ARG CUDA_VERSION
+ARG CUDA_MAJORMINOR_VERSION
+ARG RAPIDSAI_CONDA_LABEL
+ARG NVIDIA_CONDA_LABEL
+ARG PYARROW_VERSION
+ARG CFFI_VERSION
+ARG CMAKE_VERSION
+ARG CYTHON_VERSION
+ARG DASK_VERSION
+ARG DISTRIBUTED_VERSION
+ARG FAISSGPU_VERSION
+ARG IPYTHON_VERSION
+ARG NUMBA_VERSION
+ARG NUMPY_VERSION
+ARG PANDAS_VERSION
+ARG PYARROW_VERSION
+ARG PYTHON_VERSION
+
+ENV LD_LIBRARY_PATH=$LD_LIBRARY_PATH:/usr/local/cuda/lib64
+ENV NUMBAPRO_NVVM=/usr/local/cuda/nvvm/lib64/libnvvm.so
+ENV NUMBAPRO_LIBDEVICE=/usr/local/cuda/nvvm/libdevice
+ENV PATH=$PATH:/conda/bin
+ENV CC=/usr/bin/gcc-${CC_VERSION}
+ENV CXX=/usr/bin/g++-${CXX_VERSION}
+ENV CUDAHOSTCXX=$CXX
+
+# Update and add pkgs for dev builds
+RUN apt-get update -y --fix-missing && \
+    apt-get upgrade -y && \
+    apt-get -qq install apt-utils -y --no-install-recommends && \
+    apt-get install -y \
+      gcc-${CC_VERSION} \
+      g++-${CXX_VERSION} \
+      libboost-all-dev \
+      zlib1g-dev
+
+# conda environment
+# NOTE: use these mirrors for faster downloads
+#       -c http://10.33.227.188:88/numba \
+#       -c http://10.33.227.188:88/conda-forge \
+RUN export CUDA_MAJOR=`echo $CUDA_VERSION | cut -d'.' -f1` && \
+    export CUDA_MINOR=`echo $CUDA_VERSION | cut -d'.' -f2` && \
+    conda create -n rapids python=${PYTHON_VERSION} && \
+    conda install -n rapids -y \
+      -c ${RAPIDSAI_CONDA_LABEL} \
+      -c rapidsai-nightly/label/cuda${CUDA_MAJORMINOR_VERSION} \
+      -c ${NVIDIA_CONDA_LABEL} \
+      -c numba \
+      -c conda-forge \
+      -c pytorch \
+      -c defaults \
+      arrow-cpp=${PYARROW_VERSION} \
+      bokeh \
+      cffi=${CFFI_VERSION} \
+      cmake=${CMAKE_VERSION} \
+      cmake_setuptools>=0.1.3 \
+      cuda${CUDA_MAJOR}${CUDA_MINOR} \
+      cython=${CYTHON_VERSION} \
+      dask=${DASK_VERSION} \
+      distributed=${DISTRIBUTED_VERSION} \
+      faiss-gpu=${FAISSGPU_VERSION} \
+      ipython=${IPYTHON_VERSION} \
+      jupyterlab \
+      openblas \
+      matplotlib \
+      networkx \
+      numba=${NUMBA_VERSION} \
+      numpy=${NUMPY_VERSION} \
+      nvgraph \
+      pandas=${PANDAS_VERSION} \
+      pyarrow=${PYARROW_VERSION} \
+      pytest \
+      scikit-learn \
+      scipy \
+      seaborn \
+    && conda clean -a
+
+# Special case: libcumlmg is not available for CUDA 9.2
+RUN if [ "${CUDA_MAJORMINOR_VERSION}" != "9.2" ]; then conda install -n rapids -y --no-deps -c ${NVIDIA_CONDA_LABEL} -c conda-forge libcumlmg; fi
+
+# clone.sh is generated by `rapidsdevtool.sh buildDockerImage` and is based on
+# the URLs and branch names in the config file.
+RUN cd ${RAPIDS_DIR} && ./clone.sh
+
+# Assume the build.sh script is present.
+# (this is done automatically when using 'rapidsdevtool.sh buildDockerImage',
+#  see rapidsdevtool.sh help for more details)
+RUN source activate rapids && cd ${RAPIDS_DIR} && \
+    ./build.sh rmm && \
+    cd rmm && git clean -xdff
+RUN source activate rapids && cd ${RAPIDS_DIR} && \
+    ./build.sh custrings && \
+    cd custrings && git clean -xdff
+RUN source activate rapids && cd ${RAPIDS_DIR}/cudf && \
+    ./build.sh && \
+    git clean -xdff
+RUN source activate rapids && cd ${RAPIDS_DIR} && \
+    ./build.sh cuml && \
+    cd cuml && git clean -xdff
+RUN source activate rapids && cd ${RAPIDS_DIR} && \
+    ./build.sh cugraph && \
+    cd cugraph && git clean -xdff
+RUN source activate rapids && cd ${RAPIDS_DIR} && \
+    ./build.sh xgboost && \
+    cd xgboost && git clean -xdff
+RUN source activate rapids && cd ${RAPIDS_DIR} && \
+    ./build.sh dask-xgboost && \
+    cd dask-xgboost && git clean -xdff
+RUN source activate rapids && cd ${RAPIDS_DIR} && \
+    ./build.sh dask-cudf && \
+    cd dask-cudf && git clean -xdff
+RUN source activate rapids && cd ${RAPIDS_DIR} && \
+    ./build.sh dask-cuda && \
+    cd dask-cuda && git clean -xdff
+RUN source activate rapids && cd ${RAPIDS_DIR} && \
+    ./build.sh dask-cuml && \
+    cd dask-cuml && git clean -xdff
+
+WORKDIR ${RAPIDS_DIR}/notebooks
+# Jupyter notebook port
+EXPOSE 8888
+# Dask Scheduler Bokeh port
+EXPOSE 8787
+EXPOSE 8786
+
+
+################################################################################
+FROM rapids_ready AS base
+
+# Retrieve values set prior to first FROM command for use below
+ARG CUDA_VERSION
+ARG CUDA_MAJORMINOR_VERSION
+ARG PYTHON_VERSION
+ARG RAPIDSAI_CONDA_LABEL
+ARG RAPIDSAI_NIGHTLY_CONDA_LABEL
+ARG NVIDIA_CONDA_LABEL
+ARG IPYTHON_VERSION
+ARG NUMBA_VERSION
+ARG NUMPY_VERSION
+ARG PANDAS_VERSION
+ARG PYARROW_VERSION
+ARG RAPIDS_CONDA_VERSION_SPEC
+
+# Option: simply copy the conda env created in the "devel" stage.
+# This is fast but does not test the conda packages for correctness during an
+# install operation.
+#COPY --from=devel /conda/envs/rapids /conda/envs/rapids
+#COPY --from=devel /rapids/notebooks /rapids/notebooks
+
+# Option: 'conda install' all RAPIDS packages.
+# This ensures the RAPIDS conda packages install correctly and (should) only
+# install the minimal set of packages needed, but relies on anaconda.org servers
+# and can be slow.
+
+# NOTE: use these mirrors for faster downloads
+#       -c http://10.33.227.188:88/numba \
+#       -c http://10.33.227.188:88/conda-forge \
+RUN export CUDA_MAJOR=`echo $CUDA_VERSION | cut -d'.' -f1` && \
+    export CUDA_MINOR=`echo $CUDA_VERSION | cut -d'.' -f2` && \
+    conda create -n rapids python=${PYTHON_VERSION} && \
+    conda install -n rapids -y \
+      -c ${RAPIDSAI_CONDA_LABEL} \
+      -c ${RAPIDSAI_NIGHTLY_CONDA_LABEL} \
+      -c ${NVIDIA_CONDA_LABEL} \
+      -c numba \
+      -c conda-forge \
+      -c pytorch \
+      -c defaults \
+      cudatoolkit=${CUDA_MAJOR}.${CUDA_MINOR} \
+      pytest \
+      cudf=${RAPIDS_CONDA_VERSION_SPEC} \
+      cuml=${RAPIDS_CONDA_VERSION_SPEC} \
+      cugraph=${RAPIDS_CONDA_VERSION_SPEC} \
+      dask-cuda=${RAPIDS_CONDA_VERSION_SPEC} \
+      dask-cudf=${RAPIDS_CONDA_VERSION_SPEC} \
+      dask-cuml=${RAPIDS_CONDA_VERSION_SPEC} \
+   && conda clean -a
+
+
+################################################################################
+FROM base AS runtime
+
+# Retrieve values set prior to first FROM command for use below
+ARG CUDA_VERSION
+ARG CUDA_MAJORMINOR_VERSION
+ARG RAPIDSAI_CONDA_LABEL
+ARG RAPIDSAI_NIGHTLY_CONDA_LABEL
+ARG NVIDIA_CONDA_LABEL
+ARG IPYTHON_VERSION
+ARG NUMBA_VERSION
+ARG NUMPY_VERSION
+ARG PANDAS_VERSION
+ARG PYARROW_VERSION
+
+# NOTE: use these mirrors for faster downloads
+#       -c http://10.33.227.188:88/numba \
+#       -c http://10.33.227.188:88/conda-forge \
+RUN export CUDA_MAJOR=`echo $CUDA_VERSION | cut -d'.' -f1` && \
+    export CUDA_MINOR=`echo $CUDA_VERSION | cut -d'.' -f2` && \
+    conda install -n rapids -y \
+      -c ${RAPIDSAI_CONDA_LABEL} \
+      -c ${RAPIDSAI_NIGHTLY_CONDA_LABEL} \
+      -c ${NVIDIA_CONDA_LABEL} \
+      -c numba \
+      -c conda-forge \
+      -c pytorch \
+      -c defaults \
+      cudatoolkit=${CUDA_MAJOR}.${CUDA_MINOR} \
+      bokeh \
+      ipython=${IPYTHON_VERSION} \
+      jupyterlab \
+      matplotlib \
+      networkx \
+      numba=${NUMBA_VERSION} \
+      numpy=${NUMPY_VERSION} \
+      pandas=${PANDAS_VERSION} \
+      pyarrow=${PYARROW_VERSION} \
+      scikit-learn \
+      scipy \
+      seaborn \
+   && conda clean -a
+
+WORKDIR ${RAPIDS_DIR}/notebooks
+# Jupyter notebook port
+EXPOSE 8888
+# Dask Scheduler Bokeh port
+EXPOSE 8787
+EXPOSE 8786
