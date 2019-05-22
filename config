@@ -27,6 +27,8 @@ SCIPY_VERSION=1.2.1
 SKLEARN_VERSION=0.20.3
 TINI_URL=https://github.com/krallin/tini/releases/download/v0.18.0/tini
 NUM_BUILD_CPUS=""
+XGBOOST_CONDA_LABEL=rapidsai/label/xgboost
+XGBOOST_NIGHTLY_CONDA_LABEL=rapidsai-nightly/label/xgboost
 
 # SECTION: RAPIDS (do not remove or modify this comment)
 RMM_REPO=https://github.com/rapidsai/rmm.git
