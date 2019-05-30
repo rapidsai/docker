@@ -39,7 +39,6 @@ RUN export CUDA_MAJOR=`echo $CUDA_VERSION | cut -d'.' -f1` && \
       networkx \
       numba=${NUMBA_VERSION} \
       numpy=${NUMPY_VERSION} \
-      nvgraph \
       pandas=${PANDAS_VERSION} \
       pyarrow=${PYARROW_VERSION} \
       pytest \
@@ -53,4 +52,3 @@ RUN if [ "${CUDA_MAJORMINOR_VERSION}" != "9.2" ]; then conda install -n rapids -
 
 # Enables "source activate conda"
 SHELL ["/bin/bash", "-c"]
-
