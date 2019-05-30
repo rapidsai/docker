@@ -1,7 +1,7 @@
 #
 # This file was generated! Edits made directly to this file may be lost.
 #   Generator:    /home/nfs/rratzel/Projects/build/commands/../commands/utils/genfile.sh
-#   Timestamp:    Fri May 17 15:30:36 PDT 2019
+#   Timestamp:    Thu May 30 15:39:34 PDT 2019
 #   Template Dir: /home/nfs/rratzel/Projects/build/templates/docker
 #
 ARG CUDA_VERSION=10.0
@@ -114,7 +114,6 @@ RUN export CUDA_MAJOR=`echo $CUDA_VERSION | cut -d'.' -f1` && \
       networkx \
       numba=${NUMBA_VERSION} \
       numpy=${NUMPY_VERSION} \
-      nvgraph \
       pandas=${PANDAS_VERSION} \
       pyarrow=${PYARROW_VERSION} \
       pytest \
@@ -128,7 +127,6 @@ RUN if [ "${CUDA_MAJORMINOR_VERSION}" != "9.2" ]; then conda install -n rapids -
 
 # Enables "source activate conda"
 SHELL ["/bin/bash", "-c"]
-
 # Assume the RAPIDS repos have been cloned to the 'rapids' dir.
 # (this is done automatically when using 'rapidsdevtool.sh buildDockerImage',
 #  see rapidsdevtool.sh help for more details)
