@@ -18,7 +18,6 @@ RUN export CUDA_MAJOR=`echo $CUDA_VERSION | cut -d'.' -f1` && \
       -c ${RAPIDSAI_CONDA_LABEL} \
       -c rapidsai-nightly/label/cuda${CUDA_MAJORMINOR_VERSION} \
       -c ${NVIDIA_CONDA_LABEL} \
-      -c numba \
       -c conda-forge \
       -c pytorch \
       -c defaults \
