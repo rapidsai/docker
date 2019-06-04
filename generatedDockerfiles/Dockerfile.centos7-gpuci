@@ -1,7 +1,7 @@
 #
 # This file was generated! Edits made directly to this file may be lost.
 #   Generator:    /home/nfs/rratzel/Projects/build/commands/../commands/utils/genfile.sh
-#   Timestamp:    Fri May 17 15:30:36 PDT 2019
+#   Timestamp:    Mon Jun  3 21:05:38 PDT 2019
 #   Template Dir: /home/nfs/rratzel/Projects/build/templates/docker
 #
 ARG CUDA_VERSION=10.0
@@ -32,7 +32,8 @@ ARG NUMBA_VERSION=0.41
 ARG NUMPY_VERSION=1.16.2
 ARG NVIDIA_CONDA_LABEL=nvidia/label/cuda${CUDA_MAJORMINOR_VERSION}
 ARG RAPIDSAI_CONDA_LABEL=rapidsai/label/cuda${CUDA_MAJORMINOR_VERSION}
-ARG RAPIDS_CONDA_VERSION_SPEC=0.7*
+ARG RAPIDSAI_NIGHTLY_CONDA_LABEL=rapidsai-nightly/label/cuda${CUDA_MAJORMINOR_VERSION}
+ARG RAPIDS_CONDA_VERSION_SPEC=0.8*
 ARG PANDAS_VERSION=0.23.4
 ARG PYARROW_VERSION=0.12.1
 ARG PYTHON_VERSION=3.6
@@ -40,6 +41,8 @@ ARG SCIPY_VERSION=1.2.1
 ARG SKLEARN_VERSION=0.20.3
 ARG TINI_URL=https://github.com/krallin/tini/releases/download/v0.18.0/tini
 ARG NUM_BUILD_CPUS=""
+ARG XGBOOST_CONDA_LABEL=rapidsai/label/xgboost
+ARG XGBOOST_NIGHTLY_CONDA_LABEL=rapidsai-nightly/label/xgboost
 ARG UTILS_DIR=utils
 ARG SUPPORT_FILES_DIR=supportfiles
 ARG RAPIDS_SRC_DIR=/rapids

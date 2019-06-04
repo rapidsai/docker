@@ -1,3 +1,9 @@
+#
+# This file was generated! Edits made directly to this file may be lost.
+#   Generator:    /home/nfs/rratzel/Projects/build/commands/../commands/utils/genfile.sh
+#   Timestamp:    Mon Jun  3 21:05:39 PDT 2019
+#   Template Dir: /home/nfs/rratzel/Projects/build/templates/docker
+#
 # RAPIDS Dockerfile for Ubuntu
 #
 # This multi-stage Dockerfile is used to create three images: devel, runtime,
@@ -21,7 +27,36 @@
 ARG CUDA_VERSION=10.0
 ARG CUDA_MAJORMINOR_VERSION=${CUDA_VERSION}
 ARG LINUX_VERSION=ubuntu18.04
-runcommand ../../commands/utils/dumpDockerArgsFromConfig.sh
+ARG ARROW_CPP_VERSION=0.12.1
+ARG CC_VERSION=5
+ARG CXX_VERSION=5
+ARG CFFI_VERSION=1.11.5
+ARG CMAKE_VERSION=3.14.3
+ARG CYTHON_VERSION=0.29.*
+ARG DASK_VERSION=1.2.2
+ARG DISTRIBUTED_VERSION=1.28.0
+ARG FAISSGPU_VERSION=1.5.0
+ARG HASH_JOIN=ON
+ARG IPYTHON_VERSION=7.3*
+ARG LIBGCC_NG_VERSION=7.3.0
+ARG LIBGFORTRAIN_NG_VERSION=7.3.0
+ARG LIBSTDCXX_NG_VERSION=7.3.0
+ARG MINICONDA_URL=https://repo.continuum.io/miniconda/Miniconda3-latest-Linux-x86_64.sh
+ARG NUMBA_VERSION=0.41
+ARG NUMPY_VERSION=1.16.2
+ARG NVIDIA_CONDA_LABEL=nvidia/label/cuda${CUDA_MAJORMINOR_VERSION}
+ARG RAPIDSAI_CONDA_LABEL=rapidsai/label/cuda${CUDA_MAJORMINOR_VERSION}
+ARG RAPIDSAI_NIGHTLY_CONDA_LABEL=rapidsai-nightly/label/cuda${CUDA_MAJORMINOR_VERSION}
+ARG RAPIDS_CONDA_VERSION_SPEC=0.8*
+ARG PANDAS_VERSION=0.23.4
+ARG PYARROW_VERSION=0.12.1
+ARG PYTHON_VERSION=3.6
+ARG SCIPY_VERSION=1.2.1
+ARG SKLEARN_VERSION=0.20.3
+ARG TINI_URL=https://github.com/krallin/tini/releases/download/v0.18.0/tini
+ARG NUM_BUILD_CPUS=""
+ARG XGBOOST_CONDA_LABEL=rapidsai/label/xgboost
+ARG XGBOOST_NIGHTLY_CONDA_LABEL=rapidsai-nightly/label/xgboost
 
 # The first stage contains a configuration common to all stages: "rapids_ready"
 FROM nvidia/cuda:${CUDA_VERSION}-devel-${LINUX_VERSION} AS rapids_ready
