@@ -34,12 +34,13 @@ RUN export CUDA_MAJOR=`echo $CUDA_VERSION | cut -d'.' -f1` && \
       faiss-gpu=${FAISSGPU_VERSION} \
       ipython=${IPYTHON_VERSION} \
       jupyterlab \
-      openblas \
+      libclang \
       matplotlib \
       networkx \
       numba=${NUMBA_VERSION} \
       numpy=${NUMPY_VERSION} \
       nvgraph \
+      openblas \
       pandas=${PANDAS_VERSION} \
       pyarrow=${PYARROW_VERSION} \
       pytest \
@@ -53,4 +54,3 @@ RUN if [ "${CUDA_MAJORMINOR_VERSION}" != "9.2" ]; then conda install -n rapids -
 
 # Enables "source activate conda"
 SHELL ["/bin/bash", "-c"]
-
