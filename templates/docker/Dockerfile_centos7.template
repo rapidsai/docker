@@ -1,0 +1,374 @@
+# RAPIDS Dockerfile for CentOS7
+#
+# This multi-stage Dockerfile is used to create three images: devel, runtime,
+# and base
+#
+# devel: RAPIDS is built from-source and installed in the 'rapids' conda
+# environment. The sources and toolchains to build RAPIDS are included in this
+# image. RAPIDS jupyter notebooks are also provided, as well as jupyterlab and
+# all the dependencies required to run them.
+#
+# runtime: RAPIDS is installed from published conda packages to the 'rapids'
+# conda environment. RAPIDS jupyter notebooks are also provided, as well as
+# jupyterlab and all the dependencies required to run them.
+#
+# base: RAPIDS is installed from published conda packages to the 'rapids' conda
+# environment.
+#
+# Copyright (c) 2019, NVIDIA CORPORATION.
+
+# These ARGs are used in multiple stages and must be defined prior to first FROM
+
+ARG CUDA_VERSION=10.0
+ARG CUDA_MAJORMINOR_VERSION=${CUDA_VERSION}
+ARG LINUX_VERSION=centos7
+runcommand ../../commands/utils/dumpDockerArgsFromConfig.sh
+
+# Use the devel image since a CC compiler is needed for the build_gcc7 steps
+FROM nvidia/cuda:${CUDA_VERSION}-devel-${LINUX_VERSION} AS rapids_ready
+
+ARG TINI_URL
+ARG MINICONDA_URL
+ARG CUDA_MAJORMINOR_VERSION
+ARG UTILS_DIR=utils
+ARG SUPPORT_FILES_DIR=supportfiles
+
+# Add /usr/local/cuda/* temporarily to LD_LIBRARY_PATH to support various build steps
+# This will need to be removed later since it causes problems with certain runtime libs (numba.cuda)
+ENV LD_LIBRARY_PATH_POSTBUILD=$LD_LIBRARY_PATH
+ENV LD_LIBRARY_PATH=$LD_LIBRARY_PATH_POSTBUILD:/usr/local/cuda/lib64:/usr/local/cuda/lib64/stubs
+ENV NUMBAPRO_NVVM=/usr/local/cuda/nvvm/lib64/libnvvm.so
+ENV NUMBAPRO_LIBDEVICE=/usr/local/cuda/nvvm/libdevice
+ENV PATH=$PATH:/conda/bin
+ENV CUDA_VERSION=${CUDA_MAJORMINOR_VERSION}
+ENV RAPIDS_DIR=/rapids
+
+# devtoolset-7 ENV vars
+# devtoolset-7-* packages will need to be seen first, update PATH accordingly
+# NOTE: These are commented out since gcc is being built from source
+#   If devtoolset-7 is used, uncomment these vars.
+# ENV PATH=/opt/rh/devtoolset-7/root/usr/bin:$PATH:/conda/bin
+# ENV CC=/opt/rh/devtoolset-7/root/usr/bin/gcc
+# ENV CXX=/opt/rh/devtoolset-7/root/usr/bin/g++
+# ENV CUDAHOSTCXX=/opt/rh/devtoolset-7/root/usr/bin/g++
+RUN mkdir -p ${RAPIDS_DIR}/tmp
+#
+# The support dir contains RPMs that enable additional repos needed
+# for CentOS (among other things). Copy them to a temp dir and remove
+# after installed.
+#
+COPY ${SUPPORT_FILES_DIR}/*.rpm ${RAPIDS_DIR}/tmp
+
+RUN yum install -y ${RAPIDS_DIR}/tmp/*.rpm && \
+    yum upgrade -y && \
+    yum install -y \
+      bzip2 \
+      curl \
+      git \
+      screen \
+      vim \
+      wget \
+      which \
+      clang \
+      make \
+      libnccl-2.4.2-1+cuda${CUDA_MAJORMINOR_VERSION} \
+      libnccl-devel-2.4.2-1+cuda${CUDA_MAJORMINOR_VERSION} \
+      libnccl-static-2.4.2-1+cuda${CUDA_MAJORMINOR_VERSION} \
+      gmp-devel mpfr-devel libmpc-devel file
+
+RUN curl -L ${TINI_URL} -o /usr/bin/tini && \
+    chmod +x /usr/bin/tini
+
+RUN rm -rf ${RAPIDS_DIR}/tmp
+
+RUN curl ${MINICONDA_URL} -o /miniconda.sh && \
+    sh /miniconda.sh -b -p /conda && \
+    conda update -n base conda && \
+    rm -f /miniconda.sh
+
+# Enables "source activate conda"
+SHELL ["/bin/bash", "-c"]
+
+RUN mkdir -p ${RAPIDS_DIR}
+COPY rapids ${RAPIDS_DIR}
+COPY utils ${RAPIDS_DIR}/${UTILS_DIR}
+# Add test file for testing from within the container
+COPY ${SUPPORT_FILES_DIR}/test.sh /test.sh
+
+WORKDIR ${RAPIDS_DIR}
+
+# Automatically active conda env
+RUN echo "source activate rapids" > ~/.bashrc
+
+ENTRYPOINT [ "/usr/bin/tini", "--" ]
+CMD [ "/bin/bash" ]
+
+
+################################################################################
+# No optimization done yet. Just trying to get functionality in first and then make things cleaner/faster/better
+FROM rapids_ready AS devel
+
+# Retrieve values set prior to first FROM command for use below
+ARG CC_VERSION
+ARG CXX_VERSION
+ARG CUDA_VERSION
+ARG CUDA_MAJORMINOR_VERSION
+ARG RAPIDSAI_CONDA_LABEL
+ARG NVIDIA_CONDA_LABEL
+ARG PYARROW_VERSION
+ARG CFFI_VERSION
+ARG CMAKE_VERSION
+ARG CYTHON_VERSION
+ARG DASK_VERSION
+ARG DISTRIBUTED_VERSION
+ARG FAISSGPU_VERSION
+ARG IPYTHON_VERSION
+ARG NUMBA_VERSION
+ARG NUMPY_VERSION
+ARG PANDAS_VERSION
+ARG PYTHON_VERSION
+ARG GCC7_DIR=/rapids/gcc7
+
+# Add /usr/local/cuda/* temporarily to LD_LIBRARY_PATH to support various build steps
+# This will need to be removed later since it causes problems with certain runtime libs (numba.cuda)
+ENV LD_LIBRARY_PATH_POSTBUILD=$LD_LIBRARY_PATH
+ENV LD_LIBRARY_PATH=$LD_LIBRARY_PATH_POSTBUILD:/usr/local/cuda/lib64:/usr/local/cuda/lib64/stubs
+ENV NUMBAPRO_NVVM=/usr/local/cuda/nvvm/lib64/libnvvm.so
+ENV NUMBAPRO_LIBDEVICE=/usr/local/cuda/nvvm/libdevice
+ENV PATH=$PATH:/conda/bin
+ENV CUDA_VERSION=${CUDA_MAJORMINOR_VERSION}
+
+# TODO: Should gcc-7 be moved to it's own stage and use copy-from to insert gcc-7 to layers needing it?
+RUN mkdir -p ${GCC7_DIR}
+RUN cd ${GCC7_DIR} && wget -q http://ftp.gnu.org/gnu/gcc/gcc-7.2.0/gcc-7.2.0.tar.gz
+RUN cd ${GCC7_DIR} && tar zxf gcc-7.2.0.tar.gz
+RUN cd ${GCC7_DIR}/gcc-7.2.0 && \
+    ./configure --prefix=${GCC7_DIR} --disable-multilib && \
+    make -j${NUM_BUILD_CPUS} && make install
+
+# Remove gcc source dir and tarfile
+RUN rm -r ${GCC7_DIR}/gcc-7.2.0 ${GCC7_DIR}/gcc-7.2.0.tar.gz
+
+# Update environment to use new gcc7
+ENV CC=${GCC7_DIR}/bin/gcc
+ENV CXX=${GCC7_DIR}/bin/g++
+ENV PATH=${GCC7_DIR}/bin:$PATH
+ENV CUDAHOSTCXX=${GCC7_DIR}/bin/g++
+
+# Update the current LD_LIBRARY_PATH with the new lib64 dir for
+# remaining build steps and LD_LIBRARY_PATH_POSTBUILD for runtime use
+# after building the container.
+ENV LD_LIBRARY_PATH=${GCC7_DIR}/lib64:$LD_LIBRARY_PATH
+ENV LD_LIBRARY_PATH_POSTBUILD=${GCC7_DIR}/lib64:$LD_LIBRARY_PATH_POSTBUILD
+
+
+########################################
+# conda environment
+# NOTE: use these mirrors for faster downloads
+#       -c http://10.33.227.188:88/numba \
+#       -c http://10.33.227.188:88/conda-forge \
+RUN export CUDA_MAJOR=`echo $CUDA_VERSION | cut -d'.' -f1` && \
+    export CUDA_MINOR=`echo $CUDA_VERSION | cut -d'.' -f2` && \
+    conda create -n rapids python=${PYTHON_VERSION} && \
+    conda install -n rapids -y \
+      -c ${RAPIDSAI_CONDA_LABEL} \
+      -c rapidsai-nightly/label/cuda${CUDA_MAJORMINOR_VERSION} \
+      -c ${NVIDIA_CONDA_LABEL} \
+      -c numba \
+      -c conda-forge \
+      -c pytorch \
+      -c defaults \
+      -c rapidsai libclang \
+      arrow-cpp=${PYARROW_VERSION} \
+      bokeh \
+      cffi=${CFFI_VERSION} \
+      cmake=${CMAKE_VERSION} \
+      cmake_setuptools>=0.1.3 \
+      cuda${CUDA_MAJOR}${CUDA_MINOR} \
+      cython=${CYTHON_VERSION} \
+      dask=${DASK_VERSION} \
+      distributed=${DISTRIBUTED_VERSION} \
+      faiss-gpu=${FAISSGPU_VERSION} \
+      ipython=${IPYTHON_VERSION} \
+      jupyterlab \
+      openblas \
+      matplotlib \
+      networkx \
+      numba=${NUMBA_VERSION} \
+      numpy=${NUMPY_VERSION} \
+      pandas=${PANDAS_VERSION} \
+      pyarrow=${PYARROW_VERSION} \
+      pytest \
+      scikit-learn \
+      scipy \
+      seaborn \
+    && conda clean -a
+
+# Special case: libcumlmg is not available for CUDA 9.2
+RUN if [ "${CUDA_MAJORMINOR_VERSION}" != "9.2" ]; then conda install -n rapids -y --no-deps -c ${NVIDIA_CONDA_LABEL} -c conda-forge libcumlmg; fi
+
+# Enables "source activate conda"
+SHELL ["/bin/bash", "-c"]
+
+RUN cd ${RAPIDS_DIR} && ./clone.sh
+
+# Assume the build.sh script is present.
+# (this is done automatically when using 'rapidsdevtool.sh buildDockerImage',
+#  see rapidsdevtool.sh help for more details)
+RUN source activate rapids && cd ${RAPIDS_DIR} && \
+    ./build.sh dask-cuml && \
+    cd dask-cuml && git clean -xdff
+RUN source activate rapids && cd ${RAPIDS_DIR} && \
+    ./build.sh rmm && \
+    cd rmm && git clean -xdff
+RUN source activate rapids && cd ${RAPIDS_DIR} && \
+    ./build.sh custrings && \
+    cd custrings && git clean -xdff
+RUN source activate rapids && cd ${RAPIDS_DIR} && \
+    ./build.sh cudf && \
+    cd cudf && git clean -xdff
+RUN source activate rapids && cd ${RAPIDS_DIR} && \
+    ./build.sh cuml && \
+    cd cuml && git clean -xdff
+# FIXME: mluukkainen: Disabled due to build error
+#RUN source activate rapids && cd ${RAPIDS_DIR} && \
+#    ./build.sh cugraph && \
+#    cd cugraph && git clean -xdff
+RUN source activate rapids && cd ${RAPIDS_DIR} && \
+    ./build.sh xgboost && \
+    cd xgboost && git clean -xdff
+RUN source activate rapids && cd ${RAPIDS_DIR} && \
+    ./build.sh dask-xgboost && \
+    cd dask-xgboost && git clean -xdff
+RUN source activate rapids && cd ${RAPIDS_DIR} && \
+    ./build.sh dask-cudf && \
+    cd dask-cudf && git clean -xdff
+RUN source activate rapids && cd ${RAPIDS_DIR} && \
+    ./build.sh dask-cuda && \
+    cd dask-cuda && git clean -xdff
+
+
+#
+# Change LD_LIBRARY_PATH to exclude /usr/local/cuda/* since
+# numba.cuda cannot load that, and instead have it load
+# /lib64/libcuda.so instead
+#
+ENV LD_LIBRARY_PATH=${GCC7_DIR}/lib64:$LD_LIBRARY_PATH_ORIG:$CONDA_PREFIX
+
+# Copy notebooks, leave git meta-data, EXPOSE ports, WORKDIR=/rapids/notebooks
+# FIXME: RAPIDS notebooks are now cloned in the container during
+# container build, but maybe they should be copied instead.
+#COPY rapids/notebooks ${RAPIDS_DIR}/notebooks
+
+WORKDIR ${RAPIDS_DIR}/notebooks
+# Jupyter notebook port
+EXPOSE 8888
+# Dask Scheduler Bokeh port
+EXPOSE 8787
+EXPOSE 8786
+
+################################################################################
+FROM rapids_ready AS base
+# Retrieve values set prior to first FROM command for use below
+ARG CUDA_VERSION
+ARG CUDA_MAJORMINOR_VERSION
+ARG PYTHON_VERSION
+ARG RAPIDSAI_CONDA_LABEL
+ARG RAPIDSAI_NIGHTLY_CONDA_LABEL
+ARG NVIDIA_CONDA_LABEL
+ARG IPYTHON_VERSION
+ARG NUMBA_VERSION
+ARG NUMPY_VERSION
+ARG PANDAS_VERSION
+ARG PYARROW_VERSION
+ARG RAPIDS_CONDA_VERSION_SPEC
+ARG XGBOOST_CONDA_LABEL
+ARG XGBOOST_NIGHTLY_CONDA_LABEL
+ARG CMAKE_VERSION
+
+RUN export CUDA_MAJOR=`echo $CUDA_VERSION | cut -d'.' -f1` && \
+    export CUDA_MINOR=`echo $CUDA_VERSION | cut -d'.' -f2` && \
+    conda create -n rapids python=${PYTHON_VERSION} && \
+    conda install -n rapids -y \
+      -c ${RAPIDSAI_CONDA_LABEL} \
+      -c ${RAPIDSAI_NIGHTLY_CONDA_LABEL} \
+      -c ${NVIDIA_CONDA_LABEL} \
+      -c numba \
+      -c conda-forge \
+      -c pytorch \
+      -c defaults \
+      cmake=${CMAKE_VERSION} \
+      cudatoolkit=${CUDA_MAJOR}.${CUDA_MINOR} \
+      cudf=${RAPIDS_CONDA_VERSION_SPEC} \
+      cuml=${RAPIDS_CONDA_VERSION_SPEC} \
+      cugraph=${RAPIDS_CONDA_VERSION_SPEC} \
+      dask-cuda=${RAPIDS_CONDA_VERSION_SPEC} \
+      dask-cudf=${RAPIDS_CONDA_VERSION_SPEC} \
+      dask-cuml=${RAPIDS_CONDA_VERSION_SPEC} \
+   && conda clean -a
+
+
+################################################################################
+FROM base AS runtime
+# Retrieve values set prior to first FROM command for use below
+ARG CUDA_VERSION
+ARG CUDA_MAJORMINOR_VERSION
+ARG RAPIDSAI_CONDA_LABEL
+ARG RAPIDSAI_NIGHTLY_CONDA_LABEL
+ARG NVIDIA_CONDA_LABEL
+ARG IPYTHON_VERSION
+ARG NUMBA_VERSION
+ARG NUMPY_VERSION
+ARG PANDAS_VERSION
+ARG PYARROW_VERSION
+ARG CMAKE_VERSION
+ARG RAPIDS_CONDA_VERSION_SPEC
+
+# NOTE: use these mirrors for faster downloads
+#       -c http://10.33.227.188:88/numba \
+#       -c http://10.33.227.188:88/conda-forge \
+RUN export CUDA_MAJOR=`echo $CUDA_VERSION | cut -d'.' -f1` && \
+    export CUDA_MINOR=`echo $CUDA_VERSION | cut -d'.' -f2` && \
+    conda create -n rapids python=${PYTHON_VERSION} && \
+    conda install -n rapids -y \
+      -c ${RAPIDSAI_CONDA_LABEL} \
+      -c ${RAPIDSAI_NIGHTLY_CONDA_LABEL} \
+      -c ${NVIDIA_CONDA_LABEL} \
+      -c numba \
+      -c conda-forge \
+      -c pytorch \
+      -c defaults \
+      bokeh \
+      ipython=${IPYTHON_VERSION} \
+      jupyterlab \
+      matplotlib \
+      networkx \
+      numba=${NUMBA_VERSION} \
+      numpy=${NUMPY_VERSION} \
+      pandas=${PANDAS_VERSION} \
+      pyarrow=${PYARROW_VERSION} \
+      pytest \
+      scikit-learn \
+      scipy \
+      seaborn \
+      cmake=${CMAKE_VERSION} \
+      cudatoolkit=${CUDA_MAJOR}.${CUDA_MINOR} \
+      cudf=${RAPIDS_CONDA_VERSION_SPEC} \
+      cuml=${RAPIDS_CONDA_VERSION_SPEC} \
+      cugraph=${RAPIDS_CONDA_VERSION_SPEC} \
+      dask-cuda=${RAPIDS_CONDA_VERSION_SPEC} \
+      dask-cudf=${RAPIDS_CONDA_VERSION_SPEC} \
+      dask-cuml=${RAPIDS_CONDA_VERSION_SPEC} \
+   && conda clean -a
+
+# Add notebooks and test script
+RUN cd ${RAPIDS_DIR} && ./clone.sh notebooks
+
+WORKDIR /rapids/notebooks
+# Jupyter notebook port
+EXPOSE 8888
+# Dask Scheduler Bokeh port
+EXPOSE 8787
+EXPOSE 8786
+
+
