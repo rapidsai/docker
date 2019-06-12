@@ -1,7 +1,7 @@
 #
 # This file was generated! Edits made directly to this file may be lost.
 #   Generator:    /home/nfs/rratzel/Projects/build/commands/../commands/utils/genfile.sh
-#   Timestamp:    Thu May 30 15:39:34 PDT 2019
+#   Timestamp:    Wed Jun 12 09:53:59 PDT 2019
 #   Template Dir: /home/nfs/rratzel/Projects/build/templates/docker
 #
 ARG CUDA_VERSION=10.0
@@ -31,7 +31,9 @@ ARG NUMBA_VERSION=0.41
 ARG NUMPY_VERSION=1.16.2
 ARG NVIDIA_CONDA_LABEL=nvidia/label/cuda${CUDA_MAJORMINOR_VERSION}
 ARG RAPIDSAI_CONDA_LABEL=rapidsai/label/cuda${CUDA_MAJORMINOR_VERSION}
-ARG RAPIDS_CONDA_VERSION_SPEC=0.7*
+ARG RAPIDS_CONDA_VERSION_SPEC=0.8*
+ARG XGBOOST_CONDA_VERSION_SPEC=0.90*
+ARG DASK_XGBOOST_CONDA_VERSION_SPEC=0.2*
 ARG PANDAS_VERSION=0.23.4
 ARG PYARROW_VERSION=0.12.1
 ARG PYTHON_VERSION=3.6
@@ -105,7 +107,8 @@ RUN export CUDA_MAJOR=`echo $CUDA_VERSION | cut -d'.' -f1` && \
       -c ${RAPIDSAI_CONDA_LABEL} \
       -c ${RAPIDSAI_NIGHTLY_CONDA_LABEL} \
       -c ${NVIDIA_CONDA_LABEL} \
-      -c numba \
+      -c nvidia \
+      -c rapidsai-nightly/label/xgboost \
       -c conda-forge \
       -c pytorch \
       -c defaults \
@@ -127,24 +130,15 @@ RUN export CUDA_MAJOR=`echo $CUDA_VERSION | cut -d'.' -f1` && \
       cudf=${RAPIDS_CONDA_VERSION_SPEC} \
       cuml=${RAPIDS_CONDA_VERSION_SPEC} \
       cugraph=${RAPIDS_CONDA_VERSION_SPEC} \
+      xgboost=${XGBOOST_CONDA_VERSION_SPEC} \
       dask-cuda=${RAPIDS_CONDA_VERSION_SPEC} \
       dask-cudf=${RAPIDS_CONDA_VERSION_SPEC} \
       dask-cuml=${RAPIDS_CONDA_VERSION_SPEC} \
+      dask-xgboost=${DASK_XGBOOST_CONDA_VERSION_SPEC} \
    && conda clean -a
 
 # Enables "source activate conda"
 SHELL ["/bin/bash", "-c"]
-
-# xgboost and dask-xgboost are either not available as a conda package
-# or very old, so build from source
-RUN cd ${RAPIDS_SRC_DIR} && \
-    ./clone.sh xgboost dask-xgboost
-RUN source activate rapids && cd ${RAPIDS_SRC_DIR} && \
-    ./build.sh xgboost && \
-    cd xgboost && git clean -xdff
-RUN source activate rapids && cd ${RAPIDS_SRC_DIR} && \
-    ./build.sh dask-xgboost && \
-    cd dask-xgboost && git clean -xdff
 
 # Special case: libcumlmg is not available for CUDA 9.2
 #RUN if [ "${CUDA_MAJORMINOR_VERSION}" != "9.2" ]; then conda install -n rapids -y --no-deps -c ${NVIDIA_CONDA_LABEL} -c conda-forge libcumlmg; fi
