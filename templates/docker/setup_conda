@@ -18,6 +18,7 @@ RUN export CUDA_MAJOR=`echo $CUDA_VERSION | cut -d'.' -f1` && \
       -c ${RAPIDSAI_CONDA_LABEL} \
       -c rapidsai-nightly/label/cuda${CUDA_MAJORMINOR_VERSION} \
       -c ${NVIDIA_CONDA_LABEL} \
+      -c nvidia \
       -c conda-forge \
       -c pytorch \
       -c defaults \
@@ -36,6 +37,7 @@ RUN export CUDA_MAJOR=`echo $CUDA_VERSION | cut -d'.' -f1` && \
       libclang \
       openblas \
       matplotlib \
+      nccl=${NCCL_VERSION} \
       networkx \
       numba=${NUMBA_VERSION} \
       numpy=${NUMPY_VERSION} \

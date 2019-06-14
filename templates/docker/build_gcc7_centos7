@@ -18,14 +18,14 @@
 ARG GCC7_DIR=${RAPIDS_SRC_DIR}/gcc7
 
 RUN mkdir -p ${GCC7_DIR}
-RUN cd ${GCC7_DIR} && wget -q http://ftp.gnu.org/gnu/gcc/gcc-7.2.0/gcc-7.2.0.tar.gz 
-RUN cd ${GCC7_DIR} && tar zxf gcc-7.2.0.tar.gz
-RUN cd ${GCC7_DIR}/gcc-7.2.0 && \
+RUN cd ${GCC7_DIR} && wget -q http://ftp.gnu.org/gnu/gcc/gcc-7.3.0/gcc-7.3.0.tar.gz
+RUN cd ${GCC7_DIR} && tar zxf gcc-7.3.0.tar.gz
+RUN cd ${GCC7_DIR}/gcc-7.3.0 && \
     ./configure --prefix=${GCC7_DIR} --disable-multilib && \
     make -j${NUM_BUILD_CPUS} && make install
 
 # Remove gcc source dir and tarfile
-RUN rm -r ${GCC7_DIR}/gcc-7.2.0 ${GCC7_DIR}/gcc-7.2.0.tar.gz
+RUN rm -r ${GCC7_DIR}/gcc-7.3.0 ${GCC7_DIR}/gcc-7.3.0.tar.gz
 
 # Update environment to use new gcc7
 ENV CC=${GCC7_DIR}/bin/gcc
@@ -38,4 +38,3 @@ ENV CUDAHOSTCXX=${GCC7_DIR}/bin/g++
 # after building the container.
 ENV LD_LIBRARY_PATH=${GCC7_DIR}/lib64:$LD_LIBRARY_PATH
 ENV LD_LIBRARY_PATH_POSTBUILD=${GCC7_DIR}/lib64:$LD_LIBRARY_PATH_POSTBUILD
-
