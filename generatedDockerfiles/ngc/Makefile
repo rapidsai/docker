@@ -33,6 +33,6 @@ legacy:
 		--build-arg BASE_IMAGE=devel-ubuntu16.04 .
 
 clean:
-	-docker rmi rapids:$(VERSION)-$(GIT_COMMIT) rapids:$(VERSION)-cuda9.2-$(GIT_COMMIT)
+	-docker rmi rapids:$(VERSION)-cuda10.0-$(GIT_COMMIT) rapids:$(VERSION)-cuda9.2-$(GIT_COMMIT)
 
 print-%: ; @echo $*=$($*)
