@@ -41,12 +41,12 @@ RUN yum upgrade -y && \
 
 RUN mkdir -p ${GCC7_DIR} && \
     cd ${GCC7_DIR} && \
-    wget -q http://ftp.gnu.org/gnu/gcc/gcc-7.2.0/gcc-7.2.0.tar.gz -O - | tar -xz && \
-    cd gcc-7.2.0 && \
+    wget -q http://ftp.gnu.org/gnu/gcc/gcc-7.3.0/gcc-7.3.0.tar.gz -O - | tar -xz && \
+    cd gcc-7.3.0 && \
     ./configure --prefix=${GCC7_DIR} --disable-multilib && \
     make -j && \
     make install && \
-    rm -rf "${GCC7_DIR}/gcc-7.2.0"
+    rm -rf "${GCC7_DIR}/gcc-7.3.0"
 
 
 # Use the devel image since a CC compiler is needed for the build_gcc7 steps
@@ -390,5 +390,3 @@ EXPOSE 8888
 # Dask Scheduler Bokeh port
 EXPOSE 8787
 EXPOSE 8786
-
-
