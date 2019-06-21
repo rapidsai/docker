@@ -21,7 +21,7 @@ all: current legacy
 current:
 	docker build \
 		-f rapids.Dockerfile \
-		-t rapids:$(VERSION)-$(GIT_COMMIT) \
+		-t rapids:$(VERSION)-cuda10.0-$(GIT_COMMIT) \
 		--build-arg CUDA_VERSION=10.0 \
 		--build-arg BASE_IMAGE=devel-ubuntu18.04 .
 
@@ -33,6 +33,6 @@ legacy:
 		--build-arg BASE_IMAGE=devel-ubuntu16.04 .
 
 clean:
-	-docker rmi rapids:$(VERSION)-$(GIT_COMMIT) rapids:$(VERSION)-cuda9.2-$(GIT_COMMIT)
+	-docker rmi rapids:$(VERSION)-cuda10.0-$(GIT_COMMIT) rapids:$(VERSION)-cuda9.2-$(GIT_COMMIT)
 
 print-%: ; @echo $*=$($*)
