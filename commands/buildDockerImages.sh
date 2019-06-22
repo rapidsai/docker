@@ -24,17 +24,18 @@ GENCLONESCRIPT_CMD=${THISDIR}/genCloneScript.sh
 GENBUILDSCRIPT_CMD=${THISDIR}/genBuildScript.sh
 BUILDDOCKERIMAGEFROMFILE_CMD=${THISDIR}/buildDockerImageFromFile.sh
 
-SHORTHELP="$0 [-h|-H] [-d] -t <templateName> [-i <imageTagName>] [<dockerBuildArgs>]"
+SHORTHELP="$0 [-h|-H] [-d] -t <templateName> [<dockerBuildArgs>]"
 LONGHELP="${SHORTHELP}
    This command automates the following:
-      (setting up a unique build dir)
+      (setting up a unique build dir to be used as the build context)
       (copying the 'supportfiles' dir)
       (copying the developer 'utils' dir)
       ${GENDOCKERFILE_CMD}
       ${GENBUILDSCRIPT_CMD}
       ${GENCLONESCRIPT_CMD}
-      (running the generated clone script)
-      ${BUILDDOCKERIMAGEFROMFILE_CMD}
+      ${BUILDDOCKERIMAGEFROMFILE_CMD} -r devel
+      ${BUILDDOCKERIMAGEFROMFILE_CMD} -r base
+      ${BUILDDOCKERIMAGEFROMFILE_CMD} -r runtime
 
    The scripts are generated based on the config file, and the Dockerfile is
    generated based on <templateName> and the config file.
@@ -45,8 +46,7 @@ LONGHELP="${SHORTHELP}
    from inside a container.  See the generated Dockerfile for details
    on how the scripts will be called.
 
-   If <imageTagName> is \"\" or not specified, a default image name of the form
-   shown below is used.
+   The image name is generated using the format shown below:
 
    rapids_<username>-cuda9.2-devel-ubuntu16.04-gcc5-py3.6
                         ^      ^       ^         ^    ^
@@ -60,7 +60,7 @@ LONGHELP="${SHORTHELP}
    command.
 "
 
-while getopts ":hHdt:i:" option; do
+while getopts ":hHdt:" option; do
     case "${option}" in
         h)
             echo "${SHORTHELP}"
@@ -76,9 +76,6 @@ while getopts ":hHdt:i:" option; do
 	t)
             TEMPL_NAME=${OPTARG}
 	    ;;
-        i)
-            IMAGE_TAG_NAME=${OPTARG}
-            ;;
 	*)
 	    echo "${SHORTHELP}"
 	    exit 1
@@ -124,19 +121,13 @@ cp -a ${RAPIDSDEVTOOL_DIR}/utils ${OUTPUT_DIR}
 GEND_DOCKERFILE=${OUTPUT_DIR}/${DOCKERFILE_BASENAME}.${TEMPL_NAME}
 ${GENDOCKERFILE_CMD} ${DEBUGFLAG} -t ${TEMPL_NAME} -o ${GEND_DOCKERFILE}
 
-# Compute the default image tag name if not specified
+# Compute the image tag name
 # This must be done post-gen since it uses the generated Dockerfile
-if [[ ${IMAGE_TAG_NAME} == "" ]]; then
-    # TODO: include any overrides specified in Docker build args, if specified.
-    # TODO: provide an error message if these greps fail
-    cudaVersion=$(grep "^ARG CUDA_VERSION=" ${GEND_DOCKERFILE} | cut -d'=' -f2)
-    templType=$(grep "^#:# tag:type " ${TEMPL_FILE_NAME} | cut -d' ' -f3)
-    linuxVersion=$(grep "^ARG LINUX_VERSION=" ${GEND_DOCKERFILE} | cut -d'=' -f2)
-    gccVersion=$(grep "^CXX_VERSION=" ${CONFIG_FILE_NAME} | cut -d'=' -f2)
-    pyVersion=$(grep "^PYTHON_VERSION=" ${CONFIG_FILE_NAME} | cut -d'=' -f2)
-
-    IMAGE_TAG_NAME="rapids_${USER}-cuda${cudaVersion}-${templType}-${linuxVersion}-gcc${gccVersion}-py${pyVersion}"
-fi
+# TODO: provide an error message if these greps fail
+cudaVersion=$(grep "^ARG CUDA_VERSION=" ${GEND_DOCKERFILE} | cut -d'=' -f2)
+linuxVersion=$(grep "^ARG LINUX_VERSION=" ${GEND_DOCKERFILE} | cut -d'=' -f2)
+gccVersion=$(grep "^CXX_VERSION=" ${CONFIG_FILE_NAME} | cut -d'=' -f2)
+pyVersion=$(grep "^PYTHON_VERSION=" ${CONFIG_FILE_NAME} | cut -d'=' -f2)
 
 # Add a build script
 # FIXME: update the Dockerfiles to use this build script!
@@ -145,6 +136,8 @@ ${GENBUILDSCRIPT_CMD} ${DEBUGFLAG} -o ${GEND_BUILDSCRIPT}
 # Clone RAPIDS
 ${GENCLONESCRIPT_CMD} ${DEBUGFLAG} -o ${GEND_CLONESCRIPT}
 
-# Create the Docker image
-# FIXME: pass docker build args!
-(cd ${OUTPUT_DIR}; ${BUILDDOCKERIMAGEFROMFILE_CMD} -f ${GEND_DOCKERFILE} -l ${LOG_DIR} -i ${IMAGE_TAG_NAME})
+# Create the Docker image for devel, then base, then runtime
+for imageType in devel base runtime; do
+    IMAGE_TAG_NAME="rapids_${USER}-cuda${cudaVersion}-${imageType}-${linuxVersion}-gcc${gccVersion}-py${pyVersion}"
+    (cd ${OUTPUT_DIR}; ${BUILDDOCKERIMAGEFROMFILE_CMD} -f ${GEND_DOCKERFILE} -r ${imageType} -l ${LOG_DIR} -i ${IMAGE_TAG_NAME})
+done

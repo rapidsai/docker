@@ -26,7 +26,7 @@ RUN export CUDA_MAJOR=`echo $CUDA_VERSION | cut -d'.' -f1` && \
       bokeh \
       cffi=${CFFI_VERSION} \
       cmake=${CMAKE_VERSION} \
-      cmake_setuptools>=0.1.3 \
+      cmake_setuptools">=0.1.3" \
       cuda${CUDA_MAJOR}${CUDA_MINOR} \
       cython=${CYTHON_VERSION} \
       dask=${DASK_VERSION} \
@@ -37,7 +37,7 @@ RUN export CUDA_MAJOR=`echo $CUDA_VERSION | cut -d'.' -f1` && \
       libclang \
       openblas \
       matplotlib \
-      nccl=${NCCL_VERSION} \
+      nccl=2.* \
       networkx \
       numba=${NUMBA_VERSION} \
       numpy=${NUMPY_VERSION} \
