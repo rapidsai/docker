@@ -1,7 +1,7 @@
 # SECTION: DEPENDENCIES (do not remove or modify this comment)
 ARROW_CPP_VERSION=0.12.1
-CC_VERSION=5
-CXX_VERSION=5
+CC_VERSION=7
+CXX_VERSION=7
 CFFI_VERSION=1.11.5
 CMAKE_VERSION=3.14.3
 CYTHON_VERSION=0.29.*
@@ -28,7 +28,7 @@ SKLEARN_VERSION=0.20.3
 TINI_URL=https://github.com/krallin/tini/releases/download/v0.18.0/tini
 NUM_BUILD_CPUS=""
 XGBOOST_CONDA_LABEL=rapidsai/label/xgboost
-XGBOOST_NIGHTLY_CONDA_LABEL=rapidsai-nightly/label/xgboost
+XGBOOST_VERSION=0.90
 
 # SECTION: RAPIDS (do not remove or modify this comment)
 RMM_REPO=https://github.com/rapidsai/rmm.git

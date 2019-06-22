@@ -3,6 +3,7 @@
 # Copyright (c) 2019, NVIDIA CORPORATION.
 
 set -e
+set -o pipefail
 
 # Assume this script is in a subdir of the dir containing rapidsdevtool.sh
 THISDIR=$(cd $(dirname $0); pwd)

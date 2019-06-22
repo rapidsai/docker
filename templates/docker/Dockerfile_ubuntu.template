@@ -21,6 +21,7 @@
 ARG CUDA_VERSION=10.0
 ARG CUDA_MAJORMINOR_VERSION=${CUDA_VERSION}
 ARG LINUX_VERSION=ubuntu18.04
+
 runcommand ../../commands/utils/dumpDockerArgsFromConfig.sh
 
 # The first stage contains a configuration common to all stages: "rapids_ready"
@@ -48,7 +49,6 @@ RUN apt-get update -y --fix-missing && \
       vim \
       wget
 
-RUN rm -rf /var/lib/apt/lists/*
 RUN curl -L ${TINI_URL} -o /usr/bin/tini && \
     chmod +x /usr/bin/tini
 
@@ -110,15 +110,16 @@ ENV CXX=/usr/bin/g++-${CXX_VERSION}
 ENV CUDAHOSTCXX=$CXX
 ENV CUDA_VERSION=${CUDA_MAJORMINOR_VERSION}
 
+COPY Dockerfile.ubuntu /Dockerfile.ubuntu
+
 # Update and add pkgs for dev builds
-RUN apt-get update -y --fix-missing && \
-    apt-get upgrade -y && \
-    apt-get -qq install apt-utils -y --no-install-recommends && \
-    apt-get install -y \
-      gcc-${CC_VERSION} \
-      g++-${CXX_VERSION} \
-      libboost-all-dev \
-      zlib1g-dev
+RUN apt-get install -y \
+    gcc-${CC_VERSION} \
+    g++-${CXX_VERSION} \
+    libboost-all-dev \
+    zlib1g-dev
+
+RUN rm -rf /var/lib/apt/lists/*
 
 # conda environment
 # NOTE: use these mirrors for faster downloads
@@ -131,6 +132,7 @@ RUN export CUDA_MAJOR=`echo $CUDA_VERSION | cut -d'.' -f1` && \
       -c ${RAPIDSAI_CONDA_LABEL} \
       -c rapidsai-nightly/label/cuda${CUDA_MAJORMINOR_VERSION} \
       -c ${NVIDIA_CONDA_LABEL} \
+      -c nvidia \
       -c numba \
       -c conda-forge \
       -c pytorch \
@@ -139,8 +141,9 @@ RUN export CUDA_MAJOR=`echo $CUDA_VERSION | cut -d'.' -f1` && \
       bokeh \
       cffi=${CFFI_VERSION} \
       cmake=${CMAKE_VERSION} \
-      cmake_setuptools>=0.1.3 \
+      cmake_setuptools">=0.1.3" \
       cuda${CUDA_MAJOR}${CUDA_MINOR} \
+      cudatoolkit=${CUDA_MAJOR}.${CUDA_MINOR} \
       cython=${CYTHON_VERSION} \
       dask=${DASK_VERSION} \
       distributed=${DISTRIBUTED_VERSION} \
@@ -180,12 +183,12 @@ RUN source activate rapids && cd ${RAPIDS_DIR} && \
 RUN source activate rapids && cd ${RAPIDS_DIR}/cudf && \
     ./build.sh && \
     git clean -xdff
-RUN source activate rapids && cd ${RAPIDS_DIR} && \
-    ./build.sh cuml && \
-    cd cuml && git clean -xdff
-RUN source activate rapids && cd ${RAPIDS_DIR} && \
-    ./build.sh cugraph && \
-    cd cugraph && git clean -xdff
+RUN source activate rapids && cd ${RAPIDS_DIR}/cuml && \
+    ./build.sh && \
+    git clean -xdff
+RUN source activate rapids && cd ${RAPIDS_DIR}/cugraph && \
+    ./build.sh && \
+    git clean -xdff
 RUN source activate rapids && cd ${RAPIDS_DIR} && \
     ./build.sh xgboost && \
     cd xgboost && git clean -xdff
@@ -227,7 +230,7 @@ ARG PANDAS_VERSION
 ARG PYARROW_VERSION
 ARG RAPIDS_CONDA_VERSION_SPEC
 ARG XGBOOST_CONDA_LABEL
-ARG XGBOOST_NIGHTLY_CONDA_LABEL
+ARG XGBOOST_VERSION
 
 # Option: simply copy the conda env created in the "devel" stage.
 # This is fast but does not test the conda packages for correctness during an
@@ -250,7 +253,7 @@ RUN export CUDA_MAJOR=`echo $CUDA_VERSION | cut -d'.' -f1` && \
       -c ${RAPIDSAI_CONDA_LABEL} \
       -c ${RAPIDSAI_NIGHTLY_CONDA_LABEL} \
       -c ${NVIDIA_CONDA_LABEL} \
-      -c ${XGBOOST_NIGHTLY_CONDA_LABEL} \
+      -c nvidia \
       -c ${XGBOOST_CONDA_LABEL} \
       -c numba \
       -c conda-forge \
@@ -262,7 +265,7 @@ RUN export CUDA_MAJOR=`echo $CUDA_VERSION | cut -d'.' -f1` && \
       cudf=${RAPIDS_CONDA_VERSION_SPEC} \
       cuml=${RAPIDS_CONDA_VERSION_SPEC} \
       cugraph=${RAPIDS_CONDA_VERSION_SPEC} \
-      xgboost \
+      xgboost=${XGBOOST_VERSION} \
       dask-xgboost \
       dask-cuda=${RAPIDS_CONDA_VERSION_SPEC} \
       dask-cudf=${RAPIDS_CONDA_VERSION_SPEC} \
@@ -294,6 +297,7 @@ RUN export CUDA_MAJOR=`echo $CUDA_VERSION | cut -d'.' -f1` && \
       -c ${RAPIDSAI_CONDA_LABEL} \
       -c ${RAPIDSAI_NIGHTLY_CONDA_LABEL} \
       -c ${NVIDIA_CONDA_LABEL} \
+      -c nvidia \
       -c numba \
       -c conda-forge \
       -c pytorch \
