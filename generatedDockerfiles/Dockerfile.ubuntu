@@ -1,7 +1,7 @@
 #
 # This file was generated! Edits made directly to this file may be lost.
 #   Generator:    /home/nfs/rratzel/Projects/build/commands/../commands/utils/genfile.sh
-#   Timestamp:    Sat Jun 22 10:15:47 PDT 2019
+#   Timestamp:    Sat Jun 22 18:02:18 PDT 2019
 #   Template Dir: /home/nfs/rratzel/Projects/build/templates/docker
 #
 # RAPIDS Dockerfile for Ubuntu
@@ -113,7 +113,6 @@ RUN echo "source activate rapids" > ~/.bashrc
 ENTRYPOINT [ "/usr/bin/tini", "--" ]
 CMD [ "/bin/bash" ]
 
-
 ################################################################################
 FROM rapids_ready AS devel
 
@@ -147,8 +146,6 @@ ENV CXX=/usr/bin/g++-${CXX_VERSION}
 ENV CUDAHOSTCXX=$CXX
 ENV CUDA_VERSION=${CUDA_MAJORMINOR_VERSION}
 
-COPY Dockerfile.ubuntu /Dockerfile.ubuntu
-
 # Update and add pkgs for dev builds
 RUN apt-get install -y \
     gcc-${CC_VERSION} \
@@ -180,7 +177,7 @@ RUN export CUDA_MAJOR=`echo $CUDA_VERSION | cut -d'.' -f1` && \
       cmake=${CMAKE_VERSION} \
       cmake_setuptools">=0.1.3" \
       cuda${CUDA_MAJOR}${CUDA_MINOR} \
-      cudatoolkit=${CUDA_MAJOR}.${CUDA_MINOR} \
+      cudatoolkit=${CUDA_MAJORMINOR_VERSION} \
       cython=${CYTHON_VERSION} \
       dask=${DASK_VERSION} \
       distributed=${DISTRIBUTED_VERSION} \
@@ -249,6 +246,8 @@ EXPOSE 8888
 EXPOSE 8787
 EXPOSE 8786
 
+# Copy Dockerfile as late as possible to avoid invalidating cache for trivial changes
+COPY Dockerfile.ubuntu /Dockerfile.ubuntu
 
 ################################################################################
 FROM rapids_ready AS base
@@ -310,6 +309,8 @@ RUN export CUDA_MAJOR=`echo $CUDA_VERSION | cut -d'.' -f1` && \
       dask-cuml=${RAPIDS_CONDA_VERSION_SPEC} \
    && conda clean -a
 
+# Copy Dockerfile as late as possible to avoid invalidating cache for trivial changes
+COPY Dockerfile.ubuntu /Dockerfile.ubuntu
 
 ################################################################################
 FROM base AS runtime
@@ -365,3 +366,6 @@ EXPOSE 8888
 # Dask Scheduler Bokeh port
 EXPOSE 8787
 EXPOSE 8786
+
+# Copy Dockerfile as late as possible to avoid invalidating cache for trivial changes
+COPY Dockerfile.ubuntu /Dockerfile.ubuntu
