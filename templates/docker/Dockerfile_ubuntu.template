@@ -71,11 +71,10 @@ COPY ${SUPPORT_FILES_DIR}/test.sh /test.sh
 WORKDIR ${RAPIDS_DIR}
 
 # Automatically active conda env
-RUN echo "source activate rapids" > /etc/profile
+RUN echo "source activate rapids" > ~/.bashrc
 
 ENTRYPOINT [ "/usr/bin/tini", "--" ]
 CMD [ "/bin/bash" ]
-
 
 ################################################################################
 FROM rapids_ready AS devel
