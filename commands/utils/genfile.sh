@@ -28,15 +28,12 @@ LASTARG=${BASH_ARGV}
 # Change to the same dir the template file resides in, making all
 # relative #insertfile paths relative to the same dir as the template.
 cd $(dirname ${LASTARG})
-TEMPLATEDIR=$(pwd)
 TEMPLATEFILE=$(basename ${LASTARG})
-TIMESTAMP=$(date)
+TIMESTAMP=$(date +%F)
 HEADER=\
 "#\n\
 # This file was generated! Edits made directly to this file may be lost.\n\
-#   Generator:    $0\n\
 #   Timestamp:    ${TIMESTAMP}\n\
-#   Template Dir: ${TEMPLATEDIR}\n\
 #"
 PROCESSED_OUTPUT=""
 
