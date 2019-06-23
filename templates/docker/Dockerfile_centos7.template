@@ -19,16 +19,18 @@
 
 # These ARGs are used in multiple stages and must be defined prior to first FROM
 
-ARG CUDA_VERSION=9.2
+ARG CUDA_VERSION=10.0
 ARG CUDA_MAJORMINOR_VERSION=${CUDA_VERSION}
 ARG LINUX_VERSION=centos7
+ARG GCC7_DIR=/rapids/gcc7
 
 runcommand ../../commands/utils/dumpDockerArgsFromConfig.sh
 
 ################################################################################
 # Use the devel image since a CC compiler is needed for the build_gcc7 steps
 FROM nvidia/cuda:${CUDA_VERSION}-devel-${LINUX_VERSION} AS rapids_gcc7
-ARG GCC7_DIR=/rapids/gcc7
+
+ARG GCC7_DIR
 
 RUN yum upgrade -y && \
     yum install -y \
@@ -59,26 +61,19 @@ ARG MINICONDA_URL
 ARG CUDA_MAJORMINOR_VERSION
 ARG UTILS_DIR=utils
 ARG SUPPORT_FILES_DIR=supportfiles
+ARG GCC7_DIR
 
-# Add /usr/local/cuda/* temporarily to LD_LIBRARY_PATH to support various build steps
-# This will need to be removed later since it causes problems with certain runtime libs (numba.cuda)
-ENV LD_LIBRARY_PATH_POSTBUILD=$LD_LIBRARY_PATH
-ENV LD_LIBRARY_PATH=$LD_LIBRARY_PATH_POSTBUILD:/usr/local/cuda/lib64:/usr/local/cuda/lib64/stubs
 ENV NUMBAPRO_NVVM=/usr/local/cuda/nvvm/lib64/libnvvm.so
 ENV NUMBAPRO_LIBDEVICE=/usr/local/cuda/nvvm/libdevice
 ENV PATH=$PATH:/conda/bin
 ENV CUDA_VERSION=${CUDA_MAJORMINOR_VERSION}
 ENV RAPIDS_DIR=/rapids
 
-# devtoolset-7 ENV vars
-# devtoolset-7-* packages will need to be seen first, update PATH accordingly
-# NOTE: These are commented out since gcc is being built from source
-#   If devtoolset-7 is used, uncomment these vars.
-# ENV PATH=/opt/rh/devtoolset-7/root/usr/bin:$PATH:/conda/bin
-# ENV CC=/opt/rh/devtoolset-7/root/usr/bin/gcc
-# ENV CXX=/opt/rh/devtoolset-7/root/usr/bin/g++
-# ENV CUDAHOSTCXX=/opt/rh/devtoolset-7/root/usr/bin/g++
 RUN mkdir -p ${RAPIDS_DIR}/tmp
+
+# Copy gcc7 binaries
+COPY --from=rapids_gcc7 ${GCC7_DIR} ${GCC7_DIR}
+
 #
 # The support dir contains RPMs that enable additional repos needed
 # for CentOS (among other things). Copy them to a temp dir and remove
@@ -124,12 +119,22 @@ COPY ${SUPPORT_FILES_DIR}/test.sh /test.sh
 
 WORKDIR ${RAPIDS_DIR}
 
-# Automatically active conda env
-RUN echo "source activate rapids" > ~/.bashrc
+# Activate the rapids conda env for interactive shells via the default .bashrc
+RUN echo "source activate rapids" >> ~/.bashrc
 
-ENTRYPOINT [ "/usr/bin/tini", "--" ]
+# Create a dedicated startup env script that activates the rapids conda env and
+# set the non-interactive bash env var to use it. Then create a new script to
+# exec the command (if given) in the environemnt set up by BASH_ENV and use it
+# as the ENTRYPOINT
+RUN echo "source activate rapids" > ~/.activate_rapids
+ENV BASH_ENV=~/.activate_rapids
+RUN echo "#!/bin/bash" > ~/.run_in_rapids_env
+RUN echo "exec \"\$@\"" >> ~/.run_in_rapids_env
+RUN chmod 755 ~/.run_in_rapids_env
+ENTRYPOINT [ "/usr/bin/tini", "--", "/root/.run_in_rapids_env" ]
+
+# Set the default command to pass to the ENTRYPOINT if no command was given
 CMD [ "/bin/bash" ]
-
 
 ################################################################################
 # No optimization done yet. Just trying to get functionality in first and then make things cleaner/faster/better
@@ -155,28 +160,19 @@ ARG NUMPY_VERSION
 ARG PANDAS_VERSION
 ARG PYTHON_VERSION
 ARG RAPIDSAI_NIGHTLY_CONDA_LABEL
-ARG GCC7_DIR=/rapids/gcc7
+ARG GCC7_DIR
 
-# Add /usr/local/cuda/* temporarily to LD_LIBRARY_PATH to support various build steps
-# This will need to be removed later since it causes problems with certain runtime libs (numba.cuda)
-ENV LD_LIBRARY_PATH_POSTBUILD=${LD_LIBRARY_PATH}
-ENV LD_LIBRARY_PATH=${LD_LIBRARY_PATH}:/usr/local/cuda/lib64:/usr/local/cuda/lib64/stubs
 ENV NUMBAPRO_NVVM=/usr/local/cuda/nvvm/lib64/libnvvm.so
 ENV NUMBAPRO_LIBDEVICE=/usr/local/cuda/nvvm/libdevice
 ENV PATH="${PATH}:/conda/bin"
 ENV CUDA_VERSION=${CUDA_MAJORMINOR_VERSION}
 
-# Copy gcc7 binaries and Update environment to use new gcc7
-COPY --from=rapids_gcc7 ${GCC7_DIR} ${GCC7_DIR}
+# Update environment to use new gcc7
 ENV CC=${GCC7_DIR}/bin/gcc
 ENV CXX=${GCC7_DIR}/bin/g++
 ENV PATH=${GCC7_DIR}/bin:$PATH
 ENV CUDAHOSTCXX=${GCC7_DIR}/bin/g++
-
-# Update the current LD_LIBRARY_PATH with the new lib64 dir for
-# remaining build steps and LD_LIBRARY_PATH_POSTBUILD for runtime use
-# after building the container.
-ENV LD_LIBRARY_PATH=${GCC7_DIR}/lib64:$LD_LIBRARY_PATH
+ENV LD_LIBRARY_PATH=${GCC7_DIR}/lib64
 
 # conda environment
 # NOTE: use these mirrors for faster downloads
@@ -230,6 +226,11 @@ RUN if [ "${CUDA_MAJORMINOR_VERSION}" != "9.2" ]; then conda install -n rapids -
 # the URLs and branch names in the config file.
 RUN cd ${RAPIDS_DIR} && ./clone.sh
 
+# Add /usr/local/cuda/* temporarily to LD_LIBRARY_PATH to support various build steps
+# This will need to be removed later since it causes problems with certain runtime libs (numba.cuda)
+ENV LD_LIBRARY_PATH_PREBUILD=${LD_LIBRARY_PATH}
+ENV LD_LIBRARY_PATH=${LD_LIBRARY_PATH}:/usr/local/cuda/lib64:/usr/local/cuda/lib64/stubs
+
 # Assume the build.sh script is present.
 # (this is done automatically when using 'rapidsdevtool.sh buildDockerImage',
 #  see rapidsdevtool.sh help for more details)
@@ -269,7 +270,7 @@ RUN source activate rapids && cd ${RAPIDS_DIR} && \
 # numba.cuda cannot load that, and instead have it load
 # /lib64/libcuda.so instead
 #
-ENV LD_LIBRARY_PATH="${GCC7_DIR}/lib64:${LD_LIBRARY_PATH_POSTBUILD}"
+ENV LD_LIBRARY_PATH=${LD_LIBRARY_PATH_PREBUILD}
 
 WORKDIR ${RAPIDS_DIR}/notebooks
 # Jupyter notebook port
@@ -300,6 +301,14 @@ ARG XGBOOST_CONDA_LABEL
 ARG XGBOOST_VERSION
 ARG RAPIDS_CONDA_VERSION_SPEC
 ARG DASK_XGBOOST_CONDA_VERSION_SPEC
+ARG GCC7_DIR
+
+# Update environment to use new gcc7
+ENV CC=${GCC7_DIR}/bin/gcc
+ENV CXX=${GCC7_DIR}/bin/g++
+ENV PATH=${GCC7_DIR}/bin:$PATH
+ENV CUDAHOSTCXX=${GCC7_DIR}/bin/g++
+ENV LD_LIBRARY_PATH=${GCC7_DIR}/lib64
 
 # Option: simply copy the conda env created in the "devel" stage.
 # This is fast but does not test the conda packages for correctness during an
@@ -358,6 +367,14 @@ ARG NUMBA_VERSION
 ARG NUMPY_VERSION
 ARG PANDAS_VERSION
 ARG PYARROW_VERSION
+ARG GCC7_DIR
+
+# Copy gcc7 binaries and Update environment to use new gcc7
+ENV CC=${GCC7_DIR}/bin/gcc
+ENV CXX=${GCC7_DIR}/bin/g++
+ENV PATH=${GCC7_DIR}/bin:$PATH
+ENV CUDAHOSTCXX=${GCC7_DIR}/bin/g++
+ENV LD_LIBRARY_PATH=${GCC7_DIR}/lib64
 
 # NOTE: use these mirrors for faster downloads
 #       -c http://10.33.227.188:88/numba \
