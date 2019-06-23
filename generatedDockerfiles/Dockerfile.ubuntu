@@ -1,7 +1,7 @@
 #
 # This file was generated! Edits made directly to this file may be lost.
 #   Generator:    /home/nfs/rratzel/Projects/build/commands/../commands/utils/genfile.sh
-#   Timestamp:    Sun Jun 23 09:01:55 PDT 2019
+#   Timestamp:    Sun Jun 23 10:29:32 PDT 2019
 #   Template Dir: /home/nfs/rratzel/Projects/build/templates/docker
 #
 # RAPIDS Dockerfile for Ubuntu
@@ -108,18 +108,23 @@ COPY ${SUPPORT_FILES_DIR}/test.sh /test.sh
 WORKDIR ${RAPIDS_DIR}
 
 # Activate the rapids conda env for interactive shells via the default .bashrc
-RUN echo "source activate rapids" >> ~/.bashrc
+# The ENTRYPOINT script (see below) still sets the env, but this ensures the
+# interactive settings (prompt) are set properly too.  root did not read
+# /etc/bash.bashrc, so also add to /root/.bashrc
+RUN echo "source activate rapids" >> /etc/bash.bashrc
+RUN echo "source activate rapids" >> /root/.bashrc
 
 # Create a dedicated startup env script that activates the rapids conda env and
 # set the non-interactive bash env var to use it. Then create a new script to
 # exec the command (if given) in the environemnt set up by BASH_ENV and use it
-# as the ENTRYPOINT
-RUN echo "source activate rapids" > ~/.activate_rapids
-ENV BASH_ENV=~/.activate_rapids
-RUN echo "#!/bin/bash" > ~/.run_in_rapids_env
-RUN echo "exec \"\$@\"" >> ~/.run_in_rapids_env
-RUN chmod 755 ~/.run_in_rapids_env
-ENTRYPOINT [ "/usr/bin/tini", "--", "/root/.run_in_rapids_env" ]
+# as the ENTRYPOINT.
+RUN echo "source activate rapids" > /.activate_rapids
+RUN chmod 777 /.activate_rapids
+ENV BASH_ENV=/.activate_rapids
+RUN echo "#!/bin/bash" > /.run_in_rapids_env
+RUN echo "exec \"\$@\"" >> /.run_in_rapids_env
+RUN chmod 777 /.run_in_rapids_env
+ENTRYPOINT [ "/usr/bin/tini", "--", "/.run_in_rapids_env" ]
 
 # Set the default command to pass to the ENTRYPOINT if no command was given
 CMD [ "/bin/bash" ]
