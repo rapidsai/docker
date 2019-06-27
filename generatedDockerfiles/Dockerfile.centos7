@@ -1,8 +1,6 @@
 #
 # This file was generated! Edits made directly to this file may be lost.
-#   Generator:    /home/nfs/rratzel/Projects/build/commands/../commands/utils/genfile.sh
-#   Timestamp:    Sun Jun 23 10:29:32 PDT 2019
-#   Template Dir: /home/nfs/rratzel/Projects/build/templates/docker
+#   Timestamp:    2019-06-27
 #
 # RAPIDS Dockerfile for CentOS7
 #
@@ -36,8 +34,8 @@ ARG CXX_VERSION=7
 ARG CFFI_VERSION=1.11.5
 ARG CMAKE_VERSION=3.14.3
 ARG CYTHON_VERSION=0.29.*
-ARG DASK_VERSION=1.2.2
-ARG DISTRIBUTED_VERSION=1.28.0
+ARG DASK_VERSION=">2"
+ARG DISTRIBUTED_VERSION=">2"
 ARG FAISSGPU_VERSION=1.5.0
 ARG HASH_JOIN=ON
 ARG IPYTHON_VERSION=7.3*
@@ -163,13 +161,12 @@ WORKDIR ${RAPIDS_DIR}
 RUN echo "source activate rapids" >> /etc/bash.bashrc
 RUN echo "source activate rapids" >> /root/.bashrc
 
-# Create a dedicated startup env script that activates the rapids conda env and
-# set the non-interactive bash env var to use it. Then create a new script to
-# exec the command (if given) in the environemnt set up by BASH_ENV and use it
-# as the ENTRYPOINT.
+# Create a dedicated startup env script that activates the rapids conda env for
+# use with the non-interactive bash env var, to be set later. Then create a new
+# script to exec the command (if given) in the environemnt set up by BASH_ENV
+# and use it as the ENTRYPOINT.
 RUN echo "source activate rapids" > /.activate_rapids
 RUN chmod 777 /.activate_rapids
-ENV BASH_ENV=/.activate_rapids
 RUN echo "#!/bin/bash" > /.run_in_rapids_env
 RUN echo "exec \"\$@\"" >> /.run_in_rapids_env
 RUN chmod 777 /.run_in_rapids_env
@@ -208,6 +205,7 @@ ENV NUMBAPRO_NVVM=/usr/local/cuda/nvvm/lib64/libnvvm.so
 ENV NUMBAPRO_LIBDEVICE=/usr/local/cuda/nvvm/libdevice
 ENV PATH="${PATH}:/conda/bin"
 ENV CUDA_VERSION=${CUDA_MAJORMINOR_VERSION}
+ENV BASH_ENV=
 
 # Update environment to use new gcc7
 ENV CC=${GCC7_DIR}/bin/gcc
@@ -321,6 +319,9 @@ EXPOSE 8888
 EXPOSE 8787
 EXPOSE 8786
 
+# Set the env startup script var for non-interactive shells
+ENV BASH_ENV=/.activate_rapids
+
 # Copy Dockerfile as late as possible to avoid invalidating cache for trivial changes
 COPY Dockerfile.centos7 /Dockerfile.centos7
 
@@ -351,6 +352,7 @@ ENV CXX=${GCC7_DIR}/bin/g++
 ENV PATH=${GCC7_DIR}/bin:$PATH
 ENV CUDAHOSTCXX=${GCC7_DIR}/bin/g++
 ENV LD_LIBRARY_PATH=${GCC7_DIR}/lib64
+ENV BASH_ENV=
 
 # Option: simply copy the conda env created in the "devel" stage.
 # This is fast but does not test the conda packages for correctness during an
@@ -392,6 +394,9 @@ RUN export CUDA_MAJOR=`echo $CUDA_VERSION | cut -d'.' -f1` && \
       dask-cuml=${RAPIDS_CONDA_VERSION_SPEC} \
    && conda clean -a
 
+# Set the env startup script var for non-interactive shells
+ENV BASH_ENV=/.activate_rapids
+
 # Copy Dockerfile as late as possible to avoid invalidating cache for trivial changes
 COPY Dockerfile.centos7 /Dockerfile.centos7
 
@@ -417,6 +422,7 @@ ENV CXX=${GCC7_DIR}/bin/g++
 ENV PATH=${GCC7_DIR}/bin:$PATH
 ENV CUDAHOSTCXX=${GCC7_DIR}/bin/g++
 ENV LD_LIBRARY_PATH=${GCC7_DIR}/lib64
+ENV BASH_ENV=
 
 # NOTE: use these mirrors for faster downloads
 #       -c http://10.33.227.188:88/numba \
@@ -456,6 +462,9 @@ EXPOSE 8888
 # Dask Scheduler Bokeh port
 EXPOSE 8787
 EXPOSE 8786
+
+# Set the env startup script var for non-interactive shells
+ENV BASH_ENV=/.activate_rapids
 
 # Copy Dockerfile as late as possible to avoid invalidating cache for trivial changes
 COPY Dockerfile.centos7 /Dockerfile.centos7
