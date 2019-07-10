@@ -1,5 +1,5 @@
-* "As a developer, I want to build my library using specific toolchains, a different OS, etc. than what my workstation has, and I want the resulting binaries in a specific location so I can access them again later."
-
+# "As a developer, I want to build my library using specific toolchains, a different OS, etc. than what my workstation has, and I want the resulting binaries in a specific location so I can access them again later."
+```
 # This example builds cuML for CentOS7.
 # All commands will be issued from the location of the cuML repo that was cloned locally.
 rratzel@sm01:~/Projects$ git clone https://github.com/rapidsai/cuml -b branch-0.8
@@ -32,8 +32,8 @@ nvidia-docker run -ti --rm --cap-add=SYS_PTRACE -e NVIDIA_VISIBLE_DEVICES=1 -v `
 
 # Install the conda package built from the container
 <show example, conda install -c conda-bld cuml>
+```
 
+# "As a SA, I need to make my builds against specific PRs, and using external conda, apt/yum, etc. with packages that work as expected with my notebooks/scripts."
 
-* "As a SA, I need to make my builds against specific PRs, and using external conda, apt/yum, etc. with packages that work as expected with my notebooks/scripts."
-
-* "As a SA, I want to generate docs for my local repo."
+# "As a SA, I want to generate docs for my local repo."
