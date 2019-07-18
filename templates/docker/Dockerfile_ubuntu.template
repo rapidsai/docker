@@ -109,7 +109,7 @@ ARG DASK_VERSION
 ARG DISTRIBUTED_VERSION
 ARG FAISSGPU_VERSION
 ARG IPYTHON_VERSION
-ARG NCCL_VERSION
+ARG NCCL_CONDA_VERSION
 ARG NUMBA_VERSION
 ARG NUMPY_VERSION
 ARG PANDAS_VERSION
@@ -127,7 +127,8 @@ ENV CUDA_VERSION=${CUDA_MAJORMINOR_VERSION}
 ENV BASH_ENV=
 
 # Update and add pkgs for dev builds
-RUN apt-get install -y \
+RUN apt-get update && \
+    apt-get install -y \
     gcc-${CC_VERSION} \
     g++-${CXX_VERSION} \
     libboost-all-dev \
@@ -166,7 +167,7 @@ RUN export CUDA_MAJOR=`echo $CUDA_VERSION | cut -d'.' -f1` && \
       jupyterlab \
       libclang \
       matplotlib \
-      nccl=${NCCL_VERSION} \
+      nccl=${NCCL_CONDA_VERSION} \
       networkx \
       numba=${NUMBA_VERSION} \
       numpy=${NUMPY_VERSION} \
