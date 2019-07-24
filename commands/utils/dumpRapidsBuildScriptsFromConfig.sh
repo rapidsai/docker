@@ -49,7 +49,8 @@ awk -v "debug=${DEBUG}" \
        # config, which are now saved in rapidscomps
        printf("NUMARGS=$#\n")
        printf("ARGS=$*\n")
-       printf("# This assumes the script resides in the rapids dir that contains the cloned repos!\n")
+       printf("# This assumes this script resides in the rapids dir that contains the cloned repos!\n")
+       printf("# NOTE: this script should only be used if the repo does not contain a \"build.sh\".\n")
        printf("cd $(dirname $0)\n")
        printf("\n")
        printf("function shouldBuild {\n    (( ${NUMARGS} == 0 )) || (echo \" ${ARGS} \" | grep -q \" $1 \")\n}\n\n")
@@ -58,7 +59,7 @@ awk -v "debug=${DEBUG}" \
        # FIXME: change script to allow for comps that are not in this
        # list. For those, simply do them in any order afterwards. Otherwise
        # this list will need to be updated when new RAPIDS comps are added.
-       split("rmm custrings xgboost dask-xgboost dask-cudf dask-cuda dask-cuml", buildorder)
+       split("xgboost dask-xgboost dask-cudf dask-cuda dask-cuml", buildorder)
        for (i in buildorder) {
           comp = buildorder[i]
           if (comp in rapidscomps) {

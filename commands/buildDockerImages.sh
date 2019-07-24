@@ -117,9 +117,11 @@ cp -a ${RAPIDSDEVTOOL_DIR}/supportfiles ${OUTPUT_DIR}
 cp -a ${RAPIDSDEVTOOL_DIR}/supportfiles/.condarc* ${OUTPUT_DIR}
 cp -a ${RAPIDSDEVTOOL_DIR}/utils ${OUTPUT_DIR}
 
-# Generate the Dockerfile
+# Generate the Dockerfiles
 GEND_DOCKERFILE=${OUTPUT_DIR}/${DOCKERFILE_BASENAME}.${TEMPL_NAME}
 ${GENDOCKERFILE_CMD} ${DEBUGFLAG} -t ${TEMPL_NAME} -o ${GEND_DOCKERFILE}
+GEND_DOCKERFILE_DEVEL=${OUTPUT_DIR}/${DOCKERFILE_BASENAME}.${TEMPL_NAME}-devel
+${GENDOCKERFILE_CMD} ${DEBUGFLAG} -t ${TEMPL_NAME}-devel -o ${GEND_DOCKERFILE_DEVEL}
 
 # Compute the image tag name
 # This must be done post-gen since it uses the generated Dockerfile
@@ -139,5 +141,10 @@ ${GENCLONESCRIPT_CMD} ${DEBUGFLAG} -o ${GEND_CLONESCRIPT}
 # Create the Docker image for devel, then base, then runtime
 for imageType in devel base runtime; do
     IMAGE_TAG_NAME="rapids_${USER}-cuda${cudaVersion}-${imageType}-${linuxVersion}-gcc${gccVersion}-py${pyVersion}"
-    (cd ${OUTPUT_DIR}; ${BUILDDOCKERIMAGEFROMFILE_CMD} -f ${GEND_DOCKERFILE} -r ${imageType} -l ${LOG_DIR} -i ${IMAGE_TAG_NAME})
+    # devel is currently in a separate Dockerfile (not multi-stage), so do not use -r
+    if [[ ${imageType} == "devel" ]]; then
+        (cd ${OUTPUT_DIR}; ${BUILDDOCKERIMAGEFROMFILE_CMD} -f ${GEND_DOCKERFILE_DEVEL} -l ${LOG_DIR} -i ${IMAGE_TAG_NAME})
+    else
+        (cd ${OUTPUT_DIR}; ${BUILDDOCKERIMAGEFROMFILE_CMD} -f ${GEND_DOCKERFILE} -r ${imageType} -l ${LOG_DIR} -i ${IMAGE_TAG_NAME})
+    fi
 done
