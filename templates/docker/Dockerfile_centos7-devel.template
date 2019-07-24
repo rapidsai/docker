@@ -1,4 +1,4 @@
-# RAPIDS Dockerfile for Ubuntu
+# RAPIDS Dockerfile for CentOS7
 #
 # This multi-stage Dockerfile is used to create the "devel" image.
 #
@@ -9,10 +9,12 @@
 #
 # Copyright (c) 2019, NVIDIA CORPORATION.
 
+# These ARGs are used in multiple stages and must be defined prior to first FROM
+
 ARG CUDA_TYPE=devel
 ARG CUDA_VERSION=10.0
 ARG CUDA_MAJORMINOR_VERSION=${CUDA_VERSION}
-ARG LINUX_VERSION=ubuntu18.04
+ARG LINUX_VERSION=centos7
 ARG PYTHON_VERSION=3.7
 
 FROM gpuci/rapidsai-minicuda:${CUDA_VERSION}-${CUDA_TYPE}-${LINUX_VERSION}-py${PYTHON_VERSION}
@@ -20,11 +22,19 @@ FROM gpuci/rapidsai-minicuda:${CUDA_VERSION}-${CUDA_TYPE}-${LINUX_VERSION}-py${P
 ARG CUDA_VERSION
 ARG CUDA_MAJORMINOR_VERSION
 ARG SUPPORT_FILES_DIR=supportfiles
+ARG GCC7_DIR=/usr/local/gcc7
 
 runcommand ../../commands/utils/dumpDockerArgsFromConfig.sh
 
 ENV CUDA_VERSION=${CUDA_MAJORMINOR_VERSION}
 ENV RAPIDS_DIR=/rapids
+
+# Update environment to use new gcc7
+ENV CC=${GCC7_DIR}/bin/gcc
+ENV CXX=${GCC7_DIR}/bin/g++
+ENV PATH=${GCC7_DIR}/bin:$PATH
+ENV CUDAHOSTCXX=${GCC7_DIR}/bin/g++
+ENV LD_LIBRARY_PATH=${GCC7_DIR}/lib64
 
 # 'rapidsdevtool.sh buildDockerImage' sets up the build context, including the
 #  rapids directory being COPY'd below. See rapidsdevtool.sh help for details.
@@ -75,6 +85,11 @@ RUN if [ "${CUDA_MAJORMINOR_VERSION}" != "9.2" ]; then conda install -n rapids -
 # the URLs and branch names in the config file.
 RUN cd ${RAPIDS_DIR} && ./clone.sh
 
+# Add /usr/local/cuda/* temporarily to LD_LIBRARY_PATH to support various build steps
+# This will need to be removed later since it causes problems with certain runtime libs (numba.cuda)
+ENV LD_LIBRARY_PATH_PREBUILD=${LD_LIBRARY_PATH}
+ENV LD_LIBRARY_PATH=${LD_LIBRARY_PATH}:/usr/local/cuda/lib64:/usr/local/cuda/lib64/stubs
+
 # Assume the build.sh script is present.
 # (this is done automatically when using 'rapidsdevtool.sh buildDockerImage',
 #  see rapidsdevtool.sh help for more details)
@@ -98,6 +113,13 @@ RUN source activate rapids && cd ${RAPIDS_DIR} && \
     ./build.sh dask-cuda
 RUN source activate rapids && cd ${RAPIDS_DIR} && \
     ./build.sh dask-cuml
+
+#
+# Change LD_LIBRARY_PATH to exclude /usr/local/cuda/* since
+# numba.cuda cannot load that, and instead have it load
+# /lib64/libcuda.so instead
+#
+ENV LD_LIBRARY_PATH=${LD_LIBRARY_PATH_PREBUILD}
 
 WORKDIR ${RAPIDS_DIR}/notebooks
 # Jupyter notebook port
@@ -131,4 +153,4 @@ ENV BASH_ENV=/.activate_rapids
 CMD [ "/bin/bash" ]
 
 # Copy Dockerfile as late as possible to avoid invalidating cache for trivial changes
-COPY Dockerfile.ubuntu-devel /Dockerfile.ubuntu-devel
+COPY Dockerfile.centos7-devel /Dockerfile.centos7-devel

@@ -170,6 +170,3 @@ EXPOSE 8786
 
 # Set the env startup script var for non-interactive shells
 ENV BASH_ENV=/.activate_rapids
-
-# Copy Dockerfile as late as possible to avoid invalidating cache for trivial changes
-COPY Dockerfile.ubuntu /Dockerfile.ubuntu
