@@ -81,6 +81,7 @@ RUN export CUDA_MAJOR=`echo $CUDA_VERSION | cut -d'.' -f1` && \
       ipython=${IPYTHON_VERSION} \
       jupyterlab \
       libclang \
+      liblapack \
       matplotlib \
       nccl=${NCCL_CONDA_VERSION} \
       networkx \
