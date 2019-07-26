@@ -35,7 +35,6 @@ ARG PYTHON_VERSION
 ARG RAPIDSAI_CONDA_LABEL
 ARG RAPIDSAI_NIGHTLY_CONDA_LABEL
 ARG RAPIDS_CONDA_VERSION_SPEC
-ARG SUPPORT_FILES_DIR=supportfiles
 ARG XGBOOST_CONDA_LABEL
 ARG XGBOOST_VERSION
 
@@ -47,9 +46,9 @@ ENV BASH_ENV=
 #  rapids directory being COPY'd below. See rapidsdevtool.sh help for details.
 RUN mkdir -p ${RAPIDS_DIR}
 COPY rapids ${RAPIDS_DIR}
-COPY utils ${RAPIDS_DIR}/${UTILS_DIR}
+COPY utils ${RAPIDS_DIR}/utils
 # Add test file for testing notebooks from within the container
-COPY ${SUPPORT_FILES_DIR}/test.sh /test.sh
+COPY supportfiles/test.sh /test.sh
 
 # Option: 'conda install' all RAPIDS packages.
 # This ensures the RAPIDS conda packages install correctly and (should) only
