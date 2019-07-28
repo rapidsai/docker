@@ -51,6 +51,7 @@ RUN export CUDA_MAJOR=`echo $CUDA_VERSION | cut -d'.' -f1` && \
       cuda${CUDA_MAJOR}${CUDA_MINOR} \
       dask=${DASK_VERSION} \
       distributed=${DISTRIBUTED_VERSION} \
+      dlpack \
       faiss-gpu=${FAISSGPU_VERSION} \
       ipython=${IPYTHON_VERSION} \
       jupyterlab \

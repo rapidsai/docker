@@ -1,6 +1,6 @@
 #
 # This file was generated! Edits made directly to this file may be lost.
-#   Timestamp:    2019-07-25
+#   Timestamp:    2019-07-27
 #
 # RAPIDS Dockerfile for CentOS7
 #
@@ -76,6 +76,7 @@ RUN export CUDA_MAJOR=`echo $CUDA_VERSION | cut -d'.' -f1` && \
       cuda${CUDA_MAJOR}${CUDA_MINOR} \
       dask=${DASK_VERSION} \
       distributed=${DISTRIBUTED_VERSION} \
+      dlpack \
       faiss-gpu=${FAISSGPU_VERSION} \
       ipython=${IPYTHON_VERSION} \
       jupyterlab \
