@@ -80,8 +80,6 @@ RUN export CUDA_MAJOR=`echo $CUDA_VERSION | cut -d'.' -f1` && \
       xgboost=${XGBOOST_VERSION} \
       dask-xgboost=${DASK_XGBOOST_CONDA_VERSION_SPEC} \
       dask-cuda=${RAPIDS_CONDA_VERSION_SPEC} \
-      dask-cudf=${RAPIDS_CONDA_VERSION_SPEC} \
-      dask-cuml=${RAPIDS_CONDA_VERSION_SPEC} \
    && conda clean -a
 
 WORKDIR ${RAPIDS_DIR}

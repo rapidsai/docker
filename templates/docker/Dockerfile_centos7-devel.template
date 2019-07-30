@@ -58,6 +58,7 @@ RUN export CUDA_MAJOR=`echo $CUDA_VERSION | cut -d'.' -f1` && \
       distributed=${DISTRIBUTED_VERSION} \
       dlpack \
       faiss-gpu=${FAISSGPU_VERSION} \
+      flatbuffers \
       ipython=${IPYTHON_VERSION} \
       jupyterlab \
       libclang \
@@ -66,6 +67,8 @@ RUN export CUDA_MAJOR=`echo $CUDA_VERSION | cut -d'.' -f1` && \
       nccl=${NCCL_CONDA_VERSION} \
       networkx \
       openblas \
+      pyarrow=0.14.1 \
+      rapidjson \
       seaborn \
     && conda clean -a
 
@@ -110,11 +113,7 @@ RUN source activate rapids && cd ${RAPIDS_DIR} && \
 RUN source activate rapids && cd ${RAPIDS_DIR} && \
     ./build.sh dask-xgboost
 RUN source activate rapids && cd ${RAPIDS_DIR} && \
-    ./build.sh dask-cudf
-RUN source activate rapids && cd ${RAPIDS_DIR} && \
     ./build.sh dask-cuda
-RUN source activate rapids && cd ${RAPIDS_DIR} && \
-    ./build.sh dask-cuml
 
 #
 # Change LD_LIBRARY_PATH to exclude /usr/local/cuda/* since
