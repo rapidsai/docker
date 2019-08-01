@@ -1,6 +1,6 @@
 #
 # This file was generated! Edits made directly to this file may be lost.
-#   Timestamp:    2019-07-30
+#   Timestamp:    2019-08-01
 #
 # RAPIDS Dockerfile for Ubuntu
 #
@@ -84,6 +84,7 @@ RUN export CUDA_MAJOR=`echo $CUDA_VERSION | cut -d'.' -f1` && \
       nccl=${NCCL_CONDA_VERSION} \
       networkx \
       openblas \
+      pandas=0.24.2 \
       pyarrow=0.14.1 \
       rapidjson \
       seaborn \
