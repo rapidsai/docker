@@ -68,6 +68,7 @@ RUN export CUDA_MAJOR=`echo $CUDA_VERSION | cut -d'.' -f1` && \
       pyarrow=0.14.1 \
       rapidjson \
       seaborn \
+      tensorflow \
     && conda clean -a
 
 # Special case: libcumlmg is not available for CUDA 9.2

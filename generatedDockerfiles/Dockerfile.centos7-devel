@@ -1,6 +1,6 @@
 #
 # This file was generated! Edits made directly to this file may be lost.
-#   Timestamp:    2019-08-01
+#   Timestamp:    2019-08-02
 #
 # RAPIDS Dockerfile for CentOS7
 #
@@ -91,6 +91,7 @@ RUN export CUDA_MAJOR=`echo $CUDA_VERSION | cut -d'.' -f1` && \
       pyarrow=0.14.1 \
       rapidjson \
       seaborn \
+      tensorflow \
     && conda clean -a
 
 # Special case: libcumlmg is not available for CUDA 9.2
