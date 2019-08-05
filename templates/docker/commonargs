@@ -1,4 +1,0 @@
-ARG UTILS_DIR=utils
-ARG SUPPORT_FILES_DIR=supportfiles
-ARG RAPIDS_SRC_DIR=/rapids
-

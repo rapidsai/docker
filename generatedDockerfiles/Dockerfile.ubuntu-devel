@@ -1,6 +1,6 @@
 #
 # This file was generated! Edits made directly to this file may be lost.
-#   Timestamp:    2019-08-02
+#   Timestamp:    2019-08-05
 #
 # RAPIDS Dockerfile for Ubuntu
 #
@@ -17,17 +17,20 @@ ARG CUDA_TYPE=devel
 ARG CUDA_VERSION=10.0
 ARG CUDA_MAJORMINOR_VERSION=${CUDA_VERSION}
 ARG LINUX_VERSION=ubuntu18.04
-ARG PYTHON_VERSION=3.7
 
-FROM gpuci/rapidsai-minicuda:${CUDA_VERSION}-${CUDA_TYPE}-${LINUX_VERSION}-py${PYTHON_VERSION}
+FROM gpuci/miniconda-cuda:${CUDA_VERSION}-${CUDA_TYPE}-${LINUX_VERSION} AS base
 
 ARG CC_VERSION
 ARG CXX_VERSION
 ARG CUDA_VERSION
 ARG CUDA_MAJORMINOR_VERSION
 
+ARG ARROW_CPP_VERSION=0.14.1
 ARG CC_VERSION=7
+ARG CFFI_VERSION=1.11.5
+ARG CMAKE_VERSION=3.14
 ARG CXX_VERSION=7
+ARG CYTHON_VERSION=0.29.*
 ARG DASK_VERSION=">2"
 ARG DASK_XGBOOST_CONDA_VERSION_SPEC=0.2*
 ARG DISTRIBUTED_VERSION=">2"
@@ -35,8 +38,12 @@ ARG FAISSGPU_VERSION=1.5.0
 ARG HASH_JOIN=ON
 ARG IPYTHON_VERSION=7.3*
 ARG NCCL_CONDA_VERSION=">2"
+ARG NUMBA_VERSION=0.41
+ARG NUMPY_VERSION=1.16.2
 ARG NVIDIA_CONDA_LABEL=nvidia/label/cuda${CUDA_MAJORMINOR_VERSION}
+ARG PANDAS_VERSION=0.24.2
 ARG PYTHON_VERSION=3.6
+ARG PYARROW_VERSION=0.14.1
 ARG RAPIDSAI_CONDA_LABEL=rapidsai/label/cuda${CUDA_MAJORMINOR_VERSION}
 ARG RAPIDS_CONDA_VERSION_SPEC=0.9*
 ARG RAPIDSAI_NIGHTLY_CONDA_LABEL=rapidsai-nightly/label/cuda${CUDA_MAJORMINOR_VERSION}
@@ -50,12 +57,9 @@ ENV CUDAHOSTCXX=$CXX
 ENV CUDA_VERSION=${CUDA_MAJORMINOR_VERSION}
 ENV RAPIDS_DIR=/rapids
 
-# conda environment
-# NOTE: use these mirrors for faster downloads
-#       -c http://10.33.227.188:88/numba \
-#       -c http://10.33.227.188:88/conda-forge \
 RUN export CUDA_MAJOR=`echo $CUDA_VERSION | cut -d'.' -f1` && \
     export CUDA_MINOR=`echo $CUDA_VERSION | cut -d'.' -f2` && \
+    conda create -n rapids python=${PYTHON_VERSION} && \
     conda install -n rapids -y \
       -c ${RAPIDSAI_CONDA_LABEL} \
       -c ${RAPIDSAI_NIGHTLY_CONDA_LABEL} \
@@ -65,11 +69,14 @@ RUN export CUDA_MAJOR=`echo $CUDA_VERSION | cut -d'.' -f1` && \
       -c conda-forge \
       -c pytorch \
       -c defaults \
-      arrow-cpp=0.14.1 \
+      arrow-cpp=${PYARROW_VERSION} \
       bokeh \
-      cmake=3.14 \
+      cffi=${CFFI_VERSION} \
+      cmake=${CMAKE_VERSION} \
       cmake_setuptools">=0.1.3" \
       cuda${CUDA_MAJOR}${CUDA_MINOR} \
+      cudatoolkit=${CUDA_MAJORMINOR_VERSION} \
+      cython=${CYTHON_VERSION} \
       dask=${DASK_VERSION} \
       distributed=${DISTRIBUTED_VERSION} \
       double-conversion \
@@ -80,19 +87,65 @@ RUN export CUDA_MAJOR=`echo $CUDA_VERSION | cut -d'.' -f1` && \
       jupyterlab \
       libclang \
       liblapack \
+      make \
       matplotlib \
       nccl=${NCCL_CONDA_VERSION} \
       networkx \
+      numba=${NUMBA_VERSION} \
+      numpy=${NUMPY_VERSION} \
       openblas \
-      pandas=0.24.2 \
-      pyarrow=0.14.1 \
+      pandas=${PANDAS_VERSION} \
+      pyarrow=${PYARROW_VERSION} \
+      pytest \
       rapidjson \
+      scikit-learn \
+      scipy=${SCIPY_VERSION} \
       seaborn \
       tensorflow \
     && conda clean -a
 
+#RUN export CUDA_MAJOR=`echo $CUDA_VERSION | cut -d'.' -f1` && \
+#    export CUDA_MINOR=`echo $CUDA_VERSION | cut -d'.' -f2` && \
+#    conda install -n rapids -y \
+#      -c ${RAPIDSAI_CONDA_LABEL} \
+#      -c ${RAPIDSAI_NIGHTLY_CONDA_LABEL} \
+#      -c ${NVIDIA_CONDA_LABEL} \
+#      -c nvidia \
+#      -c numba \
+#      -c conda-forge \
+#      -c pytorch \
+#      -c defaults \
+#      arrow-cpp=0.14.1 \
+#      bokeh \
+#      cmake=3.14 \
+#      cmake_setuptools">=0.1.3" \
+#      cuda${CUDA_MAJOR}${CUDA_MINOR} \
+#      dask=${DASK_VERSION} \
+#      distributed=${DISTRIBUTED_VERSION} \
+#      double-conversion \
+#      dlpack \
+#      faiss-gpu=${FAISSGPU_VERSION} \
+#      flatbuffers \
+#      ipython=${IPYTHON_VERSION} \
+#      jupyterlab \
+#      libclang \
+#      liblapack \
+#      matplotlib \
+#      nccl=${NCCL_CONDA_VERSION} \
+#      networkx \
+#      openblas \
+#      pandas=0.24.2 \
+#      pyarrow=0.14.1 \
+#      rapidjson \
+#      seaborn \
+#      tensorflow \
+#    && conda clean -a
+
 # Special case: libcumlmg is not available for CUDA 9.2
 RUN if [ "${CUDA_MAJORMINOR_VERSION}" != "9.2" ]; then conda install -n rapids -y --no-deps -c ${NVIDIA_CONDA_LABEL} -c conda-forge libcumlmg; fi
+
+# Allow non-root to modify conda
+RUN chmod -R ugo+w /opt/conda
 
 # 'rapidsdevtool.sh buildDockerImage' sets up the build context, including the
 #  rapids directory being COPY'd below. See rapidsdevtool.sh help for details.
