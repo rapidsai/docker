@@ -9,12 +9,14 @@ RUN export CUDA_MAJOR=`echo $CUDA_VERSION | cut -d'.' -f1` && \
       -c conda-forge \
       -c pytorch \
       -c defaults \
-      cudatoolkit=${CUDA_MAJOR}.${CUDA_MINOR} \
       bokeh \
+      cudatoolkit=${CUDA_MAJOR}.${CUDA_MINOR} \
+      dask_labextension \
       ipython=${IPYTHON_VERSION} \
       jupyterlab \
       matplotlib \
       networkx \
+      nodejs \
       numba=${NUMBA_VERSION} \
       numpy=${NUMPY_VERSION} \
       pandas=${PANDAS_VERSION} \
@@ -27,3 +29,5 @@ RUN export CUDA_MAJOR=`echo $CUDA_VERSION | cut -d'.' -f1` && \
 
 # Allow non-root to modify conda
 RUN chmod -R ugo+w /opt/conda
+
+RUN source activate rapids && jupyter labextension install dask-labextension
