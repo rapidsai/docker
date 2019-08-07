@@ -29,13 +29,3 @@ ENV CXX=${GCC7_DIR}/bin/g++
 ENV PATH=${GCC7_DIR}/bin:$PATH
 ENV CUDAHOSTCXX=${GCC7_DIR}/bin/g++
 ENV LD_LIBRARY_PATH=${GCC7_DIR}/lib64
-
-# Update environment to use new gcc7
-#ENV CC=${GCC7_DIR}/bin/gcc
-#ENV CXX=${GCC7_DIR}/bin/g++
-#ENV CUDAHOSTCXX=${GCC7_DIR}/bin/g++
-#ENV LD_LIBRARY_PATH=${GCC7_DIR}/lib64:$CONDA_PREFIX:$LD_LIBRARY_PATH
-#ENV NUMBAPRO_NVVM=/usr/local/cuda/nvvm/lib64/libnvvm.so
-#ENV NUMBAPRO_LIBDEVICE=/usr/local/cuda/nvvm/libdevice
-#ENV PATH=$PATH:/conda/bin
-#ENV PATH=${GCC7_DIR}/bin:$PATH

@@ -40,19 +40,19 @@ ARG RAPIDS_CONDA_VERSION_SPEC
 ARG XGBOOST_CONDA_LABEL
 ARG XGBOOST_VERSION
 
-ENV PATH=${GCC7_DIR}/bin:$PATH
 ENV LD_LIBRARY_PATH=${GCC7_DIR}/lib64
 ENV CUDA_VERSION=${CUDA_MAJORMINOR_VERSION}
 ENV RAPIDS_DIR=/rapids
 ENV BASH_ENV=
 
-# 'rapidsdevtool.sh buildDockerImage' sets up the build context, including the
-#  rapids directory being COPY'd below. See rapidsdevtool.sh help for details.
-RUN mkdir -p ${RAPIDS_DIR}
+# Copy files needed by RAPIDS and 3rd parties for builds, test, and runtime.
+RUN mkdir -p ${RAPIDS_DIR} ${GCC7_DIR}/lib64
 COPY rapids ${RAPIDS_DIR}
 COPY utils ${RAPIDS_DIR}/utils
 # Add test file for testing notebooks from within the container
 COPY supportfiles/test.sh /test.sh
+# Add compatible libm
+COPY supportfiles/libm.so.6 ${GCC7_DIR}/lib64
 
 insertfile conda_install_rapids
 
@@ -94,13 +94,11 @@ FROM base AS runtime
 # Retrieve values set prior to first FROM command for use below
 ARG CUDA_MAJORMINOR_VERSION
 ARG CUDA_VERSION
-ARG GCC7_DIR
 ARG IPYTHON_VERSION
 ARG NUMBA_VERSION
 ARG NUMPY_VERSION
 ARG NVIDIA_CONDA_LABEL
 ARG PANDAS_VERSION
-ARG PYARROW_VERSION
 ARG RAPIDSAI_CONDA_LABEL
 ARG RAPIDSAI_NIGHTLY_CONDA_LABEL
 

@@ -1,6 +1,6 @@
 #
 # This file was generated! Edits made directly to this file may be lost.
-#   Timestamp:    2019-08-06
+#   Timestamp:    2019-08-07
 #
 # RAPIDS Dockerfile for Ubuntu
 #
@@ -150,7 +150,6 @@ ARG IPYTHON_VERSION
 ARG NUMBA_VERSION
 ARG NUMPY_VERSION
 ARG PANDAS_VERSION
-ARG PYARROW_VERSION
 
 ENV BASH_ENV=
 
