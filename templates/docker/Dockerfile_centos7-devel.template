@@ -85,6 +85,9 @@ EXPOSE 8888
 EXPOSE 8787
 EXPOSE 8786
 
+# Allow non-root to modify /rapids sources
+RUN chmod -R ugo+w /rapids
+
 # Activate the rapids conda env for interactive shells via the default .bashrc
 # The ENTRYPOINT script (see below) still sets the env, but this ensures the
 # interactive settings (prompt) are set properly too.  root did not read

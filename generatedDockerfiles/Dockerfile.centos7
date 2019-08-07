@@ -44,7 +44,7 @@ ARG PYARROW_VERSION=0.14.1
 ARG RAPIDSAI_CONDA_LABEL=rapidsai/label/cuda${CUDA_MAJORMINOR_VERSION}
 ARG RAPIDS_CONDA_VERSION_SPEC=0.9*
 ARG RAPIDSAI_NIGHTLY_CONDA_LABEL=rapidsai-nightly/label/cuda${CUDA_MAJORMINOR_VERSION}
-ARG XGBOOST_CONDA_VERSION_SPEC=0.90*
+ARG XGBOOST_CONDA_VERSION_SPEC=0.90.rapidsdev1
 ARG XGBOOST_CONDA_LABEL=rapidsai/label/xgboost
 ARG XGBOOST_VERSION=0.90
 
@@ -104,12 +104,15 @@ RUN export CUDA_MAJOR=`echo $CUDA_VERSION | cut -d'.' -f1` && \
       xgboost=${XGBOOST_VERSION} \
       dask-xgboost=${DASK_XGBOOST_CONDA_VERSION_SPEC} \
       dask-cuda=${RAPIDS_CONDA_VERSION_SPEC} \
-   && conda clean -a
+   && conda clean -afy
 
 # Allow non-root to modify conda
 RUN chmod -R ugo+w /opt/conda
 
 WORKDIR ${RAPIDS_DIR}
+
+# Allow non-root to modify /rapids sources
+RUN chmod -R ugo+w /rapids
 
 # Activate the rapids conda env for interactive shells via the default .bashrc
 # The ENTRYPOINT script (see below) still sets the env, but this ensures the
@@ -128,6 +131,9 @@ RUN echo "#!/bin/bash" > /.run_in_rapids_env
 RUN echo "exec \"\$@\"" >> /.run_in_rapids_env
 RUN chmod 777 /.run_in_rapids_env
 ENTRYPOINT [ "/usr/bin/tini", "--", "/.run_in_rapids_env" ]
+
+# Set the env startup script var for non-interactive shells
+ENV BASH_ENV=/.activate_rapids
 
 # Set the default command to pass to the ENTRYPOINT if no command was given
 CMD [ "/bin/bash" ]
@@ -175,12 +181,11 @@ RUN export CUDA_MAJOR=`echo $CUDA_VERSION | cut -d'.' -f1` && \
       numba=${NUMBA_VERSION} \
       numpy=${NUMPY_VERSION} \
       pandas=${PANDAS_VERSION} \
-      pyarrow=${PYARROW_VERSION} \
       scikit-learn \
       scipy \
       seaborn \
       tensorflow \
-   && conda clean -a
+   && conda clean -afy
 
 # Allow non-root to modify conda
 RUN chmod -R ugo+w /opt/conda
@@ -197,6 +202,9 @@ EXPOSE 8888
 # Dask Scheduler Bokeh port
 EXPOSE 8787
 EXPOSE 8786
+
+# Allow non-root to modify /rapids sources
+RUN chmod -R ugo+w /rapids
 
 # Set the env startup script var for non-interactive shells
 ENV BASH_ENV=/.activate_rapids

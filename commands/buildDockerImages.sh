@@ -144,7 +144,6 @@ for imageType in devel base runtime; do
     # devel is currently in a separate Dockerfile (not multi-stage), so do not use -r
     if [[ ${imageType} == "devel" ]]; then
         (cd ${OUTPUT_DIR}; ${BUILDDOCKERIMAGEFROMFILE_CMD} -f ${GEND_DOCKERFILE_DEVEL} -l ${LOG_DIR} -i ${IMAGE_TAG_NAME})
-        exit
     else
         (cd ${OUTPUT_DIR}; ${BUILDDOCKERIMAGEFROMFILE_CMD} -f ${GEND_DOCKERFILE} -r ${imageType} -l ${LOG_DIR} -i ${IMAGE_TAG_NAME})
     fi

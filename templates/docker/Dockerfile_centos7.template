@@ -58,6 +58,9 @@ insertfile conda_install_rapids
 
 WORKDIR ${RAPIDS_DIR}
 
+# Allow non-root to modify /rapids sources
+RUN chmod -R ugo+w /rapids
+
 # Activate the rapids conda env for interactive shells via the default .bashrc
 # The ENTRYPOINT script (see below) still sets the env, but this ensures the
 # interactive settings (prompt) are set properly too.  root did not read
@@ -75,6 +78,9 @@ RUN echo "#!/bin/bash" > /.run_in_rapids_env
 RUN echo "exec \"\$@\"" >> /.run_in_rapids_env
 RUN chmod 777 /.run_in_rapids_env
 ENTRYPOINT [ "/usr/bin/tini", "--", "/.run_in_rapids_env" ]
+
+# Set the env startup script var for non-interactive shells
+ENV BASH_ENV=/.activate_rapids
 
 # Set the default command to pass to the ENTRYPOINT if no command was given
 CMD [ "/bin/bash" ]
@@ -112,6 +118,9 @@ EXPOSE 8888
 # Dask Scheduler Bokeh port
 EXPOSE 8787
 EXPOSE 8786
+
+# Allow non-root to modify /rapids sources
+RUN chmod -R ugo+w /rapids
 
 # Set the env startup script var for non-interactive shells
 ENV BASH_ENV=/.activate_rapids

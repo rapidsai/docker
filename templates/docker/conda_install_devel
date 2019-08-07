@@ -45,7 +45,7 @@ RUN export CUDA_MAJOR=`echo $CUDA_VERSION | cut -d'.' -f1` && \
       scipy=${SCIPY_VERSION} \
       seaborn \
       tensorflow \
-    && conda clean -a
+    && conda clean -afy
 
 # Special case: libcumlmg is not available for CUDA 9.2
 RUN if [ "${CUDA_MAJORMINOR_VERSION}" != "9.2" ]; then conda install -n rapids -y --no-deps -c ${NVIDIA_CONDA_LABEL} -c conda-forge libcumlmg; fi
