@@ -107,8 +107,8 @@ RUN chmod -R ugo+w /opt/conda
 
 WORKDIR ${RAPIDS_DIR}
 
-# Allow non-root to modify /rapids sources
-RUN chmod -R ugo+w /rapids
+# Allow non-root to modify various parts of the filesystem
+RUN chmod -R ugo+w /rapids /home
 
 # Activate the rapids conda env for interactive shells via the default .bashrc
 # The ENTRYPOINT script (see below) still sets the env, but this ensures the
