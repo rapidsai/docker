@@ -55,9 +55,6 @@ insertfile conda_install_rapids
 
 WORKDIR ${RAPIDS_DIR}
 
-# Allow non-root to modify various parts of the filesystem
-RUN chmod -R ugo+w /rapids /home
-
 ENTRYPOINT [ "/usr/bin/tini", "--" ]
 
 # Set the default command to pass to the ENTRYPOINT if no command was given
@@ -94,6 +91,3 @@ EXPOSE 8888
 # Dask Scheduler Bokeh port
 EXPOSE 8787
 EXPOSE 8786
-
-# Allow non-root to modify /rapids sources
-RUN chmod -R ugo+w /rapids
