@@ -20,6 +20,7 @@ ARG CC_VERSION
 ARG CXX_VERSION
 ARG CUDA_VERSION
 ARG CUDA_MAJORMINOR_VERSION
+ARG PARALLEL_LEVEL=8
 
 runcommand ../../commands/utils/dumpDockerArgsFromConfig.sh
 
