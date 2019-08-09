@@ -61,9 +61,6 @@ WORKDIR ${RAPIDS_DIR}
 
 ENTRYPOINT [ "/usr/bin/tini", "--" ]
 
-# Set the env startup script var for non-interactive shells
-ENV BASH_ENV=/.activate_rapids
-
 # Set the default command to pass to the ENTRYPOINT if no command was given
 CMD [ "/bin/bash" ]
 
