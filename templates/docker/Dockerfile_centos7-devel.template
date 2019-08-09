@@ -28,6 +28,7 @@ runcommand ../../commands/utils/dumpDockerArgsFromConfig.sh
 ENV CUDA_VERSION=${CUDA_MAJORMINOR_VERSION}
 ENV RAPIDS_DIR=/rapids
 
+insertfile gcc7_centos7
 insertfile conda_install_devel
 
 # Copy files needed by RAPIDS and 3rd parties for builds, test, and runtime.
