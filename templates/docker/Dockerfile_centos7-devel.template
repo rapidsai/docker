@@ -22,6 +22,7 @@ ARG CUDA_VERSION
 ARG CUDA_MAJORMINOR_VERSION
 ARG GCC7_DIR=/usr/local/gcc7
 ARG SUPPORT_FILES_DIR=supportfiles
+ARG PARALLEL_LEVEL
 
 runcommand ../../commands/utils/dumpDockerArgsFromConfig.sh
 
