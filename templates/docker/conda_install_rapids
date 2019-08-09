@@ -1,7 +1,6 @@
 RUN export CUDA_MAJOR=`echo $CUDA_VERSION | cut -d'.' -f1` && \
     export CUDA_MINOR=`echo $CUDA_VERSION | cut -d'.' -f2` && \
-    conda create -n rapids python=${PYTHON_VERSION} && \
-    conda install -n rapids -y \
+    conda install -y \
       -c ${RAPIDSAI_CONDA_LABEL} \
       -c ${RAPIDSAI_NIGHTLY_CONDA_LABEL} \
       -c ${NVIDIA_CONDA_LABEL} \
@@ -20,7 +19,5 @@ RUN export CUDA_MAJOR=`echo $CUDA_VERSION | cut -d'.' -f1` && \
       xgboost=${XGBOOST_VERSION} \
       dask-xgboost=${DASK_XGBOOST_CONDA_VERSION_SPEC} \
       dask-cuda=${RAPIDS_CONDA_VERSION_SPEC} \
-   && conda clean -afy
-
-# Allow non-root to modify conda
-RUN chmod -R ugo+w /opt/conda
+   && conda clean -afy && \
+   chmod -R ugo+w /opt/conda
