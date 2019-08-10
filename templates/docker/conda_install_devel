@@ -23,7 +23,6 @@ RUN export CUDA_MAJOR=`echo $CUDA_VERSION | cut -d'.' -f1` && \
       distributed=${DISTRIBUTED_VERSION} \
       double-conversion \
       dlpack \
-      faiss-gpu=${FAISSGPU_VERSION} \
       flatbuffers \
       ipython=${IPYTHON_VERSION} \
       jupyterlab \
