@@ -14,15 +14,15 @@ IPYTHON_VERSION=7.3*
 NCCL_CONDA_VERSION=">2"
 NUMBA_VERSION=0.41
 NUMPY_VERSION=1.16.2
-NVIDIA_CONDA_LABEL=nvidia
+NVIDIA_CONDA_LABEL=http://conda-mirror.rapids.ai/nvidia
 PANDAS_VERSION=0.24.2
 PYTHON_VERSION=3.6
 PYARROW_VERSION=0.14.1
-RAPIDSAI_CONDA_LABEL=rapidsai
+RAPIDSAI_CONDA_LABEL=http://conda-mirror.rapids.ai/rapidsai
 RAPIDS_CONDA_VERSION_SPEC=0.9*
-RAPIDSAI_NIGHTLY_CONDA_LABEL=rapidsai-nightly
+RAPIDSAI_NIGHTLY_CONDA_LABEL=http://conda-mirror.rapids.ai/rapidsai-nightly
 XGBOOST_CONDA_VERSION_SPEC=0.90.rapidsdev1
-XGBOOST_CONDA_LABEL=rapidsai/label/xgboost
+XGBOOST_CONDA_LABEL=http://conda-mirror.rapids.ai/rapidsai/label/xgboost
 XGBOOST_VERSION=0.90
 
 # SECTION: RAPIDS (do not remove or modify this comment)
