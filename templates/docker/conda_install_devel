@@ -4,9 +4,9 @@ RUN export CUDA_MAJOR=`echo $CUDA_VERSION | cut -d'.' -f1` && \
       -c ${RAPIDSAI_CONDA_LABEL} \
       -c ${RAPIDSAI_NIGHTLY_CONDA_LABEL} \
       -c ${NVIDIA_CONDA_LABEL} \
-      -c http://conda-mirror.rapids.ai/nvidia \
-      -c http://conda-mirror.rapids.ai/numba \
-      -c http://conda-mirror.rapids.ai/conda-forge \
+      -c nvidia \
+      -c numba \
+      -c conda-forge \
       -c pytorch \
       -c defaults \
       nomkl \
