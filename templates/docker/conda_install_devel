@@ -19,7 +19,7 @@ RUN export CUDA_MAJOR=`echo $CUDA_VERSION | cut -d'.' -f1` && \
       cudatoolkit=${CUDA_MAJORMINOR_VERSION} \
       cython=${CYTHON_VERSION} \
       dask=${DASK_VERSION} \
-      dask_labextension \
+      dask-labextension \
       distributed=${DISTRIBUTED_VERSION} \
       double-conversion \
       dlpack \
@@ -45,12 +45,10 @@ RUN export CUDA_MAJOR=`echo $CUDA_VERSION | cut -d'.' -f1` && \
       scipy=${SCIPY_VERSION} \
       seaborn \
       tensorflow \
-    && conda clean -afy
+    && conda clean -afy \
+    && chmod -R ugo+w /opt/conda
 
 # Special case: libcumlmg is not available for CUDA 9.2
-RUN if [ "${CUDA_MAJORMINOR_VERSION}" != "9.2" ]; then conda install -n rapids -y --no-deps -c ${NVIDIA_CONDA_LABEL} -c conda-forge libcumlmg; fi
-
-# Allow non-root to modify conda
-RUN chmod -R ugo+w /opt/conda
+RUN if [ "${CUDA_MAJORMINOR_VERSION}" != "9.2" ]; then conda install -n rapids -y --no-deps -c ${NVIDIA_CONDA_LABEL} -c conda-forge libcumlmg && chmod -R ugo+w /opt/conda; fi
 
 RUN source activate rapids && jupyter labextension install dask-labextension

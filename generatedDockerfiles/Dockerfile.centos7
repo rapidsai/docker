@@ -1,6 +1,6 @@
 #
 # This file was generated! Edits made directly to this file may be lost.
-#   Timestamp:    2019-08-07
+#   Timestamp:    2019-08-10
 #
 # RAPIDS Dockerfile for CentOS7
 #
@@ -104,10 +104,8 @@ RUN export CUDA_MAJOR=`echo $CUDA_VERSION | cut -d'.' -f1` && \
       xgboost=${XGBOOST_VERSION} \
       dask-xgboost=${DASK_XGBOOST_CONDA_VERSION_SPEC} \
       dask-cuda=${RAPIDS_CONDA_VERSION_SPEC} \
-   && conda clean -afy
-
-# Allow non-root to modify conda
-RUN chmod -R ugo+w /opt/conda
+   && conda clean -afy \
+   && chmod -R ugo+w /opt/conda
 
 WORKDIR ${RAPIDS_DIR}
 
@@ -170,7 +168,7 @@ RUN export CUDA_MAJOR=`echo $CUDA_VERSION | cut -d'.' -f1` && \
       -c defaults \
       bokeh \
       cudatoolkit=${CUDA_MAJOR}.${CUDA_MINOR} \
-      dask_labextension \
+      dask-labextension \
       ipython=${IPYTHON_VERSION} \
       jupyterlab \
       matplotlib \
@@ -183,10 +181,8 @@ RUN export CUDA_MAJOR=`echo $CUDA_VERSION | cut -d'.' -f1` && \
       scipy \
       seaborn \
       tensorflow \
-   && conda clean -afy
-
-# Allow non-root to modify conda
-RUN chmod -R ugo+w /opt/conda
+   && conda clean -afy \
+   && chmod -R ugo+w /opt/conda
 
 RUN source activate rapids && jupyter labextension install dask-labextension
 

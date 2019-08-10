@@ -11,7 +11,7 @@ RUN export CUDA_MAJOR=`echo $CUDA_VERSION | cut -d'.' -f1` && \
       -c defaults \
       bokeh \
       cudatoolkit=${CUDA_MAJOR}.${CUDA_MINOR} \
-      dask_labextension \
+      dask-labextension \
       ipython=${IPYTHON_VERSION} \
       jupyterlab \
       matplotlib \
@@ -24,9 +24,7 @@ RUN export CUDA_MAJOR=`echo $CUDA_VERSION | cut -d'.' -f1` && \
       scipy \
       seaborn \
       tensorflow \
-   && conda clean -afy
-
-# Allow non-root to modify conda
-RUN chmod -R ugo+w /opt/conda
+   && conda clean -afy \
+   && chmod -R ugo+w /opt/conda
 
 RUN source activate rapids && jupyter labextension install dask-labextension
