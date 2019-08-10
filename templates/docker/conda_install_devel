@@ -4,11 +4,12 @@ RUN export CUDA_MAJOR=`echo $CUDA_VERSION | cut -d'.' -f1` && \
       -c ${RAPIDSAI_CONDA_LABEL} \
       -c ${RAPIDSAI_NIGHTLY_CONDA_LABEL} \
       -c ${NVIDIA_CONDA_LABEL} \
-      -c nvidia \
-      -c numba \
-      -c conda-forge \
+      -c http://conda-mirror.rapids.ai/nvidia \
+      -c http://conda-mirror.rapids.ai/numba \
+      -c http://conda-mirror.rapids.ai/conda-forge \
       -c pytorch \
       -c defaults \
+      nomkl \
       arrow-cpp=${PYARROW_VERSION} \
       bokeh \
       cffi=${CFFI_VERSION} \
@@ -35,7 +36,7 @@ RUN export CUDA_MAJOR=`echo $CUDA_VERSION | cut -d'.' -f1` && \
       nodejs \
       numba=${NUMBA_VERSION} \
       numpy=${NUMPY_VERSION} \
-      openblas \
+      conda-forge::blas=1.1=openblas \
       pandas=${PANDAS_VERSION} \
       pyarrow=${PYARROW_VERSION} \
       pytest \
