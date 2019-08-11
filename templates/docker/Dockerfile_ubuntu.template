@@ -16,10 +16,11 @@ ARG CUDA_TYPE=devel
 ARG CUDA_VERSION=10.0
 ARG CUDA_MAJORMINOR_VERSION=${CUDA_VERSION}
 ARG LINUX_VERSION=ubuntu18.04
+ARG PYTHON_VERSION=3.6
 
 runcommand ../../commands/utils/dumpDockerArgsFromConfig.sh
 
-FROM gpuci/miniconda-cuda:${CUDA_VERSION}-${CUDA_TYPE}-${LINUX_VERSION} AS base
+FROM gpuci/miniconda-cuda:${CUDA_VERSION}-${CUDA_TYPE}-${LINUX_VERSION}-py${PYTHON_VERSION} AS base
 
 # Retrieve values set prior to first FROM command for use below
 ARG CUDA_MAJORMINOR_VERSION
@@ -54,29 +55,7 @@ insertfile conda_install_rapids
 
 WORKDIR ${RAPIDS_DIR}
 
-# Allow non-root to modify various parts of the filesystem
-RUN chmod -R ugo+w /rapids /home
-
-# Activate the rapids conda env for interactive shells via the default .bashrc
-# The ENTRYPOINT script (see below) still sets the env, but this ensures the
-# interactive settings (prompt) are set properly too.  root did not read
-# /etc/bash.bashrc, so also add to /root/.bashrc
-RUN echo "source activate rapids" >> /etc/bash.bashrc
-RUN echo "source activate rapids" >> /root/.bashrc
-
-# Create a dedicated startup env script that activates the rapids conda env for
-# use with the non-interactive bash env var, to be set later. Then create a new
-# script to exec the command (if given) in the environemnt set up by BASH_ENV
-# and use it as the ENTRYPOINT.
-RUN echo "source activate rapids" > /.activate_rapids
-RUN chmod 777 /.activate_rapids
-RUN echo "#!/bin/bash" > /.run_in_rapids_env
-RUN echo "exec \"\$@\"" >> /.run_in_rapids_env
-RUN chmod 777 /.run_in_rapids_env
-ENTRYPOINT [ "/usr/bin/tini", "--", "/.run_in_rapids_env" ]
-
-# Set the env startup script var for non-interactive shells
-ENV BASH_ENV=/.activate_rapids
+ENTRYPOINT [ "/usr/bin/tini", "--" ]
 
 # Set the default command to pass to the ENTRYPOINT if no command was given
 CMD [ "/bin/bash" ]
@@ -112,9 +91,3 @@ EXPOSE 8888
 # Dask Scheduler Bokeh port
 EXPOSE 8787
 EXPOSE 8786
-
-# Allow non-root to modify /rapids sources
-RUN chmod -R ugo+w /rapids
-
-# Set the env startup script var for non-interactive shells
-ENV BASH_ENV=/.activate_rapids

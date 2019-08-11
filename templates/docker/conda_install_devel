@@ -1,7 +1,6 @@
 RUN export CUDA_MAJOR=`echo $CUDA_VERSION | cut -d'.' -f1` && \
     export CUDA_MINOR=`echo $CUDA_VERSION | cut -d'.' -f2` && \
-    conda create -n rapids python=${PYTHON_VERSION} && \
-    conda install -n rapids -y \
+    conda install -y \
       -c ${RAPIDSAI_CONDA_LABEL} \
       -c ${RAPIDSAI_NIGHTLY_CONDA_LABEL} \
       -c ${NVIDIA_CONDA_LABEL} \
@@ -10,6 +9,7 @@ RUN export CUDA_MAJOR=`echo $CUDA_VERSION | cut -d'.' -f1` && \
       -c conda-forge \
       -c pytorch \
       -c defaults \
+      nomkl \
       arrow-cpp=${PYARROW_VERSION} \
       bokeh \
       cffi=${CFFI_VERSION} \
@@ -23,7 +23,6 @@ RUN export CUDA_MAJOR=`echo $CUDA_VERSION | cut -d'.' -f1` && \
       distributed=${DISTRIBUTED_VERSION} \
       double-conversion \
       dlpack \
-      faiss-gpu=${FAISSGPU_VERSION} \
       flatbuffers \
       ipython=${IPYTHON_VERSION} \
       jupyterlab \
@@ -36,7 +35,7 @@ RUN export CUDA_MAJOR=`echo $CUDA_VERSION | cut -d'.' -f1` && \
       nodejs \
       numba=${NUMBA_VERSION} \
       numpy=${NUMPY_VERSION} \
-      openblas \
+      conda-forge::blas=1.1=openblas \
       pandas=${PANDAS_VERSION} \
       pyarrow=${PYARROW_VERSION} \
       pytest \
@@ -49,6 +48,6 @@ RUN export CUDA_MAJOR=`echo $CUDA_VERSION | cut -d'.' -f1` && \
     && chmod -R ugo+w /opt/conda
 
 # Special case: libcumlmg is not available for CUDA 9.2
-RUN if [ "${CUDA_MAJORMINOR_VERSION}" != "9.2" ]; then conda install -n rapids -y --no-deps -c ${NVIDIA_CONDA_LABEL} -c conda-forge libcumlmg && chmod -R ugo+w /opt/conda; fi
+RUN if [ "${CUDA_MAJORMINOR_VERSION}" != "9.2" ]; then conda install -y --no-deps -c ${NVIDIA_CONDA_LABEL} -c conda-forge libcumlmg; fi
 
-RUN source activate rapids && jupyter labextension install dask-labextension
+RUN jupyter labextension install dask-labextension

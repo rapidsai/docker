@@ -1,6 +1,6 @@
 RUN export CUDA_MAJOR=`echo $CUDA_VERSION | cut -d'.' -f1` && \
     export CUDA_MINOR=`echo $CUDA_VERSION | cut -d'.' -f2` && \
-    conda install -n rapids -y \
+    conda install -y \
       -c ${RAPIDSAI_CONDA_LABEL} \
       -c ${RAPIDSAI_NIGHTLY_CONDA_LABEL} \
       -c ${NVIDIA_CONDA_LABEL} \
@@ -25,6 +25,5 @@ RUN export CUDA_MAJOR=`echo $CUDA_VERSION | cut -d'.' -f1` && \
       seaborn \
       tensorflow \
    && conda clean -afy \
-   && chmod -R ugo+w /opt/conda
-
-RUN source activate rapids && jupyter labextension install dask-labextension
+   && chmod -R ugo+w /opt/conda && \
+   jupyter labextension install dask-labextension
