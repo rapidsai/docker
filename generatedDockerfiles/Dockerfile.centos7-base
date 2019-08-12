@@ -2,7 +2,7 @@
 # This file was generated! Edits made directly to this file may be lost.
 #   Timestamp:    2019-08-11
 #
-# RAPIDS Dockerfile for CentOS7 "base" image for RAPIDS
+# RAPIDS Dockerfile for CentOS7 "base" image
 #
 # base: RAPIDS is installed from published conda packages to the 'rapids' conda
 # environment.
@@ -13,7 +13,7 @@
 ARG CUDA_TYPE=devel
 ARG CUDA_VERSION=10.0
 ARG LINUX_VERSION=centos7
-ARG PYTHON_VERSION=3.6
+ARG PYTHON_VERSION=3.7
 
 FROM gpuci/miniconda-cuda:${CUDA_VERSION}-${CUDA_TYPE}-${LINUX_VERSION}-py${PYTHON_VERSION}
 
@@ -35,7 +35,6 @@ ARG NUMPY_VERSION=1.16.2
 ARG NVIDIA_CONDA_LABEL=nvidia
 ARG PANDAS_VERSION=0.24.2
 ARG PYARROW_VERSION=0.14.1
-ARG PYTHON_VERSION=3.6
 ARG RAPIDSAI_CONDA_LABEL=rapidsai
 ARG RAPIDS_CONDA_VERSION_SPEC=0.9*
 ARG RAPIDSAI_NIGHTLY_CONDA_LABEL=rapidsai-nightly
@@ -46,6 +45,9 @@ ARG XGBOOST_VERSION=0.90
 ARG CUDA_MAJORMINOR_VERSION=${CUDA_VERSION}
 ARG CUDA_VERSION
 ARG GCC7_DIR=/usr/local/gcc7
+ARG PYTHON_VERSION
+
+ENV RAPIDS_DIR=/rapids
 
 #
 # The support dir contains RPMs that enable additional repos needed
@@ -79,14 +81,10 @@ ENV PATH=${GCC7_DIR}/bin:$PATH
 ENV CUDAHOSTCXX=${GCC7_DIR}/bin/g++
 ENV LD_LIBRARY_PATH=${GCC7_DIR}/lib64
 
-ENV RAPIDS_DIR=/rapids
-
 # Copy files needed by RAPIDS and 3rd parties for builds, test, and runtime.
 RUN mkdir -p ${RAPIDS_DIR} ${GCC7_DIR}/lib64
 COPY rapids ${RAPIDS_DIR}
 COPY utils ${RAPIDS_DIR}/utils
-# Add test file for testing notebooks from within the container
-COPY supportfiles/test.sh /test.sh
 # Add compatible libm
 COPY supportfiles/libm.so.6 ${GCC7_DIR}/lib64
 
