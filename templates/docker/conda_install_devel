@@ -1,5 +1,5 @@
 RUN env && \
-    conda install -y \
+    conda install -y --freeze-installed --strict-channel-priority \
       -c ${RAPIDSAI_CONDA_LABEL} \
       -c ${RAPIDSAI_NIGHTLY_CONDA_LABEL} \
       -c ${NVIDIA_CONDA_LABEL} \
