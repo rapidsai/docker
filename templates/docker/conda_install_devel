@@ -15,7 +15,7 @@ RUN env && export CUDA_MAJOR=`echo $CUDA_VERSION | cut -d'.' -f1` && \
       cffi=${CFFI_VERSION} \
       cmake=${CMAKE_VERSION} \
       cmake_setuptools>=0.1.3 \
-      cudatoolkit=${CUDA_MAJOR}.${CUDA_MINOR} \
+      anaconda::cudatoolkit=${CUDA_MAJOR}.${CUDA_MINOR} \
       cython=${CYTHON_VERSION} \
       dask=${DASK_VERSION} \
       dask-labextension \
