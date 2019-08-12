@@ -9,6 +9,7 @@ RUN export CUDA_MAJOR=`echo $CUDA_VERSION | cut -d'.' -f1` && \
       -c conda-forge \
       -c anaconda \
       -c defaults \
+      nomkl \
       bokeh \
       cudatoolkit=${CUDA_MAJOR}.${CUDA_MINOR} \
       dask-labextension \

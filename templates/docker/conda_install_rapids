@@ -10,9 +10,10 @@ RUN export CUDA_MAJOR=`echo $CUDA_VERSION | cut -d'.' -f1` && \
       -c conda-forge \
       -c anaconda \
       -c defaults \
+      nomkl \
       cudatoolkit=${CUDA_MAJOR}.${CUDA_MINOR} \
       pytest \
-      openblas \
+      conda-forge::blas=1.1=openblas \
       cudf=${RAPIDS_CONDA_VERSION_SPEC} \
       cuml=${RAPIDS_CONDA_VERSION_SPEC} \
       cugraph=${RAPIDS_CONDA_VERSION_SPEC} \
