@@ -1,4 +1,4 @@
-RUN export CUDA_MAJOR=`echo $CUDA_VERSION | cut -d'.' -f1` && \
+RUN env && export CUDA_MAJOR=`echo $CUDA_VERSION | cut -d'.' -f1` && \
     export CUDA_MINOR=`echo $CUDA_VERSION | cut -d'.' -f2` && \
     conda install -y \
       -c ${RAPIDSAI_CONDA_LABEL} \
@@ -8,11 +8,12 @@ RUN export CUDA_MAJOR=`echo $CUDA_VERSION | cut -d'.' -f1` && \
       -c ${XGBOOST_CONDA_LABEL} \
       -c numba \
       -c conda-forge \
-      -c pytorch \
+      -c anaconda \
       -c defaults \
-      cudatoolkit=${CUDA_MAJOR}.${CUDA_MINOR} \
+      nomkl \
+      anaconda::cudatoolkit=${CUDA_MAJOR}.${CUDA_MINOR} \
       pytest \
-      openblas \
+      conda-forge::blas=1.1=openblas \
       cudf=${RAPIDS_CONDA_VERSION_SPEC} \
       cuml=${RAPIDS_CONDA_VERSION_SPEC} \
       cugraph=${RAPIDS_CONDA_VERSION_SPEC} \

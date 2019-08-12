@@ -1,5 +1,4 @@
-RUN export CUDA_MAJOR=`echo $CUDA_VERSION | cut -d'.' -f1` && \
-    export CUDA_MINOR=`echo $CUDA_VERSION | cut -d'.' -f2` && \
+RUN env && \
     conda install -y \
       -c ${RAPIDSAI_CONDA_LABEL} \
       -c ${RAPIDSAI_NIGHTLY_CONDA_LABEL} \
@@ -7,10 +6,10 @@ RUN export CUDA_MAJOR=`echo $CUDA_VERSION | cut -d'.' -f1` && \
       -c nvidia \
       -c numba \
       -c conda-forge \
-      -c pytorch \
+      -c anaconda \
       -c defaults \
+      nomkl \
       bokeh \
-      cudatoolkit=${CUDA_MAJOR}.${CUDA_MINOR} \
       dask-labextension \
       ipython=${IPYTHON_VERSION} \
       jupyterlab \
