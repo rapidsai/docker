@@ -11,6 +11,7 @@ RUN export CUDA_MAJOR=`echo $CUDA_VERSION | cut -d'.' -f1` && \
       -c defaults \
       nomkl \
       arrow-cpp=${PYARROW_VERSION} \
+      blas">=2.11" \
       bokeh \
       cffi=${CFFI_VERSION} \
       cmake=${CMAKE_VERSION} \
@@ -35,7 +36,7 @@ RUN export CUDA_MAJOR=`echo $CUDA_VERSION | cut -d'.' -f1` && \
       nodejs \
       numba=${NUMBA_VERSION} \
       numpy=${NUMPY_VERSION} \
-      conda-forge::blas=1.1=openblas \
+      openblas \
       pandas=${PANDAS_VERSION} \
       pyarrow=${PYARROW_VERSION} \
       pytest \

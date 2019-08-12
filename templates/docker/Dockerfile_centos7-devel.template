@@ -53,20 +53,28 @@ ENV NCCL_ROOT=/opt/conda/envs/rapids
 # (this is done automatically when using 'rapidsdevtool.sh buildDockerImage',
 #  see rapidsdevtool.sh help for more details)
 RUN cd ${RAPIDS_DIR}/rmm && \
+    source activate base && \
     ./build.sh
 RUN cd ${RAPIDS_DIR}/custrings && \
+    source activate base && \
     ./build.sh
 RUN cd ${RAPIDS_DIR}/cudf && \
+    source activate base && \
     ./build.sh
 RUN cd ${RAPIDS_DIR}/cuml && \
+    source activate base && \
     ./build.sh
 RUN cd ${RAPIDS_DIR}/cugraph && \
+    source activate base && \
     ./build.sh
 RUN cd ${RAPIDS_DIR} && \
+    source activate base && \
     ./build.sh xgboost
 RUN cd ${RAPIDS_DIR} && \
+    source activate base && \
     ./build.sh dask-xgboost
 RUN cd ${RAPIDS_DIR} && \
+    source activate base && \
     ./build.sh dask-cuda
 
 #
