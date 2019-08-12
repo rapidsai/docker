@@ -1,5 +1,4 @@
-RUN export CUDA_MAJOR=`echo $CUDA_VERSION | cut -d'.' -f1` && \
-    export CUDA_MINOR=`echo $CUDA_VERSION | cut -d'.' -f2` && \
+RUN env && \
     conda install -y \
       -c ${RAPIDSAI_CONDA_LABEL} \
       -c ${RAPIDSAI_NIGHTLY_CONDA_LABEL} \
@@ -11,7 +10,7 @@ RUN export CUDA_MAJOR=`echo $CUDA_VERSION | cut -d'.' -f1` && \
       -c anaconda \
       -c defaults \
       nomkl \
-      cudatoolkit=${CUDA_MAJOR}.${CUDA_MINOR} \
+      cudatoolkit=${CUDA_VERSION} \
       pytest \
       conda-forge::blas=1.1=openblas \
       cudf=${RAPIDS_CONDA_VERSION_SPEC} \
