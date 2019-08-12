@@ -35,9 +35,9 @@ while getopts ":hH" option; do
     esac
 done
 
-# Create a list of command scripts, with the "buildDockerImages" script first
+# Create a list of command scripts, with the "buildDockerImage" script first
 # since this is currently the expected most-frequently used command
-COMMAND_SCRIPTS="${COMMANDS_DIR}/buildDockerImages.sh $(echo ${COMMANDS_DIR}/*.sh|sed 's![^ ]*/buildDockerImages\.sh!!')"
+COMMAND_SCRIPTS="${COMMANDS_DIR}/buildDockerImage.sh $(echo ${COMMANDS_DIR}/*.sh|sed 's![^ ]*/buildDockerImage\.sh!!')"
 
 # Generate the help text by running help on each command
 for cmdScript in ${COMMAND_SCRIPTS}; do

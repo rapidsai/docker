@@ -1,6 +1,6 @@
 #
 # This file was generated! Edits made directly to this file may be lost.
-#   Timestamp:    2019-08-10
+#   Timestamp:    2019-08-11
 #
 # RAPIDS Dockerfile for Ubuntu
 #
@@ -17,13 +17,14 @@ ARG CUDA_TYPE=devel
 ARG CUDA_VERSION=10.0
 ARG CUDA_MAJORMINOR_VERSION=${CUDA_VERSION}
 ARG LINUX_VERSION=ubuntu18.04
-
-FROM gpuci/miniconda-cuda:${CUDA_VERSION}-${CUDA_TYPE}-${LINUX_VERSION} AS base
+ARG PYTHON_VERSION=3.6
+FROM gpuci/miniconda-cuda:${CUDA_VERSION}-${CUDA_TYPE}-${LINUX_VERSION}-py${PYTHON_VERSION} AS base
 
 ARG CC_VERSION
 ARG CXX_VERSION
 ARG CUDA_VERSION
 ARG CUDA_MAJORMINOR_VERSION
+ARG PARALLEL_LEVEL
 
 ARG ARROW_CPP_VERSION=0.14.1
 ARG CC_VERSION=7
@@ -40,13 +41,13 @@ ARG IPYTHON_VERSION=7.3*
 ARG NCCL_CONDA_VERSION=">2"
 ARG NUMBA_VERSION=0.41
 ARG NUMPY_VERSION=1.16.2
-ARG NVIDIA_CONDA_LABEL=nvidia/label/cuda${CUDA_MAJORMINOR_VERSION}
+ARG NVIDIA_CONDA_LABEL=nvidia
 ARG PANDAS_VERSION=0.24.2
-ARG PYTHON_VERSION=3.6
 ARG PYARROW_VERSION=0.14.1
-ARG RAPIDSAI_CONDA_LABEL=rapidsai/label/cuda${CUDA_MAJORMINOR_VERSION}
+ARG PYTHON_VERSION=3.6
+ARG RAPIDSAI_CONDA_LABEL=rapidsai
 ARG RAPIDS_CONDA_VERSION_SPEC=0.9*
-ARG RAPIDSAI_NIGHTLY_CONDA_LABEL=rapidsai-nightly/label/cuda${CUDA_MAJORMINOR_VERSION}
+ARG RAPIDSAI_NIGHTLY_CONDA_LABEL=rapidsai-nightly
 ARG XGBOOST_CONDA_VERSION_SPEC=0.90.rapidsdev1
 ARG XGBOOST_CONDA_LABEL=rapidsai/label/xgboost
 ARG XGBOOST_VERSION=0.90
@@ -59,8 +60,7 @@ ENV RAPIDS_DIR=/rapids
 
 RUN export CUDA_MAJOR=`echo $CUDA_VERSION | cut -d'.' -f1` && \
     export CUDA_MINOR=`echo $CUDA_VERSION | cut -d'.' -f2` && \
-    conda create -n rapids python=${PYTHON_VERSION} && \
-    conda install -n rapids -y \
+    conda install -y \
       -c ${RAPIDSAI_CONDA_LABEL} \
       -c ${RAPIDSAI_NIGHTLY_CONDA_LABEL} \
       -c ${NVIDIA_CONDA_LABEL} \
@@ -69,6 +69,7 @@ RUN export CUDA_MAJOR=`echo $CUDA_VERSION | cut -d'.' -f1` && \
       -c conda-forge \
       -c pytorch \
       -c defaults \
+      nomkl \
       arrow-cpp=${PYARROW_VERSION} \
       bokeh \
       cffi=${CFFI_VERSION} \
@@ -82,7 +83,6 @@ RUN export CUDA_MAJOR=`echo $CUDA_VERSION | cut -d'.' -f1` && \
       distributed=${DISTRIBUTED_VERSION} \
       double-conversion \
       dlpack \
-      faiss-gpu=${FAISSGPU_VERSION} \
       flatbuffers \
       ipython=${IPYTHON_VERSION} \
       jupyterlab \
@@ -95,7 +95,7 @@ RUN export CUDA_MAJOR=`echo $CUDA_VERSION | cut -d'.' -f1` && \
       nodejs \
       numba=${NUMBA_VERSION} \
       numpy=${NUMPY_VERSION} \
-      openblas \
+      conda-forge::blas=1.1=openblas \
       pandas=${PANDAS_VERSION} \
       pyarrow=${PYARROW_VERSION} \
       pytest \
@@ -108,9 +108,9 @@ RUN export CUDA_MAJOR=`echo $CUDA_VERSION | cut -d'.' -f1` && \
     && chmod -R ugo+w /opt/conda
 
 # Special case: libcumlmg is not available for CUDA 9.2
-RUN if [ "${CUDA_MAJORMINOR_VERSION}" != "9.2" ]; then conda install -n rapids -y --no-deps -c ${NVIDIA_CONDA_LABEL} -c conda-forge libcumlmg && chmod -R ugo+w /opt/conda; fi
+RUN if [ "${CUDA_MAJORMINOR_VERSION}" != "9.2" ]; then conda install -y --no-deps -c ${NVIDIA_CONDA_LABEL} -c conda-forge libcumlmg; fi
 
-RUN source activate rapids && jupyter labextension install dask-labextension
+RUN jupyter labextension install dask-labextension
 
 # 'rapidsdevtool.sh buildDockerImage' sets up the build context, including the
 #  rapids directory being COPY'd below. See rapidsdevtool.sh help for details.
@@ -130,21 +130,21 @@ ENV NCCL_ROOT=/conda/envs/rapids
 # Assume the build.sh script is present.
 # (this is done automatically when using 'rapidsdevtool.sh buildDockerImage',
 #  see rapidsdevtool.sh help for more details)
-RUN source activate rapids && cd ${RAPIDS_DIR}/rmm && \
+RUN cd ${RAPIDS_DIR}/rmm && \
     ./build.sh
-RUN source activate rapids && cd ${RAPIDS_DIR}/custrings && \
+RUN cd ${RAPIDS_DIR}/custrings && \
     ./build.sh
-RUN source activate rapids && cd ${RAPIDS_DIR}/cudf && \
+RUN cd ${RAPIDS_DIR}/cudf && \
     ./build.sh
-RUN source activate rapids && cd ${RAPIDS_DIR}/cuml && \
+RUN cd ${RAPIDS_DIR}/cuml && \
     ./build.sh
-RUN source activate rapids && cd ${RAPIDS_DIR}/cugraph && \
+RUN cd ${RAPIDS_DIR}/cugraph && \
     ./build.sh
-RUN source activate rapids && cd ${RAPIDS_DIR} && \
+RUN cd ${RAPIDS_DIR} && \
     ./build.sh xgboost
-RUN source activate rapids && cd ${RAPIDS_DIR} && \
+RUN cd ${RAPIDS_DIR} && \
     ./build.sh dask-xgboost
-RUN source activate rapids && cd ${RAPIDS_DIR} && \
+RUN cd ${RAPIDS_DIR} && \
     ./build.sh dask-cuda
 
 WORKDIR ${RAPIDS_DIR}/notebooks
@@ -154,26 +154,7 @@ EXPOSE 8888
 EXPOSE 8787
 EXPOSE 8786
 
-# Allow non-root to modify various parts of the filesystem
-RUN chmod -R ugo+w /rapids /home
-
-# Activate the rapids conda env for interactive shells via the default .bashrc
-# The ENTRYPOINT script (see below) still sets the env, but this ensures the
-# interactive settings (prompt) are set properly too.  root did not read
-# /etc/bash.bashrc, so also add to /root/.bashrc
-RUN echo "source activate rapids" >> /etc/bash.bashrc
-RUN echo "source activate rapids" >> /root/.bashrc
-
-# Create a dedicated startup env script that activates the rapids conda env for
-# use with the non-interactive bash env var, to be set later. Then create a new
-# script to exec the command (if given) in the environemnt set up by BASH_ENV
-# and use it as the ENTRYPOINT.
-RUN echo "source activate rapids" > /.activate_rapids
-RUN chmod 777 /.activate_rapids
-RUN echo "#!/bin/bash" > /.run_in_rapids_env
-RUN echo "exec \"\$@\"" >> /.run_in_rapids_env
-RUN chmod 777 /.run_in_rapids_env
-ENTRYPOINT [ "/usr/bin/tini", "--", "/.run_in_rapids_env" ]
+ENTRYPOINT [ "/usr/bin/tini", "--" ]
 
 # Set the env startup script var for non-interactive shells
 ENV BASH_ENV=/.activate_rapids

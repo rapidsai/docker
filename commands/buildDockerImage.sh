@@ -130,7 +130,7 @@ cudaVersion=$(grep "^ARG CUDA_VERSION=" ${GEND_DOCKERFILE} | cut -d'=' -f2)
 templType=$(echo ${TEMPL_NAME} | cut -d'-' -f2)
 linuxVersion=$(grep "^ARG LINUX_VERSION=" ${GEND_DOCKERFILE} | cut -d'=' -f2)
 gccVersion=$(grep "^ARG CXX_VERSION=" ${DOCKERARGS_FILE_NAME} | cut -d'=' -f2)
-pyVersion=$(grep "^ARG PYTHON_VERSION=" ${DOCKERARGS_FILE_NAME} | cut -d'=' -f2)
+pyVersion=$(grep "^ARG PYTHON_VERSION=" ${GEND_DOCKERFILE} | cut -d'=' -f2)
 
 IMAGE_TAG_NAME="rapids_${USER}-cuda${cudaVersion}-${templType}-${linuxVersion}-gcc${gccVersion}-py${pyVersion}"
 
@@ -138,4 +138,8 @@ IMAGE_TAG_NAME="rapids_${USER}-cuda${cudaVersion}-${templType}-${linuxVersion}-g
 # (most repos have their own build.sh, this is for the others)
 ${GENBUILDSCRIPT_CMD} ${DEBUGFLAG} -o ${GEND_BUILDSCRIPT}
 ${GENCLONESCRIPT_CMD} ${DEBUGFLAG} -o ${GEND_CLONESCRIPT}
-(cd ${OUTPUT_DIR}; ${BUILDDOCKERIMAGEFROMFILE_CMD} -f ${GEND_DOCKERFILE} -l ${LOG_DIR} -i ${IMAGE_TAG_NAME} -a ${DOCKERBUILD_ARGS})
+if [ "${DOCKERBUILD_ARGS}" == "" ]; then
+    (cd ${OUTPUT_DIR}; ${BUILDDOCKERIMAGEFROMFILE_CMD} -f ${GEND_DOCKERFILE} -l ${LOG_DIR} -i ${IMAGE_TAG_NAME})
+else
+    (cd ${OUTPUT_DIR}; ${BUILDDOCKERIMAGEFROMFILE_CMD} -f ${GEND_DOCKERFILE} -l ${LOG_DIR} -i ${IMAGE_TAG_NAME} -a ${DOCKERBUILD_ARGS})
+fi

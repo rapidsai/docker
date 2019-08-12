@@ -1,4 +1,4 @@
-# RAPIDS Dockerfile for CentOS7 "runtime" image
+# RAPIDS Dockerfile for Ubuntu "runtime" image
 #
 # runtime: RAPIDS is installed from published conda packages to the 'rapids'
 # conda environment. RAPIDS jupyter notebooks are also provided, as well as
@@ -9,9 +9,10 @@
 
 ARG DOCKERHUB_REPO=rapidsai/rapidsai-nightly
 ARG CUDA_VERSION=10.0
-ARG LINUX_VERSION=centos7
+ARG LINUX_VERSION=ubuntu18.04
 ARG PYTHON_VERSION=3.7
-ARG BASE_IMAGE=${DOCKERHUB_REPO}:cuda${CUDA_VERSION}-base-${LINUX_VERSION}-gcc7-py${PYTHON_VERSION}
+ARG CC_VERSION=7
+ARG BASE_IMAGE=${DOCKERHUB_REPO}:cuda${CUDA_VERSION}-base-${LINUX_VERSION}-gcc${CC_VERSION}-py${PYTHON_VERSION}
 
 FROM ${BASE_IMAGE}
 
@@ -36,4 +37,4 @@ EXPOSE 8787
 EXPOSE 8786
 
 # Copy Dockerfile as late as possible to avoid invalidating cache for trivial changes
-COPY Dockerfile.centos7-runtime /Dockerfile.centos7-runtime
+COPY Dockerfile.ubuntu-runtime /Dockerfile.ubuntu-runtime

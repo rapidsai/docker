@@ -3,7 +3,7 @@
 # for CentOS (among other things). Copy them to a temp dir and remove
 # after installed.
 #
-COPY ${SUPPORT_FILES_DIR}/*.rpm /tmp
+COPY supportfiles/*.rpm /tmp
 
 RUN yum install -y /tmp/*.rpm && \
     rm -rf /tmp/*.rpm && \
