@@ -7,7 +7,7 @@ RUN export CUDA_MAJOR=`echo $CUDA_VERSION | cut -d'.' -f1` && \
       -c nvidia \
       -c numba \
       -c conda-forge \
-      -c pytorch \
+      -c anaconda \
       -c defaults \
       nomkl \
       arrow-cpp=${PYARROW_VERSION} \
