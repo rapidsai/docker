@@ -12,8 +12,12 @@ RUN source activate rapids \
       boost-cpp=${BOOST_CPP_VERSION} \
       cmake=${CMAKE_VERSION} \
       cmake_setuptools">=0.1.3" \
+      double-conversion \
+      dlpack \
+      flatbuffers \
       libclang \
       libgfortran-ng=${LIBGFORTRAN_NG_VERSION} \
+      liblapack \
       make \
       numba=${NUMBA_VERSION} \
       numpy=${NUMPY_VERSION} \
