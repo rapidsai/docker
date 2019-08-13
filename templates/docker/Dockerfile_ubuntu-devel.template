@@ -26,6 +26,7 @@ ENV CUDAHOSTCXX=$CXX
 ENV CUDA_VERSION=${CUDA_MAJORMINOR_VERSION}
 ENV RAPIDS_DIR=/rapids
 
+insertfile gcc7_ubuntu
 insertfile conda_install_devel
 
 # Install dependencies for builds
