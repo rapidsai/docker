@@ -15,7 +15,8 @@ RUN source activate rapids \
       double-conversion \
       dlpack \
       flatbuffers \
-      libclang \
+      lapack \
+      rapidsai::libclang \
       libgfortran-ng=${LIBGFORTRAN_NG_VERSION} \
       liblapack \
       make \
