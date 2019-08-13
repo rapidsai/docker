@@ -1,6 +1,6 @@
 RUN source active rapids \
     && env \
-    && conda list
+    && conda list \
     && conda install -y -n rapids --freeze-installed --override-channels \
       -c rapidsai \
       -c rapidsai-nightly \
