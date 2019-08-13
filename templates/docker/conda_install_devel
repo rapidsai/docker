@@ -19,6 +19,7 @@ RUN source activate rapids \
       numpy=${NUMPY_VERSION} \
       pandas=${PANDAS_VERSION} \
       pytest \
+      rapidjson \
     && conda clean -afy \
     && chmod -R ugo+w /opt/conda
 
