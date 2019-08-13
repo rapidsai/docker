@@ -8,7 +8,6 @@ RUN env && \
       -c conda-forge \
       -c anaconda \
       -c defaults \
-      nomkl \
       bokeh \
       dask-labextension \
       ipython=${IPYTHON_VERSION} \
@@ -16,9 +15,6 @@ RUN env && \
       matplotlib \
       networkx \
       nodejs \
-      numba=${NUMBA_VERSION} \
-      numpy=${NUMPY_VERSION} \
-      pandas=${PANDAS_VERSION} \
       scikit-learn \
       scipy \
       seaborn \
