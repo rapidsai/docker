@@ -1,24 +1,18 @@
-RUN env && export CUDA_MAJOR=`echo $CUDA_VERSION | cut -d'.' -f1` && \
-    export CUDA_MINOR=`echo $CUDA_VERSION | cut -d'.' -f2` && \
-    conda install -y \
-      -c ${RAPIDSAI_CONDA_LABEL} \
-      -c ${RAPIDSAI_NIGHTLY_CONDA_LABEL} \
-      -c ${NVIDIA_CONDA_LABEL} \
+RUN source active rapids \
+    && env \
+    && conda list
+    && conda install -y -n rapids --freeze-installed --override-channels \
+      -c rapidsai \
+      -c rapidsai-nightly \
       -c nvidia \
       -c ${XGBOOST_CONDA_LABEL} \
       -c numba \
       -c conda-forge \
-      -c anaconda \
-      -c defaults \
-      nomkl \
-      anaconda::cudatoolkit=${CUDA_MAJOR}.${CUDA_MINOR} \
-      pytest \
-      conda-forge::blas=1.1=openblas \
       cudf=${RAPIDS_CONDA_VERSION_SPEC} \
       cuml=${RAPIDS_CONDA_VERSION_SPEC} \
       cugraph=${RAPIDS_CONDA_VERSION_SPEC} \
-      xgboost=${XGBOOST_VERSION} \
-      dask-xgboost=${DASK_XGBOOST_CONDA_VERSION_SPEC} \
       dask-cuda=${RAPIDS_CONDA_VERSION_SPEC} \
+      dask-xgboost=${DASK_XGBOOST_CONDA_VERSION_SPEC} \
+      xgboost=${XGBOOST_VERSION} \
    && conda clean -afy \
    && chmod -R ugo+w /opt/conda
