@@ -1,5 +1,7 @@
-RUN env && \
-    conda install -y \
+RUN source activate rapids \
+    && env \
+    && conda list \
+    && conda install -y -n rapids --freeze-installed --override-channels \
       -c numba \
       -c conda-forge \
       -c anaconda \
