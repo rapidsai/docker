@@ -13,6 +13,7 @@ RUN source activate rapids \
       cugraph=${RAPIDS_CONDA_VERSION_SPEC} \
       dask-cuda=${RAPIDS_CONDA_VERSION_SPEC} \
       dask-xgboost=${DASK_XGBOOST_CONDA_VERSION_SPEC} \
+      numba=${NUMBA_VERSION} \
       xgboost=${XGBOOST_VERSION} \
    && conda clean -afy \
    && chmod -R ugo+w /opt/conda
