@@ -12,7 +12,7 @@ ARG CUDA_VERSION=10.0
 ARG LINUX_VERSION=centos7
 ARG PYTHON_VERSION=3.7
 
-FROM gpuci/miniconda-cuda:${CUDA_VERSION}-${CUDA_TYPE}-${LINUX_VERSION}-py${PYTHON_VERSION}
+FROM gpuci/miniconda-cuda-rapidsenv:${CUDA_VERSION}-${CUDA_TYPE}-${LINUX_VERSION}-py${PYTHON_VERSION}
 
 insertfile ../../dockerArgs
 
@@ -26,6 +26,9 @@ ENV RAPIDS_DIR=/rapids
 
 insertfile gcc7_centos7
 insertfile conda_install_devel
+
+# Install dependencies for builds
+insertfile conda_install_rapids_deps
 
 # Copy files needed by RAPIDS and 3rd parties for builds, test, and runtime.
 RUN mkdir -p ${RAPIDS_DIR} ${GCC7_DIR}/lib64
@@ -82,6 +85,9 @@ RUN cd ${RAPIDS_DIR} && \
 # /lib64/libcuda.so instead
 #
 ENV LD_LIBRARY_PATH=${LD_LIBRARY_PATH_PREBUILD}
+
+# Add notebook dependencies
+insertfile conda_install_notebookenv
 
 WORKDIR ${RAPIDS_DIR}/notebooks
 # Jupyter notebook port
