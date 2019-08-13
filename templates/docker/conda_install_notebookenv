@@ -7,7 +7,6 @@ RUN env && \
       -c numba \
       -c conda-forge \
       -c anaconda \
-      -c defaults \
       bokeh \
       dask-labextension \
       ipython=${IPYTHON_VERSION} \
