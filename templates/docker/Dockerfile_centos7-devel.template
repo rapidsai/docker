@@ -24,7 +24,10 @@ ARG PYTHON_VERSION
 ENV CUDA_VERSION=${CUDA_MAJORMINOR_VERSION}
 ENV RAPIDS_DIR=/rapids
 
+# Install local gcc7
 insertfile gcc7_centos7
+
+# Install core pkgs for development (these will not be overwritten by next install)
 insertfile conda_install_devel
 
 # Install dependencies for builds

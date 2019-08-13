@@ -30,4 +30,5 @@ ENV CC=${GCC7_DIR}/bin/gcc
 ENV CXX=${GCC7_DIR}/bin/g++
 ENV PATH=${GCC7_DIR}/bin:$PATH
 ENV CUDAHOSTCXX=${GCC7_DIR}/bin/g++
+##TODO-mwendt Not sure this should be restricted to just the GCC7_DIR
 ENV LD_LIBRARY_PATH=${GCC7_DIR}/lib64
