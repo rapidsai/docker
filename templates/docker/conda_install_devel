@@ -1,53 +1,24 @@
-RUN env && export CUDA_MAJOR=`echo $CUDA_VERSION | cut -d'.' -f1` && \
-    export CUDA_MINOR=`echo $CUDA_VERSION | cut -d'.' -f2` && \
-    conda install -y --freeze-installed --strict-channel-priority \
-      -c ${RAPIDSAI_CONDA_LABEL} \
-      -c ${RAPIDSAI_NIGHTLY_CONDA_LABEL} \
-      -c ${NVIDIA_CONDA_LABEL} \
+RUN source activate rapids \
+    && env \
+    && conda list \
+    && conda install -y -n rapids --freeze-installed --override-channels \
+      -c rapidsai \
+      -c rapidsai-nightly \
       -c nvidia \
+      -c ${XGBOOST_CONDA_LABEL} \
       -c numba \
       -c conda-forge \
       -c anaconda \
-      -c defaults \
-      nomkl \
-      arrow-cpp=${PYARROW_VERSION} \
-      blas">=2.11" \
-      bokeh \
-      cffi=${CFFI_VERSION} \
       cmake=${CMAKE_VERSION} \
-      cmake_setuptools">=0.1.3" \
-      anaconda::cudatoolkit=${CUDA_MAJOR}.${CUDA_MINOR} \
-      cython=${CYTHON_VERSION} \
-      dask=${DASK_VERSION} \
-      dask-labextension \
-      distributed=${DISTRIBUTED_VERSION} \
-      double-conversion \
-      dlpack \
+      cmake_setuptools>=0.1.3 \
       flatbuffers \
-      ipython=${IPYTHON_VERSION} \
-      jupyterlab \
       libclang \
-      liblapack \
       make \
-      matplotlib \
-      nccl=${NCCL_CONDA_VERSION} \
-      networkx \
-      nodejs \
       numba=${NUMBA_VERSION} \
-      numpy=${NUMPY_VERSION} \
-      openblas \
-      pandas=${PANDAS_VERSION} \
-      pyarrow=${PYARROW_VERSION} \
       pytest \
       rapidjson \
-      scikit-learn \
-      scipy=${SCIPY_VERSION} \
-      seaborn \
-      tensorflow \
     && conda clean -afy \
     && chmod -R ugo+w /opt/conda
 
 # Special case: libcumlmg is not available for CUDA 9.2
-RUN if [ "${CUDA_VERSION}" != "9.2" ]; then conda install -y --no-deps -c ${NVIDIA_CONDA_LABEL} -c conda-forge libcumlmg; fi
-
-RUN jupyter labextension install dask-labextension
+RUN if [ "${CUDA_VER}" != "9.2" ]; then conda install -y --no-deps -c nvidia -c conda-forge libcumlmg; fi
