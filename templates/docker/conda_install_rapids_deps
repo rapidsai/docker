@@ -23,4 +23,6 @@ RUN source activate rapids \
         cudf dask-cudf libcudf \
         cuml libcuml \
         cugraph libcugraph \
-        xgboost py-xgboost libxgboost
+        xgboost py-xgboost libxgboost \
+   && conda install -y -n rapids --force-reinstall --override-channels \
+        conda-forge::blas==1.1=openblas

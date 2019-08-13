@@ -69,7 +69,6 @@ RUN cd ${RAPIDS_DIR}/cudf && \
     source activate rapids && \
     ./build.sh
 RUN cd ${RAPIDS_DIR}/cuml && \
-    sed -i 's/libopenblas.a/libopenblas.so/g' build.sh && \
     source activate rapids && \
     ls -la ${CONDA_PREFIX}/lib/ \
     ./build.sh
