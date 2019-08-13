@@ -11,7 +11,7 @@ ARG CUDA_VERSION=10.0
 ARG LINUX_VERSION=centos7
 ARG PYTHON_VERSION=3.7
 
-FROM gpuci/miniconda-cuda:${CUDA_VERSION}-${CUDA_TYPE}-${LINUX_VERSION}-py${PYTHON_VERSION}
+FROM gpuci/miniconda-cuda-rapidsenv:${CUDA_VERSION}-${CUDA_TYPE}-${LINUX_VERSION}-py${PYTHON_VERSION}
 
 insertfile ../../dockerArgs
 
