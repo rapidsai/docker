@@ -9,14 +9,15 @@ RUN source activate rapids \
       -c numba \
       -c conda-forge \
       -c anaconda \
+      boost-cpp=${BOOST_CPP_VERSION} \
       cmake=${CMAKE_VERSION} \
-      flatbuffers \
       libclang \
+      libgfortran-ng=${LIBGFORTRAN_NG_VERSION} \
       make \
       numba=${NUMBA_VERSION} \
       numpy=${NUMPY_VERSION} \
+      pandas=${PANDAS_VERSION} \
       pytest \
-      rapidjson \
     && conda clean -afy \
     && chmod -R ugo+w /opt/conda
 
