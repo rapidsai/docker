@@ -1,4 +1,4 @@
-RUN source active rapids \
+RUN source activate rapids \
     && env \
     && conda list \
     && conda install -y -n rapids --freeze-installed --override-channels \
