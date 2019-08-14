@@ -33,7 +33,8 @@ insertfile conda_install_rapids
 
 WORKDIR ${RAPIDS_DIR}
 
-ENTRYPOINT [ "/usr/bin/tini", "--" ]
+COPY supportfiles/.run_in_rapids /.run_in_rapids
+ENTRYPOINT [ "/usr/bin/tini", "--", "/.run_in_rapids" ]
 
 # Set the default command to pass to the ENTRYPOINT if no command was given
 CMD [ "/bin/bash" ]

@@ -39,8 +39,6 @@ insertfile conda_install_rapids_deps
 RUN mkdir -p ${RAPIDS_DIR} ${GCC7_DIR}/lib64
 COPY rapids ${RAPIDS_DIR}
 COPY utils ${RAPIDS_DIR}/utils
-# Add test file for testing notebooks from within the container
-COPY supportfiles/test.sh /test.sh
 # Add compatible libm
 COPY supportfiles/libm.so.6 ${GCC7_DIR}/lib64
 
@@ -70,7 +68,6 @@ RUN cd ${RAPIDS_DIR}/cudf && \
     ./build.sh
 RUN cd ${RAPIDS_DIR}/cuml && \
     source activate rapids && \
-    ls -la ${CONDA_PREFIX}/lib/ \
     ./build.sh
 RUN cd ${RAPIDS_DIR}/cugraph && \
     source activate rapids && \
@@ -95,14 +92,8 @@ ENV LD_LIBRARY_PATH=${LD_LIBRARY_PATH_PREBUILD}
 # Add notebook dependencies
 insertfile conda_install_notebookenv
 
-WORKDIR ${RAPIDS_DIR}/notebooks
-# Jupyter notebook port
-EXPOSE 8888
-# Dask Scheduler Bokeh port
-EXPOSE 8787
-EXPOSE 8786
-
-ENTRYPOINT [ "/usr/bin/tini", "--" ]
+COPY supportfiles/.run_in_rapids /.run_in_rapids
+ENTRYPOINT [ "/usr/bin/tini", "--", "/.run_in_rapids" ]
 
 # Set the default command to pass to the ENTRYPOINT if no command was given
 CMD [ "/bin/bash" ]

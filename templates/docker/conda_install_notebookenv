@@ -1,3 +1,4 @@
+# Install the notebook dependencies and the notebook repo
 RUN source activate rapids \
     && env \
     && conda list \
@@ -7,6 +8,7 @@ RUN source activate rapids \
       -c anaconda \
       bokeh \
       dask-labextension \
+      dask-ml \
       ipython=${IPYTHON_VERSION} \
       jupyterlab \
       matplotlib \
@@ -16,6 +18,18 @@ RUN source activate rapids \
       scipy \
       seaborn \
       tensorflow \
+      umap-learn \
    && conda clean -afy \
-   && chmod -R ugo+w /opt/conda && \
-   jupyter labextension install dask-labextension
+   && chmod -R ugo+w /opt/conda \
+   && jupyter labextension install dask-labextension \
+   && cd ${RAPIDS_DIR} && ./clone.sh notebooks
+
+# Add test file for testing notebooks from within the container
+COPY supportfiles/test.sh /test.sh
+
+WORKDIR ${RAPIDS_DIR}/notebooks
+# Jupyter notebook port
+EXPOSE 8888
+# Dask Scheduler Bokeh port
+EXPOSE 8787
+EXPOSE 8786

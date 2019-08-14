@@ -1,6 +1,6 @@
 #
 # This file was generated! Edits made directly to this file may be lost.
-#   Timestamp:    2019-08-11
+#   Timestamp:    2019-08-14
 #
 # RAPIDS Dockerfile for CentOS7 "devel" image
 #
@@ -13,136 +13,148 @@
 
 ARG CUDA_TYPE=devel
 ARG CUDA_VERSION=10.0
+ARG CUDA_VER=${CUDA_VERSION}
 ARG LINUX_VERSION=centos7
 ARG PYTHON_VERSION=3.7
 
-FROM gpuci/miniconda-cuda:${CUDA_VERSION}-${CUDA_TYPE}-${LINUX_VERSION}-py${PYTHON_VERSION}
+FROM gpuci/miniconda-cuda-rapidsenv:${CUDA_VERSION}-${CUDA_TYPE}-${LINUX_VERSION}-py${PYTHON_VERSION}
 
-ARG ARROW_CPP_VERSION=0.14.1
+# devel environment config args
 ARG CC_VERSION=7
-ARG CFFI_VERSION=1.11.5
-ARG CMAKE_VERSION=3.14
 ARG CXX_VERSION=7
-ARG CYTHON_VERSION=0.29.*
-ARG DASK_VERSION=">2"
-ARG DASK_XGBOOST_CONDA_VERSION_SPEC=0.2*
-ARG DISTRIBUTED_VERSION=">2"
-ARG FAISSGPU_VERSION=1.5.0
-ARG HASH_JOIN=ON
-ARG IPYTHON_VERSION=7.3*
-ARG NCCL_CONDA_VERSION=">2"
-ARG NUMBA_VERSION=0.41
-ARG NUMPY_VERSION=1.16.2
-ARG NVIDIA_CONDA_LABEL=nvidia
+
+# devel environment core build pkgs
+ARG BOOST_CPP_VERSION=1.70.0
+ARG CMAKE_VERSION=3.14.5
+ARG LIBGFORTRAN_NG_VERSION=7.3.0
+ARG NUMBA_VERSION=0.44
+ARG NUMPY_VERSION=1.16.4
 ARG PANDAS_VERSION=0.24.2
-ARG PYARROW_VERSION=0.14.1
-ARG RAPIDSAI_CONDA_LABEL=rapidsai
+
+# notebook pkgs
+ARG IPYTHON_VERSION=7.3*
+
+# base/runtime install specs
+ARG DASK_XGBOOST_CONDA_VERSION_SPEC=0.2*
 ARG RAPIDS_CONDA_VERSION_SPEC=0.9*
-ARG RAPIDSAI_NIGHTLY_CONDA_LABEL=rapidsai-nightly
 ARG XGBOOST_CONDA_VERSION_SPEC=0.90.rapidsdev1
 ARG XGBOOST_CONDA_LABEL=rapidsai/label/xgboost
 ARG XGBOOST_VERSION=0.90
 
 ARG CUDA_VERSION
 ARG CUDA_MAJORMINOR_VERSION=${CUDA_VERSION}
-ARG GCC7_DIR=/usr/local/gcc7
+ARG CUDA_VER
 ARG PARALLEL_LEVEL
 ARG PYTHON_VERSION
 
 ENV CUDA_VERSION=${CUDA_MAJORMINOR_VERSION}
 ENV RAPIDS_DIR=/rapids
 
-#
-# The support dir contains RPMs that enable additional repos needed
-# for CentOS (among other things). Copy them to a temp dir and remove
-# after installed.
-#
-COPY supportfiles/*.rpm /tmp
-
-RUN yum install -y /tmp/*.rpm && \
-    rm -rf /tmp/*.rpm && \
-    yum upgrade -y && \
-    yum install -y \
-      bzip2 \
-      curl \
-      git \
-      screen \
-      vim \
-      wget \
-      which \
-      libnccl-2.4.2-1+cuda${CUDA_MAJORMINOR_VERSION} \
-      libnccl-devel-2.4.2-1+cuda${CUDA_MAJORMINOR_VERSION} \
-      libnccl-static-2.4.2-1+cuda${CUDA_MAJORMINOR_VERSION}
+# Install local gcc7
+##TODO-mwendt I don't think we need NCCL installed and most of these pkgs are installed
+###
+### The support dir contains RPMs that enable additional repos needed
+### for CentOS (among other things). Copy them to a temp dir and remove
+### after installed.
+###
+##COPY supportfiles/*.rpm /tmp
+##
+##RUN yum install -y /tmp/*.rpm && \
+##    rm -rf /tmp/*.rpm && \
+##    yum upgrade -y && \
+##    yum install -y \
+##      bzip2 \
+##      curl \
+##      git \
+##      screen \
+##      vim \
+##      wget \
+##      which \
+##      libnccl-2.4.2-1+cuda${CUDA_MAJORMINOR_VERSION} \
+##      libnccl-devel-2.4.2-1+cuda${CUDA_MAJORMINOR_VERSION} \
+##      libnccl-static-2.4.2-1+cuda${CUDA_MAJORMINOR_VERSION}
 
 # Install gcc7 from prebuilt image
 COPY --from=gpuci/builds-gcc7:10.0-devel-centos7 /usr/local/gcc7 /usr/local/gcc7
 
 # Update environment to use new gcc7
+ENV GCC7_DIR=/usr/local/gcc7
 ENV CC=${GCC7_DIR}/bin/gcc
 ENV CXX=${GCC7_DIR}/bin/g++
 ENV PATH=${GCC7_DIR}/bin:$PATH
 ENV CUDAHOSTCXX=${GCC7_DIR}/bin/g++
+##TODO-mwendt Not sure this should be restricted to just the GCC7_DIR
 ENV LD_LIBRARY_PATH=${GCC7_DIR}/lib64
-RUN export CUDA_MAJOR=`echo $CUDA_VERSION | cut -d'.' -f1` && \
-    export CUDA_MINOR=`echo $CUDA_VERSION | cut -d'.' -f2` && \
-    conda install -y \
-      -c ${RAPIDSAI_CONDA_LABEL} \
-      -c ${RAPIDSAI_NIGHTLY_CONDA_LABEL} \
-      -c ${NVIDIA_CONDA_LABEL} \
+
+# Install core pkgs for development (these will not be overwritten by next install)
+RUN source activate rapids \
+    && env \
+    && conda list \
+    && conda install -y -n rapids --freeze-installed --override-channels \
+      -c rapidsai \
+      -c rapidsai-nightly \
       -c nvidia \
+      -c ${XGBOOST_CONDA_LABEL} \
       -c numba \
       -c conda-forge \
-      -c pytorch \
-      -c defaults \
-      nomkl \
-      arrow-cpp=${PYARROW_VERSION} \
-      bokeh \
-      cffi=${CFFI_VERSION} \
+      -c anaconda \
+      boost-cpp=${BOOST_CPP_VERSION} \
       cmake=${CMAKE_VERSION} \
       cmake_setuptools">=0.1.3" \
-      cuda${CUDA_MAJOR}${CUDA_MINOR} \
-      cudatoolkit=${CUDA_MAJORMINOR_VERSION} \
-      cython=${CYTHON_VERSION} \
-      dask=${DASK_VERSION} \
-      dask-labextension \
-      distributed=${DISTRIBUTED_VERSION} \
       double-conversion \
       dlpack \
       flatbuffers \
-      ipython=${IPYTHON_VERSION} \
-      jupyterlab \
-      libclang \
+      lapack \
+      rapidsai::libclang \
+      libgfortran-ng=${LIBGFORTRAN_NG_VERSION} \
       liblapack \
       make \
-      matplotlib \
-      nccl=${NCCL_CONDA_VERSION} \
-      networkx \
-      nodejs \
       numba=${NUMBA_VERSION} \
       numpy=${NUMPY_VERSION} \
-      conda-forge::blas=1.1=openblas \
       pandas=${PANDAS_VERSION} \
-      pyarrow=${PYARROW_VERSION} \
       pytest \
       rapidjson \
-      scikit-learn \
-      scipy=${SCIPY_VERSION} \
-      seaborn \
-      tensorflow \
     && conda clean -afy \
     && chmod -R ugo+w /opt/conda
 
 # Special case: libcumlmg is not available for CUDA 9.2
-RUN if [ "${CUDA_MAJORMINOR_VERSION}" != "9.2" ]; then conda install -y --no-deps -c ${NVIDIA_CONDA_LABEL} -c conda-forge libcumlmg; fi
+RUN if [ "${CUDA_VER}" != "9.2" ]; then conda install -y --no-deps -c nvidia -c conda-forge libcumlmg; fi
 
-RUN jupyter labextension install dask-labextension
+# Install dependencies for builds
+# Install deps for all pkgs and remove the pkgs that were installed due to 
+# cross library deps. Also do not clean/chmod at end to save time as the
+# notebook conda install will do the needed cleanup
+RUN source activate rapids \
+    && env \
+    && conda list \
+    && conda install -y -n rapids --freeze-installed --override-channels --only-deps \
+         -c rapidsai \
+         -c rapidsai-nightly \
+         -c nvidia \
+         -c ${XGBOOST_CONDA_LABEL} \
+         -c numba \
+         -c conda-forge \
+         cudf=${RAPIDS_CONDA_VERSION_SPEC} \
+         cuml=${RAPIDS_CONDA_VERSION_SPEC} \
+         cugraph=${RAPIDS_CONDA_VERSION_SPEC} \
+         dask-cuda=${RAPIDS_CONDA_VERSION_SPEC} \
+         dask-xgboost=${DASK_XGBOOST_CONDA_VERSION_SPEC} \
+         xgboost=${XGBOOST_VERSION} \
+    && conda remove --force \
+         rmm librmm \
+         nvstrings libnvstrings \
+         cudf dask-cudf libcudf \
+         cuml libcuml \
+         cugraph libcugraph \
+         xgboost py-xgboost libxgboost \
+    && conda install -y -n rapids --force-reinstall --override-channels \
+         -c conda-forge \
+         conda-forge::blas==1.1=openblas
 
 # Copy files needed by RAPIDS and 3rd parties for builds, test, and runtime.
 RUN mkdir -p ${RAPIDS_DIR} ${GCC7_DIR}/lib64
 COPY rapids ${RAPIDS_DIR}
 COPY utils ${RAPIDS_DIR}/utils
-# Add test file for testing notebooks from within the container
-COPY supportfiles/test.sh /test.sh
 # Add compatible libm
 COPY supportfiles/libm.so.6 ${GCC7_DIR}/lib64
 
@@ -162,20 +174,28 @@ ENV NCCL_ROOT=/opt/conda/envs/rapids
 # (this is done automatically when using 'rapidsdevtool.sh buildDockerImage',
 #  see rapidsdevtool.sh help for more details)
 RUN cd ${RAPIDS_DIR}/rmm && \
+    source activate rapids && \
     ./build.sh
 RUN cd ${RAPIDS_DIR}/custrings && \
+    source activate rapids && \
     ./build.sh
 RUN cd ${RAPIDS_DIR}/cudf && \
+    source activate rapids && \
     ./build.sh
 RUN cd ${RAPIDS_DIR}/cuml && \
+    source activate rapids && \
     ./build.sh
 RUN cd ${RAPIDS_DIR}/cugraph && \
+    source activate rapids && \
     ./build.sh
 RUN cd ${RAPIDS_DIR} && \
+    source activate rapids && \
     ./build.sh xgboost
 RUN cd ${RAPIDS_DIR} && \
+    source activate rapids && \
     ./build.sh dask-xgboost
 RUN cd ${RAPIDS_DIR} && \
+    source activate rapids && \
     ./build.sh dask-cuda
 
 #
@@ -185,6 +205,36 @@ RUN cd ${RAPIDS_DIR} && \
 #
 ENV LD_LIBRARY_PATH=${LD_LIBRARY_PATH_PREBUILD}
 
+# Add notebook dependencies
+# Install the notebook dependencies and the notebook repo
+RUN source activate rapids \
+    && env \
+    && conda list \
+    && conda install -y -n rapids --freeze-installed --override-channels \
+      -c numba \
+      -c conda-forge \
+      -c anaconda \
+      bokeh \
+      dask-labextension \
+      dask-ml \
+      ipython=${IPYTHON_VERSION} \
+      jupyterlab \
+      matplotlib \
+      networkx \
+      nodejs \
+      scikit-learn \
+      scipy \
+      seaborn \
+      tensorflow \
+      umap-learn \
+   && conda clean -afy \
+   && chmod -R ugo+w /opt/conda \
+   && jupyter labextension install dask-labextension \
+   && cd ${RAPIDS_DIR} && ./clone.sh notebooks
+
+# Add test file for testing notebooks from within the container
+COPY supportfiles/test.sh /test.sh
+
 WORKDIR ${RAPIDS_DIR}/notebooks
 # Jupyter notebook port
 EXPOSE 8888
@@ -192,7 +242,8 @@ EXPOSE 8888
 EXPOSE 8787
 EXPOSE 8786
 
-ENTRYPOINT [ "/usr/bin/tini", "--" ]
+COPY supportfiles/.run_in_rapids /.run_in_rapids
+ENTRYPOINT [ "/usr/bin/tini", "--", "/.run_in_rapids" ]
 
 # Set the default command to pass to the ENTRYPOINT if no command was given
 CMD [ "/bin/bash" ]
