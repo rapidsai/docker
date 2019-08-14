@@ -9,14 +9,17 @@
 
 ARG CUDA_TYPE=devel
 ARG CUDA_VERSION=10.0
+ARG CUDA_VER=${CUDA_VERSION}
 ARG LINUX_VERSION=ubuntu18.04
 ARG PYTHON_VERSION=3.7
-FROM gpuci/miniconda-cuda:${CUDA_VERSION}-${CUDA_TYPE}-${LINUX_VERSION}-py${PYTHON_VERSION}
+
+FROM gpuci/miniconda-cuda-rapidsenv:${CUDA_VERSION}-${CUDA_TYPE}-${LINUX_VERSION}-py${PYTHON_VERSION}
 
 insertfile ../../dockerArgs
 
 ARG CUDA_VERSION
 ARG CUDA_MAJORMINOR_VERSION=${CUDA_VERSION}
+ARG CUDA_VER
 ARG PARALLEL_LEVEL
 ARG PYTHON_VERSION
 
@@ -26,7 +29,14 @@ ENV CUDAHOSTCXX=$CXX
 ENV CUDA_VERSION=${CUDA_MAJORMINOR_VERSION}
 ENV RAPIDS_DIR=/rapids
 
+# Install local gcc
+insertfile gcc7_ubuntu
+
+# Install core pkgs for development (these will not be overwritten by next install)
 insertfile conda_install_devel
+
+# Install dependencies for builds
+insertfile conda_install_rapids_deps
 
 # 'rapidsdevtool.sh buildDockerImage' sets up the build context, including the
 #  rapids directory being COPY'd below. See rapidsdevtool.sh help for details.
@@ -47,29 +57,33 @@ ENV NCCL_ROOT=/opt/conda/envs/rapids
 # (this is done automatically when using 'rapidsdevtool.sh buildDockerImage',
 #  see rapidsdevtool.sh help for more details)
 RUN cd ${RAPIDS_DIR}/rmm && \
-    source activate base && \
+    source activate rapids && \
     ./build.sh
 RUN cd ${RAPIDS_DIR}/custrings && \
-    source activate base && \
+    source activate rapids && \
     ./build.sh
 RUN cd ${RAPIDS_DIR}/cudf && \
-    source activate base && \
+    source activate rapids && \
     ./build.sh
 RUN cd ${RAPIDS_DIR}/cuml && \
-    source activate base && \
+    source activate rapids && \
+    ls -la ${CONDA_PREFIX}/lib/ \
     ./build.sh
 RUN cd ${RAPIDS_DIR}/cugraph && \
-    source activate base && \
+    source activate rapids && \
     ./build.sh
 RUN cd ${RAPIDS_DIR} && \
-    source activate base && \
+    source activate rapids && \
     ./build.sh xgboost
 RUN cd ${RAPIDS_DIR} && \
-    source activate base && \
+    source activate rapids && \
     ./build.sh dask-xgboost
 RUN cd ${RAPIDS_DIR} && \
-    source activate base && \
+    source activate rapids && \
     ./build.sh dask-cuda
+
+# Add notebook dependencies
+insertfile conda_install_notebookenv
 
 WORKDIR ${RAPIDS_DIR}/notebooks
 # Jupyter notebook port

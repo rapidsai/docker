@@ -1,24 +1,25 @@
-#
-# The support dir contains RPMs that enable additional repos needed
-# for CentOS (among other things). Copy them to a temp dir and remove
-# after installed.
-#
-COPY supportfiles/*.rpm /tmp
-
-RUN yum install -y /tmp/*.rpm && \
-    rm -rf /tmp/*.rpm && \
-    yum upgrade -y && \
-    yum install -y \
-      bzip2 \
-      curl \
-      git \
-      screen \
-      vim \
-      wget \
-      which \
-      libnccl-2.4.2-1+cuda${CUDA_MAJORMINOR_VERSION} \
-      libnccl-devel-2.4.2-1+cuda${CUDA_MAJORMINOR_VERSION} \
-      libnccl-static-2.4.2-1+cuda${CUDA_MAJORMINOR_VERSION}
+##TODO-mwendt I don't think we need NCCL installed and most of these pkgs are installed
+###
+### The support dir contains RPMs that enable additional repos needed
+### for CentOS (among other things). Copy them to a temp dir and remove
+### after installed.
+###
+##COPY supportfiles/*.rpm /tmp
+##
+##RUN yum install -y /tmp/*.rpm && \
+##    rm -rf /tmp/*.rpm && \
+##    yum upgrade -y && \
+##    yum install -y \
+##      bzip2 \
+##      curl \
+##      git \
+##      screen \
+##      vim \
+##      wget \
+##      which \
+##      libnccl-2.4.2-1+cuda${CUDA_MAJORMINOR_VERSION} \
+##      libnccl-devel-2.4.2-1+cuda${CUDA_MAJORMINOR_VERSION} \
+##      libnccl-static-2.4.2-1+cuda${CUDA_MAJORMINOR_VERSION}
 
 # Install gcc7 from prebuilt image
 COPY --from=gpuci/builds-gcc7:10.0-devel-centos7 /usr/local/gcc7 /usr/local/gcc7
@@ -29,4 +30,5 @@ ENV CC=${GCC7_DIR}/bin/gcc
 ENV CXX=${GCC7_DIR}/bin/g++
 ENV PATH=${GCC7_DIR}/bin:$PATH
 ENV CUDAHOSTCXX=${GCC7_DIR}/bin/g++
+##TODO-mwendt Not sure this should be restricted to just the GCC7_DIR
 ENV LD_LIBRARY_PATH=${GCC7_DIR}/lib64
