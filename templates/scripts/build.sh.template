@@ -9,4 +9,4 @@ RAPIDS_DIR=$(dirname $0)
 #:#
 #:# FIXME: If build.sh just looked for all possible known directories,
 #:# would this template and the script it calls be necessary?
-runcommand ../../commands/utils/dumpRapidsBuildScriptsFromConfig.sh
+runcommand ../../commands/utils/dumpRapidsBuildScripts.sh

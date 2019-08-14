@@ -51,6 +51,6 @@ function shouldClone {
 }
 
 #:# Insert calls to "clone" for each of the RAPIDS repos defined in the config
-runcommand ../../commands/utils/dumpRapidsCloneCmdsFromConfig.sh
+runcommand ../../commands/utils/dumpRapidsCloneCmds.sh
 
 logger "Done"

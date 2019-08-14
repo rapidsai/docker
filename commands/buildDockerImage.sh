@@ -17,6 +17,7 @@ LOG_DIR=${OUTPUT_DIR}/logs
 DEBUGFLAG=""
 TEMPL_NAME=""
 IMAGE_TAG_NAME=""
+DOCKERBUILD_ARGS=""
 GEND_CLONESCRIPT=${RAPIDS_SOURCES_DIR}/clone.sh
 GEND_BUILDSCRIPT=${RAPIDS_SOURCES_DIR}/build.sh
 GENDOCKERFILE_CMD=${THISDIR}/genDockerfile.sh
@@ -24,7 +25,7 @@ GENCLONESCRIPT_CMD=${THISDIR}/genCloneScript.sh
 GENBUILDSCRIPT_CMD=${THISDIR}/genBuildScript.sh
 BUILDDOCKERIMAGEFROMFILE_CMD=${THISDIR}/buildDockerImageFromFile.sh
 
-SHORTHELP="$0 [-h|-H] [-d] -t <templateName> [<dockerBuildArgs>]"
+SHORTHELP="$0 [-h|-H] [-d] -t <templateName> [-a <dockerBuildArgs>]"
 LONGHELP="${SHORTHELP}
    This command automates the following:
       (setting up a unique build dir to be used as the build context)
@@ -33,12 +34,10 @@ LONGHELP="${SHORTHELP}
       ${GENDOCKERFILE_CMD}
       ${GENBUILDSCRIPT_CMD}
       ${GENCLONESCRIPT_CMD}
-      ${BUILDDOCKERIMAGEFROMFILE_CMD} -r devel
-      ${BUILDDOCKERIMAGEFROMFILE_CMD} -r base
-      ${BUILDDOCKERIMAGEFROMFILE_CMD} -r runtime
+      ${BUILDDOCKERIMAGEFROMFILE_CMD}
 
-   The scripts are generated based on the config file, and the Dockerfile is
-   generated based on <templateName> and the config file.
+   The scripts are generated based on the repoSettings file, and the Dockerfile
+   is generated based on <templateName> and the dockerArgs file.
 
    The generated scripts are included in the Docker image where they
    are called as part of the 'docker build' step. Including them in
@@ -56,11 +55,11 @@ LONGHELP="${SHORTHELP}
                                        |
                                        linux version
 
-   <dockerBuildArgs> can be provided to pass docker args as-is to the build
+   -a <dockerBuildArgs> can be provided to pass docker args as-is to the build
    command.
 "
 
-while getopts ":hHdt:" option; do
+while getopts ":hHdt:a:" option; do
     case "${option}" in
         h)
             echo "${SHORTHELP}"
@@ -76,6 +75,9 @@ while getopts ":hHdt:" option; do
 	t)
             TEMPL_NAME=${OPTARG}
 	    ;;
+	a)
+            DOCKERBUILD_ARGS=${OPTARG}
+	    ;;
 	*)
 	    echo "${SHORTHELP}"
 	    exit 1
@@ -90,6 +92,7 @@ fi
 # Enforce all required conditions
 ERROR=0
 if [[ ${TEMPL_NAME} == "" ]]; then
+    echo "${SHORTHELP}"
     echo "ERROR: <templateName> must be specified."
     ERROR=1
 fi
@@ -102,7 +105,6 @@ if [ ! -r ${TEMPL_FILE_NAME} ]; then
     echo "ERROR: ${TEMPL_FILE_NAME} is not a readable file."
     exit 1
 fi
-
 # Create the dir to clone into and the build working directory
 # Generated files will go in these dirs so they must be created upfront
 # TODO: make this configurable
@@ -120,31 +122,24 @@ cp -a ${RAPIDSDEVTOOL_DIR}/utils ${OUTPUT_DIR}
 # Generate the Dockerfiles
 GEND_DOCKERFILE=${OUTPUT_DIR}/${DOCKERFILE_BASENAME}.${TEMPL_NAME}
 ${GENDOCKERFILE_CMD} ${DEBUGFLAG} -t ${TEMPL_NAME} -o ${GEND_DOCKERFILE}
-GEND_DOCKERFILE_DEVEL=${OUTPUT_DIR}/${DOCKERFILE_BASENAME}.${TEMPL_NAME}-devel
-${GENDOCKERFILE_CMD} ${DEBUGFLAG} -t ${TEMPL_NAME}-devel -o ${GEND_DOCKERFILE_DEVEL}
 
 # Compute the image tag name
 # This must be done post-gen since it uses the generated Dockerfile
 # TODO: provide an error message if these greps fail
 cudaVersion=$(grep "^ARG CUDA_VERSION=" ${GEND_DOCKERFILE} | cut -d'=' -f2)
+templType=$(echo ${TEMPL_NAME} | cut -d'-' -f2)
 linuxVersion=$(grep "^ARG LINUX_VERSION=" ${GEND_DOCKERFILE} | cut -d'=' -f2)
-gccVersion=$(grep "^CXX_VERSION=" ${CONFIG_FILE_NAME} | cut -d'=' -f2)
-pyVersion=$(grep "^PYTHON_VERSION=" ${CONFIG_FILE_NAME} | cut -d'=' -f2)
+gccVersion=$(grep "^ARG CXX_VERSION=" ${DOCKERARGS_FILE_NAME} | cut -d'=' -f2)
+pyVersion=$(grep "^ARG PYTHON_VERSION=" ${GEND_DOCKERFILE} | cut -d'=' -f2)
 
-# Add a build script
-# FIXME: update the Dockerfiles to use this build script!
+IMAGE_TAG_NAME="rapids_${USER}-cuda${cudaVersion}-${templType}-${linuxVersion}-gcc${gccVersion}-py${pyVersion}"
+
+# Add RAPIDS-wide build.sh and clone.sh scripts
+# (most repos have their own build.sh, this is for the others)
 ${GENBUILDSCRIPT_CMD} ${DEBUGFLAG} -o ${GEND_BUILDSCRIPT}
-
-# Clone RAPIDS
 ${GENCLONESCRIPT_CMD} ${DEBUGFLAG} -o ${GEND_CLONESCRIPT}
-
-# Create the Docker image for devel, then base, then runtime
-for imageType in devel base runtime; do
-    IMAGE_TAG_NAME="rapids_${USER}-cuda${cudaVersion}-${imageType}-${linuxVersion}-gcc${gccVersion}-py${pyVersion}"
-    # devel is currently in a separate Dockerfile (not multi-stage), so do not use -r
-    if [[ ${imageType} == "devel" ]]; then
-        (cd ${OUTPUT_DIR}; ${BUILDDOCKERIMAGEFROMFILE_CMD} -f ${GEND_DOCKERFILE_DEVEL} -l ${LOG_DIR} -i ${IMAGE_TAG_NAME})
-    else
-        (cd ${OUTPUT_DIR}; ${BUILDDOCKERIMAGEFROMFILE_CMD} -f ${GEND_DOCKERFILE} -r ${imageType} -l ${LOG_DIR} -i ${IMAGE_TAG_NAME})
-    fi
-done
+if [ "${DOCKERBUILD_ARGS}" == "" ]; then
+    (cd ${OUTPUT_DIR}; ${BUILDDOCKERIMAGEFROMFILE_CMD} -f ${GEND_DOCKERFILE} -l ${LOG_DIR} -i ${IMAGE_TAG_NAME})
+else
+    (cd ${OUTPUT_DIR}; ${BUILDDOCKERIMAGEFROMFILE_CMD} -f ${GEND_DOCKERFILE} -l ${LOG_DIR} -i ${IMAGE_TAG_NAME} -a ${DOCKERBUILD_ARGS})
+fi

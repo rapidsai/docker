@@ -3,7 +3,7 @@
 # for CentOS (among other things). Copy them to a temp dir and remove
 # after installed.
 #
-COPY ${SUPPORT_FILES_DIR}/*.rpm /tmp
+COPY supportfiles/*.rpm /tmp
 
 RUN yum install -y /tmp/*.rpm && \
     rm -rf /tmp/*.rpm && \
@@ -24,6 +24,7 @@ RUN yum install -y /tmp/*.rpm && \
 COPY --from=gpuci/builds-gcc7:10.0-devel-centos7 /usr/local/gcc7 /usr/local/gcc7
 
 # Update environment to use new gcc7
+ENV GCC7_DIR=/usr/local/gcc7
 ENV CC=${GCC7_DIR}/bin/gcc
 ENV CXX=${GCC7_DIR}/bin/g++
 ENV PATH=${GCC7_DIR}/bin:$PATH

@@ -1,0 +1,88 @@
+#
+# This file was generated! Edits made directly to this file may be lost.
+#   Timestamp:    2019-08-11
+#
+# RAPIDS Dockerfile for Ubuntu "base" image
+#
+# base: RAPIDS is installed from published conda packages to the 'rapids' conda
+# environment.
+#
+# Copyright (c) 2019, NVIDIA CORPORATION.
+
+
+ARG CUDA_TYPE=devel
+ARG CUDA_VERSION=10.0
+ARG LINUX_VERSION=ubuntu18.04
+ARG PYTHON_VERSION=3.7
+
+FROM gpuci/miniconda-cuda:${CUDA_VERSION}-${CUDA_TYPE}-${LINUX_VERSION}-py${PYTHON_VERSION}
+
+ARG ARROW_CPP_VERSION=0.14.1
+ARG CC_VERSION=7
+ARG CFFI_VERSION=1.11.5
+ARG CMAKE_VERSION=3.14
+ARG CXX_VERSION=7
+ARG CYTHON_VERSION=0.29.*
+ARG DASK_VERSION=">2"
+ARG DASK_XGBOOST_CONDA_VERSION_SPEC=0.2*
+ARG DISTRIBUTED_VERSION=">2"
+ARG FAISSGPU_VERSION=1.5.0
+ARG HASH_JOIN=ON
+ARG IPYTHON_VERSION=7.3*
+ARG NCCL_CONDA_VERSION=">2"
+ARG NUMBA_VERSION=0.41
+ARG NUMPY_VERSION=1.16.2
+ARG NVIDIA_CONDA_LABEL=nvidia
+ARG PANDAS_VERSION=0.24.2
+ARG PYARROW_VERSION=0.14.1
+ARG RAPIDSAI_CONDA_LABEL=rapidsai
+ARG RAPIDS_CONDA_VERSION_SPEC=0.9*
+ARG RAPIDSAI_NIGHTLY_CONDA_LABEL=rapidsai-nightly
+ARG XGBOOST_CONDA_VERSION_SPEC=0.90.rapidsdev1
+ARG XGBOOST_CONDA_LABEL=rapidsai/label/xgboost
+ARG XGBOOST_VERSION=0.90
+
+ARG CUDA_MAJORMINOR_VERSION=${CUDA_VERSION}
+ARG CUDA_VERSION
+ARG PYTHON_VERSION
+
+ENV RAPIDS_DIR=/rapids
+
+# Copy files needed by RAPIDS and 3rd parties for builds, test, and runtime.
+RUN mkdir -p ${RAPIDS_DIR}
+COPY rapids ${RAPIDS_DIR}
+COPY utils ${RAPIDS_DIR}/utils
+
+RUN export CUDA_MAJOR=`echo $CUDA_VERSION | cut -d'.' -f1` && \
+    export CUDA_MINOR=`echo $CUDA_VERSION | cut -d'.' -f2` && \
+    conda install -y \
+      -c ${RAPIDSAI_CONDA_LABEL} \
+      -c ${RAPIDSAI_NIGHTLY_CONDA_LABEL} \
+      -c ${NVIDIA_CONDA_LABEL} \
+      -c nvidia \
+      -c ${XGBOOST_CONDA_LABEL} \
+      -c numba \
+      -c conda-forge \
+      -c pytorch \
+      -c defaults \
+      cudatoolkit=${CUDA_MAJOR}.${CUDA_MINOR} \
+      pytest \
+      openblas \
+      cudf=${RAPIDS_CONDA_VERSION_SPEC} \
+      cuml=${RAPIDS_CONDA_VERSION_SPEC} \
+      cugraph=${RAPIDS_CONDA_VERSION_SPEC} \
+      xgboost=${XGBOOST_VERSION} \
+      dask-xgboost=${DASK_XGBOOST_CONDA_VERSION_SPEC} \
+      dask-cuda=${RAPIDS_CONDA_VERSION_SPEC} \
+   && conda clean -afy \
+   && chmod -R ugo+w /opt/conda
+
+WORKDIR ${RAPIDS_DIR}
+
+ENTRYPOINT [ "/usr/bin/tini", "--" ]
+
+# Set the default command to pass to the ENTRYPOINT if no command was given
+CMD [ "/bin/bash" ]
+
+# Copy Dockerfile as late as possible to avoid invalidating cache for trivial changes
+COPY Dockerfile.ubuntu-base /Dockerfile.ubuntu-base

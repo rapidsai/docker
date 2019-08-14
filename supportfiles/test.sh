@@ -8,9 +8,6 @@ NOTEBOOK_DIR_NAMES="cuml cugraph"
 ## Check env
 env
 
-## Activate conda env
-source activate rapids
-
 EXITCODE=0
 
 # Always run nbtest in all NOTEBOOK_DIR_NAMES, set EXITCODE to failure
