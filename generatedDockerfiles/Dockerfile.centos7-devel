@@ -1,6 +1,6 @@
 #
 # This file was generated! Edits made directly to this file may be lost.
-#   Timestamp:    2019-08-14
+#   Timestamp:    2019-08-15
 #
 # RAPIDS Dockerfile for CentOS7 "devel" image
 #
@@ -106,6 +106,7 @@ RUN source activate rapids \
       flatbuffers \
       lapack \
       rapidsai::libclang \
+      libcumlprims \
       libgfortran-ng=${LIBGFORTRAN_NG_VERSION} \
       liblapack \
       make \

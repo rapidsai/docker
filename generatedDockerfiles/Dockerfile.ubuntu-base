@@ -1,6 +1,6 @@
 #
 # This file was generated! Edits made directly to this file may be lost.
-#   Timestamp:    2019-08-14
+#   Timestamp:    2019-08-15
 #
 # RAPIDS Dockerfile for Ubuntu "base" image
 #
@@ -40,6 +40,7 @@ ARG XGBOOST_CONDA_LABEL=rapidsai/label/xgboost
 ARG XGBOOST_VERSION=0.90
 
 ENV RAPIDS_DIR=/rapids
+ENV LD_LIBRARY_PATH=/opt/conda/envs/rapids/lib:${LD_LIBRARY_PATH}
 
 # Copy files needed by RAPIDS and 3rd parties for builds, test, and runtime.
 RUN mkdir -p ${RAPIDS_DIR}
