@@ -186,7 +186,7 @@ RUN cd ${RAPIDS_DIR}/cudf && \
     ./build.sh
 RUN cd ${RAPIDS_DIR}/cuml && \
     source activate rapids && \
-    ./build.sh
+    ./build.sh --allgpuarch --multigpu libcuml cuml prims
 RUN cd ${RAPIDS_DIR}/cugraph && \
     source activate rapids && \
     ./build.sh
