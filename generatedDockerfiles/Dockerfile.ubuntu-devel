@@ -86,6 +86,7 @@ RUN source activate rapids \
       double-conversion \
       dlpack \
       flatbuffers \
+      hypothesis \
       lapack \
       rapidsai::libclang \
       libcumlprims \
