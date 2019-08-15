@@ -16,6 +16,7 @@ FROM gpuci/miniconda-cuda-rapidsenv:${CUDA_VERSION}-${CUDA_TYPE}-${LINUX_VERSION
 insertfile ../../dockerArgs
 
 ENV RAPIDS_DIR=/rapids
+ENV LD_LIBRARY_PATH=/opt/conda/envs/rapids/lib:${LD_LIBRARY_PATH}
 
 # Copy files needed by RAPIDS and 3rd parties for builds, test, and runtime.
 RUN mkdir -p ${RAPIDS_DIR}

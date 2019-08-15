@@ -20,14 +20,11 @@ ENV RAPIDS_DIR=/rapids
 ##(insert file was here) gcc7_centos7
 
 # Copy files needed by RAPIDS and 3rd parties for builds, test, and runtime.
-##TODO-mwendt I think we can drop this, will test with it missing
-##orig:RUN mkdir -p ${RAPIDS_DIR} ${GCC7_DIR}/lib64
-RUN mkdir -p ${RAPIDS_DIR}
+RUN mkdir -p ${RAPIDS_DIR} ${GCC7_DIR}/lib64
 COPY rapids ${RAPIDS_DIR}
 COPY utils ${RAPIDS_DIR}/utils
 # Add compatible libm
-##TODO-mwendt I think we can drop this, will test with it missing
-##COPY supportfiles/libm.so.6 ${GCC7_DIR}/lib64
+COPY supportfiles/libm.so.6 ${GCC7_DIR}/lib64
 
 insertfile conda_install_rapids
 
