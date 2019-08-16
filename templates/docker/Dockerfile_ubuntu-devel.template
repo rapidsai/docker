@@ -76,9 +76,11 @@ RUN cd ${RAPIDS_DIR} && \
 RUN cd ${RAPIDS_DIR} && \
     source activate rapids && \
     ./build.sh dask-xgboost
+# Add chmod for all RAPIDS on last build to avoid adding another layer
 RUN cd ${RAPIDS_DIR} && \
     source activate rapids && \
-    ./build.sh dask-cuda
+    ./build.sh dask-cuda && \
+    chmod -R ugo+w ${RAPIDS_DIR}
 
 # Add notebook dependencies
 insertfile conda_install_notebookenv
