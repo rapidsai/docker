@@ -78,17 +78,13 @@ RUN cd ${RAPIDS_DIR} && \
 RUN cd ${RAPIDS_DIR} && \
     source activate rapids && \
     ./build.sh dask-xgboost
-# Add chmod for all RAPIDS on last build to avoid adding another layer
 RUN cd ${RAPIDS_DIR} && \
     source activate rapids && \
-    ./build.sh dask-cuda && \
-    chmod -R ugo+w ${RAPIDS_DIR}
+    ./build.sh dask-cuda
 
-#
 # Change LD_LIBRARY_PATH to exclude /usr/local/cuda/* since
 # numba.cuda cannot load that, and instead have it load
 # /lib64/libcuda.so instead
-#
 ENV LD_LIBRARY_PATH=${LD_LIBRARY_PATH_PREBUILD}
 
 # Add notebook dependencies

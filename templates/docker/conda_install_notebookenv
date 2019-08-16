@@ -23,7 +23,9 @@ RUN source activate rapids \
    && chmod -R ugo+w /opt/conda \
    && pip install "git+https://github.com/jacobtomlinson/jupyterlab-nvdashboard.git" --upgrade --no-deps \
    && jupyter labextension install dask-labextension jupyterlab-nvdashboard \
-   && cd ${RAPIDS_DIR} && ./clone.sh notebooks
+   && cd ${RAPIDS_DIR} \
+   && ./clone.sh notebooks \
+   && chmod -R ugo+w /opt/conda ${RAPIDS_DIR}
 
 # Add test file for testing notebooks from within the container
 COPY supportfiles/test.sh /test.sh

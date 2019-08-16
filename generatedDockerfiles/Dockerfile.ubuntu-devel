@@ -27,7 +27,7 @@ ARG CXX_VERSION=7
 ARG BOOST_CPP_VERSION=1.70.0
 ARG CMAKE_VERSION=3.14.5
 ARG LIBGFORTRAN_NG_VERSION=7.3.0
-ARG NUMBA_VERSION=0.44
+ARG NUMBA_VERSION=0.45.1
 ARG NUMPY_VERSION=1.16.4
 ARG PANDAS_VERSION=0.24.2
 
@@ -93,7 +93,7 @@ RUN source activate rapids \
       libgfortran-ng=${LIBGFORTRAN_NG_VERSION} \
       liblapack \
       make \
-      numba=${NUMBA_VERSION} \
+      numba">=${NUMBA_VERSION}" \
       numpy=${NUMPY_VERSION} \
       pandas=${PANDAS_VERSION} \
       pytest \
@@ -172,11 +172,9 @@ RUN cd ${RAPIDS_DIR} && \
 RUN cd ${RAPIDS_DIR} && \
     source activate rapids && \
     ./build.sh dask-xgboost
-# Add chmod for all RAPIDS on last build to avoid adding another layer
 RUN cd ${RAPIDS_DIR} && \
     source activate rapids && \
-    ./build.sh dask-cuda && \
-    chmod -R ugo+w ${RAPIDS_DIR}
+    ./build.sh dask-cuda
 
 # Add notebook dependencies
 # Install the notebook dependencies and the notebook repo
@@ -204,7 +202,9 @@ RUN source activate rapids \
    && chmod -R ugo+w /opt/conda \
    && pip install "git+https://github.com/jacobtomlinson/jupyterlab-nvdashboard.git" --upgrade --no-deps \
    && jupyter labextension install dask-labextension jupyterlab-nvdashboard \
-   && cd ${RAPIDS_DIR} && ./clone.sh notebooks
+   && cd ${RAPIDS_DIR} \
+   && ./clone.sh notebooks \
+   && chmod -R ugo+w /opt/conda ${RAPIDS_DIR}
 
 # Add test file for testing notebooks from within the container
 COPY supportfiles/test.sh /test.sh

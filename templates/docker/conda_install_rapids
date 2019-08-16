@@ -16,4 +16,4 @@ RUN source activate rapids \
       numba=${NUMBA_VERSION} \
       xgboost=${XGBOOST_VERSION} \
    && conda clean -afy \
-   && chmod -R ugo+w /opt/conda
+   && chmod -R ugo+w /opt/conda ${RAPIDS_DIR}

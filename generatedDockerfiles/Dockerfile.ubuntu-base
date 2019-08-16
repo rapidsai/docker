@@ -25,7 +25,7 @@ ARG CXX_VERSION=7
 ARG BOOST_CPP_VERSION=1.70.0
 ARG CMAKE_VERSION=3.14.5
 ARG LIBGFORTRAN_NG_VERSION=7.3.0
-ARG NUMBA_VERSION=0.44
+ARG NUMBA_VERSION=0.45.1
 ARG NUMPY_VERSION=1.16.4
 ARG PANDAS_VERSION=0.24.2
 
@@ -65,7 +65,7 @@ RUN source activate rapids \
       numba=${NUMBA_VERSION} \
       xgboost=${XGBOOST_VERSION} \
    && conda clean -afy \
-   && chmod -R ugo+w /opt/conda
+   && chmod -R ugo+w /opt/conda ${RAPIDS_DIR}
 
 WORKDIR ${RAPIDS_DIR}
 

@@ -22,7 +22,7 @@ RUN source activate rapids \
       libgfortran-ng=${LIBGFORTRAN_NG_VERSION} \
       liblapack \
       make \
-      numba=${NUMBA_VERSION} \
+      numba">=${NUMBA_VERSION}" \
       numpy=${NUMPY_VERSION} \
       pandas=${PANDAS_VERSION} \
       pytest \
