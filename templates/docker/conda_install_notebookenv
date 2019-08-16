@@ -21,7 +21,8 @@ RUN source activate rapids \
       umap-learn \
    && conda clean -afy \
    && chmod -R ugo+w /opt/conda \
-   && jupyter labextension install dask-labextension \
+   && pip install "git+https://github.com/jacobtomlinson/jupyterlab-nvdashboard.git" --upgrade --no-deps \
+   && jupyter labextension install dask-labextension jupyterlab-nvdashboard \
    && cd ${RAPIDS_DIR} && ./clone.sh notebooks
 
 # Add test file for testing notebooks from within the container
