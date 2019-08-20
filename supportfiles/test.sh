@@ -25,10 +25,11 @@ for nbdirname in ${NOTEBOOK_DIR_NAMES}; do
             nvidia-smi
             ${NBTEST} ${nb}
             EXITCODE=$((EXITCODE | $?))
-            nvidia-smi
         fi
     done
     popd > /dev/null
 done
+
+nvidia-smi
 
 exit ${EXITCODE}
