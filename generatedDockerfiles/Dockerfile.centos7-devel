@@ -205,6 +205,12 @@ RUN cd ${RAPIDS_DIR} && \
 # /lib64/libcuda.so instead
 ENV LD_LIBRARY_PATH=${LD_LIBRARY_PATH_PREBUILD}
 
+COPY supportfiles/.run_in_rapids /.run_in_rapids
+ENTRYPOINT [ "/usr/bin/tini", "--", "/.run_in_rapids" ]
+
+# Set the default command to pass to the ENTRYPOINT if no command was given
+CMD [ "/bin/bash" ]
+
 # Add notebook dependencies
 # Install the notebook dependencies and the notebook repo
 RUN source activate rapids \
@@ -247,12 +253,6 @@ EXPOSE 8786
 
 # Change the entrypoint to start the Jupyter server prior to running commands
 COPY supportfiles/.start_jupyter_run_in_rapids /.run_in_rapids
-
-COPY supportfiles/.run_in_rapids /.run_in_rapids
-ENTRYPOINT [ "/usr/bin/tini", "--", "/.run_in_rapids" ]
-
-# Set the default command to pass to the ENTRYPOINT if no command was given
-CMD [ "/bin/bash" ]
 
 # Copy Dockerfile as late as possible to avoid invalidating cache for trivial changes
 COPY Dockerfile.centos7-devel /Dockerfile.centos7-devel
