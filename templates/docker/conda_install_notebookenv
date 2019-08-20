@@ -21,7 +21,7 @@ RUN source activate rapids \
       umap-learn \
    && conda clean -afy \
    && chmod -R ugo+w /opt/conda \
-   && pip install "git+https://github.com/jacobtomlinson/jupyterlab-nvdashboard.git" --upgrade --no-deps \
+   && pip install "git+https://github.com/jacobtomlinson/jupyterlab-nvdashboard.git" --upgrade \
    && jupyter labextension install dask-labextension jupyterlab-nvdashboard \
    && cd ${RAPIDS_DIR} \
    && ./clone.sh notebooks \
