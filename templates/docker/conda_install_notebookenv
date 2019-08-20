@@ -36,3 +36,6 @@ EXPOSE 8888
 # Dask Scheduler Bokeh port
 EXPOSE 8787
 EXPOSE 8786
+
+# Change the entrypoint to start the Jupyter server prior to running commands
+COPY supportfiles/.start_jupyter_run_in_rapids /.run_in_rapids
