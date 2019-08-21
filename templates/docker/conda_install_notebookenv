@@ -10,7 +10,7 @@ RUN source activate rapids \
       dask-labextension \
       dask-ml \
       ipython=${IPYTHON_VERSION} \
-      jupyterlab \
+      jupyterlab=1.0.7 \
       matplotlib \
       networkx \
       nodejs \
@@ -21,7 +21,7 @@ RUN source activate rapids \
       umap-learn \
    && conda clean -afy \
    && chmod -R ugo+w /opt/conda \
-   && pip install "git+https://github.com/jacobtomlinson/jupyterlab-nvdashboard.git" --upgrade \
+   && pip install "git+https://github.com/jacobtomlinson/jupyterlab-nvdashboard.git#v0.1.9" --upgrade \
    && jupyter labextension install dask-labextension jupyterlab-nvdashboard \
    && cd ${RAPIDS_DIR} \
    && ./clone.sh notebooks \
