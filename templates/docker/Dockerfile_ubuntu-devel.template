@@ -80,14 +80,14 @@ RUN cd ${RAPIDS_DIR} && \
     source activate rapids && \
     ./build.sh dask-cuda
 
-# Add notebook dependencies
-insertfile conda_install_notebookenv
-
 COPY supportfiles/.run_in_rapids /.run_in_rapids
 ENTRYPOINT [ "/usr/bin/tini", "--", "/.run_in_rapids" ]
 
 # Set the default command to pass to the ENTRYPOINT if no command was given
 CMD [ "/bin/bash" ]
+
+# Add notebook dependencies
+insertfile conda_install_notebookenv
 
 # Copy Dockerfile as late as possible to avoid invalidating cache for trivial changes
 COPY Dockerfile.ubuntu-devel /Dockerfile.ubuntu-devel

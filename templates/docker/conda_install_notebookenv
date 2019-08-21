@@ -10,7 +10,7 @@ RUN source activate rapids \
       dask-labextension \
       dask-ml \
       ipython=${IPYTHON_VERSION} \
-      jupyterlab \
+      jupyterlab=1.0.7 \
       matplotlib \
       networkx \
       nodejs \
@@ -21,7 +21,7 @@ RUN source activate rapids \
       umap-learn \
    && conda clean -afy \
    && chmod -R ugo+w /opt/conda \
-   && pip install "git+https://github.com/jacobtomlinson/jupyterlab-nvdashboard.git" --upgrade --no-deps \
+   && pip install "git+https://github.com/jacobtomlinson/jupyterlab-nvdashboard.git#v0.1.9" --upgrade \
    && jupyter labextension install dask-labextension jupyterlab-nvdashboard \
    && cd ${RAPIDS_DIR} \
    && ./clone.sh notebooks \
@@ -36,3 +36,6 @@ EXPOSE 8888
 # Dask Scheduler Bokeh port
 EXPOSE 8787
 EXPOSE 8786
+
+# Change the entrypoint to start the Jupyter server prior to running commands
+COPY supportfiles/.start_jupyter_run_in_rapids /.run_in_rapids

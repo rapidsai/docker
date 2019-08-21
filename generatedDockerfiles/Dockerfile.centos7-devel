@@ -1,6 +1,6 @@
 #
 # This file was generated! Edits made directly to this file may be lost.
-#   Timestamp:    2019-08-16
+#   Timestamp:    2019-08-21
 #
 # RAPIDS Dockerfile for CentOS7 "devel" image
 #
@@ -205,6 +205,12 @@ RUN cd ${RAPIDS_DIR} && \
 # /lib64/libcuda.so instead
 ENV LD_LIBRARY_PATH=${LD_LIBRARY_PATH_PREBUILD}
 
+COPY supportfiles/.run_in_rapids /.run_in_rapids
+ENTRYPOINT [ "/usr/bin/tini", "--", "/.run_in_rapids" ]
+
+# Set the default command to pass to the ENTRYPOINT if no command was given
+CMD [ "/bin/bash" ]
+
 # Add notebook dependencies
 # Install the notebook dependencies and the notebook repo
 RUN source activate rapids \
@@ -218,7 +224,7 @@ RUN source activate rapids \
       dask-labextension \
       dask-ml \
       ipython=${IPYTHON_VERSION} \
-      jupyterlab \
+      jupyterlab=1.0.7 \
       matplotlib \
       networkx \
       nodejs \
@@ -229,7 +235,7 @@ RUN source activate rapids \
       umap-learn \
    && conda clean -afy \
    && chmod -R ugo+w /opt/conda \
-   && pip install "git+https://github.com/jacobtomlinson/jupyterlab-nvdashboard.git" --upgrade --no-deps \
+   && pip install "git+https://github.com/jacobtomlinson/jupyterlab-nvdashboard.git#v0.1.9" --upgrade \
    && jupyter labextension install dask-labextension jupyterlab-nvdashboard \
    && cd ${RAPIDS_DIR} \
    && ./clone.sh notebooks \
@@ -245,11 +251,8 @@ EXPOSE 8888
 EXPOSE 8787
 EXPOSE 8786
 
-COPY supportfiles/.run_in_rapids /.run_in_rapids
-ENTRYPOINT [ "/usr/bin/tini", "--", "/.run_in_rapids" ]
-
-# Set the default command to pass to the ENTRYPOINT if no command was given
-CMD [ "/bin/bash" ]
+# Change the entrypoint to start the Jupyter server prior to running commands
+COPY supportfiles/.start_jupyter_run_in_rapids /.run_in_rapids
 
 # Copy Dockerfile as late as possible to avoid invalidating cache for trivial changes
 COPY Dockerfile.centos7-devel /Dockerfile.centos7-devel

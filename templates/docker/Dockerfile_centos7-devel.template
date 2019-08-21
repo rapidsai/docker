@@ -87,14 +87,14 @@ RUN cd ${RAPIDS_DIR} && \
 # /lib64/libcuda.so instead
 ENV LD_LIBRARY_PATH=${LD_LIBRARY_PATH_PREBUILD}
 
-# Add notebook dependencies
-insertfile conda_install_notebookenv
-
 COPY supportfiles/.run_in_rapids /.run_in_rapids
 ENTRYPOINT [ "/usr/bin/tini", "--", "/.run_in_rapids" ]
 
 # Set the default command to pass to the ENTRYPOINT if no command was given
 CMD [ "/bin/bash" ]
+
+# Add notebook dependencies
+insertfile conda_install_notebookenv
 
 # Copy Dockerfile as late as possible to avoid invalidating cache for trivial changes
 COPY Dockerfile.centos7-devel /Dockerfile.centos7-devel
