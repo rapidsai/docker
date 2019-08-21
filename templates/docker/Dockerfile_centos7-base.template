@@ -1,0 +1,40 @@
+# RAPIDS Dockerfile for CentOS7 "base" image
+#
+# base: RAPIDS is installed from published conda packages to the 'rapids' conda
+# environment.
+#
+# Copyright (c) 2019, NVIDIA CORPORATION.
+
+
+ARG CUDA_TYPE=runtime
+ARG CUDA_VERSION=10.0
+ARG LINUX_VERSION=centos7
+ARG PYTHON_VERSION=3.7
+
+FROM gpuci/miniconda-cuda-rapidsenv:${CUDA_VERSION}-${CUDA_TYPE}-${LINUX_VERSION}-py${PYTHON_VERSION}
+
+insertfile ../../dockerArgs
+
+ENV RAPIDS_DIR=/rapids
+##TODO-mwendt I think we can drop this, will test with it missing
+##(insert file was here) gcc7_centos7
+
+# Copy files needed by RAPIDS and 3rd parties for builds, test, and runtime.
+RUN mkdir -p ${RAPIDS_DIR} ${GCC7_DIR}/lib64
+COPY rapids ${RAPIDS_DIR}
+COPY utils ${RAPIDS_DIR}/utils
+# Add compatible libm
+COPY supportfiles/libm.so.6 ${GCC7_DIR}/lib64
+
+insertfile conda_install_rapids
+
+WORKDIR ${RAPIDS_DIR}
+
+COPY supportfiles/.run_in_rapids /.run_in_rapids
+ENTRYPOINT [ "/usr/bin/tini", "--", "/.run_in_rapids" ]
+
+# Set the default command to pass to the ENTRYPOINT if no command was given
+CMD [ "/bin/bash" ]
+
+# Copy Dockerfile as late as possible to avoid invalidating cache for trivial changes
+COPY Dockerfile.centos7-base /Dockerfile.centos7-base

@@ -1,0 +1,88 @@
+#
+# This file was generated! Edits made directly to this file may be lost.
+#   Timestamp:    2019-08-21
+#
+# RAPIDS Dockerfile for Ubuntu "runtime" image
+#
+# runtime: RAPIDS is installed from published conda packages to the 'rapids'
+# conda environment. RAPIDS jupyter notebooks are also provided, as well as
+# jupyterlab and all the dependencies required to run them.
+#
+# Copyright (c) 2019, NVIDIA CORPORATION.
+
+
+ARG RAPIDS_REPO=rapidsai/rapidsai-nightly
+ARG RAPIDS_VERSION=0.9
+ARG CUDA_VERSION=10.0
+ARG LINUX_VERSION=ubuntu18.04
+ARG PYTHON_VERSION=3.7
+ARG BASE_IMAGE=${RAPIDS_REPO}:${RAPIDS_VERSION}-cuda${CUDA_VERSION}-base-${LINUX_VERSION}-py${PYTHON_VERSION}
+
+FROM ${BASE_IMAGE}
+
+# devel environment config args
+ARG CC_VERSION=7
+ARG CXX_VERSION=7
+
+# devel environment core build pkgs
+ARG BOOST_CPP_VERSION=1.70.0
+ARG CMAKE_VERSION=3.14.5
+ARG LIBGFORTRAN_NG_VERSION=7.3.0
+ARG NUMBA_VERSION=0.45.1
+ARG NUMPY_VERSION=1.16.4
+ARG PANDAS_VERSION=0.24.2
+
+# notebook pkgs
+ARG IPYTHON_VERSION=7.3*
+
+# base/runtime install specs
+ARG DASK_XGBOOST_CONDA_VERSION_SPEC=0.2*
+ARG RAPIDS_CONDA_VERSION_SPEC=0.9*
+ARG XGBOOST_CONDA_VERSION_SPEC=0.90.rapidsdev1
+ARG XGBOOST_CONDA_LABEL=rapidsai/label/xgboost
+ARG XGBOOST_VERSION=0.90
+
+# Install the notebook dependencies and the notebook repo
+RUN source activate rapids \
+    && env \
+    && conda list \
+    && conda install -y -n rapids --freeze-installed --override-channels \
+      -c numba \
+      -c conda-forge \
+      -c anaconda \
+      bokeh \
+      dask-labextension \
+      dask-ml \
+      ipython=${IPYTHON_VERSION} \
+      jupyterlab \
+      matplotlib \
+      networkx \
+      nodejs \
+      scikit-learn \
+      scipy \
+      seaborn \
+      tensorflow \
+      umap-learn \
+   && conda clean -afy \
+   && chmod -R ugo+w /opt/conda \
+   && pip install "git+https://github.com/jacobtomlinson/jupyterlab-nvdashboard.git" --upgrade \
+   && jupyter labextension install dask-labextension jupyterlab-nvdashboard \
+   && cd ${RAPIDS_DIR} \
+   && ./clone.sh notebooks \
+   && chmod -R ugo+w /opt/conda ${RAPIDS_DIR}
+
+# Add test file for testing notebooks from within the container
+COPY supportfiles/test.sh /test.sh
+
+WORKDIR ${RAPIDS_DIR}/notebooks
+# Jupyter notebook port
+EXPOSE 8888
+# Dask Scheduler Bokeh port
+EXPOSE 8787
+EXPOSE 8786
+
+# Change the entrypoint to start the Jupyter server prior to running commands
+COPY supportfiles/.start_jupyter_run_in_rapids /.run_in_rapids
+
+# Copy Dockerfile as late as possible to avoid invalidating cache for trivial changes
+COPY Dockerfile.ubuntu-runtime /Dockerfile.ubuntu-runtime

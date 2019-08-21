@@ -1,3 +1,0 @@
-
-ENTRYPOINT [ "/usr/bin/tini", "--" ]
-CMD [ "/bin/bash" ]

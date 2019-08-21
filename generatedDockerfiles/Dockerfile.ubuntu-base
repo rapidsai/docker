@@ -1,0 +1,79 @@
+#
+# This file was generated! Edits made directly to this file may be lost.
+#   Timestamp:    2019-08-21
+#
+# RAPIDS Dockerfile for Ubuntu "base" image
+#
+# base: RAPIDS is installed from published conda packages to the 'rapids' conda
+# environment.
+#
+# Copyright (c) 2019, NVIDIA CORPORATION.
+
+
+ARG CUDA_TYPE=runtime
+ARG CUDA_VERSION=10.0
+ARG LINUX_VERSION=ubuntu18.04
+ARG PYTHON_VERSION=3.7
+
+FROM gpuci/miniconda-cuda-rapidsenv:${CUDA_VERSION}-${CUDA_TYPE}-${LINUX_VERSION}-py${PYTHON_VERSION}
+
+# devel environment config args
+ARG CC_VERSION=7
+ARG CXX_VERSION=7
+
+# devel environment core build pkgs
+ARG BOOST_CPP_VERSION=1.70.0
+ARG CMAKE_VERSION=3.14.5
+ARG LIBGFORTRAN_NG_VERSION=7.3.0
+ARG NUMBA_VERSION=0.45.1
+ARG NUMPY_VERSION=1.16.4
+ARG PANDAS_VERSION=0.24.2
+
+# notebook pkgs
+ARG IPYTHON_VERSION=7.3*
+
+# base/runtime install specs
+ARG DASK_XGBOOST_CONDA_VERSION_SPEC=0.2*
+ARG RAPIDS_CONDA_VERSION_SPEC=0.9*
+ARG XGBOOST_CONDA_VERSION_SPEC=0.90.rapidsdev1
+ARG XGBOOST_CONDA_LABEL=rapidsai/label/xgboost
+ARG XGBOOST_VERSION=0.90
+
+ENV RAPIDS_DIR=/rapids
+ENV LD_LIBRARY_PATH=/opt/conda/envs/rapids/lib:${LD_LIBRARY_PATH}
+
+# Copy files needed by RAPIDS and 3rd parties for builds, test, and runtime.
+RUN mkdir -p ${RAPIDS_DIR}
+COPY rapids ${RAPIDS_DIR}
+COPY utils ${RAPIDS_DIR}/utils
+
+RUN source activate rapids \
+    && env \
+    && conda list \
+    && conda install -y -n rapids --freeze-installed --override-channels \
+      -c rapidsai \
+      -c rapidsai-nightly \
+      -c nvidia \
+      -c ${XGBOOST_CONDA_LABEL} \
+      -c numba \
+      -c conda-forge \
+      cudf=${RAPIDS_CONDA_VERSION_SPEC} \
+      cuml=${RAPIDS_CONDA_VERSION_SPEC} \
+      cugraph=${RAPIDS_CONDA_VERSION_SPEC} \
+      dask-cuda=${RAPIDS_CONDA_VERSION_SPEC} \
+      dask-xgboost=${DASK_XGBOOST_CONDA_VERSION_SPEC} \
+      numba=${NUMBA_VERSION} \
+      xgboost=${XGBOOST_VERSION} \
+   && conda clean -afy \
+   && chmod -R ugo+w /opt/conda ${RAPIDS_DIR}
+
+WORKDIR ${RAPIDS_DIR}
+
+COPY supportfiles/.run_in_rapids /.run_in_rapids
+ENTRYPOINT [ "/usr/bin/tini", "--", "/.run_in_rapids" ]
+
+# Set the default command to pass to the ENTRYPOINT if no command was given
+CMD [ "/bin/bash" ]
+
+# Copy Dockerfile as late as possible to avoid invalidating cache for trivial changes
+COPY Dockerfile.ubuntu-base /Dockerfile.ubuntu-base

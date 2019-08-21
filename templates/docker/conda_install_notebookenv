@@ -1,0 +1,41 @@
+# Install the notebook dependencies and the notebook repo
+RUN source activate rapids \
+    && env \
+    && conda list \
+    && conda install -y -n rapids --freeze-installed --override-channels \
+      -c numba \
+      -c conda-forge \
+      -c anaconda \
+      bokeh \
+      dask-labextension \
+      dask-ml \
+      ipython=${IPYTHON_VERSION} \
+      jupyterlab \
+      matplotlib \
+      networkx \
+      nodejs \
+      scikit-learn \
+      scipy \
+      seaborn \
+      tensorflow \
+      umap-learn \
+   && conda clean -afy \
+   && chmod -R ugo+w /opt/conda \
+   && pip install "git+https://github.com/jacobtomlinson/jupyterlab-nvdashboard.git" --upgrade \
+   && jupyter labextension install dask-labextension jupyterlab-nvdashboard \
+   && cd ${RAPIDS_DIR} \
+   && ./clone.sh notebooks \
+   && chmod -R ugo+w /opt/conda ${RAPIDS_DIR}
+
+# Add test file for testing notebooks from within the container
+COPY supportfiles/test.sh /test.sh
+
+WORKDIR ${RAPIDS_DIR}/notebooks
+# Jupyter notebook port
+EXPOSE 8888
+# Dask Scheduler Bokeh port
+EXPOSE 8787
+EXPOSE 8786
+
+# Change the entrypoint to start the Jupyter server prior to running commands
+COPY supportfiles/.start_jupyter_run_in_rapids /.run_in_rapids

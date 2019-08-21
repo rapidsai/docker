@@ -16,24 +16,13 @@ RAPIDSDEVTOOL_DIR=${THISDIR}/../..
 source ${THISDIR}/common.sh
 
 #
-# awk script processes config file line-by-line.
+# awk script processes repoSettings file line-by-line.
 #
 awk -v "debug=${DEBUG}" '
     BEGIN {
        inRapidsSection = 0
     }
-    /^# SECTION: RAPIDS.*$/ {
-       inRapidsSection = 1
-       next
-    }
-    /^# SECTION: .*$/ {
-       inRapidsSection = 0
-       next
-    }
     /^[a-zA-Z0-9_\-]+_REPO=.+$/ {
-       if (inRapidsSection == 0) {
-          next
-       }
        split($0, fields, "=")
        var = fields[1]
        url = fields[2] # Assume url is similar to https://github.com/rapidsai/cudf.git
@@ -47,9 +36,6 @@ awk -v "debug=${DEBUG}" '
        next
     }
     /^[a-zA-Z0-9_\-]+_BRANCH=.+$/ {
-       if (inRapidsSection == 0) {
-          next
-       }
        split($0, fields, "=")
        var = fields[1]
        branch = fields[2]
@@ -71,4 +57,4 @@ awk -v "debug=${DEBUG}" '
           }
        }
     }
-    ' ${CONFIG_FILE_NAME}
+    ' ${REPOSETTINGS_FILE_NAME}

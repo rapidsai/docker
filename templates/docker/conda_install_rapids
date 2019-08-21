@@ -1,17 +1,19 @@
-# NOTE: Many/all of the package versions used below are defined in the
-# "args" insertfile
-
-# NOTE: assumes steps in "setup_conda" were run!
-
-ARG RAPIDSAI_NIGHTLY_CONDA_LABEL=rapidsai-nightly/label/cuda${CUDA_MAJORMINOR_VERSION}
-
-RUN mkdir -p ${RAPIDS_SRC_DIR}
-COPY rapids ${RAPIDS_SRC_DIR}
-COPY utils ${RAPIDS_SRC_DIR}/${UTILS_DIR}
-
-RUN curl ${MINICONDA_URL} -o /miniconda.sh && \
-    sh /miniconda.sh -b -p /conda && \
-    conda update -n base conda && \
-    rm -f /miniconda.sh
-
-
+RUN source activate rapids \
+    && env \
+    && conda list \
+    && conda install -y -n rapids --freeze-installed --override-channels \
+      -c rapidsai \
+      -c rapidsai-nightly \
+      -c nvidia \
+      -c ${XGBOOST_CONDA_LABEL} \
+      -c numba \
+      -c conda-forge \
+      cudf=${RAPIDS_CONDA_VERSION_SPEC} \
+      cuml=${RAPIDS_CONDA_VERSION_SPEC} \
+      cugraph=${RAPIDS_CONDA_VERSION_SPEC} \
+      dask-cuda=${RAPIDS_CONDA_VERSION_SPEC} \
+      dask-xgboost=${DASK_XGBOOST_CONDA_VERSION_SPEC} \
+      numba=${NUMBA_VERSION} \
+      xgboost=${XGBOOST_VERSION} \
+   && conda clean -afy \
+   && chmod -R ugo+w /opt/conda ${RAPIDS_DIR}

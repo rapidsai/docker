@@ -15,17 +15,19 @@ LOG_DIR=${RAPIDSDEVTOOL_DIR}/logs
 IMAGE_TAG_NAME=""
 DOCKERFILE=""
 TARGET_STAGE_NAME=""
+DOCKERBUILD_ARGS=""
 
-SHORTHELP="$0 [-h|-H] -f <dockerFile> -r <targetStageName> -i <imageTagName> [-l <logDir>] [<dockerBuildArgs>]"
+SHORTHELP="$0 [-h|-H] -f <dockerFile> [-r <targetStageName>] -i <imageTagName> [-l <logDir>] [-a <dockerBuildArgs>]"
 LONGHELP="${SHORTHELP}
    Creates a Docker image using ${DOCKER} and <dockerFile>, tagged with
-   <imageTagName>, stopping at <targetStageName>. <dockerBuildArgs> can
-   be provided to pass docker args as-is to the build command.
+   <imageTagName>, stopping at <targetStageName> (if
+   specified). -a <dockerBuildArgs> can be provided to pass docker args as-is
+   to the build command.
 
    If <logDir> is not specified, it defaults to ${LOG_DIR}
 "
 
-while getopts ":hHl:f:r:i:" option; do
+while getopts ":hHl:f:r:i:a:" option; do
     case "${option}" in
         h)
             echo "${SHORTHELP}"
@@ -39,13 +41,16 @@ while getopts ":hHl:f:r:i:" option; do
             DOCKERFILE=${OPTARG}
 	    ;;
 	r)
-            TARGET_STAGE_NAME=${OPTARG}
+            TARGET_STAGE_NAME="--target ${OPTARG}"
 	    ;;
         i)
             IMAGE_TAG_NAME=${OPTARG}
             ;;
 	l)
 	    LOG_DIR=${OPTARG}
+	    ;;
+	a)
+            DOCKERBUILD_ARGS="--build-arg ${OPTARG}"
 	    ;;
 	*)
 	    echo "${SHORTHELP}"
@@ -68,10 +73,6 @@ if [[ ${IMAGE_TAG_NAME} == "" ]]; then
     echo "ERROR: <imageTagName> must be specified."
     ERROR=1
 fi
-if [[ ${TARGET_STAGE_NAME} == "" ]]; then
-    echo "ERROR: <targetStageName> must be specified."
-    ERROR=1
-fi
 if (( ${ERROR} != 0 )); then
     exit ${ERROR}
 fi
@@ -79,4 +80,4 @@ fi
 LOGFILE_NAME=${LOG_DIR}/${IMAGE_TAG_NAME}_image--${TIMESTAMP}.buildlog
 
 mkdir -p ${LOG_DIR}
-(time ${DOCKER} build --target ${TARGET_STAGE_NAME} --tag ${IMAGE_TAG_NAME} ${buildArgs} -f ${DOCKERFILE} $(dirname ${DOCKERFILE})) 2>&1|tee ${LOGFILE_NAME}
+(time ${DOCKER} build ${TARGET_STAGE_NAME} --tag ${IMAGE_TAG_NAME} ${buildArgs} -f ${DOCKERFILE} ${DOCKERBUILD_ARGS} $(dirname ${DOCKERFILE})) 2>&1|tee ${LOGFILE_NAME}

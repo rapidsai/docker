@@ -28,8 +28,8 @@ buildDockerImage [-h|-H] [-d] -t <templateName> [-i <imageTagName>] [<dockerBuil
       (running the generated clone script)
       buildDockerImageFromFile
 
-   The scripts are generated based on the config file, and the Dockerfile is
-   generated based on <templateName> and the config file.
+   The scripts are generated based on the repoSettings file, and the Dockerfile is
+   generated based on <templateName> and the dockerArgs file.
 
    If <imageTagName> is "" or not specified, a default image name of the form
    shown below is used.
@@ -54,7 +54,7 @@ buildDockerImageFromFile [-h|-H] -f <dockerFile> -i <imageTagName> [-l <logDir>]
 
 genBuildScript [-h|-H] [-o <outputFileName>]
    Generate a script to build the RAPIDS components specified in
-   config
+   repoSettings
 
    Use -o <outputFileName> to specify the name of the generated build script,
    but if not specified, the default generated build script will be named
@@ -62,7 +62,7 @@ genBuildScript [-h|-H] [-o <outputFileName>]
 
 genCloneScript [-h|-H] [-o <outputFileName>]
    Generate a script to clone RAPIDS components as specified in
-   config
+   repoSettings
 
    Use -o <outputFileName> to specify the name of the generated clone script,
    but if not specified, the default generated clone script will be named
@@ -92,13 +92,13 @@ listDockerTemplNames [-h|-H]
       centos7-base centos7-devel centos7-runtime ubuntu-base ubuntu-devel ubuntu-runtime
 ```
 
-Edit the `config` file to customize a build with specific RAPIDS components, branches, and dependencies.
+Edit the `repoSettings` and `dockerArgs` files to customize a build with specific RAPIDS components, branches, and dependencies.
 
 Copy and modify existing Dockerfile templates in `templates/docker` to create custom Docker images. Follow the naming convention in order for the `rapidsdevtool.sh` commands to recognize the new Dockerfile template (see the section on templates below).
 
-## Templates and the config file
+## Templates and the repoSettings and dockerArgs files
 
-`rapidsdevtool.sh` utilizes several code generators for creating Dockerfiles and utility scripts for users that are specific to the environment they're using. The templates in the `templates` subdir, along with the `config` file are intended to be edited to customize the generated files.
+`rapidsdevtool.sh` utilizes several code generators for creating Dockerfiles and utility scripts for users that are specific to the environment they're using. The templates in the `templates` subdir, along with the `repoSettings` and `dockerArgs` files are intended to be edited to customize the generated files.
 
 To create additional Docker image types, simply create a new template in the `templates/docker` subdir named using the convention `Dockerfile_<imageName>.template`
 
@@ -107,9 +107,9 @@ Similar in convention to Dockerfiles, script templates are located in `templates
 All templates have the ability to identify the following keywords when being used with the file generator:
 
 `insertfile <fileName>` inserts `<fileName>` inline into the generated output, just like #include is treated by the C preprocessor.
-   
+
 `runcommand <command>` runs `<command>` and inserts the output of command inline into the generated output. `<command>` is typically a shell script, but can also be any command you would run in a shell, such as `ls -l`.
-   Many existing templates make use of the scripts in `commands/utils` for generating output, in particular, output based on the contents of the config file.
+   Many existing templates make use of the scripts in `commands/utils` for generating output, in particular, output based on the contents of the `repoSettings` file.
 
 ## Extending `rapidsdevtool.sh`
 

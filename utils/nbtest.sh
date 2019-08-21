@@ -24,7 +24,8 @@ EXITCODE=0
 
 for nb in $*; do
     NBFILENAME=$1
-    NBNAME=$(echo ${NBFILENAME}|cut -d'.' -f1)
+    NBNAME=${NBFILENAME%.*}
+    NBNAME=${NBNAME##*/}
     NBTESTSCRIPT=/tmp/${NBNAME}-test.py
     shift
 
