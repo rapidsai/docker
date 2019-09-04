@@ -1,7 +1,5 @@
 RMM_REPO=https://github.com/rapidsai/rmm.git
 RMM_BRANCH=branch-0.10
-CUSTRINGS_REPO=https://github.com/rapidsai/custrings.git
-CUSTRINGS_BRANCH=branch-0.10
 CUDF_REPO=https://github.com/rapidsai/cudf.git
 CUDF_BRANCH=branch-0.10
 CUML_REPO=https://github.com/rapidsai/cuml.git

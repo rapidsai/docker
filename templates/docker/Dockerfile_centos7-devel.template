@@ -60,9 +60,6 @@ ENV NCCL_ROOT=/opt/conda/envs/rapids
 RUN cd ${RAPIDS_DIR}/rmm && \
     source activate rapids && \
     ./build.sh
-RUN cd ${RAPIDS_DIR}/custrings && \
-    source activate rapids && \
-    ./build.sh
 RUN cd ${RAPIDS_DIR}/cudf && \
     source activate rapids && \
     ./build.sh
