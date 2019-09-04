@@ -1,6 +1,6 @@
 #
 # This file was generated! Edits made directly to this file may be lost.
-#   Timestamp:    2019-08-21
+#   Timestamp:    2019-09-04
 #
 # RAPIDS Dockerfile for CentOS7 "devel" image
 #
@@ -176,9 +176,6 @@ ENV NCCL_ROOT=/opt/conda/envs/rapids
 # (this is done automatically when using 'rapidsdevtool.sh buildDockerImage',
 #  see rapidsdevtool.sh help for more details)
 RUN cd ${RAPIDS_DIR}/rmm && \
-    source activate rapids && \
-    ./build.sh
-RUN cd ${RAPIDS_DIR}/custrings && \
     source activate rapids && \
     ./build.sh
 RUN cd ${RAPIDS_DIR}/cudf && \
