@@ -1,6 +1,7 @@
 RUN source activate rapids \
     && env \
     && conda list \
+    && conda uninstall -y blas openblas \
     && conda install -y -n rapids --freeze-installed --override-channels \
       -c rapidsai \
       -c rapidsai-nightly \
@@ -27,6 +28,7 @@ RUN source activate rapids \
       pandas=${PANDAS_VERSION} \
       pytest \
       rapidjson \
+      conda-forge::blas==1.1=openblas \
     && conda clean -afy \
     && chmod -R ugo+w /opt/conda
 

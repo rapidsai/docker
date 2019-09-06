@@ -1,6 +1,6 @@
 #
 # This file was generated! Edits made directly to this file may be lost.
-#   Timestamp:    2019-09-04
+#   Timestamp:    2019-09-06
 #
 # RAPIDS Dockerfile for CentOS7 "devel" image
 #
@@ -90,6 +90,7 @@ ENV LD_LIBRARY_PATH=${GCC7_DIR}/lib64
 RUN source activate rapids \
     && env \
     && conda list \
+    && conda uninstall -y blas openblas \
     && conda install -y -n rapids --freeze-installed --override-channels \
       -c rapidsai \
       -c rapidsai-nightly \
@@ -116,6 +117,7 @@ RUN source activate rapids \
       pandas=${PANDAS_VERSION} \
       pytest \
       rapidjson \
+      conda-forge::blas==1.1=openblas \
     && conda clean -afy \
     && chmod -R ugo+w /opt/conda
 
@@ -148,10 +150,7 @@ RUN source activate rapids \
          cudf dask-cudf libcudf \
          cuml libcuml \
          cugraph libcugraph \
-         xgboost py-xgboost libxgboost \
-    && conda install -y -n rapids --force-reinstall --override-channels \
-         -c conda-forge \
-         conda-forge::blas==1.1=openblas
+         xgboost py-xgboost libxgboost
 
 # Copy files needed by RAPIDS and 3rd parties for builds, test, and runtime.
 RUN mkdir -p ${RAPIDS_DIR} ${GCC7_DIR}/lib64

@@ -1,6 +1,6 @@
 #
 # This file was generated! Edits made directly to this file may be lost.
-#   Timestamp:    2019-09-04
+#   Timestamp:    2019-09-06
 #
 # RAPIDS Dockerfile for Ubuntu "devel" image
 #
@@ -72,6 +72,7 @@ ENV PATH=${PATH}:/conda/bin
 RUN source activate rapids \
     && env \
     && conda list \
+    && conda uninstall -y blas openblas \
     && conda install -y -n rapids --freeze-installed --override-channels \
       -c rapidsai \
       -c rapidsai-nightly \
@@ -98,6 +99,7 @@ RUN source activate rapids \
       pandas=${PANDAS_VERSION} \
       pytest \
       rapidjson \
+      conda-forge::blas==1.1=openblas \
     && conda clean -afy \
     && chmod -R ugo+w /opt/conda
 
@@ -130,10 +132,7 @@ RUN source activate rapids \
          cudf dask-cudf libcudf \
          cuml libcuml \
          cugraph libcugraph \
-         xgboost py-xgboost libxgboost \
-    && conda install -y -n rapids --force-reinstall --override-channels \
-         -c conda-forge \
-         conda-forge::blas==1.1=openblas
+         xgboost py-xgboost libxgboost
 
 # 'rapidsdevtool.sh buildDockerImage' sets up the build context, including the
 #  rapids directory being COPY'd below. See rapidsdevtool.sh help for details.
