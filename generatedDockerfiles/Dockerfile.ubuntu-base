@@ -64,6 +64,7 @@ RUN source activate rapids \
       dask-xgboost=${DASK_XGBOOST_CONDA_VERSION_SPEC} \
       numba=${NUMBA_VERSION} \
       xgboost=${XGBOOST_VERSION} \
+      conda-forge::blas==1.1=openblas \
    && conda clean -afy \
    && chmod -R ugo+w /opt/conda ${RAPIDS_DIR}
 
