@@ -46,6 +46,7 @@ ARG XGBOOST_VERSION=0.90
 RUN source activate rapids \
     && env \
     && conda list \
+    && conda uninstall -y blas openblas \
     && conda install -y -n rapids --freeze-installed --override-channels \
       -c numba \
       -c conda-forge \
@@ -63,6 +64,7 @@ RUN source activate rapids \
       seaborn \
       tensorflow \
       umap-learn \
+      conda-forge::blas==1.1=openblas \
    && conda clean -afy \
    && chmod -R ugo+w /opt/conda \
    && pip install "git+https://github.com/jacobtomlinson/jupyterlab-nvdashboard.git#v0.1.9" --upgrade \
