@@ -9,6 +9,7 @@ RUN source activate rapids \
       -c numba \
       -c conda-forge \
       cudf=${RAPIDS_CONDA_VERSION_SPEC} \
+      cuspatial=${RAPIDS_CONDA_VERSION_SPEC} \
       cuml=${RAPIDS_CONDA_VERSION_SPEC} \
       cugraph=${RAPIDS_CONDA_VERSION_SPEC} \
       dask-cuda=${RAPIDS_CONDA_VERSION_SPEC} \

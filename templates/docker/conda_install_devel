@@ -1,6 +1,8 @@
 RUN source activate rapids \
     && env \
     && conda list \
+    # FIXME: Base image should have correct blas version and blas uninstall/install here
+    #        should be removed
     && conda uninstall -y blas openblas \
     && conda install -y -n rapids --freeze-installed --override-channels \
       -c rapidsai \

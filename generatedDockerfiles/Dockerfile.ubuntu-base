@@ -1,6 +1,6 @@
 #
 # This file was generated! Edits made directly to this file may be lost.
-#   Timestamp:    2019-09-09
+#   Timestamp:    2019-09-11
 #
 # RAPIDS Dockerfile for Ubuntu "base" image
 #
@@ -34,7 +34,7 @@ ARG IPYTHON_VERSION=7.3*
 
 # base/runtime install specs
 ARG DASK_XGBOOST_CONDA_VERSION_SPEC=0.2*
-ARG RAPIDS_CONDA_VERSION_SPEC=0.9*
+ARG RAPIDS_CONDA_VERSION_SPEC=0.10*
 ARG XGBOOST_CONDA_VERSION_SPEC=0.90.rapidsdev1
 ARG XGBOOST_CONDA_LABEL=rapidsai/label/xgboost
 ARG XGBOOST_VERSION=0.90
@@ -58,6 +58,7 @@ RUN source activate rapids \
       -c numba \
       -c conda-forge \
       cudf=${RAPIDS_CONDA_VERSION_SPEC} \
+      cuspatial=${RAPIDS_CONDA_VERSION_SPEC} \
       cuml=${RAPIDS_CONDA_VERSION_SPEC} \
       cugraph=${RAPIDS_CONDA_VERSION_SPEC} \
       dask-cuda=${RAPIDS_CONDA_VERSION_SPEC} \
