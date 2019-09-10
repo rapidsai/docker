@@ -1,6 +1,6 @@
 #
 # This file was generated! Edits made directly to this file may be lost.
-#   Timestamp:    2019-09-09
+#   Timestamp:    2019-09-10
 #
 # RAPIDS Dockerfile for Ubuntu "devel" image
 #
@@ -72,7 +72,6 @@ ENV PATH=${PATH}:/conda/bin
 RUN source activate rapids \
     && env \
     && conda list \
-    && conda uninstall -y blas openblas \
     && conda install -y -n rapids --freeze-installed --override-channels \
       -c rapidsai \
       -c rapidsai-nightly \
@@ -99,7 +98,6 @@ RUN source activate rapids \
       pandas=${PANDAS_VERSION} \
       pytest \
       rapidjson \
-      conda-forge::blas==1.1=openblas \
     && conda clean -afy \
     && chmod -R ugo+w /opt/conda
 

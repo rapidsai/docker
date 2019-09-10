@@ -1,6 +1,7 @@
 RUN source activate rapids \
     && env \
     && conda list \
+    && conda uninstall -y blas openblas \
     && conda install -y -n rapids --freeze-installed --override-channels \
       -c rapidsai \
       -c rapidsai-nightly \
