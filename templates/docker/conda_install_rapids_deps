@@ -23,4 +23,5 @@ RUN source activate rapids \
          cudf dask-cudf libcudf \
          cuml libcuml \
          cugraph libcugraph \
+         cuspatial \
          xgboost py-xgboost libxgboost

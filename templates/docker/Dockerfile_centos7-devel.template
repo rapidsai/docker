@@ -63,6 +63,12 @@ RUN cd ${RAPIDS_DIR}/rmm && \
 RUN cd ${RAPIDS_DIR}/cudf && \
     source activate rapids && \
     ./build.sh
+# FIXME: Should not need to set CUSPATIAL_HOME and CUDF_HOME variables
+RUN cd ${RAPIDS_DIR}/cuspatial && \
+    source activate rapids && \
+    export CUSPATIAL_HOME="$PWD" && \
+    export CUDF_HOME="$PWD/../cudf" && \
+    ./build.sh
 RUN cd ${RAPIDS_DIR}/cuml && \
     source activate rapids && \
     ./build.sh --allgpuarch --multigpu libcuml cuml prims

@@ -1,6 +1,6 @@
 #
 # This file was generated! Edits made directly to this file may be lost.
-#   Timestamp:    2019-09-09
+#   Timestamp:    2019-09-11
 #
 # RAPIDS Dockerfile for Ubuntu "devel" image
 #
@@ -36,7 +36,7 @@ ARG IPYTHON_VERSION=7.3*
 
 # base/runtime install specs
 ARG DASK_XGBOOST_CONDA_VERSION_SPEC=0.2*
-ARG RAPIDS_CONDA_VERSION_SPEC=0.9*
+ARG RAPIDS_CONDA_VERSION_SPEC=0.10*
 ARG XGBOOST_CONDA_VERSION_SPEC=0.90.rapidsdev1
 ARG XGBOOST_CONDA_LABEL=rapidsai/label/xgboost
 ARG XGBOOST_VERSION=0.90
@@ -72,6 +72,8 @@ ENV PATH=${PATH}:/conda/bin
 RUN source activate rapids \
     && env \
     && conda list \
+    # FIXME: Base image should have correct blas version and blas uninstall/install here
+    #        should be removed
     && conda uninstall -y blas openblas \
     && conda install -y -n rapids --freeze-installed --override-channels \
       -c rapidsai \
@@ -132,6 +134,7 @@ RUN source activate rapids \
          cudf dask-cudf libcudf \
          cuml libcuml \
          cugraph libcugraph \
+         cuspatial \
          xgboost py-xgboost libxgboost
 
 # 'rapidsdevtool.sh buildDockerImage' sets up the build context, including the
@@ -155,6 +158,12 @@ RUN cd ${RAPIDS_DIR}/rmm && \
     ./build.sh
 RUN cd ${RAPIDS_DIR}/cudf && \
     source activate rapids && \
+    ./build.sh
+# FIXME: Should not need to set CUSPATIAL_HOME and CUDF_HOME variables
+RUN cd ${RAPIDS_DIR}/cuspatial && \
+    source activate rapids && \
+    export CUSPATIAL_HOME="$PWD" && \
+    export CUDF_HOME="$PWD/../cudf" && \
     ./build.sh
 RUN cd ${RAPIDS_DIR}/cuml && \
     source activate rapids && \
@@ -183,6 +192,9 @@ CMD [ "/bin/bash" ]
 RUN source activate rapids \
     && env \
     && conda list \
+    # FIXME: Base image should have correct blas version and blas uninstall/install here
+    #        should be removed
+    && conda uninstall -y blas openblas \
     && conda install -y -n rapids --freeze-installed --override-channels \
       -c numba \
       -c conda-forge \
@@ -200,6 +212,7 @@ RUN source activate rapids \
       seaborn \
       tensorflow \
       umap-learn \
+      conda-forge::blas==1.1=openblas \
    && conda clean -afy \
    && chmod -R ugo+w /opt/conda \
    && pip install "git+https://github.com/jacobtomlinson/jupyterlab-nvdashboard.git#v0.1.9" --upgrade \

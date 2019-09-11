@@ -1,6 +1,6 @@
 #
 # This file was generated! Edits made directly to this file may be lost.
-#   Timestamp:    2019-09-09
+#   Timestamp:    2019-09-11
 #
 # RAPIDS Dockerfile for CentOS7 "runtime" image
 #
@@ -37,7 +37,7 @@ ARG IPYTHON_VERSION=7.3*
 
 # base/runtime install specs
 ARG DASK_XGBOOST_CONDA_VERSION_SPEC=0.2*
-ARG RAPIDS_CONDA_VERSION_SPEC=0.9*
+ARG RAPIDS_CONDA_VERSION_SPEC=0.10*
 ARG XGBOOST_CONDA_VERSION_SPEC=0.90.rapidsdev1
 ARG XGBOOST_CONDA_LABEL=rapidsai/label/xgboost
 ARG XGBOOST_VERSION=0.90
@@ -46,6 +46,8 @@ ARG XGBOOST_VERSION=0.90
 RUN source activate rapids \
     && env \
     && conda list \
+    # FIXME: Base image should have correct blas version and blas uninstall/install here
+    #        should be removed
     && conda uninstall -y blas openblas \
     && conda install -y -n rapids --freeze-installed --override-channels \
       -c numba \
