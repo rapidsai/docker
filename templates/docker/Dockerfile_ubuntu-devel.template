@@ -60,7 +60,11 @@ RUN cd ${RAPIDS_DIR}/rmm && \
     ./build.sh
 RUN cd ${RAPIDS_DIR}/cudf && \
     source activate rapids && \
-    ./build.sh
+    ./build.sh && \
+    #FIXME: Should building tests be integrated into build.sh?
+    cd cpp/build && \
+    make -j build_tests_nvstrings && \
+    make -j build_tests_cudf
 # FIXME: Should not need to set CUSPATIAL_HOME and CUDF_HOME variables
 RUN cd ${RAPIDS_DIR}/cuspatial && \
     source activate rapids && \
