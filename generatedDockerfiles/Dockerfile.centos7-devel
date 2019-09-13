@@ -1,6 +1,6 @@
 #
 # This file was generated! Edits made directly to this file may be lost.
-#   Timestamp:    2019-09-11
+#   Timestamp:    2019-09-13
 #
 # RAPIDS Dockerfile for CentOS7 "devel" image
 #
@@ -89,6 +89,7 @@ ENV LD_LIBRARY_PATH=${GCC7_DIR}/lib64
 # Install core pkgs for development (these will not be overwritten by next install)
 RUN source activate rapids \
     && env \
+    && pip install sphinx-markdown-tables \
     && conda list \
     # FIXME: Base image should have correct blas version and blas uninstall/install here
     #        should be removed
@@ -120,6 +121,7 @@ RUN source activate rapids \
       pytest \
       rapidjson \
       conda-forge::blas==1.1=openblas \
+      sphinx sphinx_rtd_theme numpydoc sphinxcontrib-websupport nbsphinx recommonmark doxygen "pandoc<=2.0.0" \
     && conda clean -afy \
     && chmod -R ugo+w /opt/conda
 
