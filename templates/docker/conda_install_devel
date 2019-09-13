@@ -1,5 +1,6 @@
 RUN source activate rapids \
     && env \
+    && pip install sphinx-markdown-tables \
     && conda list \
     # FIXME: Base image should have correct blas version and blas uninstall/install here
     #        should be removed
@@ -31,6 +32,7 @@ RUN source activate rapids \
       pytest \
       rapidjson \
       conda-forge::blas==1.1=openblas \
+      sphinx sphinx_rtd_theme numpydoc sphinxcontrib-websupport nbsphinx recommonmark doxygen "pandoc<=2.0.0" \
     && conda clean -afy \
     && chmod -R ugo+w /opt/conda
 
