@@ -1,6 +1,6 @@
 #
 # This file was generated! Edits made directly to this file may be lost.
-#   Timestamp:    2019-09-13
+#   Timestamp:    2019-09-23
 #
 # RAPIDS Dockerfile for Ubuntu "devel" image
 #
@@ -130,6 +130,7 @@ RUN source activate rapids \
          dask-cuda=${RAPIDS_CONDA_VERSION_SPEC} \
          dask-xgboost=${DASK_XGBOOST_CONDA_VERSION_SPEC} \
          xgboost=${XGBOOST_VERSION} \
+         custreamz=${RAPIDS_CONDA_VERSION_SPEC} \
     && conda remove --force \
          rmm librmm \
          nvstrings libnvstrings \
@@ -137,7 +138,8 @@ RUN source activate rapids \
          cuml libcuml \
          cugraph libcugraph \
          cuspatial \
-         xgboost py-xgboost libxgboost
+         xgboost py-xgboost libxgboost \
+         custreamz
 
 # 'rapidsdevtool.sh buildDockerImage' sets up the build context, including the
 #  rapids directory being COPY'd below. See rapidsdevtool.sh help for details.

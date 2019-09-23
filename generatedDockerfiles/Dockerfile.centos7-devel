@@ -1,6 +1,6 @@
 #
 # This file was generated! Edits made directly to this file may be lost.
-#   Timestamp:    2019-09-13
+#   Timestamp:    2019-09-23
 #
 # RAPIDS Dockerfile for CentOS7 "devel" image
 #
@@ -148,6 +148,7 @@ RUN source activate rapids \
          dask-cuda=${RAPIDS_CONDA_VERSION_SPEC} \
          dask-xgboost=${DASK_XGBOOST_CONDA_VERSION_SPEC} \
          xgboost=${XGBOOST_VERSION} \
+         custreamz=${RAPIDS_CONDA_VERSION_SPEC} \
     && conda remove --force \
          rmm librmm \
          nvstrings libnvstrings \
@@ -155,7 +156,8 @@ RUN source activate rapids \
          cuml libcuml \
          cugraph libcugraph \
          cuspatial \
-         xgboost py-xgboost libxgboost
+         xgboost py-xgboost libxgboost \
+         custreamz
 
 # Copy files needed by RAPIDS and 3rd parties for builds, test, and runtime.
 RUN mkdir -p ${RAPIDS_DIR} ${GCC7_DIR}/lib64
