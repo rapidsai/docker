@@ -1,6 +1,6 @@
 #
 # This file was generated! Edits made directly to this file may be lost.
-#   Timestamp:    2019-09-11
+#   Timestamp:    2019-10-01
 #
 # RAPIDS Dockerfile for CentOS7 "base" image
 #
@@ -12,10 +12,13 @@
 
 ARG CUDA_TYPE=runtime
 ARG CUDA_VERSION=10.0
+ARG CUDA_MAJORMINOR_VERSION=${CUDA_VERSION}
 ARG LINUX_VERSION=centos7
 ARG PYTHON_VERSION=3.6
 
 FROM gpuci/miniconda-cuda-rapidsenv:${CUDA_VERSION}-${CUDA_TYPE}-${LINUX_VERSION}-py${PYTHON_VERSION}
+
+ARG CUDA_MAJORMINOR_VERSION
 
 # devel environment config args
 ARG CC_VERSION=7
@@ -50,6 +53,9 @@ COPY utils ${RAPIDS_DIR}/utils
 # Add compatible libm
 COPY supportfiles/libm.so.6 ${GCC7_DIR}/lib64
 
+
+RUN echo "CUDA_MAJORMINOR_VERSION = ${CUDA_MAJORMINOR_VERSION}"
+
 RUN source activate rapids \
     && env \
     && conda list \
@@ -60,6 +66,7 @@ RUN source activate rapids \
       -c ${XGBOOST_CONDA_LABEL} \
       -c numba \
       -c conda-forge \
+      cudatoolkit=${CUDA_MAJORMINOR_VERSION} \
       cudf=${RAPIDS_CONDA_VERSION_SPEC} \
       cuspatial=${RAPIDS_CONDA_VERSION_SPEC} \
       cuml=${RAPIDS_CONDA_VERSION_SPEC} \

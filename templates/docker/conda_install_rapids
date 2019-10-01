@@ -1,3 +1,6 @@
+
+RUN echo "CUDA_MAJORMINOR_VERSION = ${CUDA_MAJORMINOR_VERSION}"
+
 RUN source activate rapids \
     && env \
     && conda list \
@@ -8,6 +11,7 @@ RUN source activate rapids \
       -c ${XGBOOST_CONDA_LABEL} \
       -c numba \
       -c conda-forge \
+      cudatoolkit=${CUDA_MAJORMINOR_VERSION} \
       cudf=${RAPIDS_CONDA_VERSION_SPEC} \
       cuspatial=${RAPIDS_CONDA_VERSION_SPEC} \
       cuml=${RAPIDS_CONDA_VERSION_SPEC} \

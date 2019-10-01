@@ -37,4 +37,4 @@ RUN source activate rapids \
     && chmod -R ugo+w /opt/conda
 
 # Special case: libcumlmg is not available for CUDA 9.2
-RUN if [ "${CUDA_VER}" != "9.2" ]; then conda install -y --no-deps -c nvidia -c conda-forge libcumlmg; fi
+RUN if [ "${CUDA_MAJORMINOR_VERSION}" != "9.2" ]; then conda install -y --no-deps -c nvidia -c conda-forge libcumlmg; fi

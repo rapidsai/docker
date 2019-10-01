@@ -1,6 +1,6 @@
 #
 # This file was generated! Edits made directly to this file may be lost.
-#   Timestamp:    2019-09-11
+#   Timestamp:    2019-10-01
 #
 # RAPIDS Dockerfile for CentOS7 "runtime" image
 #
@@ -14,11 +14,14 @@
 ARG RAPIDS_REPO=rapidsai/rapidsai-nightly
 ARG RAPIDS_VERSION=0.9
 ARG CUDA_VERSION=10.0
+ARG CUDA_MAJORMINOR_VERSION=${CUDA_VERSION}
 ARG LINUX_VERSION=centos7
 ARG PYTHON_VERSION=3.6
 ARG BASE_IMAGE=${RAPIDS_REPO}:${RAPIDS_VERSION}-cuda${CUDA_VERSION}-base-${LINUX_VERSION}
 
 FROM ${BASE_IMAGE}
+
+ARG CUDA_MAJORMINOR_VERSION
 
 # devel environment config args
 ARG CC_VERSION=7

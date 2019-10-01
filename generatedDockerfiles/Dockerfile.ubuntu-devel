@@ -1,6 +1,6 @@
 #
 # This file was generated! Edits made directly to this file may be lost.
-#   Timestamp:    2019-09-23
+#   Timestamp:    2019-10-01
 #
 # RAPIDS Dockerfile for Ubuntu "devel" image
 #
@@ -13,11 +13,13 @@
 
 ARG CUDA_TYPE=devel
 ARG CUDA_VERSION=10.0
-ARG CUDA_VER=${CUDA_VERSION}
+ARG CUDA_MAJORMINOR_VERSION=${CUDA_VERSION}
 ARG LINUX_VERSION=ubuntu18.04
 ARG PYTHON_VERSION=3.7
 
 FROM gpuci/miniconda-cuda-rapidsenv:${CUDA_VERSION}-${CUDA_TYPE}-${LINUX_VERSION}-py${PYTHON_VERSION}
+
+ARG CUDA_MAJORMINOR_VERSION=${CUDA_VERSION}
 
 # devel environment config args
 ARG CC_VERSION=7
@@ -42,8 +44,7 @@ ARG XGBOOST_CONDA_LABEL=rapidsai/label/xgboost
 ARG XGBOOST_VERSION=0.90
 
 ARG CUDA_VERSION
-ARG CUDA_MAJORMINOR_VERSION=${CUDA_VERSION}
-ARG CUDA_VER
+ARG CUDA_MAJORMINOR_VERSION
 ARG PARALLEL_LEVEL
 ARG PYTHON_VERSION
 
@@ -108,10 +109,10 @@ RUN source activate rapids \
     && chmod -R ugo+w /opt/conda
 
 # Special case: libcumlmg is not available for CUDA 9.2
-RUN if [ "${CUDA_VER}" != "9.2" ]; then conda install -y --no-deps -c nvidia -c conda-forge libcumlmg; fi
+RUN if [ "${CUDA_MAJORMINOR_VERSION}" != "9.2" ]; then conda install -y --no-deps -c nvidia -c conda-forge libcumlmg; fi
 
 # Install dependencies for builds
-# Install deps for all pkgs and remove the pkgs that were installed due to 
+# Install deps for all pkgs and remove the pkgs that were installed due to
 # cross library deps. Also do not clean/chmod at end to save time as the
 # notebook conda install will do the needed cleanup
 RUN source activate rapids \
@@ -124,6 +125,7 @@ RUN source activate rapids \
          -c ${XGBOOST_CONDA_LABEL} \
          -c numba \
          -c conda-forge \
+         cudatoolkit=${CUDA_MAJORMINOR_VERSION} \
          cudf=${RAPIDS_CONDA_VERSION_SPEC} \
          cuml=${RAPIDS_CONDA_VERSION_SPEC} \
          cugraph=${RAPIDS_CONDA_VERSION_SPEC} \
