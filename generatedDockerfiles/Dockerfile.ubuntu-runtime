@@ -1,6 +1,6 @@
 #
 # This file was generated! Edits made directly to this file may be lost.
-#   Timestamp:    2019-10-01
+#   Timestamp:    2019-10-02
 #
 # RAPIDS Dockerfile for Ubuntu "runtime" image
 #
@@ -13,7 +13,7 @@
 
 ARG RAPIDS_REPO=rapidsai/rapidsai-nightly
 ARG RAPIDS_VERSION=0.9
-ARG CUDA_VERSION=10.0
+ARG CUDA_VERSION=10.1
 ARG CUDA_MAJORMINOR_VERSION=${CUDA_VERSION}
 ARG LINUX_VERSION=ubuntu18.04
 ARG PYTHON_VERSION=3.6

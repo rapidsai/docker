@@ -1,6 +1,6 @@
 #
 # This file was generated! Edits made directly to this file may be lost.
-#   Timestamp:    2019-10-01
+#   Timestamp:    2019-10-02
 #
 # RAPIDS Dockerfile for CentOS7 "devel" image
 #
@@ -12,7 +12,7 @@
 # Copyright (c) 2019, NVIDIA CORPORATION.
 
 ARG CUDA_TYPE=devel
-ARG CUDA_VERSION=10.0
+ARG CUDA_VERSION=10.1
 ARG CUDA_MAJORMINOR_VERSION=${CUDA_VERSION}
 ARG LINUX_VERSION=centos7
 ARG PYTHON_VERSION=3.7
@@ -41,13 +41,16 @@ ARG XGBOOST_CONDA_VERSION_SPEC=0.90.rapidsdev1
 ARG XGBOOST_CONDA_LABEL=rapidsai/label/xgboost
 ARG XGBOOST_VERSION=0.90
 
-ARG CUDA_VERSION
 ARG CUDA_MAJORMINOR_VERSION
 ARG PARALLEL_LEVEL
 ARG PYTHON_VERSION
 
-ENV CUDA_VERSION=${CUDA_MAJORMINOR_VERSION}
 ENV RAPIDS_DIR=/rapids
+
+# FIXME 20191002: remove this once gpuci base is rebuilt
+RUN yum -y update \
+    && yum -y install which \
+    && yum clean all
 
 # Install local gcc7
 ##TODO-mwendt I don't think we need NCCL installed and most of these pkgs are installed
@@ -125,7 +128,7 @@ RUN source activate rapids \
     && chmod -R ugo+w /opt/conda
 
 # Special case: libcumlmg is not available for CUDA 9.2
-RUN if [ "${CUDA_MAJORMINOR_VERSION}" != "9.2" ]; then conda install -y --no-deps -c nvidia -c conda-forge libcumlmg; fi
+RUN if [ "${CUDA_MAJORMINOR_VERSION}" != "9.2" ]; then conda install -y --no-deps -c nvidia -c conda-forge libcumlmg && conda clean -afy; fi
 
 # Install dependencies for builds
 # Install deps for all pkgs and remove the pkgs that were installed due to
