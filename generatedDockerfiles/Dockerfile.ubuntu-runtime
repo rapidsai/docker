@@ -1,6 +1,6 @@
 #
 # This file was generated! Edits made directly to this file may be lost.
-#   Timestamp:    2019-10-01
+#   Timestamp:    2019-10-03
 #
 # RAPIDS Dockerfile for Ubuntu "runtime" image
 #
@@ -12,7 +12,7 @@
 
 
 ARG RAPIDS_REPO=rapidsai/rapidsai-nightly
-ARG RAPIDS_VERSION=0.9
+ARG RAPIDS_VERSION=0.11
 ARG CUDA_VERSION=10.0
 ARG CUDA_MAJORMINOR_VERSION=${CUDA_VERSION}
 ARG LINUX_VERSION=ubuntu18.04
@@ -40,7 +40,7 @@ ARG IPYTHON_VERSION=7.3*
 
 # base/runtime install specs
 ARG DASK_XGBOOST_CONDA_VERSION_SPEC=0.2*
-ARG RAPIDS_CONDA_VERSION_SPEC=0.10*
+ARG RAPIDS_CONDA_VERSION_SPEC=0.11*
 ARG XGBOOST_CONDA_VERSION_SPEC=0.90.rapidsdev1
 ARG XGBOOST_CONDA_LABEL=rapidsai/label/xgboost
 ARG XGBOOST_VERSION=0.90
