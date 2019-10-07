@@ -1,6 +1,6 @@
 #
 # This file was generated! Edits made directly to this file may be lost.
-#   Timestamp:    2019-10-03
+#   Timestamp:    2019-10-07
 #
 # RAPIDS Dockerfile for Ubuntu "devel" image
 #
@@ -90,10 +90,11 @@ RUN source activate rapids \
       dlpack \
       flatbuffers \
       hypothesis \
-      lapack \
       rapidsai::libclang \
       libcumlprims \
+      libcypher-parser \
       libgfortran-ng=${LIBGFORTRAN_NG_VERSION} \
+      lapack \
       liblapack \
       make \
       numba">=${NUMBA_VERSION}" \

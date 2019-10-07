@@ -20,10 +20,11 @@ RUN source activate rapids \
       dlpack \
       flatbuffers \
       hypothesis \
-      lapack \
       rapidsai::libclang \
       libcumlprims \
+      libcypher-parser \
       libgfortran-ng=${LIBGFORTRAN_NG_VERSION} \
+      lapack \
       liblapack \
       make \
       numba">=${NUMBA_VERSION}" \
