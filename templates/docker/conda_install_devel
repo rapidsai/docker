@@ -20,10 +20,11 @@ RUN source activate rapids \
       dlpack \
       flatbuffers \
       hypothesis \
-      lapack \
       rapidsai::libclang \
       libcumlprims \
+      libcypher-parser \
       libgfortran-ng=${LIBGFORTRAN_NG_VERSION} \
+      lapack \
       liblapack \
       make \
       numba">=${NUMBA_VERSION}" \
@@ -37,4 +38,4 @@ RUN source activate rapids \
     && chmod -R ugo+w /opt/conda
 
 # Special case: libcumlmg is not available for CUDA 9.2
-RUN if [ "${CUDA_MAJORMINOR_VERSION}" != "9.2" ]; then conda install -y --no-deps -c nvidia -c conda-forge libcumlmg; fi
+RUN if [ "${CUDA_MAJORMINOR_VERSION}" != "9.2" ]; then conda install -y --no-deps -c nvidia -c conda-forge libcumlmg && conda clean -afy; fi
