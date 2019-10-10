@@ -9,8 +9,8 @@ RUN source activate rapids \
          -c rapidsai-nightly \
          -c nvidia \
          -c ${XGBOOST_CONDA_LABEL} \
-         -c numba \
          -c conda-forge \
+         -c defaults \
          cudatoolkit=${CUDA_MAJORMINOR_VERSION} \
          cudf=${RAPIDS_CONDA_VERSION_SPEC} \
          cuml=${RAPIDS_CONDA_VERSION_SPEC} \
