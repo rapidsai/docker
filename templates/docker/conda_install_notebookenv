@@ -10,6 +10,7 @@ RUN source activate rapids \
       -c conda-forge \
       -c anaconda \
       bokeh \
+      cupy \
       dask-labextension \
       dask-ml \
       ipython=${IPYTHON_VERSION} \
@@ -17,6 +18,7 @@ RUN source activate rapids \
       matplotlib \
       networkx \
       nodejs \
+      pytest \
       scikit-learn \
       scipy \
       seaborn \
