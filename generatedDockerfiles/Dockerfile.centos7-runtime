@@ -1,6 +1,6 @@
 #
 # This file was generated! Edits made directly to this file may be lost.
-#   Timestamp:    2019-10-08
+#   Timestamp:    2019-10-10
 #
 # RAPIDS Dockerfile for CentOS7 "runtime" image
 #
@@ -57,6 +57,7 @@ RUN source activate rapids \
       -c conda-forge \
       -c anaconda \
       bokeh \
+      cupy \
       dask-labextension \
       dask-ml \
       ipython=${IPYTHON_VERSION} \
@@ -64,6 +65,7 @@ RUN source activate rapids \
       matplotlib \
       networkx \
       nodejs \
+      pytest \
       scikit-learn \
       scipy \
       seaborn \
