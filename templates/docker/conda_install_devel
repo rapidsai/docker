@@ -16,7 +16,7 @@ RUN source activate rapids \
       boost-cpp=${BOOST_CPP_VERSION} \
       cmake=${CMAKE_VERSION} \
       cmake_setuptools">=0.1.3" \
-      cupy \
+      rapidsai::cupy \
       double-conversion \
       dlpack \
       flatbuffers \
