@@ -53,11 +53,13 @@ RUN source activate rapids \
     #        should be removed
     && conda uninstall -y blas openblas \
     && conda install -y -n rapids --freeze-installed --override-channels \
-      -c numba \
+      -c rapidsai \
+      -c nvidia \
       -c conda-forge \
-      -c anaconda \
+      -c defaults \
       bokeh \
-      cupy \
+      cudatoolkit=${CUDA_MAJORMINOR_VERSION} \
+      rapidsai::cupy \
       dask-labextension \
       dask-ml \
       ipython=${IPYTHON_VERSION} \

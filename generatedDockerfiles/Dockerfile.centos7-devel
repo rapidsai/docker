@@ -107,7 +107,7 @@ RUN source activate rapids \
       boost-cpp=${BOOST_CPP_VERSION} \
       cmake=${CMAKE_VERSION} \
       cmake_setuptools">=0.1.3" \
-      cupy \
+      rapidsai::cupy \
       double-conversion \
       dlpack \
       flatbuffers \
@@ -238,11 +238,13 @@ RUN source activate rapids \
     #        should be removed
     && conda uninstall -y blas openblas \
     && conda install -y -n rapids --freeze-installed --override-channels \
-      -c numba \
+      -c rapidsai \
+      -c nvidia \
       -c conda-forge \
-      -c anaconda \
+      -c defaults \
       bokeh \
-      cupy \
+      cudatoolkit=${CUDA_MAJORMINOR_VERSION} \
+      rapidsai::cupy \
       dask-labextension \
       dask-ml \
       ipython=${IPYTHON_VERSION} \
