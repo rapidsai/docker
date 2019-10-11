@@ -132,9 +132,6 @@ RUN source activate rapids \
     && conda clean -afy \
     && chmod -R ugo+w /opt/conda
 
-# Special case: libcumlmg is not available for CUDA 9.2
-RUN if [ "${CUDA_MAJORMINOR_VERSION}" != "9.2" ]; then conda install -y --no-deps -c nvidia -c conda-forge libcumlmg && conda clean -afy; fi
-
 # Install dependencies for builds
 # Install deps for all pkgs and remove the pkgs that were installed due to
 # cross library deps. Also do not clean/chmod at end to save time as the

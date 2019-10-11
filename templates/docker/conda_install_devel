@@ -40,6 +40,3 @@ RUN source activate rapids \
       sphinx sphinx_rtd_theme numpydoc sphinxcontrib-websupport nbsphinx recommonmark doxygen "pandoc<=2.0.0" \
     && conda clean -afy \
     && chmod -R ugo+w /opt/conda
-
-# Special case: libcumlmg is not available for CUDA 9.2
-RUN if [ "${CUDA_MAJORMINOR_VERSION}" != "9.2" ]; then conda install -y --no-deps -c nvidia -c conda-forge libcumlmg && conda clean -afy; fi
