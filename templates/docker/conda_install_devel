@@ -25,7 +25,6 @@ RUN source activate rapids \
       flatbuffers \
       hypothesis \
       rapidsai::libclang \
-      libcumlprims \
       libcypher-parser \
       libgfortran-ng=${LIBGFORTRAN_NG_VERSION} \
       lapack \

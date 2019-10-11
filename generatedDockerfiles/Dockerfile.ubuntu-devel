@@ -95,7 +95,6 @@ RUN source activate rapids \
       flatbuffers \
       hypothesis \
       rapidsai::libclang \
-      libcumlprims \
       libcypher-parser \
       libgfortran-ng=${LIBGFORTRAN_NG_VERSION} \
       lapack \
@@ -124,7 +123,7 @@ RUN source activate rapids \
          -c nvidia \
          -c ${XGBOOST_CONDA_LABEL} \
          -c conda-forge \
-         -c defaults \
+         -c anaconda \
          cudatoolkit=${CUDA_MAJORMINOR_VERSION} \
          cudf=${RAPIDS_CONDA_VERSION_SPEC} \
          cuml=${RAPIDS_CONDA_VERSION_SPEC} \
