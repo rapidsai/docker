@@ -1,4 +1,3 @@
-
 RUN echo "CUDA_MAJORMINOR_VERSION = ${CUDA_MAJORMINOR_VERSION}"
 
 RUN source activate rapids \
@@ -9,7 +8,6 @@ RUN source activate rapids \
       -c rapidsai-nightly \
       -c nvidia \
       -c ${XGBOOST_CONDA_LABEL} \
-      -c numba \
       -c conda-forge \
       cudatoolkit=${CUDA_MAJORMINOR_VERSION} \
       cudf=${RAPIDS_CONDA_VERSION_SPEC} \
@@ -18,7 +16,7 @@ RUN source activate rapids \
       cugraph=${RAPIDS_CONDA_VERSION_SPEC} \
       dask-cuda=${RAPIDS_CONDA_VERSION_SPEC} \
       dask-xgboost=${DASK_XGBOOST_CONDA_VERSION_SPEC} \
-      numba">=${NUMBA_VERSION}" \
+      numba=${NUMBA_VERSION} \
       numpy=${NUMPY_VERSION} \
       xgboost=${XGBOOST_VERSION} \
    && conda clean -afy \

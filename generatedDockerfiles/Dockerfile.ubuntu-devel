@@ -1,6 +1,6 @@
 #
 # This file was generated! Edits made directly to this file may be lost.
-#   Timestamp:    2019-10-10
+#   Timestamp:    2019-10-11
 #
 # RAPIDS Dockerfile for Ubuntu "devel" image
 #
@@ -30,7 +30,7 @@ ARG BOOST_CPP_VERSION=1.70.0
 ARG CMAKE_VERSION=3.14.5
 ARG LIBGFORTRAN_NG_VERSION=7.3.0
 ARG NUMBA_VERSION=0.45.1
-ARG NUMPY_VERSION=1.17
+ARG NUMPY_VERSION=1.16
 ARG PANDAS_VERSION=0.24.2
 
 # notebook pkgs
@@ -68,6 +68,10 @@ ENV CUDAHOSTCXX=/usr/bin/g++-${CXX_VERSION}
 ENV PATH=${PATH}:/conda/bin
 
 # Install core pkgs for development (these will not be overwritten by next install)
+# This is needed for numpy 1.16 to use numpy __array_function__ overrides,
+# which are known to be needed for dask_cudf
+ENV NUMPY_EXPERIMENTAL_ARRAY_FUNCTION=1
+
 RUN source activate rapids \
     && env \
     && pip install sphinx-markdown-tables \
@@ -80,7 +84,6 @@ RUN source activate rapids \
       -c rapidsai-nightly \
       -c nvidia \
       -c ${XGBOOST_CONDA_LABEL} \
-      -c numba \
       -c conda-forge \
       -c anaconda \
       boost-cpp=${BOOST_CPP_VERSION} \
@@ -92,13 +95,12 @@ RUN source activate rapids \
       flatbuffers \
       hypothesis \
       rapidsai::libclang \
-      libcumlprims \
       libcypher-parser \
       libgfortran-ng=${LIBGFORTRAN_NG_VERSION} \
       lapack \
       liblapack \
       make \
-      numba">=${NUMBA_VERSION}" \
+      numba=${NUMBA_VERSION} \
       numpy=${NUMPY_VERSION} \
       pandas=${PANDAS_VERSION} \
       pytest \
@@ -107,9 +109,6 @@ RUN source activate rapids \
       sphinx sphinx_rtd_theme numpydoc sphinxcontrib-websupport nbsphinx recommonmark doxygen "pandoc<=2.0.0" \
     && conda clean -afy \
     && chmod -R ugo+w /opt/conda
-
-# Special case: libcumlmg is not available for CUDA 9.2
-RUN if [ "${CUDA_MAJORMINOR_VERSION}" != "9.2" ]; then conda install -y --no-deps -c nvidia -c conda-forge libcumlmg && conda clean -afy; fi
 
 # Install dependencies for builds
 # Install deps for all pkgs and remove the pkgs that were installed due to
@@ -123,8 +122,8 @@ RUN source activate rapids \
          -c rapidsai-nightly \
          -c nvidia \
          -c ${XGBOOST_CONDA_LABEL} \
-         -c numba \
          -c conda-forge \
+         -c anaconda \
          cudatoolkit=${CUDA_MAJORMINOR_VERSION} \
          cudf=${RAPIDS_CONDA_VERSION_SPEC} \
          cuml=${RAPIDS_CONDA_VERSION_SPEC} \
@@ -209,7 +208,7 @@ RUN source activate rapids \
       -c rapidsai \
       -c nvidia \
       -c conda-forge \
-      -c defaults \
+      -c anaconda \
       bokeh \
       cudatoolkit=${CUDA_MAJORMINOR_VERSION} \
       rapidsai::cupy \
