@@ -101,9 +101,7 @@ RUN source activate rapids \
       -c rapidsai-nightly \
       -c nvidia \
       -c ${XGBOOST_CONDA_LABEL} \
-      -c numba \
       -c conda-forge \
-      -c anaconda \
       boost-cpp=${BOOST_CPP_VERSION} \
       cmake=${CMAKE_VERSION} \
       cmake_setuptools">=0.1.3" \
@@ -144,8 +142,8 @@ RUN source activate rapids \
          -c rapidsai-nightly \
          -c nvidia \
          -c ${XGBOOST_CONDA_LABEL} \
-         -c numba \
          -c conda-forge \
+         -c defaults \
          cudatoolkit=${CUDA_MAJORMINOR_VERSION} \
          cudf=${RAPIDS_CONDA_VERSION_SPEC} \
          cuml=${RAPIDS_CONDA_VERSION_SPEC} \
@@ -241,7 +239,6 @@ RUN source activate rapids \
       -c rapidsai \
       -c nvidia \
       -c conda-forge \
-      -c defaults \
       bokeh \
       cudatoolkit=${CUDA_MAJORMINOR_VERSION} \
       rapidsai::cupy \

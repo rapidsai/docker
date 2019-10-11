@@ -61,7 +61,6 @@ RUN source activate rapids \
       -c rapidsai-nightly \
       -c nvidia \
       -c ${XGBOOST_CONDA_LABEL} \
-      -c numba \
       -c conda-forge \
       cudatoolkit=${CUDA_MAJORMINOR_VERSION} \
       cudf=${RAPIDS_CONDA_VERSION_SPEC} \

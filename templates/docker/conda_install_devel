@@ -11,7 +11,6 @@ RUN source activate rapids \
       -c nvidia \
       -c ${XGBOOST_CONDA_LABEL} \
       -c conda-forge \
-      -c defaults \
       boost-cpp=${BOOST_CPP_VERSION} \
       cmake=${CMAKE_VERSION} \
       cmake_setuptools">=0.1.3" \
