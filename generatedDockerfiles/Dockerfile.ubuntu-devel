@@ -81,6 +81,7 @@ RUN source activate rapids \
       -c nvidia \
       -c ${XGBOOST_CONDA_LABEL} \
       -c conda-forge \
+      -c anaconda \
       boost-cpp=${BOOST_CPP_VERSION} \
       cmake=${CMAKE_VERSION} \
       cmake_setuptools">=0.1.3" \
@@ -207,6 +208,7 @@ RUN source activate rapids \
       -c rapidsai \
       -c nvidia \
       -c conda-forge \
+      -c anaconda \
       bokeh \
       cudatoolkit=${CUDA_MAJORMINOR_VERSION} \
       rapidsai::cupy \
