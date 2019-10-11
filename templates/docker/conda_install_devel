@@ -1,3 +1,7 @@
+# This is needed for numpy 1.16 to use numpy __array_function__ overrides,
+# which are known to be needed for dask_cudf
+ENV NUMPY_EXPERIMENTAL_ARRAY_FUNCTION=1
+
 RUN source activate rapids \
     && env \
     && pip install sphinx-markdown-tables \
@@ -27,7 +31,7 @@ RUN source activate rapids \
       lapack \
       liblapack \
       make \
-      numba">=${NUMBA_VERSION}" \
+      numba=${NUMBA_VERSION} \
       numpy=${NUMPY_VERSION} \
       pandas=${PANDAS_VERSION} \
       pytest \
