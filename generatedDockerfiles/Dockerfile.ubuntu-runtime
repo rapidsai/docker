@@ -1,6 +1,6 @@
 #
 # This file was generated! Edits made directly to this file may be lost.
-#   Timestamp:    2019-10-15
+#   Timestamp:    Wed Oct 16 12:04:09 PDT 2019
 #
 # RAPIDS Dockerfile for Ubuntu "runtime" image
 #
@@ -55,7 +55,6 @@ RUN source activate rapids \
       -c rapidsai \
       -c nvidia \
       -c conda-forge \
-      -c anaconda \
       bokeh \
       cudatoolkit=${CUDA_MAJORMINOR_VERSION} \
       rapidsai::cupy \
@@ -70,7 +69,7 @@ RUN source activate rapids \
       scikit-learn \
       scipy \
       seaborn \
-      tensorflow \
+      anaconda::tensorflow \
       umap-learn \
       conda-forge::blas==1.1=openblas \
    && conda clean -afy \

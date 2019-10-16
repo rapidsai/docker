@@ -23,7 +23,7 @@ RUN source activate rapids \
       scikit-learn \
       scipy \
       seaborn \
-      tensorflow \
+      anaconda::tensorflow \
       umap-learn \
       conda-forge::blas==1.1=openblas \
    && conda clean -afy \
