@@ -9,7 +9,6 @@ RUN source activate rapids \
       -c rapidsai \
       -c nvidia \
       -c conda-forge \
-      -c anaconda \
       bokeh \
       cudatoolkit=${CUDA_MAJORMINOR_VERSION} \
       rapidsai::cupy \
