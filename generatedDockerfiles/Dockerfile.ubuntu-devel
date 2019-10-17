@@ -1,6 +1,6 @@
 #
 # This file was generated! Edits made directly to this file may be lost.
-#   Timestamp:    Wed Oct 16 12:04:09 PDT 2019
+#   Timestamp:    Thu Oct 17 12:16:26 PDT 2019
 #
 # RAPIDS Dockerfile for Ubuntu "devel" image
 #
@@ -115,18 +115,12 @@ RUN source activate rapids \
     && env \
     && conda list \
     && conda install -y -n rapids --freeze-installed --override-channels --only-deps \
-         -c rapidsai \
-         -c rapidsai-nightly \
-         -c nvidia \
-         -c conda-forge \
+      -c rapidsai \
+      -c rapidsai-nightly \
+      -c nvidia \
+      -c conda-forge \
          cudatoolkit=${CUDA_MAJORMINOR_VERSION} \
-         cudf=${RAPIDS_CONDA_VERSION_SPEC} \
-         cuml=${RAPIDS_CONDA_VERSION_SPEC} \
-         cugraph=${RAPIDS_CONDA_VERSION_SPEC} \
-         dask-cuda=${RAPIDS_CONDA_VERSION_SPEC} \
-         dask-xgboost=${DASK_XGBOOST_CONDA_VERSION_SPEC} \
-         xgboost=${XGBOOST_VERSION} \
-         custreamz=${RAPIDS_CONDA_VERSION_SPEC} \
+         rapids=${RAPIDS_CONDA_VERSION_SPEC} \
     && conda remove --force \
          rmm librmm \
          nvstrings libnvstrings \
