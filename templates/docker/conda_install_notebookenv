@@ -9,7 +9,6 @@ RUN source activate rapids \
       -c rapidsai \
       -c nvidia \
       -c conda-forge \
-      -c anaconda \
       bokeh \
       cudatoolkit=${CUDA_MAJORMINOR_VERSION} \
       rapidsai::cupy \
@@ -24,12 +23,12 @@ RUN source activate rapids \
       scikit-learn \
       scipy \
       seaborn \
-      tensorflow \
+      anaconda::tensorflow \
       umap-learn \
       conda-forge::blas==1.1=openblas \
    && conda clean -afy \
    && chmod -R ugo+w /opt/conda \
-   && pip install "git+https://github.com/jacobtomlinson/jupyterlab-nvdashboard.git#v0.1.9" --upgrade \
+   && pip install "git+https://github.com/rapidsai/jupyterlab-nvdashboard.git#master" --upgrade \
    && jupyter labextension install dask-labextension jupyterlab-nvdashboard \
    && cd ${RAPIDS_DIR} \
    && ./clone.sh notebooks \

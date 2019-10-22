@@ -29,7 +29,7 @@ LASTARG=${BASH_ARGV}
 # relative #insertfile paths relative to the same dir as the template.
 cd $(dirname ${LASTARG})
 TEMPLATEFILE=$(basename ${LASTARG})
-TIMESTAMP=$(date +%F)
+TIMESTAMP=$(date)
 HEADER=\
 "#\n\
 # This file was generated! Edits made directly to this file may be lost.\n\

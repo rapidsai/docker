@@ -1,6 +1,6 @@
 #
 # This file was generated! Edits made directly to this file may be lost.
-#   Timestamp:    2019-10-11
+#   Timestamp:    Tue Oct 22 16:44:08 CDT 2019
 #
 # RAPIDS Dockerfile for Ubuntu "runtime" image
 #
@@ -41,9 +41,6 @@ ARG IPYTHON_VERSION=7.3*
 # base/runtime install specs
 ARG DASK_XGBOOST_CONDA_VERSION_SPEC=0.2*
 ARG RAPIDS_CONDA_VERSION_SPEC=0.11*
-ARG XGBOOST_CONDA_VERSION_SPEC=0.90.rapidsdev1
-ARG XGBOOST_CONDA_LABEL=rapidsai/label/xgboost
-ARG XGBOOST_VERSION=0.90
 
 # Install the notebook dependencies and the notebook repo
 RUN source activate rapids \
@@ -56,7 +53,6 @@ RUN source activate rapids \
       -c rapidsai \
       -c nvidia \
       -c conda-forge \
-      -c anaconda \
       bokeh \
       cudatoolkit=${CUDA_MAJORMINOR_VERSION} \
       rapidsai::cupy \
@@ -71,12 +67,12 @@ RUN source activate rapids \
       scikit-learn \
       scipy \
       seaborn \
-      tensorflow \
+      anaconda::tensorflow \
       umap-learn \
       conda-forge::blas==1.1=openblas \
    && conda clean -afy \
    && chmod -R ugo+w /opt/conda \
-   && pip install "git+https://github.com/jacobtomlinson/jupyterlab-nvdashboard.git#v0.1.9" --upgrade \
+   && pip install "git+https://github.com/rapidsai/jupyterlab-nvdashboard.git#master" --upgrade \
    && jupyter labextension install dask-labextension jupyterlab-nvdashboard \
    && cd ${RAPIDS_DIR} \
    && ./clone.sh notebooks \
