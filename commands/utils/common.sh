@@ -23,7 +23,7 @@ DOCKERARGS_FILE_NAME=${RAPIDSDEVTOOL_DIR}/dockerArgs
 
 # TODO: check that each of the dirs referenced in vars exist
 
-DOCKER=nvidia-docker
+DOCKER=docker
 TIMESTAMP=$(date "+%Y%m%d%H%M%S")
 
 # Find valid template names based on the templates present in

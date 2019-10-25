@@ -1,6 +1,6 @@
 #
 # This file was generated! Edits made directly to this file may be lost.
-#   Timestamp:    Tue Oct 22 16:44:08 CDT 2019
+#   Timestamp:    Thu Oct 24 22:54:40 CDT 2019
 #
 # RAPIDS Dockerfile for CentOS7 "devel" image
 #
@@ -85,19 +85,25 @@ ENV CUDAHOSTCXX=${GCC7_DIR}/bin/g++
 ##TODO-mwendt Not sure this should be restricted to just the GCC7_DIR
 ENV LD_LIBRARY_PATH=${GCC7_DIR}/lib64
 
+# Copy files needed by RAPIDS and 3rd parties for builds, test, and runtime.
+RUN mkdir -p ${RAPIDS_DIR} ${GCC7_DIR}/lib64
+COPY rapids ${RAPIDS_DIR}
+COPY utils ${RAPIDS_DIR}/utils
+
 # Install core pkgs for development (these will not be overwritten by next install)
 # This is needed for numpy 1.16 to use numpy __array_function__ overrides,
 # which are known to be needed for dask_cudf
 ENV NUMPY_EXPERIMENTAL_ARRAY_FUNCTION=1
 
-RUN source activate rapids \
+RUN ${RAPIDS_DIR}/utils/condaretry install -y --freeze-installed conda-build \
+    && source activate rapids \
     && env \
     && pip install sphinx-markdown-tables \
     && conda list \
     # FIXME: Base image should have correct blas version and blas uninstall/install here
     #        should be removed
     && conda uninstall -y blas openblas \
-    && conda install -y -n rapids --freeze-installed --override-channels \
+    && ${RAPIDS_DIR}/utils/condaretry install -y -n rapids --freeze-installed --override-channels \
       -c rapidsai \
       -c rapidsai-nightly \
       -c nvidia \
@@ -109,6 +115,7 @@ RUN source activate rapids \
       double-conversion \
       dlpack \
       flatbuffers \
+      graphviz \
       hypothesis \
       rapidsai::libclang \
       libcypher-parser \
@@ -130,10 +137,11 @@ RUN source activate rapids \
 # Install deps for all pkgs and remove the pkgs that were installed due to
 # cross library deps. Also do not clean/chmod at end to save time as the
 # notebook conda install will do the needed cleanup
+
 RUN source activate rapids \
     && env \
     && conda list \
-    && conda install -y -n rapids --freeze-installed --override-channels --only-deps \
+    && ${RAPIDS_DIR}/utils/condaretry install -y -n rapids --freeze-installed --override-channels --only-deps \
       -c rapidsai \
       -c rapidsai-nightly \
       -c nvidia \
@@ -150,10 +158,6 @@ RUN source activate rapids \
          xgboost py-xgboost libxgboost \
          custreamz
 
-# Copy files needed by RAPIDS and 3rd parties for builds, test, and runtime.
-RUN mkdir -p ${RAPIDS_DIR} ${GCC7_DIR}/lib64
-COPY rapids ${RAPIDS_DIR}
-COPY utils ${RAPIDS_DIR}/utils
 # Add compatible libm
 COPY supportfiles/libm.so.6 ${GCC7_DIR}/lib64
 
@@ -223,7 +227,7 @@ RUN source activate rapids \
     # FIXME: Base image should have correct blas version and blas uninstall/install here
     #        should be removed
     && conda uninstall -y blas openblas \
-    && conda install -y -n rapids --freeze-installed --override-channels \
+    && ${RAPIDS_DIR}/utils/condaretry install -y -n rapids --freeze-installed --override-channels \
       -c rapidsai \
       -c nvidia \
       -c conda-forge \

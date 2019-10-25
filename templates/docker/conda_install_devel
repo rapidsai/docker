@@ -2,14 +2,15 @@
 # which are known to be needed for dask_cudf
 ENV NUMPY_EXPERIMENTAL_ARRAY_FUNCTION=1
 
-RUN source activate rapids \
+RUN ${RAPIDS_DIR}/utils/condaretry install -y --freeze-installed conda-build \
+    && source activate rapids \
     && env \
     && pip install sphinx-markdown-tables \
     && conda list \
     # FIXME: Base image should have correct blas version and blas uninstall/install here
     #        should be removed
     && conda uninstall -y blas openblas \
-    && conda install -y -n rapids --freeze-installed --override-channels \
+    && ${RAPIDS_DIR}/utils/condaretry install -y -n rapids --freeze-installed --override-channels \
       -c rapidsai \
       -c rapidsai-nightly \
       -c nvidia \
@@ -21,6 +22,7 @@ RUN source activate rapids \
       double-conversion \
       dlpack \
       flatbuffers \
+      graphviz \
       hypothesis \
       rapidsai::libclang \
       libcypher-parser \

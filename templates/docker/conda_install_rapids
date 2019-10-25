@@ -3,7 +3,7 @@ RUN echo "CUDA_MAJORMINOR_VERSION = ${CUDA_MAJORMINOR_VERSION}"
 RUN source activate rapids \
     && env \
     && conda list \
-    && conda install -y -n rapids --freeze-installed --override-channels \
+    && ${RAPIDS_DIR}/utils/condaretry install -y -n rapids --freeze-installed --override-channels \
       -c rapidsai \
       -c rapidsai-nightly \
       -c nvidia \

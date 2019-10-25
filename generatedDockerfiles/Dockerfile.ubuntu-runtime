@@ -1,6 +1,6 @@
 #
 # This file was generated! Edits made directly to this file may be lost.
-#   Timestamp:    Tue Oct 22 16:44:08 CDT 2019
+#   Timestamp:    Thu Oct 24 22:54:40 CDT 2019
 #
 # RAPIDS Dockerfile for Ubuntu "runtime" image
 #
@@ -49,7 +49,7 @@ RUN source activate rapids \
     # FIXME: Base image should have correct blas version and blas uninstall/install here
     #        should be removed
     && conda uninstall -y blas openblas \
-    && conda install -y -n rapids --freeze-installed --override-channels \
+    && ${RAPIDS_DIR}/utils/condaretry install -y -n rapids --freeze-installed --override-channels \
       -c rapidsai \
       -c nvidia \
       -c conda-forge \

@@ -31,16 +31,17 @@ RUN yum -y update \
 # Install local gcc7
 insertfile gcc7_centos7
 
+# Copy files needed by RAPIDS and 3rd parties for builds, test, and runtime.
+RUN mkdir -p ${RAPIDS_DIR} ${GCC7_DIR}/lib64
+COPY rapids ${RAPIDS_DIR}
+COPY utils ${RAPIDS_DIR}/utils
+
 # Install core pkgs for development (these will not be overwritten by next install)
 insertfile conda_install_devel
 
 # Install dependencies for builds
 insertfile conda_install_rapids_deps
 
-# Copy files needed by RAPIDS and 3rd parties for builds, test, and runtime.
-RUN mkdir -p ${RAPIDS_DIR} ${GCC7_DIR}/lib64
-COPY rapids ${RAPIDS_DIR}
-COPY utils ${RAPIDS_DIR}/utils
 # Add compatible libm
 COPY supportfiles/libm.so.6 ${GCC7_DIR}/lib64
 
