@@ -1,6 +1,6 @@
 #
 # This file was generated! Edits made directly to this file may be lost.
-#   Timestamp:    Tue Oct 29 15:18:35 CDT 2019
+#   Timestamp:    Mon Nov  4 10:09:38 CST 2019
 #
 # RAPIDS Dockerfile for CentOS7 "runtime" image
 #
@@ -55,7 +55,6 @@ RUN source activate rapids \
       -c conda-forge \
       bokeh \
       cudatoolkit=${CUDA_MAJORMINOR_VERSION} \
-      rapidsai::cupy \
       dask-labextension \
       dask-ml \
       ipython=${IPYTHON_VERSION} \
