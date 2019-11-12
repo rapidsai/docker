@@ -38,7 +38,6 @@ RUN mkdir -p ${RAPIDS_DIR}
 COPY rapids ${RAPIDS_DIR}
 COPY utils ${RAPIDS_DIR}/utils
 
-RUN ls -ld ${RAPIDS_DIR} && ls -lR ${RAPIDS_DIR}
 # Install core pkgs for development (these will not be overwritten by next install)
 insertfile conda_install_devel
 
@@ -49,43 +48,8 @@ insertfile conda_install_rapids_deps
 # the URLs and branch names in the repoSettings file.
 RUN cd ${RAPIDS_DIR} && ./clone.sh
 
-# xgboost build will not find nccl in the conda env without this env var
-ENV NCCL_ROOT=/opt/conda/envs/rapids
-
-# Assume the build.sh script is present.
-# (this is done automatically when using 'rapidsdevtool.sh buildDockerImage',
-#  see rapidsdevtool.sh help for more details)
-RUN cd ${RAPIDS_DIR}/rmm && \
-    source activate rapids && \
-    ./build.sh
-RUN cd ${RAPIDS_DIR}/cudf && \
-    source activate rapids && \
-    ./build.sh && \
-    #FIXME: Should building tests be integrated into build.sh?
-    cd cpp/build && \
-    make -j build_tests_nvstrings && \
-    make -j build_tests_cudf
-# FIXME: Should not need to set CUSPATIAL_HOME and CUDF_HOME variables
-RUN cd ${RAPIDS_DIR}/cuspatial && \
-    source activate rapids && \
-    export CUSPATIAL_HOME="$PWD" && \
-    export CUDF_HOME="$PWD/../cudf" && \
-    ./build.sh
-RUN cd ${RAPIDS_DIR}/cuml && \
-    source activate rapids && \
-    ./build.sh --allgpuarch libcuml cuml prims
-RUN cd ${RAPIDS_DIR}/cugraph && \
-    source activate rapids && \
-    ./build.sh
-RUN cd ${RAPIDS_DIR} && \
-    source activate rapids && \
-    ./build.sh xgboost
-RUN cd ${RAPIDS_DIR} && \
-    source activate rapids && \
-    ./build.sh dask-xgboost
-RUN cd ${RAPIDS_DIR} && \
-    source activate rapids && \
-    ./build.sh dask-cuda
+# Build RAPIDS
+insertfile build_rapids
 
 COPY supportfiles/.run_in_rapids /.run_in_rapids
 ENTRYPOINT [ "/usr/bin/tini", "--", "/.run_in_rapids" ]

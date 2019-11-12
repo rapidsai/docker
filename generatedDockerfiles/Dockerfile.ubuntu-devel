@@ -1,6 +1,6 @@
 #
 # This file was generated! Edits made directly to this file may be lost.
-#   Timestamp:    Mon Nov  4 10:09:38 CST 2019
+#   Timestamp:    Tue Nov 12 06:52:09 CST 2019
 #
 # RAPIDS Dockerfile for Ubuntu "devel" image
 #
@@ -70,7 +70,6 @@ RUN mkdir -p ${RAPIDS_DIR}
 COPY rapids ${RAPIDS_DIR}
 COPY utils ${RAPIDS_DIR}/utils
 
-RUN ls -ld ${RAPIDS_DIR} && ls -lR ${RAPIDS_DIR}
 # Install core pkgs for development (these will not be overwritten by next install)
 # This is needed for numpy 1.16 to use numpy __array_function__ overrides,
 # which are known to be needed for dask_cudf
@@ -111,7 +110,7 @@ RUN ${RAPIDS_DIR}/utils/condaretry install -y --freeze-installed conda-build \
       pandas=${PANDAS_VERSION} \
       pytest \
       rapidjson \
-      conda-forge::blas==1.1=openblas \
+      conda-forge::blas=*=openblas \
       sphinx sphinx_rtd_theme numpydoc sphinxcontrib-websupport nbsphinx recommonmark doxygen "pandoc<=2.0.0" \
     && conda clean -afy \
     && chmod -R ugo+w /opt/conda
@@ -120,6 +119,8 @@ RUN ${RAPIDS_DIR}/utils/condaretry install -y --freeze-installed conda-build \
 # Install deps for all pkgs and remove the pkgs that were installed due to
 # cross library deps. Also do not clean/chmod at end to save time as the
 # notebook conda install will do the needed cleanup
+
+# FIXME: gdal should not need to be listed
 
 RUN source activate rapids \
     && env \
@@ -131,6 +132,7 @@ RUN source activate rapids \
       -c conda-forge \
          cudatoolkit=${CUDA_MAJORMINOR_VERSION} \
          rapids=${RAPIDS_CONDA_VERSION_SPEC} \
+         gdal=2.4.* \
     && conda remove --force \
          rmm librmm \
          nvstrings libnvstrings \
@@ -145,8 +147,11 @@ RUN source activate rapids \
 # the URLs and branch names in the repoSettings file.
 RUN cd ${RAPIDS_DIR} && ./clone.sh
 
+# Build RAPIDS
 # xgboost build will not find nccl in the conda env without this env var
 ENV NCCL_ROOT=/opt/conda/envs/rapids
+
+ENV PARALLEL_LEVEL=4
 
 # Assume the build.sh script is present.
 # (this is done automatically when using 'rapidsdevtool.sh buildDockerImage',
@@ -159,8 +164,8 @@ RUN cd ${RAPIDS_DIR}/cudf && \
     ./build.sh && \
     #FIXME: Should building tests be integrated into build.sh?
     cd cpp/build && \
-    make -j build_tests_nvstrings && \
-    make -j build_tests_cudf
+    make -j${PARALLEL_LEVEL} build_tests_nvstrings && \
+    make -j${PARALLEL_LEVEL} build_tests_cudf
 # FIXME: Should not need to set CUSPATIAL_HOME and CUDF_HOME variables
 RUN cd ${RAPIDS_DIR}/cuspatial && \
     source activate rapids && \
@@ -196,7 +201,7 @@ RUN source activate rapids \
     && conda list \
     # FIXME: Base image should have correct blas version and blas uninstall/install here
     #        should be removed
-    && conda uninstall -y blas openblas \
+    && conda uninstall -y blas \
     && ${RAPIDS_DIR}/utils/condaretry install -y -n rapids --freeze-installed --override-channels \
       -c rapidsai \
       -c nvidia \
@@ -216,7 +221,7 @@ RUN source activate rapids \
       seaborn \
       anaconda::tensorflow \
       umap-learn \
-      conda-forge::blas==1.1=openblas \
+      conda-forge::blas=*=openblas \
    && conda clean -afy \
    && chmod -R ugo+w /opt/conda \
    && pip install "git+https://github.com/rapidsai/jupyterlab-nvdashboard.git#master" --upgrade \

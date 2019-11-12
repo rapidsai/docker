@@ -37,7 +37,7 @@ RUN ${RAPIDS_DIR}/utils/condaretry install -y --freeze-installed conda-build \
       pandas=${PANDAS_VERSION} \
       pytest \
       rapidjson \
-      conda-forge::blas==1.1=openblas \
+      conda-forge::blas=*=openblas \
       sphinx sphinx_rtd_theme numpydoc sphinxcontrib-websupport nbsphinx recommonmark doxygen "pandoc<=2.0.0" \
     && conda clean -afy \
     && chmod -R ugo+w /opt/conda

@@ -49,48 +49,14 @@ COPY supportfiles/libm.so.6 ${GCC7_DIR}/lib64
 # the URLs and branch names in the repoSettings file.
 RUN cd ${RAPIDS_DIR} && ./clone.sh
 
+# Build RAPIDS
+
 # Add /usr/local/cuda/* temporarily to LD_LIBRARY_PATH to support various build steps
 # This will need to be removed later since it causes problems with certain runtime libs (numba.cuda)
 ENV LD_LIBRARY_PATH_PREBUILD=${LD_LIBRARY_PATH}
 ENV LD_LIBRARY_PATH=${LD_LIBRARY_PATH}:/usr/local/cuda/lib64:/usr/local/cuda/lib64/stubs
 
-# xgboost build will not find nccl in the conda env without this env var
-ENV NCCL_ROOT=/opt/conda/envs/rapids
-
-# Assume the build.sh script is present.
-# (this is done automatically when using 'rapidsdevtool.sh buildDockerImage',
-#  see rapidsdevtool.sh help for more details)
-RUN cd ${RAPIDS_DIR}/rmm && \
-    source activate rapids && \
-    ./build.sh
-RUN cd ${RAPIDS_DIR}/cudf && \
-    source activate rapids && \
-    ./build.sh && \
-    #FIXME: Should building tests be integrated into build.sh?
-    cd cpp/build && \
-    make -j build_tests_nvstrings && \
-    make -j build_tests_cudf
-# FIXME: Should not need to set CUSPATIAL_HOME and CUDF_HOME variables
-RUN cd ${RAPIDS_DIR}/cuspatial && \
-    source activate rapids && \
-    export CUSPATIAL_HOME="$PWD" && \
-    export CUDF_HOME="$PWD/../cudf" && \
-    ./build.sh
-RUN cd ${RAPIDS_DIR}/cuml && \
-    source activate rapids && \
-    ./build.sh --allgpuarch libcuml cuml prims
-RUN cd ${RAPIDS_DIR}/cugraph && \
-    source activate rapids && \
-    ./build.sh
-RUN cd ${RAPIDS_DIR} && \
-    source activate rapids && \
-    ./build.sh xgboost
-RUN cd ${RAPIDS_DIR} && \
-    source activate rapids && \
-    ./build.sh dask-xgboost
-RUN cd ${RAPIDS_DIR} && \
-    source activate rapids && \
-    ./build.sh dask-cuda
+insertfile build_rapids
 
 # Change LD_LIBRARY_PATH to exclude /usr/local/cuda/* since
 # numba.cuda cannot load that, and instead have it load

@@ -2,6 +2,8 @@
 # cross library deps. Also do not clean/chmod at end to save time as the
 # notebook conda install will do the needed cleanup
 
+# FIXME: gdal should not need to be listed
+
 RUN source activate rapids \
     && env \
     && conda list \
@@ -12,6 +14,7 @@ RUN source activate rapids \
       -c conda-forge \
          cudatoolkit=${CUDA_MAJORMINOR_VERSION} \
          rapids=${RAPIDS_CONDA_VERSION_SPEC} \
+         gdal=2.4.* \
     && conda remove --force \
          rmm librmm \
          nvstrings libnvstrings \

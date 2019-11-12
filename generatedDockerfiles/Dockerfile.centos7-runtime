@@ -1,6 +1,6 @@
 #
 # This file was generated! Edits made directly to this file may be lost.
-#   Timestamp:    Mon Nov  4 10:09:38 CST 2019
+#   Timestamp:    Tue Nov 12 06:52:09 CST 2019
 #
 # RAPIDS Dockerfile for CentOS7 "runtime" image
 #
@@ -48,7 +48,7 @@ RUN source activate rapids \
     && conda list \
     # FIXME: Base image should have correct blas version and blas uninstall/install here
     #        should be removed
-    && conda uninstall -y blas openblas \
+    && conda uninstall -y blas \
     && ${RAPIDS_DIR}/utils/condaretry install -y -n rapids --freeze-installed --override-channels \
       -c rapidsai \
       -c nvidia \
@@ -68,7 +68,7 @@ RUN source activate rapids \
       seaborn \
       anaconda::tensorflow \
       umap-learn \
-      conda-forge::blas==1.1=openblas \
+      conda-forge::blas=*=openblas \
    && conda clean -afy \
    && chmod -R ugo+w /opt/conda \
    && pip install "git+https://github.com/rapidsai/jupyterlab-nvdashboard.git#master" --upgrade \
