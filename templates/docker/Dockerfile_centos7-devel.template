@@ -24,7 +24,7 @@ ENV RAPIDS_DIR=/rapids
 
 # FIXME 20191002: remove this once gpuci base is rebuilt
 RUN yum -y update \
-    && yum -y install which \
+    && yum -y install which patch \
     && yum clean all
 
 # Install local gcc7
