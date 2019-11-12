@@ -1,6 +1,7 @@
 # devel environment config args
 ARG CC_VERSION=7
 ARG CXX_VERSION=7
+ARG PARALLEL_LEVEL=8
 
 # devel environment core build pkgs
 ARG BOOST_CPP_VERSION=1.70.0

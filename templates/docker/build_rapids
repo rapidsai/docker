@@ -1,7 +1,8 @@
 # xgboost build will not find nccl in the conda env without this env var
 ENV NCCL_ROOT=/opt/conda/envs/rapids
 
-ENV PARALLEL_LEVEL=4
+# PARALLEL_LEVEL is a Docker ARG, set it in the ENV too
+ENV PARALLEL_LEVEL=${PARALLEL_LEVEL}
 
 # Assume the build.sh script is present.
 # (this is done automatically when using 'rapidsdevtool.sh buildDockerImage',

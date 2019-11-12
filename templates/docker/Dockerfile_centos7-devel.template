@@ -18,7 +18,6 @@ FROM gpuci/miniconda-cuda-rapidsenv:${CUDA_VERSION}-${CUDA_TYPE}-${LINUX_VERSION
 insertfile ../../dockerArgs
 
 ARG CUDA_MAJORMINOR_VERSION
-ARG PARALLEL_LEVEL
 ARG PYTHON_VERSION
 
 ENV RAPIDS_DIR=/rapids

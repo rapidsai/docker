@@ -1,6 +1,6 @@
 #
 # This file was generated! Edits made directly to this file may be lost.
-#   Timestamp:    Tue Nov 12 06:52:09 CST 2019
+#   Timestamp:    Tue Nov 12 07:11:28 CST 2019
 #
 # RAPIDS Dockerfile for CentOS7 "devel" image
 #
@@ -22,6 +22,7 @@ FROM gpuci/miniconda-cuda-rapidsenv:${CUDA_VERSION}-${CUDA_TYPE}-${LINUX_VERSION
 # devel environment config args
 ARG CC_VERSION=7
 ARG CXX_VERSION=7
+ARG PARALLEL_LEVEL=8
 
 # devel environment core build pkgs
 ARG BOOST_CPP_VERSION=1.70.0
@@ -39,7 +40,6 @@ ARG DASK_XGBOOST_CONDA_VERSION_SPEC=0.2*
 ARG RAPIDS_CONDA_VERSION_SPEC=0.11*
 
 ARG CUDA_MAJORMINOR_VERSION
-ARG PARALLEL_LEVEL
 ARG PYTHON_VERSION
 
 ENV RAPIDS_DIR=/rapids
@@ -180,7 +180,8 @@ ENV LD_LIBRARY_PATH=${LD_LIBRARY_PATH}:/usr/local/cuda/lib64:/usr/local/cuda/lib
 # xgboost build will not find nccl in the conda env without this env var
 ENV NCCL_ROOT=/opt/conda/envs/rapids
 
-ENV PARALLEL_LEVEL=4
+# PARALLEL_LEVEL is a Docker ARG, set it in the ENV too
+ENV PARALLEL_LEVEL=${PARALLEL_LEVEL}
 
 # Assume the build.sh script is present.
 # (this is done automatically when using 'rapidsdevtool.sh buildDockerImage',

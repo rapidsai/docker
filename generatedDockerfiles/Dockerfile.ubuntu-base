@@ -1,6 +1,6 @@
 #
 # This file was generated! Edits made directly to this file may be lost.
-#   Timestamp:    Tue Nov 12 06:52:09 CST 2019
+#   Timestamp:    Tue Nov 12 07:11:28 CST 2019
 #
 # RAPIDS Dockerfile for Ubuntu "base" image
 #
@@ -23,6 +23,7 @@ ARG CUDA_MAJORMINOR_VERSION
 # devel environment config args
 ARG CC_VERSION=7
 ARG CXX_VERSION=7
+ARG PARALLEL_LEVEL=8
 
 # devel environment core build pkgs
 ARG BOOST_CPP_VERSION=1.70.0
