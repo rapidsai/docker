@@ -9,7 +9,7 @@ RUN ${RAPIDS_DIR}/utils/condaretry install -y --freeze-installed conda-build \
     && conda list \
     # FIXME: Base image should have correct blas version and blas uninstall/install here
     #        should be removed
-    && conda uninstall -y blas openblas \
+    && conda uninstall -y blas openblas nomkl \
     && ${RAPIDS_DIR}/utils/condaretry install -y -n rapids --freeze-installed --override-channels \
       -c rapidsai \
       -c rapidsai-nightly \

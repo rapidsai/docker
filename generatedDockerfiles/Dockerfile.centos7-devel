@@ -1,6 +1,6 @@
 #
 # This file was generated! Edits made directly to this file may be lost.
-#   Timestamp:    Tue Nov 12 07:11:28 CST 2019
+#   Timestamp:    Tue Nov 12 12:13:09 CST 2019
 #
 # RAPIDS Dockerfile for CentOS7 "devel" image
 #
@@ -102,7 +102,7 @@ RUN ${RAPIDS_DIR}/utils/condaretry install -y --freeze-installed conda-build \
     && conda list \
     # FIXME: Base image should have correct blas version and blas uninstall/install here
     #        should be removed
-    && conda uninstall -y blas openblas \
+    && conda uninstall -y blas openblas nomkl \
     && ${RAPIDS_DIR}/utils/condaretry install -y -n rapids --freeze-installed --override-channels \
       -c rapidsai \
       -c rapidsai-nightly \
@@ -140,7 +140,10 @@ RUN ${RAPIDS_DIR}/utils/condaretry install -y --freeze-installed conda-build \
 # cross library deps. Also do not clean/chmod at end to save time as the
 # notebook conda install will do the needed cleanup
 
-# FIXME: gdal should not need to be listed
+# FIXME: gdal should not need to be listed. This is needed since cuspatial=0.11
+# has builds both with and without gdal as a dep, and conda favors versions
+# (assuming they satisfy the version spec) that have fewer deps. The alternative
+# is to explicitly install cuspatial with a tight version spec: >=0.11.0a191105
 
 RUN source activate rapids \
     && env \
@@ -159,8 +162,9 @@ RUN source activate rapids \
          cudf dask-cudf libcudf \
          cuml libcuml \
          cugraph libcugraph \
-         cuspatial \
+         cuspatial libcuspatial \
          xgboost py-xgboost libxgboost \
+         dask-xgboost rapids-xgboost \
          custreamz
 
 # Add compatible libm
