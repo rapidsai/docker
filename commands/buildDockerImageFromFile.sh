@@ -80,4 +80,4 @@ fi
 LOGFILE_NAME=${LOG_DIR}/${IMAGE_TAG_NAME}_image--${TIMESTAMP}.buildlog
 
 mkdir -p ${LOG_DIR}
-(time ${DOCKER} build --memory=40g ${TARGET_STAGE_NAME} --tag ${IMAGE_TAG_NAME} ${buildArgs} -f ${DOCKERFILE} ${DOCKERBUILD_ARGS} $(dirname ${DOCKERFILE})) 2>&1|tee ${LOGFILE_NAME}
+(time ${DOCKER} build ${TARGET_STAGE_NAME} --tag ${IMAGE_TAG_NAME} -f ${DOCKERFILE} ${DOCKERBUILD_ARGS} $(dirname ${DOCKERFILE})) 2>&1|tee ${LOGFILE_NAME}
