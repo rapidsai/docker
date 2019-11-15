@@ -76,5 +76,6 @@ RUN ${RAPIDS_DIR}/utils/condaretry install -y --freeze-installed conda-build \
          xgboost py-xgboost libxgboost \
          dask-xgboost rapids-xgboost \
          custreamz \
+         rapids \
     && conda clean -afy \
     && chmod -R ugo+w /opt/conda
