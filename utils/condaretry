@@ -1,6 +1,8 @@
 #!/bin/bash
 
 # condaretry - wrapper for conda that retries the command after a CondaHTTPError
+# or ChecksumMismatchError (ideally, any conda error that is normally resolved
+# by retrying).
 
 set -o pipefail
 
@@ -18,13 +20,18 @@ exitcode=0
 retries=0
 args=""
 
+# Temporarily set this to something else (eg. a script called "testConda" that
+# prints "CondaHTTPError:" and exits with 1) for testing this script.
+#condaCmd=./testConda
+condaCmd=conda
+
 # Process and remove args recognized only by this script, save others for conda
 for arg in $*; do
    opt=${arg%%=*}
    val=${arg##*=}
    if [[ ${opt} == "--help" ]] || [[ ${opt} == "-h" ]]; then
       echo "${condaretry_help}"
-      conda --help
+      ${condaCmd} --help
       exit $?
    elif [[ ${opt} == "--condaretry_max_retries" ]]; then
       max_retries=${val}
@@ -36,13 +43,14 @@ for arg in $*; do
 done
 
 outfile=$(tempfile -p .cr)
-conda ${args} 2>&1| tee ${outfile}
+${condaCmd} ${args} 2>&1| tee ${outfile}
 exitcode=$?
 
 # Retry loop, only if needed
 while (( ${exitcode} != 0 )) && \
       (( ${retries} < ${max_retries} )) && \
-      (grep -q CondaHTTPError: ${outfile}); do
+      ((grep -q CondaHTTPError: ${outfile}) ||
+       (grep -q ChecksumMismatchError: ${outfile})); do
 
    retries=$(expr ${retries} + 1)
    echo "========================================"
@@ -52,7 +60,7 @@ while (( ${exitcode} != 0 )) && \
    echo "done"
    echo "========================================"
 
-   conda ${args} 2>&1| tee ${outfile}
+   ${condaCmd} ${args} 2>&1| tee ${outfile}
    exitcode=$?
 done
 
