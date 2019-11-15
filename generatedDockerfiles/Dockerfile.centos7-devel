@@ -1,6 +1,6 @@
 #
 # This file was generated! Edits made directly to this file may be lost.
-#   Timestamp:    Fri Nov 15 08:23:19 CST 2019
+#   Timestamp:    Fri Nov 15 11:27:05 CST 2019
 #
 # RAPIDS Dockerfile for CentOS7 "devel" image
 #
@@ -244,7 +244,8 @@ CMD [ "/bin/bash" ]
 
 # Add notebook dependencies
 #insertfile conda_install_notebookenv
-RUN pip install "git+https://github.com/rapidsai/jupyterlab-nvdashboard.git#master" --upgrade \
+RUN source activate rapids \
+   && pip install "git+https://github.com/rapidsai/jupyterlab-nvdashboard.git#master" --upgrade \
    && jupyter labextension install dask-labextension jupyterlab-nvdashboard \
    && cd ${RAPIDS_DIR} \
    && ./clone.sh notebooks \
