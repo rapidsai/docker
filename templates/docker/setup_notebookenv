@@ -1,0 +1,18 @@
+RUN pip install "git+https://github.com/rapidsai/jupyterlab-nvdashboard.git#master" --upgrade \
+   && jupyter labextension install dask-labextension jupyterlab-nvdashboard \
+   && cd ${RAPIDS_DIR} \
+   && ./clone.sh notebooks \
+   && chmod -R ugo+w /opt/conda ${RAPIDS_DIR}
+
+# Add test file for testing notebooks from within the container
+COPY supportfiles/test.sh /test.sh
+
+WORKDIR ${RAPIDS_DIR}/notebooks
+# Jupyter notebook port
+EXPOSE 8888
+# Dask Scheduler Bokeh port
+EXPOSE 8787
+EXPOSE 8786
+
+# Change the entrypoint to start the Jupyter server prior to running commands
+COPY supportfiles/.start_jupyter_run_in_rapids /.run_in_rapids

@@ -1,0 +1,80 @@
+# This is needed for numpy 1.16 to use numpy __array_function__ overrides,
+# which are known to be needed for dask_cudf
+ENV NUMPY_EXPERIMENTAL_ARRAY_FUNCTION=1
+
+# FIXME: Base image should have correct blas version and blas uninstall/install
+#        should be removed
+
+RUN ${RAPIDS_DIR}/utils/condaretry install -y --freeze-installed conda-build \
+    && source activate rapids \
+    && env \
+    && pip install sphinx-markdown-tables \
+    && conda list \
+    && conda uninstall -y blas openblas nomkl \
+    && ${RAPIDS_DIR}/utils/condaretry install -y -n rapids --freeze-installed --override-channels \
+      -c rapidsai \
+      -c rapidsai-nightly \
+      -c nvidia \
+      -c conda-forge \
+         black \
+         boost-cpp=${BOOST_CPP_VERSION} \
+         cmake=${CMAKE_VERSION} \
+         cmake_setuptools">=0.1.3" \
+         rapidsai::cupy \
+         double-conversion \
+         dlpack \
+         flake8 \
+         flatbuffers \
+         graphviz \
+         hypothesis \
+         rapidsai::libclang \
+         libcypher-parser \
+         libgfortran-ng=${LIBGFORTRAN_NG_VERSION} \
+         lapack \
+         liblapack \
+         make \
+         numba=${NUMBA_VERSION} \
+         numpy=${NUMPY_VERSION} \
+         pandas=${PANDAS_VERSION} \
+         pytest \
+         rapidjson \
+         conda-forge::blas=*=openblas \
+         sphinx \
+         sphinx_rtd_theme \
+         numpydoc \
+         sphinxcontrib-websupport \
+         nbsphinx \
+         recommonmark \
+         doxygen \
+         "pandoc<=2.0.0" \
+         \
+         cudatoolkit=${CUDA_MAJORMINOR_VERSION} \
+         rapids=${RAPIDS_CONDA_VERSION_SPEC} \
+         gdal=2.4.* \
+         \
+         bokeh \
+         dask-labextension \
+         dask-ml \
+         ipython=${IPYTHON_VERSION} \
+         jupyterlab=1.0.7 \
+         matplotlib \
+         networkx \
+         nodejs \
+         pytest \
+         scikit-learn \
+         scipy \
+         seaborn \
+         anaconda::tensorflow \
+         umap-learn \
+    && conda remove --force \
+         rmm librmm \
+         nvstrings libnvstrings \
+         cudf dask-cudf libcudf \
+         cuml libcuml \
+         cugraph libcugraph \
+         cuspatial libcuspatial \
+         xgboost py-xgboost libxgboost \
+         dask-xgboost rapids-xgboost \
+         custreamz \
+    && conda clean -afy \
+    && chmod -R ugo+w /opt/conda
