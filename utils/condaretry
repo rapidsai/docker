@@ -42,7 +42,7 @@ for arg in $*; do
    fi
 done
 
-outfile=$(tempfile -p .cr)
+outfile=$(mktemp)
 ${condaCmd} ${args} 2>&1| tee ${outfile}
 exitcode=$?
 
