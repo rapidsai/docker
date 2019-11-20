@@ -20,7 +20,9 @@ for nbdirname in ${NOTEBOOK_DIR_NAMES}; do
     pushd ${NOTEBOOKS_DIR}/${nbdirname} > /dev/null
     for nb in $(ls *.ipynb); do
         if (echo " ${SKIPNBS} " | grep -q " ${nb} "); then
-            echo "SKIPPING ${nb}"
+            echo --------------------------------------------------------------------------------
+            echo "SKIPPING: ${nb}"
+            echo --------------------------------------------------------------------------------
         else
             nvidia-smi
             ${NBTEST} ${nb}

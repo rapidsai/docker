@@ -29,9 +29,9 @@ for nb in $*; do
     NBTESTSCRIPT=/tmp/${NBNAME}-test.py
     shift
 
-    echo --------------------
-    echo ${NBNAME}
-    echo --------------------
+    echo --------------------------------------------------------------------------------
+    echo STARTING: ${NBNAME}
+    echo --------------------------------------------------------------------------------
     jupyter nbconvert --to script ${NBFILENAME} --output /tmp/${NBNAME}-test
     echo "${MAGIC_OVERRIDE_CODE}" > /tmp/tmpfile
     cat ${NBTESTSCRIPT} >> /tmp/tmpfile
@@ -39,7 +39,7 @@ for nb in $*; do
 
     echo "Running \"ipython ${NBTESTSCRIPT}\" on $(date)"
     echo
-    time ipython ${NBTESTSCRIPT}
+    time (ipython ${NBTESTSCRIPT}; echo "--------------------------------------------------------------------------------"; echo "STOPPED: ${NBNAME}")
     NBEXITCODE=$?
     echo EXIT CODE: ${NBEXITCODE}
     echo
