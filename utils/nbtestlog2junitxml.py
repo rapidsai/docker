@@ -14,6 +14,10 @@ timePatt = re.compile("^real\s+([\d\.ms]+)$")
 linePatt = re.compile("^" + ("-" * 80) + "$")
 
 
+def getFileBaseName(filePathName):
+    return path.splitext(path.basename(filePathName))[0]
+
+
 def makeTestCaseElement(attrDict):
     return Element("testcase", attrib=attrDict)
 
@@ -41,7 +45,7 @@ def setFileNameAttr(attrDict, fileName):
 
 def setTestNameAttr(attrDict, testName):
     attrDict["classname"] = "%s.%s" % \
-                            (path.splitext(path.basename(attrDict["file"]))[0],
+                            (getFileBaseName(attrDict["file"]),
                              testName)
     attrDict["name"] = testName
 
@@ -83,7 +87,7 @@ def parseLog(logFile, testSuiteElement):
             if parserState == parserStateEnum.newTest:
                 m = skippingPatt.match(line)
                 if m:
-                    setTestNameAttr(attrDict, m.group(1))
+                    setTestNameAttr(attrDict, getFileBaseName(m.group(1)))
                     skippedElement = makeTestCaseElement(attrDict)
                     skippedElement.append(Element("skipped", message="", type=""))
                     testSuiteElement.append(skippedElement)
