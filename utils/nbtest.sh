@@ -39,7 +39,7 @@ for nb in $*; do
 
     echo "Running \"ipython ${NBTESTSCRIPT}\" on $(date)"
     echo
-    time (ipython ${NBTESTSCRIPT}; echo "--------------------------------------------------------------------------------"; echo "DONE: ${NBNAME}")
+    time bash -c "ipython ${NBTESTSCRIPT}; EC=\$?; echo -------------------------------------------------------------------------------- ; echo DONE: ${NBNAME}; exit \$EC"
     NBEXITCODE=$?
     echo EXIT CODE: ${NBEXITCODE}
     echo

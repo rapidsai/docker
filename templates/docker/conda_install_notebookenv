@@ -9,6 +9,7 @@ RUN source activate rapids \
       -c rapidsai \
       -c nvidia \
       -c conda-forge \
+      -c defaults \
       bokeh \
       cudatoolkit=${CUDA_MAJORMINOR_VERSION} \
       dask-labextension \
@@ -22,9 +23,9 @@ RUN source activate rapids \
       scikit-learn \
       scipy \
       seaborn \
-      anaconda::tensorflow \
+      tensorflow=*=gpu* \
       umap-learn \
-      conda-forge::blas=*=openblas \
+      blas=*=openblas \
    && conda clean -afy \
    && chmod -R ugo+w /opt/conda \
    && pip install "git+https://github.com/rapidsai/jupyterlab-nvdashboard.git#master" --upgrade \
