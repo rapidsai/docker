@@ -73,14 +73,14 @@ def parseLog(logFile, testSuiteElement):
         #setFileNameAttr(attrDict, logFile)
         setFileNameAttr(attrDict, "nbtest")
 
-        parseStateEnum = Enum("parseStateEnum",
-                              "newTest startingLine finishLine exitCode")
-        parseState = parseStateEnum.newTest
+        parserStateEnum = Enum("parserStateEnum",
+                               "newTest startingLine finishLine exitCode")
+        parserState = parserStateEnum.newTest
 
         testOutput = ""
 
         for line in lf.readlines():
-            if parseState == parseStateEnum.newTest:
+            if parserState == parserStateEnum.newTest:
                 m = skippingPatt.match(line)
                 if m:
                     setTestNameAttr(attrDict, m.group(1))
@@ -93,27 +93,27 @@ def parseLog(logFile, testSuiteElement):
 
                 m = startingPatt.match(line)
                 if m:
-                    parseState = parseStateEnum.startingLine
+                    parserState = parserStateEnum.startingLine
                     testOutput = ""
                     setTestNameAttr(attrDict, m.group(1))
                     continue
 
                 continue
 
-            elif parseState == parseStateEnum.startingLine:
+            elif parserState == parserStateEnum.startingLine:
                 if linePatt.match(line):
-                    parseState = parseStateEnum.finishLine
+                    parserState = parserStateEnum.finishLine
                     testOutput = ""
                 continue
 
-            elif parseState == parseStateEnum.finishLine:
+            elif parserState == parserStateEnum.finishLine:
                 if linePatt.match(line):
-                    parseState = parseStateEnum.exitCode
+                    parserState = parserStateEnum.exitCode
                 else:
                     testOutput += line
                 continue
 
-            elif parseState == parseStateEnum.exitCode:
+            elif parserState == parserStateEnum.exitCode:
                 m = exitCodePatt.match(line)
                 if m:
                     testCaseElement = makeTestCaseElement(attrDict)
@@ -126,7 +126,7 @@ def parseLog(logFile, testSuiteElement):
                         testCaseElement.append(systemOutElement)
 
                     testSuiteElement.append(testCaseElement)
-                    parseState = parseStateEnum.newTest
+                    parserState = parserStateEnum.newTest
                     testOutput = ""
                     incrNumAttr(testSuiteElement, "tests")
                     continue
