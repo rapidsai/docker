@@ -20,6 +20,7 @@ get_ipython().run_cell_magic=my_run_cell_magic
 
 "
 
+NO_COLORS=--no-color-info
 EXITCODE=0
 
 for nb in $*; do
@@ -37,9 +38,9 @@ for nb in $*; do
     cat ${NBTESTSCRIPT} >> /tmp/tmpfile
     mv /tmp/tmpfile ${NBTESTSCRIPT}
 
-    echo "Running \"ipython ${NBTESTSCRIPT}\" on $(date)"
+    echo "Running \"ipython ${NO_COLORS} ${NBTESTSCRIPT}\" on $(date)"
     echo
-    time bash -c "ipython ${NBTESTSCRIPT}; EC=\$?; echo -------------------------------------------------------------------------------- ; echo DONE: ${NBNAME}; exit \$EC"
+    time bash -c "ipython ${NO_COLORS} ${NBTESTSCRIPT}; EC=\$?; echo -------------------------------------------------------------------------------- ; echo DONE: ${NBNAME}; exit \$EC"
     NBEXITCODE=$?
     echo EXIT CODE: ${NBEXITCODE}
     echo
