@@ -1,6 +1,6 @@
 #
 # This file was generated! Edits made directly to this file may be lost.
-#   Timestamp:    Wed Nov 20 15:07:49 CST 2019
+#   Timestamp:    Wed Nov 20 19:25:53 CST 2019
 #
 # RAPIDS Dockerfile for CentOS7 "base" image
 #
@@ -61,6 +61,7 @@ RUN source activate rapids \
       -c rapidsai-nightly \
       -c nvidia \
       -c conda-forge \
+      -c defaults \
       cudatoolkit=${CUDA_MAJORMINOR_VERSION} \
       rapids=${RAPIDS_CONDA_VERSION_SPEC} \
    && conda clean -afy \

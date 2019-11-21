@@ -1,6 +1,6 @@
 #
 # This file was generated! Edits made directly to this file may be lost.
-#   Timestamp:    Wed Nov 20 15:07:49 CST 2019
+#   Timestamp:    Wed Nov 20 19:25:54 CST 2019
 #
 # RAPIDS Dockerfile for Ubuntu "runtime" image
 #
@@ -52,6 +52,7 @@ RUN source activate rapids \
     && conda uninstall -y blas \
     && ${RAPIDS_DIR}/utils/condaretry install -y -n rapids --freeze-installed --override-channels \
       -c rapidsai \
+      -c rapidsai-nightly \
       -c nvidia \
       -c conda-forge \
       -c defaults \

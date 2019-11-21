@@ -8,6 +8,7 @@ RUN source activate rapids \
       -c rapidsai-nightly \
       -c nvidia \
       -c conda-forge \
+      -c defaults \
       cudatoolkit=${CUDA_MAJORMINOR_VERSION} \
       rapids=${RAPIDS_CONDA_VERSION_SPEC} \
    && conda clean -afy \
