@@ -2,15 +2,20 @@
 # which are known to be needed for dask_cudf
 ENV NUMPY_EXPERIMENTAL_ARRAY_FUNCTION=1
 
-# FIXME: Base image should have correct blas version and blas uninstall/install
-#        should be removed
-
 RUN ${RAPIDS_DIR}/utils/condaretry install -y --freeze-installed conda-build \
     && source activate rapids \
     && env \
     && pip install sphinx-markdown-tables \
-    && conda list \
-    && conda uninstall -y blas openblas nomkl \
+    && conda info \
+    && conda config --show-sources \
+    && conda list --show-channel-urls \
+    && conda remove -y \
+      -c rapidsai \
+      -c rapidsai-nightly \
+      -c nvidia \
+      -c conda-forge \
+      -c defaults \
+         nomkl \
     && ${RAPIDS_DIR}/utils/condaretry install -y -n rapids --freeze-installed --override-channels \
       -c rapidsai \
       -c rapidsai-nightly \
@@ -68,6 +73,10 @@ RUN ${RAPIDS_DIR}/utils/condaretry install -y --freeze-installed conda-build \
          tensorflow=*=gpu* \
          umap-learn \
     && conda remove --force \
+      -c rapidsai \
+      -c rapidsai-nightly \
+      -c nvidia \
+      -c conda-forge \
          rmm librmm \
          nvstrings libnvstrings \
          cudf dask-cudf libcudf \

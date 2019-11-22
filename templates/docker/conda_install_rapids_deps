@@ -9,7 +9,9 @@
 
 RUN source activate rapids \
     && env \
-    && conda list \
+    && conda info \
+    && conda config --show-sources \
+    && conda list --show-channel-urls \
     && ${RAPIDS_DIR}/utils/condaretry install -y -n rapids --freeze-installed --override-channels --only-deps \
       -c rapidsai \
       -c rapidsai-nightly \
@@ -19,6 +21,10 @@ RUN source activate rapids \
          rapids=${RAPIDS_CONDA_VERSION_SPEC} \
          gdal=2.4.* \
     && conda remove --force \
+      -c rapidsai \
+      -c rapidsai-nightly \
+      -c nvidia \
+      -c conda-forge \
          rmm librmm \
          nvstrings libnvstrings \
          cudf dask-cudf libcudf \

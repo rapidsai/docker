@@ -1,6 +1,6 @@
 #
 # This file was generated! Edits made directly to this file may be lost.
-#   Timestamp:    Fri Nov 22 09:08:06 CST 2019
+#   Timestamp:    Fri Nov 22 13:15:02 CST 2019
 #
 # RAPIDS Dockerfile for CentOS7 "runtime" image
 #
@@ -46,10 +46,9 @@ ARG RAPIDS_CONDA_VERSION_SPEC=0.11*
 # Install the notebook dependencies and the notebook repo
 RUN source activate rapids \
     && env \
-    && conda list \
-    # FIXME: Base image should have correct blas version and blas uninstall/install here
-    #        should be removed
-    && conda uninstall -y blas \
+    && conda info \
+    && conda config --show-sources \
+    && conda list --show-channel-urls \
     && ${RAPIDS_DIR}/utils/condaretry install -y -n rapids --freeze-installed --override-channels \
       -c rapidsai \
       -c rapidsai-nightly \

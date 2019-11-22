@@ -1,6 +1,6 @@
 #
 # This file was generated! Edits made directly to this file may be lost.
-#   Timestamp:    Fri Nov 22 09:08:05 CST 2019
+#   Timestamp:    Fri Nov 22 13:15:02 CST 2019
 #
 # RAPIDS Dockerfile for CentOS7 "base" image
 #
@@ -55,7 +55,9 @@ RUN echo "CUDA_MAJORMINOR_VERSION = ${CUDA_MAJORMINOR_VERSION}"
 
 RUN source activate rapids \
     && env \
-    && conda list \
+    && conda info \
+    && conda config --show-sources \
+    && conda list --show-channel-urls \
     && ${RAPIDS_DIR}/utils/condaretry install -y -n rapids --freeze-installed --override-channels \
       -c rapidsai \
       -c rapidsai-nightly \
@@ -64,7 +66,6 @@ RUN source activate rapids \
       -c defaults \
       cudatoolkit=${CUDA_MAJORMINOR_VERSION} \
       rapids=${RAPIDS_CONDA_VERSION_SPEC} \
-      "cudf>=0.11.0a191121" \
    && conda clean -afy \
    && chmod -R ugo+w /opt/conda ${RAPIDS_DIR}
 
