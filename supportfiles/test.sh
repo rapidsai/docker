@@ -15,7 +15,7 @@ EXITCODE=0
 # if any run fails
 for nbdirname in ${NOTEBOOK_DIR_NAMES}; do
     echo "========================================"
-    echo "  ${nbdirname}"
+    echo "FOLDER: ${nbdirname}"
     echo "========================================"
     pushd ${NOTEBOOKS_DIR}/${nbdirname} > /dev/null
     for nb in $(ls *.ipynb); do

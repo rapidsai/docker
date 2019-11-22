@@ -10,6 +10,7 @@ from enum import Enum
 startingPatt = re.compile("^STARTING: ([\w\.\-]+)$")
 skippingPatt = re.compile("^SKIPPING: ([\w\.\-]+)$")
 exitCodePatt = re.compile("^EXIT CODE: (\d+)$")
+folderPatt = re.compile("^FOLDER: ([\w\.\-]+)$")
 timePatt = re.compile("^real\s+([\d\.ms]+)$")
 linePatt = re.compile("^" + ("-" * 80) + "$")
 
@@ -42,11 +43,11 @@ def setFileNameAttr(attrDict, fileName):
                     time=""
                    )
 
+def setClassNameAttr(attrDict, className):
+    attrDict["classname"] = className
+
 
 def setTestNameAttr(attrDict, testName):
-    attrDict["classname"] = "%s.%s" % \
-                            (getFileBaseName(attrDict["file"]),
-                             testName)
     attrDict["name"] = testName
 
 
@@ -85,6 +86,11 @@ def parseLog(logFile, testSuiteElement):
 
         for line in lf.readlines():
             if parserState == parserStateEnum.newTest:
+                m = folderPatt.match(line)
+                if m:
+                    setClassNameAttr(attrDict, m.group(1))
+                    continue
+
                 m = skippingPatt.match(line)
                 if m:
                     setTestNameAttr(attrDict, getFileBaseName(m.group(1)))
