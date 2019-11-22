@@ -11,5 +11,6 @@ RUN source activate rapids \
       -c defaults \
       cudatoolkit=${CUDA_MAJORMINOR_VERSION} \
       rapids=${RAPIDS_CONDA_VERSION_SPEC} \
+      "cudf>=0.11.0a191121" \
    && conda clean -afy \
    && chmod -R ugo+w /opt/conda ${RAPIDS_DIR}

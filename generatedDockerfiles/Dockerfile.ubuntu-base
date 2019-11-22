@@ -1,6 +1,6 @@
 #
 # This file was generated! Edits made directly to this file may be lost.
-#   Timestamp:    Wed Nov 20 19:25:54 CST 2019
+#   Timestamp:    Fri Nov 22 09:08:06 CST 2019
 #
 # RAPIDS Dockerfile for Ubuntu "base" image
 #
@@ -61,6 +61,7 @@ RUN source activate rapids \
       -c defaults \
       cudatoolkit=${CUDA_MAJORMINOR_VERSION} \
       rapids=${RAPIDS_CONDA_VERSION_SPEC} \
+      "cudf>=0.11.0a191121" \
    && conda clean -afy \
    && chmod -R ugo+w /opt/conda ${RAPIDS_DIR}
 
