@@ -1,16 +1,11 @@
-RUN echo "CUDA_MAJORMINOR_VERSION = ${CUDA_MAJORMINOR_VERSION}"
+COPY supportfiles/.condarc /opt/conda/.condarc
 
 RUN source activate rapids \
     && env \
     && conda info \
     && conda config --show-sources \
     && conda list --show-channel-urls \
-    && ${RAPIDS_DIR}/utils/condaretry install -y -n rapids --freeze-installed --override-channels \
-      -c rapidsai \
-      -c rapidsai-nightly \
-      -c nvidia \
-      -c conda-forge \
-      -c defaults \
+    && ${RAPIDS_DIR}/utils/condaretry install -y -n rapids --freeze-installed \
       cudatoolkit=${CUDA_MAJORMINOR_VERSION} \
       rapids=${RAPIDS_CONDA_VERSION_SPEC} \
    && conda clean -afy \

@@ -36,11 +36,7 @@ COPY rapids ${RAPIDS_DIR}
 COPY utils ${RAPIDS_DIR}/utils
 
 # Install core pkgs for development (these will not be overwritten by next install)
-#insertfile conda_install_devel
 insertfile conda_install_devel_deps
-
-# Install dependencies for builds
-#insertfile conda_install_rapids_deps
 
 # Add compatible libm
 COPY supportfiles/libm.so.6 ${GCC7_DIR}/lib64
@@ -69,8 +65,7 @@ ENTRYPOINT [ "/usr/bin/tini", "--", "/.run_in_rapids" ]
 # Set the default command to pass to the ENTRYPOINT if no command was given
 CMD [ "/bin/bash" ]
 
-# Add notebook dependencies
-#insertfile conda_install_notebookenv
+# Setup notebook environment
 insertfile setup_notebookenv
 
 # Copy Dockerfile as late as possible to avoid invalidating cache for trivial changes
