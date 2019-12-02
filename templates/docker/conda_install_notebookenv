@@ -31,6 +31,7 @@ RUN source activate rapids \
 
 # Add test file for testing notebooks from within the container
 COPY supportfiles/test.sh /test.sh
+COPY supportfiles/test-nbcontrib.sh /test-nbcontrib.sh
 
 WORKDIR ${RAPIDS_DIR}/notebooks
 # Jupyter notebook port
