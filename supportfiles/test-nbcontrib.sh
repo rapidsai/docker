@@ -19,11 +19,13 @@ for folder in ${FOLDERS}; do
             echo "--------------------------------------------------------------------------------"
             echo "SKIPPING: ${nbBasename}"
             echo "--------------------------------------------------------------------------------"
+        else
+            cd $(dirname ${nb})
+            nvidia-smi
+            ${NBTEST} ${nbBasename}
+            EXITCODE=$((EXITCODE | $?))
+            cd ${NCFOLDER}/${folder}
         fi
-        cd $(dirname ${nb})
-        ${NBTEST} ${nbBasename}
-        EXITCODE=$((EXITCODE | $?))
-        cd ${NCFOLDER}/${folder}
    done
    cd ${NCFOLDER}
 done
