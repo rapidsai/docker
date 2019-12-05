@@ -15,7 +15,9 @@ for folder in ${FOLDERS}; do
     cd ${folder}
     for nb in $(find . -name *.ipynb); do
         nbBasename=$(basename ${nb})
-        if (echo ${nb}|grep -qi dask); then
+        # Skip all NBs that use dask (in the name or in the code)
+        if ((echo ${nb}|grep -qi dask) || \
+            (grep -q dask ${nb})); then
             echo "--------------------------------------------------------------------------------"
             echo "SKIPPING: ${nbBasename}"
             echo "--------------------------------------------------------------------------------"
