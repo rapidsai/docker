@@ -1,7 +1,3 @@
-# This is needed for numpy 1.16 to use numpy __array_function__ overrides,
-# which are known to be needed for dask_cudf
-ENV NUMPY_EXPERIMENTAL_ARRAY_FUNCTION=1
-
 COPY supportfiles/.condarc /opt/conda/.condarc
 
 RUN ${RAPIDS_DIR}/utils/condaretry install -y --freeze-installed conda-build \
