@@ -94,6 +94,7 @@ def parseLog(logFile, testSuiteElement):
                 m = skippingPatt.match(line)
                 if m:
                     setTestNameAttr(attrDict, getFileBaseName(m.group(1)))
+                    setTimeAttr(attrDict, "0m0s")
                     skippedElement = makeTestCaseElement(attrDict)
                     skippedElement.append(Element("skipped", message="", type=""))
                     testSuiteElement.append(skippedElement)
@@ -106,6 +107,7 @@ def parseLog(logFile, testSuiteElement):
                     parserState = parserStateEnum.startingLine
                     testOutput = ""
                     setTestNameAttr(attrDict, m.group(1))
+                    setTimeAttr(attrDict, "0m0s")
                     continue
 
                 continue
