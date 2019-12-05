@@ -8,7 +8,7 @@ from enum import Enum
 
 
 startingPatt = re.compile("^STARTING: ([\w\.\-]+)$")
-skippingPatt = re.compile("^SKIPPING: ([\w\.\-]+)$")
+skippingPatt = re.compile("^SKIPPING: ([\w\.\-]+)\s*(\(([\w\.\-\ \,]+)\))?\s*$")
 exitCodePatt = re.compile("^EXIT CODE: (\d+)$")
 folderPatt = re.compile("^FOLDER: ([\w\.\-]+)$")
 timePatt = re.compile("^real\s+([\d\.ms]+)$")
@@ -96,7 +96,8 @@ def parseLog(logFile, testSuiteElement):
                     setTestNameAttr(attrDict, getFileBaseName(m.group(1)))
                     setTimeAttr(attrDict, "0m0s")
                     skippedElement = makeTestCaseElement(attrDict)
-                    skippedElement.append(Element("skipped", message="", type=""))
+                    message = m.group(3) or ""
+                    skippedElement.append(Element("skipped", message=message, type=""))
                     testSuiteElement.append(skippedElement)
                     incrNumAttr(testSuiteElement, "skipped")
                     incrNumAttr(testSuiteElement, "tests")

@@ -7,6 +7,7 @@ git clone https://github.com/rapidsai/notebooks-contrib.git
 cd ${NCFOLDER}
 
 FOLDERS=$(find . -name *.ipynb |cut -d'/' -f2|sort -u)
+SKIPNBS="louvain_benchmark.ipynb"
 
 for folder in ${FOLDERS}; do
     echo "========================================"
@@ -15,11 +16,15 @@ for folder in ${FOLDERS}; do
     cd ${folder}
     for nb in $(find . -name *.ipynb); do
         nbBasename=$(basename ${nb})
-        # Skip all NBs that use dask (in the name or in the code)
+        # Skip all NBs that use dask (in the code or even in their name)
         if ((echo ${nb}|grep -qi dask) || \
             (grep -q dask ${nb})); then
             echo "--------------------------------------------------------------------------------"
-            echo "SKIPPING: ${nbBasename}"
+            echo "SKIPPING: ${nbBasename} (suspected Dask usage, not currently automatable)"
+            echo "--------------------------------------------------------------------------------"
+        elif (echo " ${SKIPNBS} " | grep -q " ${nb} "); then
+            echo "--------------------------------------------------------------------------------"
+            echo "SKIPPING: ${nbBasename} (listed in skip list)"
             echo "--------------------------------------------------------------------------------"
         else
             cd $(dirname ${nb})
