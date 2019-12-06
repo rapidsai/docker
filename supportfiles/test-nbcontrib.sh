@@ -22,7 +22,7 @@ for folder in ${FOLDERS}; do
             echo "--------------------------------------------------------------------------------"
             echo "SKIPPING: ${nbBasename} (suspected Dask usage, not currently automatable)"
             echo "--------------------------------------------------------------------------------"
-        elif (echo " ${SKIPNBS} " | grep -q " ${nb} "); then
+        elif (echo " ${SKIPNBS} " | grep -q " ${nbBasename} "); then
             echo "--------------------------------------------------------------------------------"
             echo "SKIPPING: ${nbBasename} (listed in skip list)"
             echo "--------------------------------------------------------------------------------"
