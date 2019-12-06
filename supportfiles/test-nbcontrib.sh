@@ -7,7 +7,7 @@ git clone https://github.com/rapidsai/notebooks-contrib.git
 cd ${NCFOLDER}
 
 FOLDERS=$(find . -name *.ipynb |cut -d'/' -f2|sort -u)
-SKIPNBS="louvain_benchmark.ipynb"
+SKIPNBS="louvain_benchmark.ipynb pagerank_benchmark.ipynb"
 
 for folder in ${FOLDERS}; do
     echo "========================================"
