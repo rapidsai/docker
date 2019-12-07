@@ -7,7 +7,13 @@ git clone https://github.com/rapidsai/notebooks-contrib.git
 cd ${NCFOLDER}
 
 FOLDERS=$(find . -name *.ipynb |cut -d'/' -f2|sort -u)
-SKIPNBS="louvain_benchmark.ipynb pagerank_benchmark.ipynb"
+
+# louvain_benchmark.ipynb pagerank_benchmark.ipynb - timedout
+# https://gpuci.gpuopenanalytics.com/job/docker/job/tests/job/docker-test-notebooks-contrib/17/CUDA_VERSION=10.0,LINUX_VERSION=ubuntu18.04/consoleFull
+# cuml_benchmarks.ipynb - crash/hang on CentOS7 CUDA 10.*
+# https://gpuci.gpuopenanalytics.com/job/docker/job/tests/job/docker-test-notebooks-contrib/24
+
+SKIPNBS="louvain_benchmark.ipynb pagerank_benchmark.ipynb cuml_benchmarks.ipynb"
 
 for folder in ${FOLDERS}; do
     echo "========================================"
