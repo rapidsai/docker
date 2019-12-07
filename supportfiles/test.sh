@@ -19,10 +19,17 @@ for nbdirname in ${NOTEBOOK_DIR_NAMES}; do
     echo "========================================"
     pushd ${NOTEBOOKS_DIR}/${nbdirname} > /dev/null
     for nb in $(ls *.ipynb); do
-        if (echo " ${SKIPNBS} " | grep -q " ${nb} "); then
-            echo --------------------------------------------------------------------------------
-            echo "SKIPPING: ${nb}"
-            echo --------------------------------------------------------------------------------
+        nbBasename=$(basename ${nb})
+        # Skip all NBs that use dask (in the code or even in their name)
+        if ((echo ${nb}|grep -qi dask) || \
+            (grep -q dask ${nb})); then
+            echo "--------------------------------------------------------------------------------"
+            echo "SKIPPING: ${nbBasename} (suspected Dask usage, not currently automatable)"
+            echo "--------------------------------------------------------------------------------"
+        elif (echo " ${SKIPNBS} " | grep -q " ${nbBasename} "); then
+            echo "--------------------------------------------------------------------------------"
+            echo "SKIPPING: ${nbBasename} (listed in skip list)"
+            echo "--------------------------------------------------------------------------------"
         else
             nvidia-smi
             ${NBTEST} ${nb}
