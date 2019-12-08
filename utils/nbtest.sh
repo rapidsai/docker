@@ -20,7 +20,7 @@ get_ipython().run_cell_magic=my_run_cell_magic
 
 "
 
-NO_COLORS=--no-color-info
+NO_COLORS=--colors=NoColor
 EXITCODE=0
 
 for nb in $*; do
