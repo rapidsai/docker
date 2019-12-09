@@ -13,8 +13,8 @@ RUN ${RAPIDS_DIR}/utils/condaretry install -y --freeze-installed conda-build \
          black \
          boost-cpp=${BOOST_CPP_VERSION} \
          cmake=${CMAKE_VERSION} \
-         cmake_setuptools">=0.1.3" \
-         cupy \
+         "cmake_setuptools>=0.1.3" \
+         "cupy>=6.6.0,<7" \
          double-conversion \
          dlpack \
          flake8 \
