@@ -1,6 +1,6 @@
 #
 # This file was generated! Edits made directly to this file may be lost.
-#   Timestamp:    Wed Dec 11 12:12:12 CST 2019
+#   Timestamp:    Wed Dec 11 16:27:43 CST 2019
 #
 # RAPIDS Dockerfile for CentOS7 "base" image
 #
@@ -38,7 +38,7 @@ ARG IPYTHON_VERSION=7.3*
 
 # base/runtime install specs
 ARG DASK_XGBOOST_CONDA_VERSION_SPEC=0.2*
-ARG RAPIDS_CONDA_VERSION_SPEC=0.11*
+ARG RAPIDS_CONDA_VERSION_SPEC=0.12*
 
 ENV RAPIDS_DIR=/rapids
 
