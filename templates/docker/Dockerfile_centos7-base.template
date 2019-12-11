@@ -19,8 +19,10 @@ ARG CUDA_MAJORMINOR_VERSION
 insertfile ../../dockerArgs
 
 ENV RAPIDS_DIR=/rapids
-##TODO-mwendt I think we can drop this, will test with it missing
-##(insert file was here) gcc7_centos7
+
+RUN yum -y update \
+    && yum -y install numactl \
+    && yum clean all
 
 # Copy files needed by RAPIDS and 3rd parties for builds, test, and runtime.
 RUN mkdir -p ${RAPIDS_DIR} ${GCC7_DIR}/lib64

@@ -1,6 +1,6 @@
 #
 # This file was generated! Edits made directly to this file may be lost.
-#   Timestamp:    Mon Dec  9 09:47:21 CST 2019
+#   Timestamp:    Tue Dec 10 20:50:44 CST 2019
 #
 # RAPIDS Dockerfile for Ubuntu "devel" image
 #
@@ -49,6 +49,9 @@ ENV CXX=/usr/bin/g++-${CXX_VERSION}
 ENV CUDAHOSTCXX=$CXX
 ENV RAPIDS_DIR=/rapids
 ENV LD_LIBRARY_PATH=/opt/conda/envs/rapids/lib:${LD_LIBRARY_PATH}
+
+RUN apt update && \
+    apt install -y numactl
 
 # Install local gcc
 # Update and add pkgs

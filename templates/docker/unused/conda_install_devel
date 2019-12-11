@@ -1,0 +1,42 @@
+# This is needed for numpy 1.16 to use numpy __array_function__ overrides,
+# which are known to be needed for dask_cudf
+ENV NUMPY_EXPERIMENTAL_ARRAY_FUNCTION=1
+
+COPY supportfiles/.condarc /opt/conda/.condarc
+
+RUN ${RAPIDS_DIR}/utils/condaretry install -y --freeze-installed conda-build \
+    && source activate rapids \
+    && env \
+    && pip install sphinx-markdown-tables \
+    && conda info \
+    && conda config --show-sources \
+    && conda list --show-channel-urls \
+    && conda remove -y \
+         nomkl \
+    && ${RAPIDS_DIR}/utils/condaretry install -y -n rapids --freeze-installed \
+      black \
+      boost-cpp=${BOOST_CPP_VERSION} \
+      cmake=${CMAKE_VERSION} \
+      cmake_setuptools">=0.1.3" \
+      rapidsai::cupy \
+      double-conversion \
+      dlpack \
+      flake8 \
+      flatbuffers \
+      graphviz \
+      hypothesis \
+      rapidsai::libclang \
+      libcypher-parser \
+      libgfortran-ng=${LIBGFORTRAN_NG_VERSION} \
+      lapack \
+      liblapack \
+      make \
+      numba=${NUMBA_VERSION} \
+      numpy=${NUMPY_VERSION} \
+      pandas=${PANDAS_VERSION} \
+      pytest \
+      rapidjson \
+      conda-forge::blas=*=openblas \
+      sphinx sphinx_rtd_theme numpydoc sphinxcontrib-websupport nbsphinx recommonmark doxygen "pandoc<=2.0.0" \
+    && conda clean -afy \
+    && chmod -R ugo+w /opt/conda

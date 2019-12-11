@@ -1,6 +1,6 @@
 #
 # This file was generated! Edits made directly to this file may be lost.
-#   Timestamp:    Mon Dec  9 09:47:21 CST 2019
+#   Timestamp:    Tue Dec 10 20:50:44 CST 2019
 #
 # RAPIDS Dockerfile for Ubuntu "base" image
 #
@@ -42,6 +42,9 @@ ARG RAPIDS_CONDA_VERSION_SPEC=0.11*
 
 ENV RAPIDS_DIR=/rapids
 ENV LD_LIBRARY_PATH=/opt/conda/envs/rapids/lib:${LD_LIBRARY_PATH}
+
+RUN apt update && \
+    apt install -y numactl
 
 # Copy files needed by RAPIDS and 3rd parties for builds, test, and runtime.
 RUN mkdir -p ${RAPIDS_DIR}
