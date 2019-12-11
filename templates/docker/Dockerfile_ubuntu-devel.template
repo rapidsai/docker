@@ -28,9 +28,6 @@ ENV CUDAHOSTCXX=$CXX
 ENV RAPIDS_DIR=/rapids
 ENV LD_LIBRARY_PATH=/opt/conda/envs/rapids/lib:${LD_LIBRARY_PATH}
 
-RUN apt update && \
-    apt install -y numactl
-
 # Install local gcc
 insertfile gcc7_ubuntu
 

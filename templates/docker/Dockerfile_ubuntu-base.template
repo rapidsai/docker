@@ -21,9 +21,6 @@ insertfile ../../dockerArgs
 ENV RAPIDS_DIR=/rapids
 ENV LD_LIBRARY_PATH=/opt/conda/envs/rapids/lib:${LD_LIBRARY_PATH}
 
-RUN apt update && \
-    apt install -y numactl
-
 # Copy files needed by RAPIDS and 3rd parties for builds, test, and runtime.
 RUN mkdir -p ${RAPIDS_DIR}
 COPY rapids ${RAPIDS_DIR}

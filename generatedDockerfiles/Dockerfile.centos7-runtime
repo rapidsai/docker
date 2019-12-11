@@ -1,6 +1,6 @@
 #
 # This file was generated! Edits made directly to this file may be lost.
-#   Timestamp:    Tue Dec 10 20:50:43 CST 2019
+#   Timestamp:    Wed Dec 11 12:12:12 CST 2019
 #
 # RAPIDS Dockerfile for CentOS7 "runtime" image
 #
@@ -17,7 +17,7 @@ ARG CUDA_VERSION=10.1
 ARG CUDA_MAJORMINOR_VERSION=${CUDA_VERSION}
 ARG LINUX_VERSION=centos7
 ARG PYTHON_VERSION=3.6
-ARG BASE_IMAGE=${RAPIDS_REPO}:${RAPIDS_VERSION}-cuda${CUDA_VERSION}-base-${LINUX_VERSION}
+ARG BASE_IMAGE=${RAPIDS_REPO}:${RAPIDS_VERSION}-cuda${CUDA_VERSION}-base-${LINUX_VERSION}-py${PYTHON_VERSION}
 
 FROM ${BASE_IMAGE}
 
