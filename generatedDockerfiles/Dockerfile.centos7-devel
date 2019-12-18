@@ -1,6 +1,6 @@
 #
 # This file was generated! Edits made directly to this file may be lost.
-#   Timestamp:    Wed Dec 11 16:27:43 CST 2019
+#   Timestamp:    Wed Dec 18 08:39:47 CST 2019
 #
 # RAPIDS Dockerfile for CentOS7 "devel" image
 #
@@ -143,7 +143,7 @@ RUN ${RAPIDS_DIR}/utils/condaretry install -y --freeze-installed conda-build \
          dask-labextension \
          dask-ml \
          ipython=${IPYTHON_VERSION} \
-         jupyterlab=1.0.7 \
+         jupyterlab \
          matplotlib \
          networkx \
          nodejs \

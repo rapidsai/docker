@@ -10,7 +10,7 @@ RUN source activate rapids \
       dask-labextension \
       dask-ml \
       ipython=${IPYTHON_VERSION} \
-      jupyterlab=1.0.7 \
+      jupyterlab \
       matplotlib \
       networkx \
       nodejs \

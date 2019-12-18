@@ -50,7 +50,7 @@ RUN ${RAPIDS_DIR}/utils/condaretry install -y --freeze-installed conda-build \
          dask-labextension \
          dask-ml \
          ipython=${IPYTHON_VERSION} \
-         jupyterlab=1.0.7 \
+         jupyterlab \
          matplotlib \
          networkx \
          nodejs \
