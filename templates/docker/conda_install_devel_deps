@@ -51,6 +51,7 @@ RUN ${RAPIDS_DIR}/utils/condaretry install -y --freeze-installed conda-build \
          dask-ml \
          ipython=${IPYTHON_VERSION} \
          jupyterlab \
+         librdkafka=1.2.2 \
          matplotlib \
          networkx \
          nodejs \
