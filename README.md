@@ -1,12 +1,59 @@
 # build
 
-This repository provides tools for developers, maintainers, and general users who want to work with [RAPIDS](https://github.com/rapidsai). The goal is to support a variety of different use cases (building RAPIDS locally from source, building [Docker containers](https://www.docker.com/resources/what-container), testing, package building, building a specific RAPIDS component or branch for development, etc.) in order to minimize problems caused by environment and configuration inconsistencies, allowing users and developers to focus more on working with RAPIDS.
+This repository provides build-related tools for [RAPIDS](https://github.com/rapidsai). The goal is to support a variety of different use cases (building RAPIDS locally from source, building [Docker containers](https://www.docker.com/resources/what-container), testing, package building, building a specific RAPIDS component or branch for development, etc.) in order to minimize problems caused by environment and configuration inconsistencies.
 
-The goal is to support the use cases mentioned above - and possibly more - but the current versions of these tools is focused on local and container builds.
+Currently, the tools in this repo cover only bulding RAPIDS Docker images.
 
+## Docker Image builds
 
-## Getting Started
+The build repo currently contains all build-related scripts, utilities, and meta-data for the RAPIDS Docker image builds.  This repo may be expanded to include build utilities for other RAPIDS components (as the name implies), but for now only Docker image builds are covered.
 
+### Image build types
+
+There are currently three different "flavors" of Docker image builds, which follow the same conventions provided by the [NVIDIA CUDA Docker images](https://github.com/NVIDIA/nvidia-docker/wiki/CUDA), and allow users to use the RAPIDS images a drop-in replacements for their CUDA images.  Each flavor is supported on a combination of OS, Python version, and CUDA version which produces a matrix of available image types (and lots of tags!). The different flavors are described below:
+  * `base`
+    * Extends the corresponding CUDA image to add conda and the RAPIDS conda packages in a `rapids` conda environment
+    * These images are used for running RAPIDS applications by users that do not need examples or the need to modify and/or build RAPIDS sources.
+  * `runtime`
+    * Extends `base` to add the RAPIDS Jupyter notebooks, all dependencies of the notebooks installed to the `rapids` environment, and runs a Jupyter server as the default Docker [ENTRYPOINT](https://docs.docker.com/engine/reference/builder/#entrypoint)
+    * These images are used by users primarily for running the example notebooks.
+  * `devel`
+    * Extends the corresponding CUDA image to add the full RAPIDS build and test toolchain (gcc, build tools, etc.) to the system and/or `rapids` environment as well as the notebooks, their dependencies, and runs a Jupyter server as the default Docker [ENTRYPOINT](https://docs.docker.com/engine/reference/builder/#entrypoint)
+    * These images are used by users that are primarily doing active development on RAPIDS and need to build and test their changes.
+
+At a high-level, the differences between `base`, `runtime`, and `devel` is the way RAPIDS is installed.  `base` and `runtime` are identical in how RAPIDS is installed, with the only difference between them is that `runtime` has (many) more 3rd-party packages installed to support the notebooks.  `devel` is completely different in that RAPIDS is built from source in the container and installed into the `rapids` environment using an install command.  Because of these differences, we often refer to the images as `base/runtime` and `devel`.
+
+### Common problems building the image types
+
+`base/runtime` images typically have one problem that prevents them from building: the `conda install` step fails, usually due to two reasons:
+* communication between the build machine and the conda server stops or is corrupted.
+* the conda dependency solver - used by conda to compute a dependency tree for any given package to determine the list of packages that need to be installed - fails to solve, usually due to an incompatible specification in either the list of packages given to the conda install line, or in the dependency meta-data built-in to a conda package (defined in the package's `meta.yaml`).
+
+`devel` images can fail for the same reasons that `base/runtime` images do, as well as:
+* Failure to build RAPIDS from source.  Actual coding problems are rare since those are usually caught in the per-PR CI build checks, but build errors often occur in `devel` builds due to incompatible environments, resulting in the need to update the `rapids` environment.  Because the gpuCI Docker images used for CI checks are not the same as `devel` images, `devel` builds often have to update based on word-of-mouth or from analyzing failures.
+  * Determining what neds to be updated:
+  * Ideas for addressing this problem:
+
+### Nightly jobs associated with RAPIDS Docker images
+
+* Builds covering the "full matrix" of OS, Python version, and CUDA versions for both `base` and `runtime` images.
+  * pushed to rapidsai/rapidsai-nightly
+* Builds covering the "full matrix" of OS, Python version, and CUDA versions for `devel` images.
+  * pushed to rapidsai/rapidsai-dev-nightly
+* unit/integration test runs
+* RAPIDS notebook test runs
+* RAPIDS integration test runs
+
+### RAPIDS releases and the RAPIDS Docker image builds
+
+RAPIDS releases include the following related to RAPIDS Docker images:
+* builds of `base`, `runtime`, and `devel` images _using the latest master branch of the build repo_, pushed to rapidsai/rapidsai (`base/runtime`), rapidsai/rapidsai-dev (`devel`), and NGC (specific `base/runtime` images)
+* updated READMEs for DockerHub and NGC
+* updated documentation for the RAPIDS website
+
+### build tools in the `build` repo
+
+#### `rapidsdevtool.sh`
 The `rapidsdevtool.sh` bash script has the following options:
 ```
 USAGE:
