@@ -1,6 +1,6 @@
 # build
 
-This repository provides build-related tools for [RAPIDS](https://github.com/rapidsai). The goal is to support a variety of different use cases (building RAPIDS locally from source, building [Docker containers](https://www.docker.com/resources/what-container), testing, package building, building a specific RAPIDS component or branch for development, etc.) in order to minimize problems caused by environment and configuration inconsistencies.
+This repository provides tools for developers, maintainers, and general users who want to build the [RAPIDS](https://github.com/rapidsai) [Docker images](https://www.docker.com/resources/what-container).
 
 Currently, the tools in this repo cover only bulding RAPIDS Docker images.
 
