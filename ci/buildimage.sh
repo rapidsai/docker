@@ -28,7 +28,7 @@ if [[ ${CC_VERSION} == "" ]]; then echo "CC_VERSION is undefined"; exit 1; fi
 if [[ ${PARALLEL_LEVEL} == "" ]]; then echo "PARALLEL_LEVEL is undefined"; exit 1; fi
 if [[ ${TARGET_DOCKER_REPO} == "" ]]; then echo "TARGET_DOCKER_REPO is undefined"; exit 1; fi
 
-TAG=${VERSION}-cuda${CUDA_VERSION}-devel-${LINUX_VERSION}-py${PYTHON_VERSION}
+TAG=${VERSION}-cuda${CUDA_VERSION}-${IMAGE_TYPE}-${LINUX_VERSION}-py${PYTHON_VERSION}
 
 BUILD_ARGS=--build-arg CUDA_VERSION="$CUDA_VERSION" --build-arg LINUX_VERSION="$LINUX_VERSION" --build-arg CXX_VERSION="$CC_VERSION" --build-arg CC_VERSION="$CC_VERSION" --build-arg PYTHON_VERSION="$PYTHON_VERSION" --build-arg PARALLEL_LEVEL="$PARALLEL_LEVEL"
 
