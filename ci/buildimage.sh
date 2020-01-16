@@ -1,7 +1,7 @@
 #!/bin/bash
 set +e
 
-# Builds the Docker image specified in $1 and pushes it to DockerHub
+# This script builds the Docker image specified in $1 and pushes it to DockerHub
 
 echo ""
 echo ">>>> BEGIN $0 <<<<"
@@ -43,18 +43,23 @@ echo ">>>> END rapids dir contents <<<<"
 echo ""
 
 # Generate the Dockerfile
-${RAPIDSDEVTOOL} genDockerfile -t ${LINUX_VERSION}-${IMAGE_TYPE}
+if $(echo ${LINUX_VERSION} | grep -i ubuntu); then
+    TEMPLATE_NAME=ubuntu-${IMAGE_TYPE}
+else
+    TEMPLATE_NAME=centos7-${IMAGE_TYPE}
+fi
+${RAPIDSDEVTOOL} genDockerfile -t ${TEMPLATE_NAME}
 echo ""
 echo ">>>> BEGIN Dockerfile <<<<"
-cat Dockerfile.${LINUX_VERSION}-${IMAGE_TYPE}
+cat Dockerfile.${TEMPLATE_NAME}
 echo ">>>> END Dockerfile <<<<"
 echo ""
 
 # Build the Docker image w/out caching, retry with caching if failed
-docker build --no-cache --pull -t ${TARGET_DOCKER_REPO}:${TAG} --squash ${BUILD_ARGS}
+docker build --no-cache --pull -t ${TARGET_DOCKER_REPO}:${TAG} --squash ${BUILD_ARGS} -f Dockerfile.${TEMPLATE_NAME} .
 EXITCODE=$?
 if (( ${EXITCODE} != 0 )); then
-    ${RETRY} docker build -t ${TARGET_DOCKER_REPO}:${TAG} --squash ${BUILD_ARGS}
+    ${RETRY} docker build -t ${TARGET_DOCKER_REPO}:${TAG} --squash ${BUILD_ARGS} -f Dockerfile.${TEMPLATE_NAME} .
     EXITCODE=$?
     if (( ${EXITCODE} != 0 )); then
         exit ${EXITCODE}
