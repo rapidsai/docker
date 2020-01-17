@@ -1,5 +1,9 @@
 COPY supportfiles/.condarc /opt/conda/.condarc
 
+#
+# FIXME: ucx-py build dep should not need to be manually installed, should
+# instead get pulled in from rapids meta-package - investigate.
+#
 RUN ${RAPIDS_DIR}/utils/condaretry install -y --freeze-installed conda-build \
     && source activate rapids \
     && env \
@@ -41,6 +45,7 @@ RUN ${RAPIDS_DIR}/utils/condaretry install -y --freeze-installed conda-build \
          recommonmark \
          doxygen \
          "pandoc<=2.0.0" \
+         ucx-py \
          \
          cudatoolkit=${CUDA_MAJORMINOR_VERSION} \
          rapids=${RAPIDS_CONDA_VERSION_SPEC} \
