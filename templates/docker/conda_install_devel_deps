@@ -19,6 +19,7 @@ RUN ${RAPIDS_DIR}/utils/condaretry install -y --freeze-installed conda-build \
          cmake=${CMAKE_VERSION} \
          "cmake_setuptools>=0.1.3" \
          "cupy>=6.6.0,<7" \
+         "cython>=0.29,<0.30" \
          double-conversion \
          dlpack \
          flake8 \
