@@ -17,7 +17,10 @@ TOPLEVEL_NB_FOLDERS=$(find . -name *.ipynb |cut -d'/' -f2|sort -u)
 # cuml_benchmarks.ipynb - crash/hang on CentOS7 CUDA 10.*
 # https://gpuci.gpuopenanalytics.com/job/docker/job/tests/job/docker-test-notebooks-contrib/24
 
-SKIPNBS="louvain_benchmark.ipynb pagerank_benchmark.ipynb cuml_benchmarks.ipynb"
+SKIPNBS="rapids_lsst_gpu_only_demo.ipynb rapids_lsst_full_demo.ipynb trajectory_clustering.ipynb E2E_santander_pandas.ipynb \
+        E2E_santander.ipynb cudf_tf_demo.ipynb spark_rapids_pca_demo.ipynb RAPIDS_PCA_demo_avro_read.ipynb 01-Intro_to_cuDF.ipynb \
+        GTC_tutorial_instructor.ipynb GTC_tutorial_student.ipynb Part_1-1_RNN_Feature_Engineering.ipynb Part_1-2_RNN_Extract_Bottleneck.ipynb \
+        Exercise_Answers.ipynb MiningFrequentPatternsFromGraphs.ipynb Weighted_Link_Prediction.ipynb Spotify_Playlist.ipynb"
 
 ## Check env
 env
