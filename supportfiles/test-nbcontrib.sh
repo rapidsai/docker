@@ -20,7 +20,8 @@ TOPLEVEL_NB_FOLDERS=$(find . -name *.ipynb |cut -d'/' -f2|sort -u)
 SKIPNBS="rapids_lsst_gpu_only_demo.ipynb rapids_lsst_full_demo.ipynb trajectory_clustering.ipynb E2E_santander_pandas.ipynb \
         E2E_santander.ipynb cudf_tf_demo.ipynb spark_rapids_pca_demo.ipynb RAPIDS_PCA_demo_avro_read.ipynb 01-Intro_to_cuDF.ipynb \
         GTC_tutorial_instructor.ipynb GTC_tutorial_student.ipynb Part_1-1_RNN_Feature_Engineering.ipynb Part_1-2_RNN_Extract_Bottleneck.ipynb \
-        Exercise_Answers.ipynb MiningFrequentPatternsFromGraphs.ipynb Weighted_Link_Prediction.ipynb Spotify_Playlist.ipynb"
+        Exercise_Answers.ipynb MiningFrequentPatternsFromGraphs.ipynb Weighted_Link_Prediction.ipynb Spotify_Playlist.ipynb \
+        getting_started_with_blazingsql.ipynb"
 
 ## Check env
 env
