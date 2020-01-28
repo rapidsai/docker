@@ -3,6 +3,7 @@
 RAPIDS_DIR=/rapids
 NOTEBOOKS_DIR=${RAPIDS_DIR}/notebooks
 NBTEST=${RAPIDS_DIR}/utils/nbtest.sh
+LIBCUDF_KERNEL_CACHE_PATH=${WORKSPACE}/.jitcache
 
 cd ${NOTEBOOKS_DIR}
 TOPLEVEL_NB_FOLDERS=$(find . -name *.ipynb |cut -d'/' -f2|sort -u)
@@ -41,6 +42,7 @@ for folder in ${TOPLEVEL_NB_FOLDERS}; do
             nvidia-smi
             ${NBTEST} ${nbBasename}
             EXITCODE=$((EXITCODE | $?))
+            rm -rf ${LIBCUDF_KERNEL_CACHE_PATH}/*
             cd ${NOTEBOOKS_DIR}/${folder}
         fi
     done
