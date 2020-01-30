@@ -8,26 +8,50 @@ The RAPIDS suite of software libraries gives you the freedom to execute end-to-e
 
 **NOTE:** Review our [prerequisites](#prerequisites) section to ensure your system meets the minimum requirements for RAPIDS.
 
+## What are RAPIDS "dev" images?
+
+Unlike the Docker images in [rapidsai/rapidsai](https://hub.docker.com/r/rapidsai/rapidsai), the devel images are intended to support a RAPIDS developer working on and running RAPIDS from source.  The devel images contain the full source tree for each RAPIDS Github repo, the complete toolchain and dependencies needed to build and test each repo, pre-built unit tests, the build artifacts and git meta-data, the example notebooks and a Jupyter server to run them.  A RAPIDS developer can simply pull a devel image and start experimenting or debugging in a matter of minutes.
+
 ### Current Version
 
-#### RAPIDS 0.10 - 17 October 2019
+#### RAPIDS 0.12 - 4 February 2020
 
-Versions of libraries included in the `0.10` [images](#rapids-10-images):
-- `cuDF` [v0.10.0](https://github.com/rapidsai/cudf/tree/v0.10.0), `cuML` [v0.10.0](https://github.com/rapidsai/cuml/tree/v0.10.0), `cuGraph` [v0.10.0](https://github.com/rapidsai/cugraph/tree/v0.10.0), `RMM` [v0.10.0](https://github.com/rapidsai/RMM/tree/v0.10.0), `cuSpatial` [v0.10.0](https://github.com/rapidsai/cuspatial/tree/v0.10.0)
-- `xgboost` [branch](https://github.com/rapidsai/xgboost/tree/rapids-0.10-release), `dask-xgboost` [branch](https://github.com/rapidsai/dask-xgboost/tree/dask-cudf) `dask-cuda` [branch](https://github.com/rapidsai/dask-cuda/tree/branch-0.10)
+Versions of libraries included in the `0.12` images:
+- `cuDF` [v0.12.0](https://github.com/rapidsai/cudf/tree/v0.12.0), `cuML` [v0.12.0](https://github.com/rapidsai/cuml/tree/v0.12.0), `cuGraph` [v0.12.0](https://github.com/rapidsai/cugraph/tree/v0.12.0), `RMM` [v0.12.0](https://github.com/rapidsai/RMM/tree/v0.12.0), `cuSpatial` [v0.12.0](https://github.com/rapidsai/cuspatial/tree/v0.12.0), `cuxfilter` [v0.12.0](https://github.com/rapidsai/cuxfilter/tree/branch-0.12)
+- `xgboost` [branch](https://github.com/rapidsai/xgboost/tree/rapids-0.12-release), `dask-xgboost` [branch](https://github.com/rapidsai/dask-xgboost/tree/dask-cudf) `dask-cuda` [branch](https://github.com/rapidsai/dask-cuda/tree/branch-0.12)
 
-Updates & changes
-- Added cuSpatial, the GPU-accelerated spatial and trajectory data management and analytics library.
-- Added support for CUDA 10.1.
-- Updated containers with `v0.10.0` release of cuDF, cuML, cuGraph, cuStrings, and RMM, as well as updated versions of xgboost, dask-xgboost, and dask-cuda.
+### Former Version
 
+#### RAPIDS 0.11 - 11 December 2019
 
-### Tags
+Versions of libraries included in the `0.11` images:
+- `cuDF` [v0.11.0](https://github.com/rapidsai/cudf/tree/v0.11.0), `cuML` [v0.11.0](https://github.com/rapidsai/cuml/tree/v0.11.0), `cuGraph` [v0.11.0](https://github.com/rapidsai/cugraph/tree/v0.11.0), `RMM` [v0.11.0](https://github.com/rapidsai/RMM/tree/v0.11.0), `cuSpatial` [v0.11.0](https://github.com/rapidsai/cuspatial/tree/v0.11.0)
+- `xgboost` [branch](https://github.com/rapidsai/xgboost/tree/rapids-0.11-release), `dask-xgboost` [branch](https://github.com/rapidsai/dask-xgboost/tree/dask-cudf) `dask-cuda` [branch](https://github.com/rapidsai/dask-cuda/tree/branch-0.11)
 
-The RAPIDS image is based on the `devel` [nvidia/cuda](https://hub.docker.com/r/nvidia/cuda) image. This means it is a drop-in replacement, making it easy to gain the RAPIDS libraries while maintaining support for existing CUDA applications.
+### Image Types
 
-The `devel` image type in this repo contains RAPIDS source code (complete with git meta-data) built from source and installed into the `rapids` conda environment. These images also contain the compiler toolchain, the debugging tools, and example notebooks needed for RAPIDS development.<br/>Use this image to develop RAPIDS from source.
+The RAPIDS images are based on [nvidia/cuda](https://hub.docker.com/r/nvidia/cuda), and are intended to be drop-in replacements for the corresponding CUDA
+images in order to make it easy to add RAPIDS libraries while maintaining support for existing CUDA applications.
 
+RAPIDS images come in three types, distributed in two different repos:
+
+This repo (rapidsai-dev), contains the following:
+- `devel` - contains the full RAPIDS source tree, pre-built with all artifacts in place, and the compiler toolchain, the debugging tools, the headers and the static libraries for RAPIDS development. <b>Use this image to develop RAPIDS from source.</b>
+
+For smaller RAPIDS Docker images consisting of a full conda-based install and no development toolchain, refer to the `base` or `runtime` images in [rapidsai/rapidsai](https://hub.docker.com/r/rapidsai/rapidsai) repo.
+
+### Image Tag Naming Scheme
+
+The tag naming scheme for RAPIDS images incorporates key platform details into the tag as shown below:
+```
+0.9-cuda9.2-devel-ubuntu16.04-py3.6
+ ^       ^    ^        ^         ^
+ |       |    type     |         python version
+ |       |             |
+ |       cuda version  |
+ |                     |
+ RAPIDS version        linux version
+```
 
 ## Prerequisites
 
@@ -43,19 +67,19 @@ The `devel` image type in this repo contains RAPIDS source code (complete with g
 
 #### Preferred - Docker CE v19+ and `nvidia-container-toolkit`
 ```bash
-$ docker pull rapidsai/rapidsai-dev:0.10-cuda9.2-devel-ubuntu16.04
+$ docker pull rapidsai/rapidsai-dev:0.10-cuda9.2-devel-ubuntu16.04-py3.6-py3.6
 $ docker run --gpus all --rm -it -p 8888:8888 -p 8787:8787 -p 8786:8786 \
-         rapidsai/rapidsai-dev:0.10-cuda9.2-devel-ubuntu16.04
-         ```
-         **NOTE:** This will open a shell with [JupyterLab](https://jupyterlab.readthedocs.io/en/stable/) running in the background on port 8888 on your host machine.
+         rapidsai/rapidsai-dev:0.10-cuda9.2-devel-ubuntu16.04-py3.6
+```
+**NOTE:** This will open a shell with [JupyterLab](https://jupyterlab.readthedocs.io/en/stable/) running in the background on port 8888 on your host machine.
 
 #### Legacy - Docker CE v18 and `nvidia-docker2`
 ```bash
-$ docker pull rapidsai/rapidsai-dev:0.10-cuda9.2-devel-ubuntu16.04
+$ docker pull rapidsai/rapidsai-dev:0.10-cuda9.2-devel-ubuntu16.04-py3.6
 $ docker run --runtime=nvidia --rm -it -p 8888:8888 -p 8787:8787 -p 8786:8786 \
-         rapidsai/rapidsai-dev:0.10-cuda9.2-devel-ubuntu16.04
-         ```
-         **NOTE:** This will open a shell with [JupyterLab](https://jupyterlab.readthedocs.io/en/stable/) running in the background on port 8888 on your host machine.
+         rapidsai/rapidsai-dev:0.10-cuda9.2-devel-ubuntu16.04-py3.6
+```
+**NOTE:** This will open a shell with [JupyterLab](https://jupyterlab.readthedocs.io/en/stable/) running in the background on port 8888 on your host machine.
 
 ### Use JupyterLab to Explore the Notebooks
 
@@ -77,17 +101,16 @@ You are free to modify the above steps. For example, you can launch an interacti
 ```bash
 $ docker run --gpus all --rm -it -p 8888:8888 -p 8787:8787 -p 8786:8786 \
          -v /path/to/host/data:/rapids/my_data \
-                  rapidsai/rapidsai-dev:0.10-cuda9.2-devel-ubuntu16.04
-                  ```
+                  rapidsai/rapidsai-dev:0.10-cuda9.2-devel-ubuntu16.04-py3.6
+```
 
 #### Legacy - Docker CE v18 and `nvidia-docker2`
 ```bash
 $ docker run --runtime=nvidia --rm -it -p 8888:8888 -p 8787:8787 -p 8786:8786 \
          -v /path/to/host/data:/rapids/my_data \
-                  rapidsai/rapidsai-dev:0.10-cuda9.2-devel-ubuntu16.04
-                  ```
-                  This will map data from your host operating system to the container OS in the `/rapids/my_data` directory. You may need to modify the provided notebooks for the new data paths.
-
+                  rapidsai/rapidsai-dev:0.10-cuda9.2-devel-ubuntu16.04-py3.6
+```
+This will map data from your host operating system to the container OS in the `/rapids/my_data` directory. You may need to modify the provided notebooks for the new data paths.
 
 ### Access Documentation within Notebooks
 
@@ -114,95 +137,3 @@ Please submit issues with the container to this GitHub repository: [https://gith
 For issues with RAPIDS libraries like cuDF, cuML, RMM, or others file an issue in the related GitHub project.
 
 Additional help can be found on [Stack Overflow](https://stackoverflow.com/tags/rapids) or [Google Groups](https://groups.google.com/forum/#!forum/rapidsai).
-
-## Full Tag List
-
-Using the image types [above](#tags) `devel` we use the following
-tag naming scheme for RAPIDS images:
-
-```
-0.10-cuda9.2-devel-ubuntu16.04-py3.6
-^        ^    ^        ^          ^
-|        |    type     |          python version
-|        |             |
-|        cuda version  |
-|                      |
-RAPIDS version         linux version
-```
-
-### RAPIDS 0.10 Images
-
-#### Ubuntu 16.04
-
-All `ubuntu16.04` images use `gcc 5.4`
-
-**CUDA 9.2**
-
-| Full Tag | Image Type | Python Version |
-| --- | --- | --- |
-| `0.10-cuda9.2-devel-ubuntu16.04-py3.6` | devel | 3.6 |
-| `0.10-cuda9.2-devel-ubuntu16.04-py3.7` | devel | 3.7 |
-
-**CUDA 10.0**
-
-| Full Tag | Image Type | Python Version |
-| --- | --- | --- |
-| `0.10-cuda10.0-devel-ubuntu16.04-py3.6` | devel | 3.6 |
-| `0.10-cuda10.0-devel-ubuntu16.04-py3.7` | devel | 3.7 |
-
-**CUDA 10.1**
-
-| Full Tag | Image Type | Python Version |
-| --- | --- | --- |
-| `0.10-cuda10.1-devel-ubuntu16.04-py3.6` | devel | 3.6 |
-| `0.10-cuda10.1-devel-ubuntu16.04-py3.7` | devel | 3.7 |
-
-#### Ubuntu 18.04
-
-All `ubuntu18.04` images use `gcc 7.3`
-
-**CUDA 9.2**
-
-| Full Tag | Image Type | Python Version |
-| --- | --- | --- |
-| `0.10-cuda9.2-devel-ubuntu18.04-py3.6` | devel | 3.6 |
-| `0.10-cuda9.2-devel-ubuntu18.04-py3.7` | devel | 3.7 |
-
-**CUDA 10.0**
-
-| Full Tag | Image Type | Python Version |
-| --- | --- | --- |
-| `0.10-cuda10.0-devel-ubuntu18.04-py3.6` | devel | 3.6 |
-| `0.10-cuda10.0-devel-ubuntu18.04-py3.7` | devel | 3.7 |
-
-**CUDA 10.1**
-
-| Full Tag | Image Type | Python Version |
-| --- | --- | --- |
-| `0.10-cuda10.1-devel-ubuntu18.04-py3.6` | devel | 3.6 |
-| `0.10-cuda10.1-devel-ubuntu18.04-py3.7` | devel | 3.7 |
-
-#### CentOS 7
-
-All `centos7` images use `gcc 7.3`
-
-**CUDA 9.2**
-
-| Full Tag | Image Type | Python Version |
-| --- | --- | --- |
-| `0.10-cuda9.2-devel-centos7-py3.6` | devel | 3.6 |
-| `0.10-cuda9.2-devel-centos7-py3.7` | devel | 3.7 |
-
-**CUDA 10.0**
-
-| Full Tag | Image Type | Python Version |
-| --- | --- | --- |
-| `0.10-cuda10.0-devel-centos7-py3.6` | devel | 3.6 |
-| `0.10-cuda10.0-devel-centos7-py3.7` | devel | 3.7 |
-
-**CUDA 10.1**
-
-| Full Tag | Image Type | Python Version |
-| --- | --- | --- |
-| `0.10-cuda10.1-devel-centos7-py3.6` | devel | 3.6 |
-| `0.10-cuda10.1-devel-centos7-py3.7` | devel | 3.7 |
