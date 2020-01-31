@@ -1,6 +1,6 @@
 #
 # This file was generated! Edits made directly to this file may be lost.
-#   Timestamp:    Wed Dec 11 18:52:40 CST 2019
+#   Timestamp:    Fri Jan 17 08:49:59 CST 2020
 #
 # RAPIDS Dockerfile for Ubuntu "runtime" image
 #
@@ -12,7 +12,7 @@
 
 
 ARG RAPIDS_REPO=rapidsai/rapidsai-nightly
-ARG RAPIDS_VERSION=0.11
+ARG RAPIDS_VERSION=0.12
 ARG CUDA_VERSION=10.1
 ARG CUDA_MAJORMINOR_VERSION=${CUDA_VERSION}
 ARG LINUX_VERSION=ubuntu18.04
@@ -41,7 +41,7 @@ ARG IPYTHON_VERSION=7.3*
 
 # base/runtime install specs
 ARG DASK_XGBOOST_CONDA_VERSION_SPEC=0.2*
-ARG RAPIDS_CONDA_VERSION_SPEC=0.11*
+ARG RAPIDS_CONDA_VERSION_SPEC=0.12*
 
 # Install the notebook dependencies and the notebook repo
 RUN source activate rapids \
@@ -55,7 +55,7 @@ RUN source activate rapids \
       dask-labextension \
       dask-ml \
       ipython=${IPYTHON_VERSION} \
-      jupyterlab=1.0.7 \
+      jupyterlab \
       matplotlib \
       networkx \
       nodejs \

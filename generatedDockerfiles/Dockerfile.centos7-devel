@@ -1,6 +1,6 @@
 #
 # This file was generated! Edits made directly to this file may be lost.
-#   Timestamp:    Wed Dec 11 18:52:40 CST 2019
+#   Timestamp:    Fri Jan 17 08:49:58 CST 2020
 #
 # RAPIDS Dockerfile for CentOS7 "devel" image
 #
@@ -37,7 +37,7 @@ ARG IPYTHON_VERSION=7.3*
 
 # base/runtime install specs
 ARG DASK_XGBOOST_CONDA_VERSION_SPEC=0.2*
-ARG RAPIDS_CONDA_VERSION_SPEC=0.11*
+ARG RAPIDS_CONDA_VERSION_SPEC=0.12*
 
 ARG CUDA_MAJORMINOR_VERSION
 ARG PYTHON_VERSION
@@ -93,6 +93,10 @@ COPY utils ${RAPIDS_DIR}/utils
 # Install core pkgs for development (these will not be overwritten by next install)
 COPY supportfiles/.condarc /opt/conda/.condarc
 
+#
+# FIXME: ucx-py build dep should not need to be manually installed, should
+# instead get pulled in from rapids meta-package - investigate.
+#
 RUN ${RAPIDS_DIR}/utils/condaretry install -y --freeze-installed conda-build \
     && source activate rapids \
     && env \
@@ -134,6 +138,7 @@ RUN ${RAPIDS_DIR}/utils/condaretry install -y --freeze-installed conda-build \
          recommonmark \
          doxygen \
          "pandoc<=2.0.0" \
+         ucx-py \
          \
          cudatoolkit=${CUDA_MAJORMINOR_VERSION} \
          rapids=${RAPIDS_CONDA_VERSION_SPEC} \
@@ -143,7 +148,8 @@ RUN ${RAPIDS_DIR}/utils/condaretry install -y --freeze-installed conda-build \
          dask-labextension \
          dask-ml \
          ipython=${IPYTHON_VERSION} \
-         jupyterlab=1.0.7 \
+         jupyterlab \
+         librdkafka=1.2.2 \
          matplotlib \
          networkx \
          nodejs \
