@@ -17,6 +17,9 @@ RUN cd ${RAPIDS_DIR}/cudf && \
     cd cpp/build && \
     make -j${PARALLEL_LEVEL} build_tests_nvstrings && \
     make -j${PARALLEL_LEVEL} build_tests_cudf
+RUN cd ${RAPIDS_DIR}/cuxfilter && \
+    source activate rapids && \
+    ./build.sh
 # FIXME: Should not need to set CUSPATIAL_HOME and CUDF_HOME variables
 RUN cd ${RAPIDS_DIR}/cuspatial && \
     source activate rapids && \
