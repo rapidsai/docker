@@ -12,7 +12,7 @@ The RAPIDS suite of software libraries gives you the freedom to execute end-to-e
 
 ## What are RAPIDS NIGHTLY "dev" images?
 
-The `rapidsai/rapidsai-dev-nightly` repo contains nightly docker builds of the latest WIP changes merged into Github repos throughout the day for the next RAPIDS release. These containers are generally considered unstable, and should only be used for development and testing. For our latest stable release, please use the [rapidsai/rapidsai](https://hub.docker.com/r/rapidsai/rapidsai) containers.
+The `rapidsai/rapidsai-dev-nightly` repo contains nightly docker builds of the latest WIP changes merged into Github repos throughout the day for the next RAPIDS release. These containers are generally considered unstable, and should only be used for development and testing. For our latest stable release, please use the [rapidsai/rapidsai](https://hub.docker.com/r/rapidsai/rapidsai-dev) containers.
 
 Unlike the Docker images in [rapidsai/rapidsai-nightly](https://hub.docker.com/r/rapidsai/rapidsai-nighlty), the devel images are intended to support a RAPIDS developer working on and running RAPIDS from source.  The devel images contain the full source tree for each RAPIDS Github repo, the complete toolchain and dependencies needed to build and test each repo, pre-built unit tests, the build artifacts and git meta-data, the example notebooks and a Jupyter server to run them.  A RAPIDS developer can simply pull a devel image and start experimenting or debugging in a matter of minutes.
 

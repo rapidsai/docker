@@ -67,7 +67,7 @@ The tag naming scheme for RAPIDS images incorporates key platform details into t
 
 #### Preferred - Docker CE v19+ and `nvidia-container-toolkit`
 ```bash
-$ docker pull rapidsai/rapidsai-dev:0.10-cuda9.2-devel-ubuntu16.04-py3.6-py3.6
+$ docker pull rapidsai/rapidsai-dev:0.10-cuda9.2-devel-ubuntu16.04-py3.6
 $ docker run --gpus all --rm -it -p 8888:8888 -p 8787:8787 -p 8786:8786 \
          rapidsai/rapidsai-dev:0.10-cuda9.2-devel-ubuntu16.04-py3.6
 ```
