@@ -1,6 +1,6 @@
 #
 # This file was generated! Edits made directly to this file may be lost.
-#   Timestamp:    Fri Jan 17 08:49:59 CST 2020
+#   Timestamp:    Tue Feb  4 09:53:20 CST 2020
 #
 # RAPIDS Dockerfile for Ubuntu "runtime" image
 #
@@ -34,7 +34,7 @@ ARG CMAKE_VERSION=3.14.5
 ARG LIBGFORTRAN_NG_VERSION=7.3.0
 ARG NUMBA_VERSION=0.46
 ARG NUMPY_VERSION=1.17
-ARG PANDAS_VERSION=0.24.2
+ARG PANDAS_VERSION=0.25
 
 # notebook pkgs
 ARG IPYTHON_VERSION=7.3*
@@ -44,6 +44,10 @@ ARG DASK_XGBOOST_CONDA_VERSION_SPEC=0.2*
 ARG RAPIDS_CONDA_VERSION_SPEC=0.12*
 
 # Install the notebook dependencies and the notebook repo
+#
+# FIXME: cuxfilter is being installed here with the assumption that this snippet
+# is only used in runtime images!
+#
 RUN source activate rapids \
     && env \
     && conda info \
@@ -52,6 +56,7 @@ RUN source activate rapids \
     && ${RAPIDS_DIR}/utils/condaretry install -y -n rapids --freeze-installed \
       bokeh \
       cudatoolkit=${CUDA_MAJORMINOR_VERSION} \
+      cuxfilter=${RAPIDS_CONDA_VERSION_SPEC} \
       dask-labextension \
       dask-ml \
       ipython=${IPYTHON_VERSION} \
@@ -68,7 +73,7 @@ RUN source activate rapids \
       blas=*=openblas \
    && conda clean -afy \
    && chmod -R ugo+w /opt/conda \
-   && pip install "git+https://github.com/rapidsai/jupyterlab-nvdashboard.git#master" --upgrade \
+   && pip install "git+https://github.com/rapidsai/jupyterlab-nvdashboard.git@master#egg=jupyterlab-nvdashboard" --upgrade \
    && jupyter labextension install dask-labextension jupyterlab-nvdashboard \
    && cd ${RAPIDS_DIR} \
    && ./clone.sh notebooks \
