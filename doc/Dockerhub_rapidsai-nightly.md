@@ -14,10 +14,10 @@ The RAPIDS suite of software libraries gives you the freedom to execute end-to-e
 
 The `rapidsai/rapidsai-nightly` repo contains nightly docker builds of the latest WIP changes merged into Github repos throughout the day for the next RAPIDS release. These containers are generally considered unstable, and should only be used for development and testing. For our latest stable release, please use the [rapidsai/rapidsai](https://hub.docker.com/r/rapidsai/rapidsai) containers.
 
-#### RAPIDS 0.12 - 4 February 2020
+#### RAPIDS NIGHTLY v0.13.0a
 
-Versions of libraries included in the `0.12` images:
-- `cuDF` [v0.12.0](https://github.com/rapidsai/cudf/tree/v0.12.0), `cuML` [v0.12.0](https://github.com/rapidsai/cuml/tree/v0.12.0), `cuGraph` [v0.12.0](https://github.com/rapidsai/cugraph/tree/v0.12.0), `RMM` [v0.12.0](https://github.com/rapidsai/RMM/tree/v0.12.0), `cuSpatial` [v0.12.0](https://github.com/rapidsai/cuspatial/tree/v0.12.0), `cuxfilter` [v0.12.0](https://github.com/rapidsai/cuxfilter/tree/branch-0.12)
+Versions of libraries included in the `0.13` images:
+- `cuDF` [v0.13.0a](https://github.com/rapidsai/cudf), `cuML` [v0.13.0a](https://github.com/rapidsai/cuml), `cuGraph` [v0.13.0a](https://github.com/rapidsai/cugraph), `RMM` [v0.13.0a](https://github.com/rapidsai/RMM), `cuSpatial` [v0.13.0a](https://github.com/rapidsai/cuspatial), `cuxfilter` [v0.13.0a](https://github.com/rapidsai/cuxfilter)
   - **NOTE:** `cuxfilter` is only available in `runtime` containers
 - `xgboost` [branch](https://github.com/rapidsai/xgboost/tree/rapids-0.12-release), `dask-xgboost` [branch](https://github.com/rapidsai/dask-xgboost/tree/dask-cudf) `dask-cuda` [branch](https://github.com/rapidsai/dask-cuda/tree/branch-0.12)
 
