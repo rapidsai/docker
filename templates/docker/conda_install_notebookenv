@@ -1,4 +1,8 @@
 # Install the notebook dependencies and the notebook repo
+#
+# FIXME: cuxfilter is being installed here with the assumption that this snippet
+# is only used in runtime images!
+#
 RUN source activate rapids \
     && env \
     && conda info \
@@ -7,6 +11,7 @@ RUN source activate rapids \
     && ${RAPIDS_DIR}/utils/condaretry install -y -n rapids --freeze-installed \
       bokeh \
       cudatoolkit=${CUDA_MAJORMINOR_VERSION} \
+      cuxfilter=${RAPIDS_CONDA_VERSION_SPEC} \
       dask-labextension \
       dask-ml \
       ipython=${IPYTHON_VERSION} \
