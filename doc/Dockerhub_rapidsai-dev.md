@@ -18,6 +18,7 @@ Unlike the Docker images in [rapidsai/rapidsai](https://hub.docker.com/r/rapidsa
 
 Versions of libraries included in the `0.12` images:
 - `cuDF` [v0.12.0](https://github.com/rapidsai/cudf/tree/v0.12.0), `cuML` [v0.12.0](https://github.com/rapidsai/cuml/tree/v0.12.0), `cuGraph` [v0.12.0](https://github.com/rapidsai/cugraph/tree/v0.12.0), `RMM` [v0.12.0](https://github.com/rapidsai/RMM/tree/v0.12.0), `cuSpatial` [v0.12.0](https://github.com/rapidsai/cuspatial/tree/v0.12.0), `cuxfilter` [v0.12.0](https://github.com/rapidsai/cuxfilter/tree/branch-0.12)
+  - **NOTE:** `cuxfilter` is only available in `runtime` containers
 - `xgboost` [branch](https://github.com/rapidsai/xgboost/tree/rapids-0.12-release), `dask-xgboost` [branch](https://github.com/rapidsai/dask-xgboost/tree/dask-cudf) `dask-cuda` [branch](https://github.com/rapidsai/dask-cuda/tree/branch-0.12)
 
 ### Former Version
@@ -36,7 +37,8 @@ images in order to make it easy to add RAPIDS libraries while maintaining suppor
 RAPIDS images come in three types, distributed in two different repos:
 
 This repo (rapidsai-dev), contains the following:
-- `devel` - contains the full RAPIDS source tree, pre-built with all artifacts in place, and the compiler toolchain, the debugging tools, the headers and the static libraries for RAPIDS development. <b>Use this image to develop RAPIDS from source.</b>
+- `devel` - contains the full RAPIDS source tree, pre-built with all artifacts in place, and the compiler toolchain, the debugging tools, the headers and the static libraries for RAPIDS development.
+  - **TIP: Use this image to develop RAPIDS from source.**
 
 For smaller RAPIDS Docker images consisting of a full conda-based install and no development toolchain, refer to the `base` or `runtime` images in [rapidsai/rapidsai](https://hub.docker.com/r/rapidsai/rapidsai) repo.
 

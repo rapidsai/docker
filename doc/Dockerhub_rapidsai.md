@@ -14,6 +14,7 @@ The RAPIDS suite of software libraries gives you the freedom to execute end-to-e
 
 Versions of libraries included in the `0.12` images:
 - `cuDF` [v0.12.0](https://github.com/rapidsai/cudf/tree/v0.12.0), `cuML` [v0.12.0](https://github.com/rapidsai/cuml/tree/v0.12.0), `cuGraph` [v0.12.0](https://github.com/rapidsai/cugraph/tree/v0.12.0), `RMM` [v0.12.0](https://github.com/rapidsai/RMM/tree/v0.12.0), `cuSpatial` [v0.12.0](https://github.com/rapidsai/cuspatial/tree/v0.12.0), `cuxfilter` [v0.12.0](https://github.com/rapidsai/cuxfilter/tree/branch-0.12)
+  - **NOTE:** `cuxfilter` is only available in `runtime` containers
 - `xgboost` [branch](https://github.com/rapidsai/xgboost/tree/rapids-0.12-release), `dask-xgboost` [branch](https://github.com/rapidsai/dask-xgboost/tree/dask-cudf) `dask-cuda` [branch](https://github.com/rapidsai/dask-cuda/tree/branch-0.12)
 
 ### Former Version
@@ -32,11 +33,14 @@ images in order to make it easy to add RAPIDS libraries while maintaining suppor
 RAPIDS images come in three types, distributed in two different repos:
 
 This repo (rapidsai), contains the following:
-- `base` - contains a RAPIDS environment ready for use. <b>Use this image if you want to use RAPIDS as a part of your pipeline.</b>
-- `runtime` - extends the `base` image by adding a notebook server and example notebooks. <b>Use this image if you want to explore RAPIDS through notebooks and examples.</b>
+- `base` - contains a RAPIDS environment ready for use.
+  - **TIP: Use this image if you want to use RAPIDS as a part of your pipeline.**
+- `runtime` - extends the `base` image by adding a notebook server and example notebooks.
+  - **TIP: Use this image if you want to explore RAPIDS through notebooks and examples.**
 
 The [rapidsai/rapidsai-dev](https://hub.docker.com/r/rapidsai/rapidsai-dev/tags) repo adds the following:
-- `devel` - contains the full RAPIDS source tree, pre-built with all artifacts in place, and the compiler toolchain, the debugging tools, the headers and the static libraries for RAPIDS development. <b>Use this image to develop RAPIDS from source.</b>
+- `devel` - contains the full RAPIDS source tree, pre-built with all artifacts in place, and the compiler toolchain, the debugging tools, the headers and the static libraries for RAPIDS development.
+  - **TIP: Use this image to develop RAPIDS from source.**
 
 ### Image Tag Naming Scheme
 
