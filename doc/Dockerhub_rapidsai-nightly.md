@@ -29,11 +29,14 @@ images in order to make it easy to add RAPIDS libraries while maintaining suppor
 RAPIDS images come in three types, distributed in two different repos:
 
 This repo (rapidsai-nightly), contains the following:
-- `base` - contains a RAPIDS environment ready for use. <b>Use this image if you want to use RAPIDS as a part of your pipeline.</b>
-- `runtime` - extends the `base` image by adding a notebook server and example notebooks. <b>Use this image if you want to explore RAPIDS through notebooks and examples.</b>
+- `base` - contains a RAPIDS environment ready for use.
+  - **TIP: Use this image if you want to use RAPIDS as a part of your pipeline.**
+- `runtime` - extends the `base` image by adding a notebook server and example notebooks.
+  - **TIP: Use this image if you want to explore RAPIDS through notebooks and examples.**
 
 The [rapidsai/rapidsai-dev-nightly](https://hub.docker.com/r/rapidsai/rapidsai-dev-nightly/tags) repo adds the following:
-- `devel` - contains the full RAPIDS source tree, pre-built with all artifacts in place, and the compiler toolchain, the debugging tools, the headers and the static libraries for RAPIDS development. <b>Use this image to develop RAPIDS from source.</b>
+- `devel` - contains the full RAPIDS source tree, pre-built with all artifacts in place, and the compiler toolchain, the debugging tools, the headers and the static libraries for RAPIDS development.
+  - **TIP: Use this image to develop RAPIDS from source.**
 
 ### Image Tag Naming Scheme
 
