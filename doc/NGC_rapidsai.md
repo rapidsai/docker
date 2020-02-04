@@ -37,7 +37,9 @@ The RAPIDS images provided by NGC come in two types:
 - `runtime` - extends the `base` image by adding a notebook server and example notebooks.
   - **TIP: Use this image if you want to explore RAPIDS through notebooks and examples.**
 
-For images that contain the full RAPIDS source tree, pre-built with all artifacts in place, and the compiler toolchain, the debugging tools, the headers and the static libraries for RAPIDS development - as well as support for Python 3.7 - refer to  [rapidsai/rapidsai](https://cloud.docker.com/u/rapidsai/repository/docker/rapidsai/rapidsai) and [rapidsai/rapidsai-dev](https://cloud.docker.com/u/rapidsai/repository/docker/rapidsai/rapidsai-dev) repos on DockerHub.
+For `base` and `runtime` images with python 3.7 support, refer to [rapidsai/rapidsai](https://cloud.docker.com/u/rapidsai/repository/docker/rapidsai/rapidsai) on DockerHub.
+
+For `devel` images that contain: the full RAPIDS source tree, pre-built with all artifacts in place, the compiler toolchain, the debugging tools, the headers and the static libraries for RAPIDS development - as well as support for Python 3.7 - refer to the [rapidsai/rapidsai-dev](https://cloud.docker.com/u/rapidsai/repository/docker/rapidsai/rapidsai-dev) repo on DockerHub.
 
 ### Image Tag Naming Scheme
 
