@@ -1,0 +1,32 @@
+# RAPIDS Dockerfile for Ubuntu "quick devel" image
+#
+# RAPIDS is built from-source and installed in the base conda environment. The
+# sources and toolchains to build RAPIDS are included in this image. RAPIDS
+# jupyter notebooks are also provided, as well as jupyterlab and all the
+# dependencies required to run them.
+#
+# Copyright (c) 2020, NVIDIA CORPORATION.
+
+ARG CUDA_TYPE=devel
+ARG CUDA_VERSION=10.1
+ARG CUDA_MAJORMINOR_VERSION=${CUDA_VERSION}
+ARG LINUX_VERSION=ubuntu18.04
+ARG PYTHON_VERSION=3.7
+
+FROM rapidsai/rapidsai-dev-nightly:${CUDA_VERSION}-${CUDA_TYPE}-${LINUX_VERSION}-py${PYTHON_VERSION}
+
+ARG CUDA_MAJORMINOR_VERSION
+ARG PYTHON_VERSION
+
+ENV CC=/usr/bin/gcc-${CC_VERSION}
+ENV CXX=/usr/bin/g++-${CXX_VERSION}
+ENV CUDAHOSTCXX=$CXX
+ENV RAPIDS_DIR=/rapids
+ENV LD_LIBRARY_PATH=/opt/conda/envs/rapids/lib:${LD_LIBRARY_PATH}
+
+
+# Update RAPIDS repos
+insertfile update_rapids
+
+# Build RAPIDS
+insertfile build_rapids
