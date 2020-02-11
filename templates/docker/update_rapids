@@ -1,0 +1,19 @@
+# Update RAPIDS
+RUN cd ${RAPIDS_DIR}/rmm && \
+    git pull
+RUN cd ${RAPIDS_DIR}/cudf && \
+    git pull
+RUN cd ${RAPIDS_DIR}/cuxfilter && \
+    git pull
+RUN cd ${RAPIDS_DIR}/cuspatial && \
+    git pull
+RUN cd ${RAPIDS_DIR}/cuml && \
+    git pull
+RUN cd ${RAPIDS_DIR}/cugraph && \
+    git pull
+RUN cd ${RAPIDS_DIR} && \
+    git pull
+RUN cd ${RAPIDS_DIR} && \
+    git pull
+RUN cd ${RAPIDS_DIR} && \
+    git pull
