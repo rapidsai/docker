@@ -24,7 +24,6 @@ ENV CUDAHOSTCXX=$CXX
 ENV RAPIDS_DIR=/rapids
 ENV LD_LIBRARY_PATH=/opt/conda/envs/rapids/lib:${LD_LIBRARY_PATH}
 
-
 # Update RAPIDS repos
 insertfile update_rapids
 
