@@ -11,9 +11,3 @@ RUN cd ${RAPIDS_DIR}/cuml && \
     git pull
 RUN cd ${RAPIDS_DIR}/cugraph && \
     git pull
-RUN cd ${RAPIDS_DIR} && \
-    git pull
-RUN cd ${RAPIDS_DIR} && \
-    git pull
-RUN cd ${RAPIDS_DIR} && \
-    git pull
