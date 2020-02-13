@@ -7,13 +7,12 @@
 #
 # Copyright (c) 2020, NVIDIA CORPORATION.
 
-ARG CUDA_TYPE=devel
 ARG CUDA_VERSION=10.1
 ARG LINUX_VERSION=centos7
 ARG PYTHON_VERSION=3.7
 ARG VERSION=0.13
 
-FROM rapidsai/rapidsai-dev-nightly:${VERSION}-cuda${CUDA_VERSION}-${CUDA_TYPE}-${LINUX_VERSION}-py${PYTHON_VERSION}
+FROM rapidsai/rapidsai-dev-nightly:${VERSION}-cuda${CUDA_VERSION}-devel-${LINUX_VERSION}-py${PYTHON_VERSION}
 
 # Update RAPIDS repos
 insertfile update_rapids
