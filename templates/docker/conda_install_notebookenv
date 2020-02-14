@@ -5,7 +5,6 @@ RUN source activate rapids \
     && conda config --show-sources \
     && conda list --show-channel-urls \
     && ${RAPIDS_DIR}/utils/condaretry install -y -n rapids --freeze-installed \
-      bokeh \
       cudatoolkit=${CUDA_MAJORMINOR_VERSION} \
       dask-labextension \
       dask-ml \
@@ -15,8 +14,6 @@ RUN source activate rapids \
       networkx \
       nodejs \
       pytest \
-      scikit-learn \
-      scipy \
       seaborn \
       tensorflow=*=gpu* \
       umap-learn \
