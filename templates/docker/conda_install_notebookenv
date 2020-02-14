@@ -18,7 +18,7 @@ RUN source activate rapids \
       nodejs \
       pytest \
       seaborn \
-      tensorflow=*=gpu* \
+# FIXME: disable temporarily due to no CUDA 10.2 pkgs      tensorflow=*=gpu* \
       umap-learn \
       blas=*=openblas \
    && conda clean -afy \
