@@ -10,10 +10,6 @@ RUN source activate rapids \
 # Setup rapids build env from conda meta-pkg
 RUN ${RAPIDS_DIR}/utils/condaretry install -y -n rapids --freeze-installed rapids-build-env
 
-# Install only deps for rapids meta-pkg
-RUN ${RAPIDS_DIR}/utils/condaretry install -y -n rapids --freeze-installed --only-deps \
-        rapids=${RAPIDS_CONDA_VERSION_SPEC}
-
 # Install pkgs for doc builds
 RUN ${RAPIDS_DIR}/utils/condaretry install -y -n rapids --freeze-installed \
         sphinx \
