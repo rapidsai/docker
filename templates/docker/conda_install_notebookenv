@@ -6,8 +6,7 @@ RUN source activate rapids \
     && conda list --show-channel-urls
 
 # Install the notebook dependencies
-RUN source activate rapids \
-    && ${RAPIDS_DIR}/utils/condaretry install -y \
+RUN ${RAPIDS_DIR}/utils/condaretry install -y -n rapids \
       cudatoolkit=${CUDA_MAJORMINOR_VERSION} \
       dask-labextension \
       dask-ml \
@@ -22,7 +21,8 @@ RUN source activate rapids \
       umap-learn \
       blas=*=openblas \
    && conda clean -afy \
-   && chmod -R ugo+w /opt/conda \
+   && chmod -R ugo+w /opt/conda
+RUN source activate rapids \
    && pip install "git+https://github.com/rapidsai/jupyterlab-nvdashboard.git@master#egg=jupyterlab-nvdashboard" --upgrade \
    && jupyter labextension install dask-labextension jupyterlab-nvdashboard
  
