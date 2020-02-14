@@ -20,7 +20,6 @@ RUN ${RAPIDS_DIR}/utils/condaretry install -y -n rapids --freeze-installed \
         recommonmark \
         doxygen \
         "pandoc<=2.0.0" \
-        ucx-py \
     && pip install sphinx-markdown-tables
 
 # Env debug info
