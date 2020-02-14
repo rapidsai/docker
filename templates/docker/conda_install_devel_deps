@@ -7,8 +7,8 @@ RUN source activate rapids \
     && conda config --show-sources \
     && conda list --show-channel-urls
 
-# Setup rapids build env from conda meta-pkg
-RUN ${RAPIDS_DIR}/utils/condaretry install -y -n rapids --freeze-installed rapids-build-env
+# Setup rapids build env from conda meta-pkg & ucx-py
+RUN ${RAPIDS_DIR}/utils/condaretry install -y -n rapids --freeze-installed rapids-build-env ucx-py
 
 # Install pkgs for doc builds
 RUN ${RAPIDS_DIR}/utils/condaretry install -y -n rapids --freeze-installed \
