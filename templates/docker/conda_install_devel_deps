@@ -23,7 +23,7 @@ RUN ${RAPIDS_DIR}/utils/condaretry install -y -n rapids --freeze-installed \
          recommonmark \
          doxygen \
          "pandoc<=2.0.0" \
-         ucx-py \
+         ucx-py
 
 # Clean up and set permissions on conda install
 RUN conda clean -afy \
