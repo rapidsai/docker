@@ -12,6 +12,7 @@ RUN ${RAPIDS_DIR}/utils/condaretry install -y -n rapids \
       dask-ml \
       ipython=${IPYTHON_VERSION} \
       jupyterlab \
+      jupyter-labextension \
       matplotlib \
       networkx \
       nodejs \
