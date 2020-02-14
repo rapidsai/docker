@@ -6,7 +6,7 @@ RUN source activate rapids \
     && conda list --show-channel-urls
 
 # Install the notebook dependencies
-RUN ${RAPIDS_DIR}/utils/condaretry install -y -n rapids --freeze-installed \
+RUN ${RAPIDS_DIR}/utils/condaretry install -y -n rapids \
       cudatoolkit=${CUDA_MAJORMINOR_VERSION} \
       dask-labextension \
       dask-ml \
