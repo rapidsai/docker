@@ -8,7 +8,7 @@ RUN source activate rapids \
     && conda list --show-channel-urls
 
 # Setup rapids build env from conda meta-pkg
-RUN ${RAPIDS_DIR}/utils/condaretry install -y --freeze-installed rapids-build-env
+RUN ${RAPIDS_DIR}/utils/condaretry install -y -n rapids --freeze-installed rapids-build-env
 
 # Install only deps for rapids meta-pkg
 RUN ${RAPIDS_DIR}/utils/condaretry install -y -n rapids --freeze-installed --only-deps \
