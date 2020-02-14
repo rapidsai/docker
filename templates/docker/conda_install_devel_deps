@@ -23,10 +23,6 @@ RUN ${RAPIDS_DIR}/utils/condaretry install -y -n rapids --freeze-installed \
         ucx-py \
     && pip install sphinx-markdown-tables
 
-# Clean up and set permissions on conda install
-RUN conda clean -afy \
-    && chmod -R ugo+w /opt/conda
-
 # Env debug info
 RUN source activate rapids \
     && env \
