@@ -5,23 +5,13 @@ RUN source activate rapids \
     && conda config --show-sources \
     && conda list --show-channel-urls
 
-# Install the notebook dependencies
-RUN ${RAPIDS_DIR}/utils/condaretry install -y -n rapids \
-      cudatoolkit=${CUDA_MAJORMINOR_VERSION} \
-      dask-labextension \
-      dask-ml \
-      ipython=${IPYTHON_VERSION} \
-      jupyterlab \
-      matplotlib \
-      networkx \
-      nodejs \
-      pytest \
-      seaborn \
-# FIXME: disable temporarily due to no CUDA 10.2 pkgs      tensorflow=*=gpu* \
-      umap-learn \
-      blas=*=openblas \
+# Install the rapids-notebook-env meta-pkg
+RUN ${RAPIDS_DIR}/utils/condaretry install -y -n rapids --freeze-installed \
+        rapids-notebook-env=${RAPIDS_CONDA_VERSION_SPEC}
    && conda clean -afy \
    && chmod -R ugo+w /opt/conda
+
+# Install jupyter lab stuff
 RUN source activate rapids \
    && pip install "git+https://github.com/rapidsai/jupyterlab-nvdashboard.git@master#egg=jupyterlab-nvdashboard" --upgrade \
    && jupyter labextension install dask-labextension jupyterlab-nvdashboard
