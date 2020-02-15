@@ -7,21 +7,13 @@ RUN source activate rapids \
     && conda config --show-sources \
     && conda list --show-channel-urls
 
-# Setup rapids build env from conda meta-pkg
+# Install rapids-build-env from conda meta-pkg
 RUN ${RAPIDS_DIR}/utils/condaretry install -y -n rapids --freeze-installed \
         rapids-build-env=${RAPIDS_CONDA_VERSION_SPEC}
 
-# Install pkgs for doc builds
+# Install rapids-doc-env from conda meta-pkg
 RUN ${RAPIDS_DIR}/utils/condaretry install -y -n rapids --freeze-installed \
-        sphinx \
-        sphinx_rtd_theme \
-        numpydoc \
-        sphinxcontrib-websupport \
-        nbsphinx \
-        recommonmark \
-        doxygen \
-        "pandoc<=2.0.0" \
-    && pip install sphinx-markdown-tables
+        rapids-doc-env=${RAPIDS_CONDA_VERSION_SPEC}
 
 # Env debug info
 RUN source activate rapids \
