@@ -7,7 +7,7 @@ RUN source activate rapids \
 
 # Install the rapids-notebook-env meta-pkg
 RUN ${RAPIDS_DIR}/utils/condaretry install -y -n rapids --freeze-installed \
-        rapids-notebook-env=${RAPIDS_CONDA_VERSION_SPEC}
+        rapids-notebook-env=${RAPIDS_CONDA_VERSION_SPEC} \
    && conda clean -afy \
    && chmod -R ugo+w /opt/conda
 
