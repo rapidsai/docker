@@ -9,9 +9,9 @@ RUN source activate rapids \
 
 # Setup rapids build env from conda meta-pkg & ucx-py & libcumlprims
 RUN ${RAPIDS_DIR}/utils/condaretry install -y -n rapids --freeze-installed \
-        rapids-build-env =${RAPIDS_CONDA_VERSION_SPEC} \
-        ucx-py =${RAPIDS_CONDA_VERSION_SPEC} \
-        libcumlprims =${RAPIDS_CONDA_VERSION_SPEC} 
+        rapids-build-env=${RAPIDS_CONDA_VERSION_SPEC} \
+        ucx-py=${RAPIDS_CONDA_VERSION_SPEC} \
+        libcumlprims=${RAPIDS_CONDA_VERSION_SPEC} 
 
 # Install pkgs for doc builds
 RUN ${RAPIDS_DIR}/utils/condaretry install -y -n rapids --freeze-installed \
