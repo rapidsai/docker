@@ -35,8 +35,11 @@ RUN mkdir -p ${RAPIDS_DIR} ${GCC7_DIR}/lib64
 COPY rapids ${RAPIDS_DIR}
 COPY utils ${RAPIDS_DIR}/utils
 
-# Install core pkgs for development (these will not be overwritten by next install)
+# Install dependencies needed for devel: build deps + RAPIDS runtime deps
 insertfile conda_install_devel_deps
+
+# Install notebook env
+insertfile conda_install_notebookenv
 
 # Add compatible libm
 COPY supportfiles/libm.so.6 ${GCC7_DIR}/lib64
