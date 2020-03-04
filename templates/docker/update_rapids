@@ -3,6 +3,8 @@ RUN cd ${RAPIDS_DIR}/rmm && \
     git pull
 RUN cd ${RAPIDS_DIR}/cudf && \
     git pull
+RUN cd ${RAPIDS_DIR}/cusignal && \
+    git pull
 RUN cd ${RAPIDS_DIR}/cuxfilter && \
     git pull
 RUN cd ${RAPIDS_DIR}/cuspatial && \

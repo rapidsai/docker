@@ -17,6 +17,9 @@ RUN cd ${RAPIDS_DIR}/cudf && \
     cd cpp/build && \
     make -j${PARALLEL_LEVEL} build_tests_nvstrings && \
     make -j${PARALLEL_LEVEL} build_tests_cudf
+RUN cd ${RAPIDS_DIR}/cusignal && \
+    source activate rapids && \
+    ./build.sh
 RUN cd ${RAPIDS_DIR}/cuxfilter && \
     source activate rapids && \
     ./build.sh
