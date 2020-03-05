@@ -1,12 +1,11 @@
 #!/bin/bash
 
 RAPIDS_DIR=/rapids
-NOTEBOOKS_DIR=${RAPIDS_DIR}/notebooks
 NBTEST=${RAPIDS_DIR}/utils/nbtest.sh
 LIBCUDF_KERNEL_CACHE_PATH=${WORKSPACE}/.jitcache
 
-cd ${NOTEBOOKS_DIR}
-TOPLEVEL_NB_FOLDERS=$(find . -name *.ipynb |cut -d'/' -f2|sort -u)
+cd ${RAPIDS_DIR}
+TOPLEVEL_NB_FOLDERS=$(ls */notebooks* | grep -i ":" | sed s/://)
 
 # Add notebooks that should be skipped here
 # (space-separated list of filenames without paths)
@@ -24,7 +23,7 @@ for folder in ${TOPLEVEL_NB_FOLDERS}; do
     echo "========================================"
     echo "FOLDER: ${folder}"
     echo "========================================"
-    cd ${NOTEBOOKS_DIR}/${folder}
+    cd ${RAPIDS_DIR}/${folder} 
     for nb in $(find . -name "*.ipynb"); do
         nbBasename=$(basename ${nb})
         # Skip all NBs that use dask (in the code or even in their name)
@@ -43,7 +42,7 @@ for folder in ${TOPLEVEL_NB_FOLDERS}; do
             ${NBTEST} ${nbBasename}
             EXITCODE=$((EXITCODE | $?))
             rm -rf ${LIBCUDF_KERNEL_CACHE_PATH}/*
-            cd ${NOTEBOOKS_DIR}/${folder}
+            cd ${RAPIDS_DIR}/${folder}
         fi
     done
 done
