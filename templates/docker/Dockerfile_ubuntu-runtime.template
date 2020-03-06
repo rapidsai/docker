@@ -7,7 +7,7 @@
 # Copyright (c) 2019, NVIDIA CORPORATION.
 
 
-ARG RAPIDS_REPO=rapidsai/rapidsai-nightly
+ARG RAPIDS_REPO=rapidsai/rapidsai-nightly-staging
 ARG RAPIDS_VERSION=0.13
 ARG CUDA_VERSION=10.1
 ARG CUDA_MAJORMINOR_VERSION=${CUDA_VERSION}
