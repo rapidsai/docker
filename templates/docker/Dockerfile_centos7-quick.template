@@ -19,3 +19,5 @@ insertfile update_rapids
 
 # Build RAPIDS
 insertfile build_rapids
+
+RUN chmod -R ugo+w /opt/conda
