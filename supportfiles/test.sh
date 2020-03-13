@@ -36,7 +36,7 @@ for nb in $(find repos/*/notebooks/* -name *.ipynb); do
         ${NBTEST} ${nbBasename}
         EXITCODE=$((EXITCODE | $?))
         rm -rf ${LIBCUDF_KERNEL_CACHE_PATH}/*
-        cd ${RAPIDS_DIR}/${folder}
+        cd ${RAPIDS_DIR}
     fi
 done
 
