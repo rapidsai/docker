@@ -8,11 +8,11 @@ RUN source activate rapids \
     && conda list --show-channel-urls
 
 # Install rapids-build-env from conda meta-pkg
-RUN ${RAPIDS_DIR}/utils/condaretry install -y -n rapids --freeze-installed \
+RUN ${RAPIDS_DIR}/utils/condaretry --condaretry_sleep_interval=30s install -y -n rapids --freeze-installed \
         rapids-build-env=${RAPIDS_CONDA_VERSION_SPEC}
 
 # Install rapids-doc-env from conda meta-pkg
-RUN ${RAPIDS_DIR}/utils/condaretry install -y -n rapids --freeze-installed \
+RUN ${RAPIDS_DIR}/utils/condaretry --condaretry_sleep_interval=30s install -y -n rapids --freeze-installed \
         rapids-doc-env=${RAPIDS_CONDA_VERSION_SPEC}
 
 # Env debug info

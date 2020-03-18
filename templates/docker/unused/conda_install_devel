@@ -4,7 +4,7 @@ ENV NUMPY_EXPERIMENTAL_ARRAY_FUNCTION=1
 
 COPY supportfiles/.condarc /opt/conda/.condarc
 
-RUN ${RAPIDS_DIR}/utils/condaretry install -y --freeze-installed conda-build \
+RUN ${RAPIDS_DIR}/utils/condaretry --condaretry_sleep_interval=30s install -y --freeze-installed conda-build \
     && source activate rapids \
     && env \
     && pip install sphinx-markdown-tables \
@@ -13,7 +13,7 @@ RUN ${RAPIDS_DIR}/utils/condaretry install -y --freeze-installed conda-build \
     && conda list --show-channel-urls \
     && conda remove -y \
          nomkl \
-    && ${RAPIDS_DIR}/utils/condaretry install -y -n rapids --freeze-installed \
+    && ${RAPIDS_DIR}/utils/condaretry --condaretry_sleep_interval=30s install -y -n rapids --freeze-installed \
       black \
       boost-cpp=${BOOST_CPP_VERSION} \
       cmake=${CMAKE_VERSION} \

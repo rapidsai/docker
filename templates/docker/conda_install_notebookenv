@@ -6,7 +6,7 @@ RUN source activate rapids \
     && conda list --show-channel-urls
 
 # Install the rapids-notebook-env meta-pkg
-RUN ${RAPIDS_DIR}/utils/condaretry install -y -n rapids --freeze-installed \
+RUN ${RAPIDS_DIR}/utils/condaretry --condaretry_sleep_interval=30s install -y -n rapids --freeze-installed \
         rapids-notebook-env=${RAPIDS_CONDA_VERSION_SPEC} \
    && conda clean -afy \
    && chmod -R ugo+w /opt/conda
