@@ -4,7 +4,7 @@ RAPIDS_DIR=/rapids
 NBTEST=${RAPIDS_DIR}/utils/nbtest.sh
 LIBCUDF_KERNEL_CACHE_PATH=${WORKSPACE}/.jitcache
 
-cd ${RAPIDS_DIR}
+cd ${RAPIDS_DIR}/notebooks
 
 # Add notebooks that should be skipped here
 # (space-separated list of filenames without paths)
@@ -18,6 +18,9 @@ EXITCODE=0
 
 # Always run nbtest in all TOPLEVEL_NB_FOLDERS, set EXITCODE to failure
 # if any run fails
+
+# Every repo is submoduled into repos/<repo> and notebooks have been stored
+# into a /notebooks dir, this loop finds all notebooks specifically added to CI
 for nb in $(find repos/*/notebooks/* -name *.ipynb); do
     nbBasename=$(basename ${nb})
     # Skip all NBs that use dask (in the code or even in their name)
