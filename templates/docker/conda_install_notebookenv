@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # Env debug info
 RUN source activate rapids \
     && env \

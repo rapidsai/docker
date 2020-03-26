@@ -1,6 +1,6 @@
 #
 # This file was generated! Edits made directly to this file may be lost.
-#   Timestamp:    Fri Jan 17 08:49:58 CST 2020
+#   Timestamp:    Tue Feb  4 09:53:19 CST 2020
 #
 # RAPIDS Dockerfile for CentOS7 "base" image
 #
@@ -31,7 +31,7 @@ ARG CMAKE_VERSION=3.14.5
 ARG LIBGFORTRAN_NG_VERSION=7.3.0
 ARG NUMBA_VERSION=0.46
 ARG NUMPY_VERSION=1.17
-ARG PANDAS_VERSION=0.24.2
+ARG PANDAS_VERSION=0.25
 
 # notebook pkgs
 ARG IPYTHON_VERSION=7.3*

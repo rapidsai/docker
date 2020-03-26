@@ -10,19 +10,20 @@ The RAPIDS suite of software libraries gives you the freedom to execute end-to-e
 
 ### Current Version
 
+#### RAPIDS 0.12 - 4 February 2020
+
+Versions of libraries included in the `0.12` images:
+- `cuDF` [v0.12.0](https://github.com/rapidsai/cudf/tree/v0.12.0), `cuML` [v0.12.0](https://github.com/rapidsai/cuml/tree/v0.12.0), `cuGraph` [v0.12.0](https://github.com/rapidsai/cugraph/tree/v0.12.0), `RMM` [v0.12.0](https://github.com/rapidsai/RMM/tree/v0.12.0), `cuSpatial` [v0.12.0](https://github.com/rapidsai/cuspatial/tree/v0.12.0), `cuxfilter` [v0.12.0](https://github.com/rapidsai/cuxfilter/tree/branch-0.12)
+  - **NOTE:** `cuxfilter` is only available in `runtime` containers
+- `xgboost` [branch](https://github.com/rapidsai/xgboost/tree/rapids-0.12-release), `dask-xgboost` [branch](https://github.com/rapidsai/dask-xgboost/tree/dask-cudf) `dask-cuda` [branch](https://github.com/rapidsai/dask-cuda/tree/branch-0.12)
+
+### Former Version
+
 #### RAPIDS 0.11 - 11 December 2019
 
 Versions of libraries included in the `0.11` [images](#rapids-11-images):
 - `cuDF` [v0.11.0](https://github.com/rapidsai/cudf/tree/v0.11.0), `cuML` [v0.11.0](https://github.com/rapidsai/cuml/tree/v0.11.0), `cuGraph` [v0.11.0](https://github.com/rapidsai/cugraph/tree/v0.11.0), `RMM` [v0.11.0](https://github.com/rapidsai/RMM/tree/v0.11.0), `cuSpatial` [v0.11.0](https://github.com/rapidsai/cuspatial/tree/v0.11.0)
 - `xgboost` [branch](https://github.com/rapidsai/xgboost/tree/rapids-0.11-release), `dask-xgboost` [branch](https://github.com/rapidsai/dask-xgboost/tree/dask-cudf) `dask-cuda` [branch](https://github.com/rapidsai/dask-cuda/tree/branch-0.11)
-
-### Former Version
-
-#### RAPIDS 0.10 - 17 October 2019
-
-Versions of libraries included in the `0.10` [images](#rapids-10-images):
-- `cuDF` [v0.10.0](https://github.com/rapidsai/cudf/tree/v0.10.0), `cuML` [v0.10.0](https://github.com/rapidsai/cuml/tree/v0.10.0), `cuGraph` [v0.10.0](https://github.com/rapidsai/cugraph/tree/v0.10.0), `RMM` [v0.10.0](https://github.com/rapidsai/RMM/tree/v0.10.0), `cuSpatial` [v0.10.0](https://github.com/rapidsai/cuspatial/tree/v0.10.0)
-- `xgboost` [branch](https://github.com/rapidsai/xgboost/tree/rapids-0.10-release), `dask-xgboost` [branch](https://github.com/rapidsai/dask-xgboost/tree/dask-cudf) `dask-cuda` [branch](https://github.com/rapidsai/dask-cuda/tree/branch-0.10)
 
 ### Image Types
 
@@ -31,10 +32,14 @@ images in order to make it easy to add RAPIDS libraries while maintaining suppor
 
 The RAPIDS images provided by NGC come in two types:
 
-- `base` - contains a RAPIDS environment ready for use.<br>Use this image if you want to use RAPIDS as a part of your pipeline.
-- `runtime` - extends the `base` image by adding a notebook server and example notebooks.<br>Use this image if you want to explore RAPIDS through notebooks and examples.
+- `base` - contains a RAPIDS environment ready for use.
+  - **TIP: Use this image if you want to use RAPIDS as a part of your pipeline.**
+- `runtime` - extends the `base` image by adding a notebook server and example notebooks.
+  - **TIP: Use this image if you want to explore RAPIDS through notebooks and examples.**
 
-For images that contain the full RAPIDS source tree, pre-built with all artifacts in place, and the compiler toolchain, the debugging tools, the headers and the static libraries for RAPIDS development - as well as support for Python 3.7 - refer to the [rapidsai/rapidsai-dev](https://cloud.docker.com/u/rapidsai/repository/docker/rapidsai/rapidsai-dev) repo on DockerHub.
+For `base` and `runtime` images with python 3.7 support, refer to [rapidsai/rapidsai](https://cloud.docker.com/u/rapidsai/repository/docker/rapidsai/rapidsai) on DockerHub.
+
+For `devel` images that contain: the full RAPIDS source tree, pre-built with all artifacts in place, the compiler toolchain, the debugging tools, the headers and the static libraries for RAPIDS development - as well as support for Python 3.7 - refer to the [rapidsai/rapidsai-dev](https://cloud.docker.com/u/rapidsai/repository/docker/rapidsai/rapidsai-dev) repo on DockerHub.
 
 ### Image Tag Naming Scheme
 
