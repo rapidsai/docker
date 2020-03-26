@@ -12,7 +12,7 @@ RUN cd ${RAPIDS_DIR}/rmm && \
     ./build.sh
 RUN cd ${RAPIDS_DIR}/cudf && \
     source activate rapids && \
-    ./build.sh && \
+    ./build.sh -l && \
     #FIXME: Should building tests be integrated into build.sh?
     cd cpp/build && \
     make -j${PARALLEL_LEVEL} build_tests_nvstrings && \
