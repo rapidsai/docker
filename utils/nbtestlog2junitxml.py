@@ -10,7 +10,7 @@ from enum import Enum
 startingPatt = re.compile("^STARTING: ([\w\.\-]+)$")
 skippingPatt = re.compile("^SKIPPING: ([\w\.\-]+)\s*(\(([\w\.\-\ \,]+)\))?\s*$")
 exitCodePatt = re.compile("^EXIT CODE: (\d+)$")
-folderPatt = re.compile("^FOLDER: ([\w\.\-]+)$")
+repoPatt = re.compile("^REPO: ([\w\.\-]+)$")
 timePatt = re.compile("^real\s+([\d\.ms]+)$")
 linePatt = re.compile("^" + ("-" * 80) + "$")
 
@@ -86,7 +86,7 @@ def parseLog(logFile, testSuiteElement):
 
         for line in lf.readlines():
             if parserState == parserStateEnum.newTest:
-                m = folderPatt.match(line)
+                m = repoPatt.match(line)
                 if m:
                     setClassNameAttr(attrDict, m.group(1))
                     continue
