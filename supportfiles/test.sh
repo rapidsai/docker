@@ -25,7 +25,7 @@ for nb in $(find repos/*/notebooks/* -name *.ipynb); do
     nbBasename=$(basename ${nb})
     # Output of find command looks like this: ./repos/<repo>/notebooks/<notebook> -name
     # This grabs the <repo> element, skip CLX notebooks as they are not part of the runtime images yet
-    nbRepo=$(echo ${nb} | awk -F/ '{print $3}')
+    nbRepo=$(echo ${nb} | awk -F/ '{print $2}')
 
     echo "========================================"
     echo "REPO: ${nbRepo}"
