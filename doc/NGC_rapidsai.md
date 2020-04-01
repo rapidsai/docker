@@ -46,7 +46,7 @@ For `devel` images that contain: the full RAPIDS source tree, pre-built with all
 
 The tag naming scheme for RAPIDS images incorporates key platform details into the tag as shown below:
 ```
-0.13-cuda10.1-runtime-ubuntu18.04
+0.13-cuda10.2-runtime-ubuntu18.04
  ^       ^    ^        ^
  |       |    type     |
  |       |             |
@@ -94,10 +94,8 @@ $ docker run --runtime=nvidia --rm -it -p 8888:8888 -p 8787:8787 -p 8786:8786 \
 Notebooks can be found in the following directories within the container:
 
 * `/rapids/notebooks/xgboost` - XGBoost demo notebooks
-* `/rapids/notebooks/cudf` - cuDF demo notebooks
 * `/rapids/notebooks/cuml` - cuML demo notebooks
 * `/rapids/notebooks/cugraph` - cuGraph demo notebooks
-* `/rapids/notebooks/tutorials` - Tutorials with end-to-end workflows
 
 For a full description of each notebook, see the [README](https://github.com/rapidsai/notebooks/blob/branch-0.9/README.md) in the notebooks repository.
 
