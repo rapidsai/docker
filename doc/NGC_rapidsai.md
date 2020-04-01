@@ -10,19 +10,21 @@ The RAPIDS suite of software libraries gives you the freedom to execute end-to-e
 
 ### Current Version
 
-#### RAPIDS 0.11 - 11 December 2019
+#### RAPIDS 0.13 - 31 March 2020
 
-Versions of libraries included in the `0.11` [images](#rapids-11-images):
-- `cuDF` [v0.11.0](https://github.com/rapidsai/cudf/tree/v0.11.0), `cuML` [v0.11.0](https://github.com/rapidsai/cuml/tree/v0.11.0), `cuGraph` [v0.11.0](https://github.com/rapidsai/cugraph/tree/v0.11.0), `RMM` [v0.11.0](https://github.com/rapidsai/RMM/tree/v0.11.0), `cuSpatial` [v0.11.0](https://github.com/rapidsai/cuspatial/tree/v0.11.0)
-- `xgboost` [branch](https://github.com/rapidsai/xgboost/tree/rapids-0.11-release), `dask-xgboost` [branch](https://github.com/rapidsai/dask-xgboost/tree/dask-cudf) `dask-cuda` [branch](https://github.com/rapidsai/dask-cuda/tree/branch-0.11)
+Versions of libraries included in the `0.13` images:
+- `cuDF` [v0.13.0](https://github.com/rapidsai/cudf/tree/v0.13.0), `cuML` [v0.13.0](https://github.com/rapidsai/cuml/tree/v0.13.0), `cuGraph` [v0.13.0](https://github.com/rapidsai/cugraph/tree/v0.13.0), `RMM` [v0.13.0](https://github.com/rapidsai/RMM/tree/v0.13.0), `cuSpatial` [v0.13.0](https://github.com/rapidsai/cuspatial/tree/v0.13.0), `cuxfilter` [v0.13.0](https://github.com/rapidsai/cuxfilter/tree/branch-0.13)
+  - **NOTE:** `cuxfilter` is only available in `runtime` containers
+- `xgboost` [branch](https://github.com/rapidsai/xgboost/tree/rapids-0.13-release), `dask-xgboost` [branch](https://github.com/rapidsai/dask-xgboost/tree/dask-cudf) `dask-cuda` [branch](https://github.com/rapidsai/dask-cuda/tree/branch-0.13)
 
 ### Former Version
 
-#### RAPIDS 0.10 - 17 October 2019
+#### RAPIDS 0.12 - 4 February 2020
 
-Versions of libraries included in the `0.10` [images](#rapids-10-images):
-- `cuDF` [v0.10.0](https://github.com/rapidsai/cudf/tree/v0.10.0), `cuML` [v0.10.0](https://github.com/rapidsai/cuml/tree/v0.10.0), `cuGraph` [v0.10.0](https://github.com/rapidsai/cugraph/tree/v0.10.0), `RMM` [v0.10.0](https://github.com/rapidsai/RMM/tree/v0.10.0), `cuSpatial` [v0.10.0](https://github.com/rapidsai/cuspatial/tree/v0.10.0)
-- `xgboost` [branch](https://github.com/rapidsai/xgboost/tree/rapids-0.10-release), `dask-xgboost` [branch](https://github.com/rapidsai/dask-xgboost/tree/dask-cudf) `dask-cuda` [branch](https://github.com/rapidsai/dask-cuda/tree/branch-0.10)
+Versions of libraries included in the `0.12` images:
+- `cuDF` [v0.12.0](https://github.com/rapidsai/cudf/tree/v0.12.0), `cuML` [v0.12.0](https://github.com/rapidsai/cuml/tree/v0.12.0), `cuGraph` [v0.12.0](https://github.com/rapidsai/cugraph/tree/v0.12.0), `RMM` [v0.12.0](https://github.com/rapidsai/RMM/tree/v0.12.0), `cuSpatial` [v0.12.0](https://github.com/rapidsai/cuspatial/tree/v0.12.0), `cuxfilter` [v0.12.0](https://github.com/rapidsai/cuxfilter/tree/branch-0.12)
+  - **NOTE:** `cuxfilter` is only available in `runtime` containers
+- `xgboost` [branch](https://github.com/rapidsai/xgboost/tree/rapids-0.12-release), `dask-xgboost` [branch](https://github.com/rapidsai/dask-xgboost/tree/dask-cudf) `dask-cuda` [branch](https://github.com/rapidsai/dask-cuda/tree/branch-0.12)
 
 ### Image Types
 
@@ -31,16 +33,20 @@ images in order to make it easy to add RAPIDS libraries while maintaining suppor
 
 The RAPIDS images provided by NGC come in two types:
 
-- `base` - contains a RAPIDS environment ready for use.<br>Use this image if you want to use RAPIDS as a part of your pipeline.
-- `runtime` - extends the `base` image by adding a notebook server and example notebooks.<br>Use this image if you want to explore RAPIDS through notebooks and examples.
+- `base` - contains a RAPIDS environment ready for use.
+  - **TIP: Use this image if you want to use RAPIDS as a part of your pipeline.**
+- `runtime` - extends the `base` image by adding a notebook server and example notebooks.
+  - **TIP: Use this image if you want to explore RAPIDS through notebooks and examples.**
 
-For images that contain the full RAPIDS source tree, pre-built with all artifacts in place, and the compiler toolchain, the debugging tools, the headers and the static libraries for RAPIDS development - as well as support for Python 3.7 - refer to the [rapidsai/rapidsai-dev](https://cloud.docker.com/u/rapidsai/repository/docker/rapidsai/rapidsai-dev) repo on DockerHub.
+For `base` and `runtime` images with python 3.7 support, refer to [rapidsai/rapidsai](https://cloud.docker.com/u/rapidsai/repository/docker/rapidsai/rapidsai) on DockerHub.
+
+For `devel` images that contain: the full RAPIDS source tree, pre-built with all artifacts in place, the compiler toolchain, the debugging tools, the headers and the static libraries for RAPIDS development - as well as support for Python 3.7 - refer to the [rapidsai/rapidsai-dev](https://cloud.docker.com/u/rapidsai/repository/docker/rapidsai/rapidsai-dev) repo on DockerHub.
 
 ### Image Tag Naming Scheme
 
 The tag naming scheme for RAPIDS images incorporates key platform details into the tag as shown below:
 ```
-0.9-cuda9.2-runtime-ubuntu16.04
+0.13-cuda10.1-runtime-ubuntu18.04
  ^       ^    ^        ^
  |       |    type     |
  |       |             |
@@ -58,7 +64,7 @@ For most users the latest `runtime` image will be sufficient to get started with
 ## Prerequisites
 
 * NVIDIA Pascal™ GPU architecture or better
-* CUDA [9.2](https://developer.nvidia.com/cuda-92-download-archive) or [10.0](https://developer.nvidia.com/cuda-downloads) compatible NVIDIA driver
+* [CUDA](https://developer.nvidia.com/cuda-downloads) 10.0, 10.1, or 10.2 with compatible NVIDIA driver
 * Ubuntu 16.04/18.04 or CentOS 7
 * Docker CE v18+
 * [nvidia-docker](https://github.com/nvidia/nvidia-docker/wiki/Installation-(version-2.0)) v2+
@@ -69,17 +75,17 @@ For most users the latest `runtime` image will be sufficient to get started with
 
 #### Preferred - Docker CE v19+ and `nvidia-container-toolkit`
 ```bash
-$ docker pull rapidsai/rapidsai:cuda9.2-runtime-ubuntu16.04
+$ docker pull nvcr.io/nvidia/rapidsai/rapidsai:cuda10.2-runtime-ubuntu18.04
 $ docker run --gpus all --rm -it -p 8888:8888 -p 8787:8787 -p 8786:8786 \
-         rapidsai/rapidsai:cuda9.2-runtime-ubuntu16.04
+         nvcr.io/nvidia/rapidsai/rapidsai:cuda10.2-runtime-ubuntu18.04
 ```
 **NOTE:** This will open a shell with [JupyterLab](https://jupyterlab.readthedocs.io/en/stable/) running in the background on port 8888 on your host machine.
 
 #### Legacy - Docker CE v18 and `nvidia-docker2`
 ```bash
-$ docker pull rapidsai/rapidsai:cuda9.2-runtime-ubuntu16.04
+$ docker pull nvcr.io/nvidia/rapidsai/rapidsai:cuda10.2-runtime-ubuntu18.04
 $ docker run --runtime=nvidia --rm -it -p 8888:8888 -p 8787:8787 -p 8786:8786 \
-         rapidsai/rapidsai:cuda9.2-runtime-ubuntu16.04
+         nvcr.io/nvidia/rapidsai/rapidsai:cuda10.2-runtime-ubuntu18.04
 ```
 **NOTE:** This will open a shell with [JupyterLab](https://jupyterlab.readthedocs.io/en/stable/) running in the background on port 8888 on your host machine.
 
@@ -103,14 +109,14 @@ You are free to modify the above steps. For example, you can launch an interacti
 ```bash
 $ docker run --gpus all --rm -it -p 8888:8888 -p 8787:8787 -p 8786:8786 \
          -v /path/to/host/data:/rapids/my_data \
-                  rapidsai/rapidsai:cuda9.2-runtime-ubuntu16.04
+                  nvcr.io/nvidia/rapidsai/rapidsai:cuda9.2-runtime-ubuntu18.04
 ```
 
 #### Legacy - Docker CE v18 and `nvidia-docker2`
 ```bash
 $ docker run --runtime=nvidia --rm -it -p 8888:8888 -p 8787:8787 -p 8786:8786 \
          -v /path/to/host/data:/rapids/my_data \
-                  rapidsai/rapidsai:cuda9.2-runtime-ubuntu16.04
+                  nvcr.io/nvidia/rapidsai/rapidsai:cuda10.2-runtime-ubuntu18.04
 ```
 This will map data from your host operating system to the container OS in the `/rapids/my_data` directory. You may need to modify the provided notebooks for the new data paths.
 
@@ -128,13 +134,13 @@ Check out the RAPIDS [documentation](http://rapids.ai/start.html) for more detai
 
 ## More Information
 
-Check out the [cuDF](https://rapidsai.github.io/projects/cudf/en/latest), [cuML](https://rapidsai.github.io/projects/cuml/en/latest), and [XGBoost](https://xgboost.readthedocs.io/en/latest/) API docs.
+Check out the [RAPIDS](https://docs.rapids.ai/api) and [XGBoost](https://xgboost.readthedocs.io/en/latest/) API docs.
 
 Learn how to setup a mult-node cuDF and XGBoost data preparation and distributed training environment by following the [mortgage data example notebook and scripts](https://github.com/rapidsai/notebooks).
 
 ## Where can I get help or file bugs/requests?
 
-Please submit issues with the container to this GitHub repository: [https://github.com/rapidsai/docs](https://github.com/rapidsai/docs/issues/new)
+For more information about the containers or to submit a container issue, visit: [https://github.com/rapidsai/build](https://github.com/rapidsai/build).
 
 For issues with RAPIDS libraries like cuDF, cuML, RMM, or others file an issue in the related GitHub project.
 
