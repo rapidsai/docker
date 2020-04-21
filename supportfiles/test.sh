@@ -3,12 +3,10 @@
 RAPIDS_DIR=/rapids
 NBTEST=${RAPIDS_DIR}/utils/nbtest.sh
 LIBCUDF_KERNEL_CACHE_PATH=${WORKSPACE}/.jitcache
-
-cd ${RAPIDS_DIR}/notebooks
+NOTEBOOKS_DIR=${RAPIDS_DIR}/notebooks
 
 # Add notebooks that should be skipped here
 # (space-separated list of filenames without paths)
-
 SKIPNBS=""
 
 ## Check env
@@ -16,11 +14,11 @@ env
 
 EXITCODE=0
 
-# Always run nbtest in all TOPLEVEL_NB_FOLDERS, set EXITCODE to failure
-# if any run fails
+# Always run nbtest in NOTEBOOKS_DIR, set EXITCODE to failure if any run fails
+cd ${NOTEBOOKS_DIR}
 
-# Every repo is submoduled into repos/<repo> and notebooks have been stored
-# into a /notebooks dir, this loop finds all notebooks specifically added to CI
+# Every repo is submoduled into "repos/<repo>" and notebooks have been stored
+# into a "notebooks" dir, this loop finds all notebooks specifically added to CI
 for nb in $(find repos/*/notebooks/* -name *.ipynb); do
     nbBasename=$(basename ${nb})
     # Output of find command looks like this: ./repos/<repo>/notebooks/<notebook> -name
@@ -45,13 +43,19 @@ for nb in $(find repos/*/notebooks/* -name *.ipynb); do
         echo "--------------------------------------------------------------------------------"
         echo "SKIPPING: ${nb} (CLX notebook)"
         echo "--------------------------------------------------------------------------------"
-    else 
+    else
+        # All notebooks are run from the directory in which they are contained.
+        # This makes operations that assume relative paths easiest to understand
+        # and maintain, since most users assume relative paths are relative to
+        # the location of the notebook itself. After a run, the CWD must be
+        # returned to NOTEBOOKS_DIR, since the find operation returned paths
+        # relative to that dir.
         cd $(dirname ${nb})
         nvidia-smi
         ${NBTEST} ${nbBasename}
         EXITCODE=$((EXITCODE | $?))
         rm -rf ${LIBCUDF_KERNEL_CACHE_PATH}/*
-        cd ${RAPIDS_DIR}
+        cd ${NOTEBOOKS_DIR}
     fi
 done
 
