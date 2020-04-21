@@ -28,13 +28,13 @@ for nb in $*; do
     NBFILENAME=$1
     NBNAME=${NBFILENAME%.*}
     NBNAME=${NBNAME##*/}
-    NBTESTSCRIPT=/${NBDIR}/${NBNAME}-test.py
+    NBTESTSCRIPT=${NBDIR}/${NBNAME}-test.py
     shift
 
     echo --------------------------------------------------------------------------------
     echo STARTING: ${NBNAME}
     echo --------------------------------------------------------------------------------
-    jupyter nbconvert --to script ${NBFILENAME} --output /${NBDIR}/${NBNAME}-test
+    jupyter nbconvert --to script ${NBFILENAME} --output ${NBDIR}/${NBNAME}-test
     echo "${MAGIC_OVERRIDE_CODE}" > /tmp/tmpfile
     cat ${NBTESTSCRIPT} >> /tmp/tmpfile
     mv /tmp/tmpfile ${NBTESTSCRIPT}
