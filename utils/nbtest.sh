@@ -22,18 +22,19 @@ get_ipython().run_cell_magic=my_run_cell_magic
 
 NO_COLORS=--colors=NoColor
 EXITCODE=0
+NBDIR=${PWD}
 
 for nb in $*; do
     NBFILENAME=$1
     NBNAME=${NBFILENAME%.*}
     NBNAME=${NBNAME##*/}
-    NBTESTSCRIPT=/tmp/${NBNAME}-test.py
+    NBTESTSCRIPT=/${NBDIR}/${NBNAME}-test.py
     shift
 
     echo --------------------------------------------------------------------------------
     echo STARTING: ${NBNAME}
     echo --------------------------------------------------------------------------------
-    jupyter nbconvert --to script ${NBFILENAME} --output /tmp/${NBNAME}-test
+    jupyter nbconvert --to script ${NBFILENAME} --output /${NBDIR}/${NBNAME}-test
     echo "${MAGIC_OVERRIDE_CODE}" > /tmp/tmpfile
     cat ${NBTESTSCRIPT} >> /tmp/tmpfile
     mv /tmp/tmpfile ${NBTESTSCRIPT}
