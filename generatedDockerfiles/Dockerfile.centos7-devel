@@ -1,6 +1,6 @@
 #
 # This file was generated! Edits made directly to this file may be lost.
-#   Timestamp:    Fri Jan 17 08:49:58 CST 2020
+#   Timestamp:    Wed May  6 16:55:41 EDT 2020
 #
 # RAPIDS Dockerfile for CentOS7 "devel" image
 #
@@ -22,22 +22,11 @@ FROM gpuci/miniconda-cuda-rapidsenv:${CUDA_VERSION}-${CUDA_TYPE}-${LINUX_VERSION
 # devel environment config args
 ARG CC_VERSION=7
 ARG CXX_VERSION=7
-ARG PARALLEL_LEVEL=8
-
-# devel environment core build pkgs
-ARG BOOST_CPP_VERSION=1.70.0
-ARG CMAKE_VERSION=3.14.5
-ARG LIBGFORTRAN_NG_VERSION=7.3.0
-ARG NUMBA_VERSION=0.46
-ARG NUMPY_VERSION=1.17
-ARG PANDAS_VERSION=0.24.2
-
-# notebook pkgs
-ARG IPYTHON_VERSION=7.3*
+ARG PARALLEL_LEVEL=16
 
 # base/runtime install specs
 ARG DASK_XGBOOST_CONDA_VERSION_SPEC=0.2*
-ARG RAPIDS_CONDA_VERSION_SPEC=0.12*
+ARG RAPIDS_CONDA_VERSION_SPEC=0.14*
 
 ARG CUDA_MAJORMINOR_VERSION
 ARG PYTHON_VERSION
@@ -50,29 +39,6 @@ RUN yum -y update \
     && yum clean all
 
 # Install local gcc7
-##TODO-mwendt I don't think we need NCCL installed and most of these pkgs are installed
-###
-### The support dir contains RPMs that enable additional repos needed
-### for CentOS (among other things). Copy them to a temp dir and remove
-### after installed.
-###
-##COPY supportfiles/*.rpm /tmp
-##
-##RUN yum install -y /tmp/*.rpm && \
-##    rm -rf /tmp/*.rpm && \
-##    yum upgrade -y && \
-##    yum install -y \
-##      bzip2 \
-##      curl \
-##      git \
-##      screen \
-##      vim \
-##      wget \
-##      which \
-##      libnccl-2.4.2-1+cuda${CUDA_MAJORMINOR_VERSION} \
-##      libnccl-devel-2.4.2-1+cuda${CUDA_MAJORMINOR_VERSION} \
-##      libnccl-static-2.4.2-1+cuda${CUDA_MAJORMINOR_VERSION}
-
 # Install gcc7 from prebuilt image
 COPY --from=gpuci/builds-gcc7:10.0-devel-centos7 /usr/local/gcc7 /usr/local/gcc7
 
@@ -90,88 +56,68 @@ RUN mkdir -p ${RAPIDS_DIR} ${GCC7_DIR}/lib64
 COPY rapids ${RAPIDS_DIR}
 COPY utils ${RAPIDS_DIR}/utils
 
-# Install core pkgs for development (these will not be overwritten by next install)
+# Install dependencies needed for devel: build deps + RAPIDS runtime deps
 COPY supportfiles/.condarc /opt/conda/.condarc
 
-#
-# FIXME: ucx-py build dep should not need to be manually installed, should
-# instead get pulled in from rapids meta-package - investigate.
-#
-RUN ${RAPIDS_DIR}/utils/condaretry install -y --freeze-installed conda-build \
-    && source activate rapids \
+# Env debug info
+RUN source activate rapids \
     && env \
-    && pip install sphinx-markdown-tables \
     && conda info \
     && conda config --show-sources \
-    && conda list --show-channel-urls \
-    && conda remove -y \
-         nomkl \
-    && ${RAPIDS_DIR}/utils/condaretry install -y -n rapids --freeze-installed \
-         black \
-         boost-cpp=${BOOST_CPP_VERSION} \
-         cmake=${CMAKE_VERSION} \
-         "cmake_setuptools>=0.1.3" \
-         "cupy>=6.6.0,<7" \
-         double-conversion \
-         dlpack \
-         flake8 \
-         flatbuffers \
-         graphviz \
-         hypothesis \
-         rapidsai::libclang \
-         libcypher-parser \
-         libgfortran-ng=${LIBGFORTRAN_NG_VERSION} \
-         lapack \
-         liblapack \
-         make \
-         numba=${NUMBA_VERSION} \
-         numpy=${NUMPY_VERSION} \
-         pandas=${PANDAS_VERSION} \
-         pytest \
-         rapidjson \
-         blas=*=openblas \
-         sphinx \
-         sphinx_rtd_theme \
-         numpydoc \
-         sphinxcontrib-websupport \
-         nbsphinx \
-         recommonmark \
-         doxygen \
-         "pandoc<=2.0.0" \
-         ucx-py \
-         \
-         cudatoolkit=${CUDA_MAJORMINOR_VERSION} \
-         rapids=${RAPIDS_CONDA_VERSION_SPEC} \
-         gdal=2.4.* \
-         \
-         bokeh \
-         dask-labextension \
-         dask-ml \
-         ipython=${IPYTHON_VERSION} \
-         jupyterlab \
-         librdkafka=1.2.2 \
-         matplotlib \
-         networkx \
-         nodejs \
-         pytest \
-         scikit-learn \
-         scipy \
-         seaborn \
-         tensorflow=*=gpu* \
-         umap-learn \
-    && conda remove --force \
-         rmm librmm \
-         nvstrings libnvstrings \
-         cudf dask-cudf libcudf \
-         cuml libcuml \
-         cugraph libcugraph \
-         cuspatial libcuspatial \
-         xgboost py-xgboost libxgboost \
-         dask-xgboost rapids-xgboost \
-         custreamz \
-         rapids \
-    && conda clean -afy \
-    && chmod -R ugo+w /opt/conda
+    && conda list --show-channel-urls
+
+# Install rapids-build-env from conda meta-pkg
+RUN ${RAPIDS_DIR}/utils/condaretry install -y -n rapids --freeze-installed \
+        rapids-build-env=${RAPIDS_CONDA_VERSION_SPEC}
+
+# Install rapids-doc-env from conda meta-pkg
+RUN ${RAPIDS_DIR}/utils/condaretry install -y -n rapids --freeze-installed \
+        rapids-doc-env=${RAPIDS_CONDA_VERSION_SPEC}
+
+# Env debug info
+RUN source activate rapids \
+    && env \
+    && conda info \
+    && conda config --show-sources \
+    && conda list --show-channel-urls
+
+# Install notebook env
+# Env debug info
+RUN source activate rapids \
+    && env \
+    && conda info \
+    && conda config --show-sources \
+    && conda list --show-channel-urls
+
+# Install the rapids-notebook-env meta-pkg
+RUN ${RAPIDS_DIR}/utils/condaretry install -y -n rapids --freeze-installed \
+        rapids-notebook-env=${RAPIDS_CONDA_VERSION_SPEC} \
+   && conda clean -afy \
+   && chmod -R ugo+w /opt/conda
+
+# Install jupyter lab stuff
+RUN source activate rapids \
+   && pip install "git+https://github.com/rapidsai/jupyterlab-nvdashboard.git@master#egg=jupyterlab-nvdashboard" --upgrade \
+   && jupyter labextension install dask-labextension jupyterlab-nvdashboard
+ 
+ # Install notebooks repo
+ RUN cd ${RAPIDS_DIR} \
+   && ./clone.sh notebooks \
+   && chmod -R ugo+w /opt/conda ${RAPIDS_DIR}
+
+# Add test file for testing notebooks from within the container
+COPY supportfiles/test.sh /test.sh
+COPY supportfiles/test-nbcontrib.sh /test-nbcontrib.sh
+
+WORKDIR ${RAPIDS_DIR}/notebooks
+# Jupyter notebook port
+EXPOSE 8888
+# Dask Scheduler Bokeh port
+EXPOSE 8787
+EXPOSE 8786
+
+# Change the entrypoint to start the Jupyter server prior to running commands
+COPY supportfiles/.start_jupyter_run_in_rapids /.run_in_rapids
 
 # Add compatible libm
 COPY supportfiles/libm.so.6 ${GCC7_DIR}/lib64
@@ -201,11 +147,17 @@ RUN cd ${RAPIDS_DIR}/rmm && \
     ./build.sh
 RUN cd ${RAPIDS_DIR}/cudf && \
     source activate rapids && \
-    ./build.sh && \
+    ./build.sh -l && \
     #FIXME: Should building tests be integrated into build.sh?
     cd cpp/build && \
     make -j${PARALLEL_LEVEL} build_tests_nvstrings && \
     make -j${PARALLEL_LEVEL} build_tests_cudf
+RUN cd ${RAPIDS_DIR}/cusignal && \
+    source activate rapids && \
+    ./build.sh
+RUN cd ${RAPIDS_DIR}/cuxfilter && \
+    source activate rapids && \
+    ./build.sh
 # FIXME: Should not need to set CUSPATIAL_HOME and CUDF_HOME variables
 RUN cd ${RAPIDS_DIR}/cuspatial && \
     source activate rapids && \
@@ -241,7 +193,7 @@ CMD [ "/bin/bash" ]
 
 # Setup notebook environment
 RUN source activate rapids \
-   && pip install "git+https://github.com/rapidsai/jupyterlab-nvdashboard.git#master" --upgrade \
+   && pip install "git+https://github.com/rapidsai/jupyterlab-nvdashboard.git@master#egg=jupyterlab-nvdashboard" --upgrade \
    && jupyter labextension install dask-labextension jupyterlab-nvdashboard \
    && cd ${RAPIDS_DIR} \
    && ./clone.sh notebooks \
