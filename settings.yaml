@@ -1,0 +1,34 @@
+---
+# Default Docker build arguments
+DEFAULT_PYTHON_VERSION: "3.6"
+DEFAULT_CUDA_VERSION: "10.0"
+
+RAPIDS_VERSION: "0.14"
+
+# Libraries included in devel images
+RAPIDS_LIBS:
+  - name: rmm
+    repo_url: https://github.com/rapidsai/rmm.git
+  - name: cudf
+    repo_url: https://github.com/rapidsai/cudf.git
+    update_submodules: no
+  - name: cusignal
+    repo_url: https://github.com/rapidsai/cusignal.git
+  - name: cuxfilter
+    repo_url: https://github.com/rapidsai/cuxfilter
+  - name: cuspatial
+    repo_url: https://github.com/rapidsai/cuspatial.git
+  - name: cuml
+    repo_url: https://github.com/rapidsai/cuml.git
+    update_submodules: no
+  - name: cugraph
+    repo_url: https://github.com/rapidsai/cugraph.git
+  - name: xgboost
+    update_submodules: no
+    repo_url: https://github.com/rapidsai/xgboost.git
+    branch: rapids-0.14-release
+  - name: dask-xgboost
+    repo_url: https://github.com/rapidsai/dask-xgboost.git
+    branch: dask-cudf
+  - name: dask-cuda
+    repo_url: https://github.com/rapidsai/dask-cuda.git

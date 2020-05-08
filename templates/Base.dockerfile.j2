@@ -1,0 +1,51 @@
+# RAPIDS Dockerfile for {{ os }} "base" image
+#
+# base: RAPIDS is installed from published conda packages to the 'rapids' conda
+# environment.
+#
+# Copyright (c) {{ now.year }}, NVIDIA CORPORATION.
+
+ARG CUDA_VERSION={{ DEFAULT_CUDA_VERSION }}
+ARG CUDA_MAJORMINOR_VERSION=${CUDA_VERSION}
+ARG LINUX_VERSION={{ os }}
+ARG PYTHON_VERSION={{ DEFAULT_PYTHON_VERSION }}
+
+FROM gpuci/miniconda-cuda-rapidsenv:${CUDA_VERSION}-runtime-${LINUX_VERSION}-py${PYTHON_VERSION}
+
+ARG CUDA_MAJORMINOR_VERSION
+
+{# base/runtime install specs #}
+ARG DASK_XGBOOST_CONDA_VERSION_SPEC=0.2*
+ARG RAPIDS_CONDA_VERSION_SPEC={{ RAPIDS_VERSION }}*
+
+ENV RAPIDS_DIR=/rapids
+{% if os == "ubuntu" %}
+ENV LD_LIBRARY_PATH=/opt/conda/envs/rapids/lib:${LD_LIBRARY_PATH}
+{% endif %}
+
+{# Copy files needed by RAPIDS and 3rd parties for builds, test, and runtime. #}
+RUN mkdir -p ${RAPIDS_DIR}/utils {{ "${GCC7_DIR}/lib64" if os == "centos7" }}
+COPY start_jupyter.sh condaretry nbtest.sh nbtestlog2junitxml.py ${RAPIDS_DIR}/utils/
+
+{% if os == "centos7" %}
+{# Add compatible libm #}
+COPY libm.so.6 ${GCC7_DIR}/lib64
+{% endif %}
+
+COPY .condarc /opt/conda/.condarc
+
+{% include 'partials/env_debug.dockerfile.j2' %}
+
+RUN ${RAPIDS_DIR}/utils/condaretry install -y -n rapids --freeze-installed \
+  cudatoolkit=${CUDA_MAJORMINOR_VERSION} \
+  rapids=${RAPIDS_CONDA_VERSION_SPEC} \
+  && conda clean -afy \
+  && chmod -R ugo+w /opt/conda ${RAPIDS_DIR}
+
+WORKDIR ${RAPIDS_DIR}
+
+COPY .run_in_rapids.sh /.run_in_rapids
+ENTRYPOINT [ "/usr/bin/tini", "--", "/.run_in_rapids" ]
+
+{# Set the default command to pass to the ENTRYPOINT if no command was given #}
+CMD [ "/bin/bash" ]

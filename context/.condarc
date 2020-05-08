@@ -1,0 +1,7 @@
+ssl_verify: false
+channels:
+  - rapidsai
+  - rapidsai-nightly
+  - nvidia
+  - conda-forge
+  - defaults

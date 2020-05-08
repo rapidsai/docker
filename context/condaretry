@@ -1,0 +1,68 @@
+#!/bin/bash
+
+# condaretry - wrapper for conda that retries the command after a CondaHTTPError
+# or ChecksumMismatchError (ideally, any conda error that is normally resolved
+# by retrying).
+
+set -o pipefail
+
+condaretry_help="
+condaretry options:
+
+   --condaretry_max_retries=n      Retry the conda command at most n times (default is 3)
+   --condaretry_sleep_interval=n   Sleep n seconds between retries (default is 5)
+
+==========
+"
+max_retries=3
+sleep_interval=5
+exitcode=0
+retries=0
+args=""
+
+# Temporarily set this to something else (eg. a script called "testConda" that
+# prints "CondaHTTPError:" and exits with 1) for testing this script.
+#condaCmd=./testConda
+condaCmd=conda
+
+# Process and remove args recognized only by this script, save others for conda
+for arg in $*; do
+   opt=${arg%%=*}
+   val=${arg##*=}
+   if [[ ${opt} == "--help" ]] || [[ ${opt} == "-h" ]]; then
+      echo "${condaretry_help}"
+      ${condaCmd} --help
+      exit $?
+   elif [[ ${opt} == "--condaretry_max_retries" ]]; then
+      max_retries=${val}
+   elif [[ ${opt} == "--condaretry_sleep_interval" ]]; then
+      sleep_interval=${val}
+   else
+      args="${args} ${arg}"
+   fi
+done
+
+outfile=$(mktemp)
+${condaCmd} ${args} 2>&1| tee ${outfile}
+exitcode=$?
+
+# Retry loop, only if needed
+while (( ${exitcode} != 0 )) && \
+      (( ${retries} < ${max_retries} )) && \
+      ((grep -q CondaHTTPError: ${outfile}) ||
+       (grep -q ChecksumMismatchError: ${outfile})); do
+
+   retries=$(expr ${retries} + 1)
+   echo "========================================"
+   echo "CONDA RETRY ${retries} OF ${max_retries}"...
+   echo -n "sleeping for ${sleep_interval} seconds..."
+   sleep ${sleep_interval}
+   echo "done"
+   echo "========================================"
+
+   ${condaCmd} ${args} 2>&1| tee ${outfile}
+   exitcode=$?
+done
+
+rm -f ${outfile}
+exit ${exitcode}
