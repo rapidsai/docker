@@ -58,8 +58,8 @@ To add a new repo to the `devel` image, simply add another entry to the `RAPIDS_
 ```yaml
 RAPIDS_LIBS:
   - name: xgboost # name of the library
-    update_submodules: no # (optional, default: yes) determines whether the "--remote-submodules" flag should be used when cloning the repo
     repo_url: https://github.com/rapidsai/xgboost.git # URL of the repo
+    update_submodules: no # (optional, default: yes) determines whether the "--remote-submodules" flag should be used when cloning the repo
     branch: rapids-0.14-release # (optional, default: "branch-<rapids_version>") branch to be cloned inside of the image
 ```
 
