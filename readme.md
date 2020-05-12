@@ -39,7 +39,7 @@ Like any Docker image, the RAPIDS images can be extended to suit the needs of in
 
 For example, the `runtime` and `devel` images use an empty token for securing the Jupyter notebook server. While this is a fast easy solution for dev and exploratory environments, those in production environments may need more security. 
 
-Using the following short `Dockerfile` users can leverage the exisitng RAPIDS images and build a custom secure image:
+Using the following short `Dockerfile` users can leverage the existing RAPIDS images and build a custom secure image:
 
 ```docker
 FROM rapidsai/rapidsai-nightly:cuda10.2-runtime-ubuntu18.04-py3.7
