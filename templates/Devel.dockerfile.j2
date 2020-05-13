@@ -24,7 +24,7 @@ ARG PYTHON_VERSION
 
 ENV RAPIDS_DIR=/rapids
 
-{% if os == "ubuntu" %}
+{% if "ubuntu" in os %}
 ENV LD_LIBRARY_PATH=/opt/conda/envs/rapids/lib:${LD_LIBRARY_PATH}
 
 {# Update environment to use new gcc #}
@@ -34,7 +34,7 @@ ENV CUDAHOSTCXX=/usr/bin/g++-${CXX_VERSION}
 ENV PATH=${PATH}:/conda/bin
 {% endif %}
 
-{% if os == "centos7" %}
+{% if "centos" in os %}
 {# FIXME 20191002: remove this once gpuci base is rebuilt #}
 RUN yum -y update \
   && yum -y install which patch \
@@ -55,7 +55,7 @@ ENV LD_LIBRARY_PATH=${GCC7_DIR}/lib64
 
 {# 'rapidsdevtool.sh buildDockerImage' sets up the build context, including the
 rapids directory being COPY'd below. See rapidsdevtool.sh help for details. #}
-RUN mkdir -p ${RAPIDS_DIR}/utils {{ "${GCC7_DIR}/lib64" if os == "centos7" }}
+RUN mkdir -p ${RAPIDS_DIR}/utils {{ "${GCC7_DIR}/lib64" if "centos" in os }}
 COPY start_jupyter.sh condaretry nbtest.sh nbtestlog2junitxml.py ${RAPIDS_DIR}/utils/
 
 {# Install dependencies needed for devel: build deps + RAPIDS runtime deps +
@@ -77,7 +77,7 @@ RUN ${RAPIDS_DIR}/utils/condaretry install -y -n rapids --freeze-installed \
 
 {% include 'partials/install_notebooks.dockerfile.j2' %}
 
-{% if os == "centos7" %}
+{% if "centos" in os %}
 {# Add compatible libm #}
 COPY libm.so.6 ${GCC7_DIR}/lib64
 {% endif %}
@@ -92,7 +92,7 @@ RUN cd ${RAPIDS_DIR} \
   {{ "&& cd ${RAPIDS_DIR} \\" if not loop.last }}
 {% endfor %}
 
-{% if os == "centos7" %}
+{% if "centos" in os %}
 {# Add /usr/local/cuda/* temporarily to LD_LIBRARY_PATH to support various build steps
 This will need to be removed later since it causes problems with certain runtime libs (numba.cuda) #}
 ENV LD_LIBRARY_PATH_PREBUILD=${LD_LIBRARY_PATH}
@@ -101,7 +101,7 @@ ENV LD_LIBRARY_PATH=${LD_LIBRARY_PATH}:/usr/local/cuda/lib64:/usr/local/cuda/lib
 
 {% include 'partials/devel_build.dockerfile.j2' %}
 
-{% if os == "centos7" %}
+{% if "centos" in os %}
 {# Change LD_LIBRARY_PATH to exclude /usr/local/cuda/* since
 numba.cuda cannot load that, and instead have it load
 /lib64/libcuda.so instead #}

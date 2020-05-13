@@ -19,15 +19,15 @@ ARG DASK_XGBOOST_CONDA_VERSION_SPEC=0.2*
 ARG RAPIDS_CONDA_VERSION_SPEC={{ RAPIDS_VERSION }}*
 
 ENV RAPIDS_DIR=/rapids
-{% if os == "ubuntu" %}
+{% if "ubuntu" in os %}
 ENV LD_LIBRARY_PATH=/opt/conda/envs/rapids/lib:${LD_LIBRARY_PATH}
 {% endif %}
 
 {# Copy files needed by RAPIDS and 3rd parties for builds, test, and runtime. #}
-RUN mkdir -p ${RAPIDS_DIR}/utils {{ "${GCC7_DIR}/lib64" if os == "centos7" }}
+RUN mkdir -p ${RAPIDS_DIR}/utils {{ "${GCC7_DIR}/lib64" if "centos" in os }}
 COPY start_jupyter.sh condaretry nbtest.sh nbtestlog2junitxml.py ${RAPIDS_DIR}/utils/
 
-{% if os == "centos7" %}
+{% if "centos" in os %}
 {# Add compatible libm #}
 COPY libm.so.6 ${GCC7_DIR}/lib64
 {% endif %}
