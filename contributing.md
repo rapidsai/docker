@@ -16,7 +16,7 @@ This repo uses [Jinja2](https://www.palletsprojects.com/p/jinja/) to generate Do
 Make sure to have the following dependencies installed to compile the Dockerfiles.
 
 - Python 3
-- [Jinja2](https://anaconda.org/anaconda/jinja2)
+- [Jinja2](https://pypi.org/project/Jinja2/)
 - [PyYAML](https://pypi.org/project/PyYAML/)
 
 ## Project Structure
