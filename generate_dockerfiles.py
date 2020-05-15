@@ -2,11 +2,12 @@
 
 from datetime import datetime
 from jinja2 import Environment, FileSystemLoader
-import os as os_lib
+import os
 import yaml
 
 file_loader = FileSystemLoader("templates")
 env = Environment(loader=file_loader, lstrip_blocks=True, trim_blocks=True)
+output_dir = "build"
 
 
 def load_settings():
@@ -22,29 +23,46 @@ def load_settings():
     return settings
 
 
-def initialize_build_dir():
-    """Creates or empties the "build" directory"""
-    build_dir = "build"
-    if not os_lib.path.exists(build_dir):
-        return os_lib.makedirs(build_dir)
-    filelist = [f for f in os_lib.listdir(build_dir) if f.endswith(".Dockerfile")]
-    for f in filelist:
-        os_lib.remove(os_lib.path.join(build_dir, f))
+def isFileMissingOrDifferent(filename, new_file_contents):
+    """
+    Determines whether a given filename is missing from the output_dir directory
+    or if its contents are different from the given new_file_contents
+    """
+    if not (os.path.exists(f"{output_dir}/{filename}")):
+        return True
+    with open(f"{output_dir}/{filename}", "r") as f:
+        existing_file_contents = f.read()
+    if existing_file_contents != new_file_contents:
+        return True
+    return False
 
 
 def main():
-    """Generates Dockerfiles using Jinja2"""
-    initialize_build_dir()
+    """Generates missing or changed Dockerfiles using Jinja2"""
+    files_changed = []
     settings = load_settings()
-    for os in ["centos7", "ubuntu18.04"]:
+    if not os.path.exists(output_dir):
+        os.makedirs(output_dir)
+
+    for docker_os in ["centos7", "ubuntu18.04"]:
         for image_type in ["Base", "Devel", "Runtime", "Quick"]:
+            dockerfile_name = f"{docker_os}-{image_type.lower()}.Dockerfile"
             template = env.get_template(f"{image_type}.dockerfile.j2")
             output = template.render(
-                os=os, image_type=image_type, now=datetime.utcnow(), **settings,
+                os=docker_os, image_type=image_type, now=datetime.utcnow(), **settings,
             )
-            with open(f"build/{os}-{image_type.lower()}.Dockerfile", "w") as f:
-                f.write(output)
-    print("Dockerfiles successfully written to 'build' directory.")
+            if isFileMissingOrDifferent(dockerfile_name, output):
+                files_changed.append(dockerfile_name)
+                with open(f"{output_dir}/{dockerfile_name}", "w") as f:
+                    f.write(output)
+    if not files_changed:
+        print(f"No files in the {output_dir} directory were changed.")
+    else:
+        print(
+            f"The following files were generated or changed and written to the {output_dir} directory:"
+        )
+        for file in files_changed:
+            print(f"  - {file}")
 
 
 if __name__ == "__main__":

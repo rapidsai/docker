@@ -15,7 +15,7 @@ This repo uses [Jinja2](https://www.palletsprojects.com/p/jinja/) to generate Do
 
 Make sure to have the following dependencies installed to compile the Dockerfiles.
 
-- Python 3
+- Python 3.6+
 - [Jinja2](https://pypi.org/project/Jinja2/)
 - [PyYAML](https://pypi.org/project/PyYAML/)
 
@@ -42,10 +42,12 @@ Dockerfile changes should be made to the `templates/` folder.
 Once changes have been made, run the following command to generate the Dockerfiles:
 
 ```sh
+python generate_dockerfiles.py
+# or
 ./generate_dockerfiles.py
 ```
 
-This will write the Dockerfiles to the `build` directory.
+`generate_dockerfiles.py` will write files to a `build` directory only if they don't exist already _or_ if they've changed since the last time the script was run. This helps to identify the impact of changes made to the `templates/` directory.
 
 ## Building the Docker Images
 
