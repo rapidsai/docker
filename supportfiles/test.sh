@@ -7,7 +7,7 @@ NOTEBOOKS_DIR=${RAPIDS_DIR}/notebooks
 
 # Add notebooks that should be skipped here
 # (space-separated list of filenames without paths)
-SKIPNBS="cuml_benchmarks-test.py"
+SKIPNBS="cuml_benchmarks.ipynb"
 
 ## Check env
 env
