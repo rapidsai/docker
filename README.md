@@ -2,9 +2,16 @@
 
 This repository contains the source files for [rapidsai Docker images](https://hub.docker.com/u/rapidsai)
 
+## Table of Contents
+
+- [Image Types](#Image-Types)
+- [Extending Images](#Extending-Images)
+- [Building Images](#Building-Images)
+- [Contributing](#Contributing)
+
 ## Image Types
 
-There are currently three different types of Docker images, which follow the same conventions provided by the [NVIDIA CUDA Docker images](https://github.com/NVIDIA/nvidia-docker/wiki/CUDA), and allow users to use the RAPIDS images a drop-in replacements for their CUDA images.  Each type is supported on a combination of OS, Python version, and CUDA version which produces a matrix of available image types (and lots of tags!). The different types are described below:
+There are currently three different types of Docker images, which follow the same conventions provided by the [NVIDIA CUDA Docker images](https://github.com/NVIDIA/nvidia-docker/wiki/CUDA), and allow users to use the RAPIDS images a drop-in replacements for their CUDA images.  Each type is supported on a combination of OS, Python version, and CUDA version which produces a variety of available image types. The different types are described below:
 
 Type | Description | Target Audience
 ---|---|---
@@ -26,13 +33,13 @@ Type | `stable` Repository | `nightly` Repository
 
 ## Extending Images
 
-Like any Docker image, the RAPIDS images can be extended to suit the needs of individual teams. Whether it is to add custom libraries, change security settings, or other customizations; using `FROM` and our RAPIDS images allows you to customize the container, but easily update to the latest versions with a new `docker build`.
+Like any Docker image, the RAPIDS images can be extended to suit the needs of individual teams. Whether it is to add custom libraries, change security settings, or other customizations; using `FROM` and our RAPIDS images allows users to customize the container, but easily update to the latest versions with a new `docker build`.
 
 ### Custom Token Example
 
 For example, the `runtime` and `devel` images use an empty token for securing the Jupyter notebook server. While this is a fast easy solution for dev and exploratory environments, those in production environments may need more security. 
 
-Using the following short `Dockerfile` users can leverage the exisitng RAPIDS images and build a custom secure image:
+Using the following short `Dockerfile` users can leverage the existing RAPIDS images and build a custom secure image:
 
 ```docker
 FROM rapidsai/rapidsai-nightly:cuda10.2-runtime-ubuntu18.04-py3.7
@@ -43,10 +50,28 @@ Once built, the resulting image will be secured with the new token.
 
 This example can be repurposed by replacing the `sed` command with other commands for custom libraries or settings.
 
-## Additional Docs
+## Building Images
 
-- Usage
-  - [Build Tools](tooling.md) - includes a description of the tooling used in this repository
-- Build Tools Docs
-  - [Adding Repos](add-repo.md) - instructions on how to add a new repository to `devel` images
-  - [Common Build Problems](common-build-problems.md) - includes a description of potential build issues users may face
+The Dockerfiles can be built from the root project directory with the following command:
+
+```sh
+docker build -f generated-dockerfiles/ubuntu18.04-base.Dockerfile context/
+```
+
+If no build arguments are specified, the image will be built with the OS specified in the file name (i.e. `ubuntu18.04` or `centos7`) and the default _Python_ and _CUDA_ versions specified in [settings.yaml](settings.yaml).
+
+You can override these defaults by specifiying Docker build arguments:
+
+```sh
+docker build --build-arg CUDA_VERSION=10.2 --build-arg PYTHON_VERSION=3.7 -f generated-dockerfiles/centos7-base.Dockerfile context/
+```
+
+The _Ubuntu_ images can take an additional `LINUX_VERSION` build argument to use other supported Ubuntu versions:
+
+```sh
+docker build --build-arg CUDA_VERSION=10.2 --build-arg PYTHON_VERSION=3.7 --build-arg LINUX_VERSION=ubuntu16.04 -f generated-dockerfiles/ubuntu18.04-base.Dockerfile context/
+```
+
+## Contributing
+
+Please see [`contributing.md`](contributing.md) for details on how to contribute to this repo.
