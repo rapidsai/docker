@@ -23,10 +23,10 @@ jobs:
         run: |
           git config user.name "GitHub Actions Bot"
           git config user.email "<>"
-      - name: Commit to Repository
+      - name: Commit to Repository (if there are changes)
         env:
           PR_NUMBER: ${{ github.event.pull_request.number }}
         run: |
           git add generated-dockerfiles/*
-          git commit -m '[GH Actions] Generate Dockerfiles for PR #$PR_NUMBER'
+          git commit -m '[GH Actions] Generate Dockerfiles for PR #$PR_NUMBER' || echo 'no changes to commit'
           git push
