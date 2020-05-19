@@ -28,5 +28,5 @@ jobs:
           PR_NUMBER: ${{ github.event.pull_request.number }}
         run: |
           git add generated-dockerfiles/*
-          git commit -m '[GH Actions] Generate Dockerfiles for PR #${PR_NUMBER}'
+          git commit -m '[GH Actions] Generate Dockerfiles for PR #$PR_NUMBER'
           git push
