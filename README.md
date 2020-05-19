@@ -74,4 +74,4 @@ docker build --build-arg CUDA_VERSION=10.2 --build-arg PYTHON_VERSION=3.7 --buil
 
 ## Contributing
 
-Please see [`contributing.md`](contributing.md) for details on how to contribute to this repo.
+Please see [`CONTRIBUTING.md`](CONTRIBUTING.md) for details on how to contribute to this repo.
