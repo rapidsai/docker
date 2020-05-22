@@ -23,5 +23,3 @@ RUN cd ${RAPIDS_DIR}/{{ lib.name }} && \
 
 {# Build RAPIDS #}
 {% include 'partials/devel_build.dockerfile.j2' %}
-
-RUN chmod -R ugo+w /opt/conda
