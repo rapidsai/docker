@@ -93,4 +93,4 @@ RUN cd ${RAPIDS_DIR}/dask-cuda && \
   python setup.py install
 
 
-RUN chmod -R ugo+w /opt/conda
+RUN chmod -R ugo+w /opt/conda ${RAPIDS_DIR}

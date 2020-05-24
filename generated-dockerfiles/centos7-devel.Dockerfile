@@ -187,6 +187,7 @@ RUN cd ${RAPIDS_DIR}/dask-cuda && \
   python setup.py install
 
 
+RUN chmod -R ugo+w /opt/conda ${RAPIDS_DIR}
 ENV LD_LIBRARY_PATH=${LD_LIBRARY_PATH_PREBUILD}
 
 COPY .run_in_rapids.sh /.run_in_rapids

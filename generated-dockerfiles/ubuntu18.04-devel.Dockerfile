@@ -29,6 +29,9 @@ ENV CC=/usr/bin/gcc-${CC_VERSION}
 ENV CXX=/usr/bin/g++-${CXX_VERSION}
 ENV CUDAHOSTCXX=/usr/bin/g++-${CXX_VERSION}
 ENV PATH=${PATH}:/conda/bin
+RUN apt-get update && apt-get install -y \
+    gsfonts \
+    && rm -rf /var/lib/apt/lists/*
 
 
 RUN mkdir -p ${RAPIDS_DIR}/utils 
@@ -178,6 +181,7 @@ RUN cd ${RAPIDS_DIR}/dask-cuda && \
   python setup.py install
 
 
+RUN chmod -R ugo+w /opt/conda ${RAPIDS_DIR}
 
 COPY .run_in_rapids.sh /.run_in_rapids
 ENTRYPOINT [ "/usr/bin/tini", "--", "/.run_in_rapids" ]
