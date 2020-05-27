@@ -28,11 +28,6 @@ RUN apt-get update && apt-get install -y \
     && rm -rf /var/lib/apt/lists/*
 {% endif %}
 
-{% if "centos" in os %}
-{# Install gcc7 from prebuilt image #}
-COPY --from=gpuci/builds-gcc7:10.0-devel-centos7 /usr/local/gcc7 /usr/local/gcc7
-{% endif %}
-
 {# 'rapidsdevtool.sh buildDockerImage' sets up the build context, including the
 rapids directory being COPY'd below. See rapidsdevtool.sh help for details. #}
 RUN mkdir -p ${RAPIDS_DIR}/utils {{ "${GCC7_DIR}/lib64" if "centos" in os }}
