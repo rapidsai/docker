@@ -53,7 +53,7 @@ python generate_dockerfiles.py
 
 ## Building the Docker Images
 
-See the [_Building Images_](readme.md#Building-Images) section in the `readme.md` for details on how to build the compiled Dockerfiles. Replace the `generated-dockerfiles` folder with the `build` folder to build images compiled locally.
+See the [_Building Images_](README.md#Building-Images) section in the `README.md` for details on how to build the compiled Dockerfiles. Replace the `generated-dockerfiles` folder with the `build` folder to build images compiled locally.
 
 ## Adding a new Repo to Devel Images
 
