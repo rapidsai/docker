@@ -15,8 +15,8 @@ FROM gpuci/miniconda-cuda-rapidsenv:${CUDA_VERSION}-runtime-${LINUX_VERSION}-py$
 ARG CUDA_MAJORMINOR_VERSION
 
 {# base/runtime install specs #}
-ARG DASK_XGBOOST_CONDA_VERSION_SPEC=0.2*
-ARG RAPIDS_CONDA_VERSION_SPEC={{ RAPIDS_VERSION }}*
+ARG DASK_XGBOOST_VER=0.2*
+ARG RAPIDS_VER={{ RAPIDS_VERSION }}*
 
 ENV RAPIDS_DIR=/rapids
 {% if "ubuntu" in os %}
@@ -38,7 +38,7 @@ COPY .condarc /opt/conda/.condarc
 
 RUN ${RAPIDS_DIR}/utils/condaretry install -y -n rapids --freeze-installed \
   cudatoolkit=${CUDA_MAJORMINOR_VERSION} \
-  rapids=${RAPIDS_CONDA_VERSION_SPEC} \
+  rapids=${RAPIDS_VER} \
   && conda clean -afy \
   && chmod -R ugo+w /opt/conda ${RAPIDS_DIR}
 

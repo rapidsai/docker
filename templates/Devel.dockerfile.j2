@@ -18,7 +18,7 @@ FROM gpuci/miniconda-cuda-rapidsenv:${CUDA_VERSION}-devel-${LINUX_VERSION}-py${P
 ARG CC_VERSION=7
 ARG CXX_VERSION=7
 ARG PARALLEL_LEVEL=16
-ARG RAPIDS_CONDA_VERSION_SPEC={{ RAPIDS_VERSION }}*
+ARG RAPIDS_VER={{ RAPIDS_VERSION }}*
 
 ARG CUDA_MAJORMINOR_VERSION
 ARG PYTHON_VERSION
@@ -72,11 +72,15 @@ COPY .condarc /opt/conda/.condarc
 
 {# Install rapids-build-env from conda meta-pkg #}
 RUN ${RAPIDS_DIR}/utils/condaretry install -y -n rapids --freeze-installed \
-  rapids-build-env=${RAPIDS_CONDA_VERSION_SPEC}
+      rapids-build-env=${RAPIDS_VER} \
+    && conda remove -y -n rapids --force-remove \
+      rapids-build-env=${RAPIDS_VER}
 
 {# Install rapids-doc-env from conda meta-pkg #}
 RUN ${RAPIDS_DIR}/utils/condaretry install -y -n rapids --freeze-installed \
-  rapids-doc-env=${RAPIDS_CONDA_VERSION_SPEC}
+      rapids-doc-env=${RAPIDS_VER} \
+    && conda remove -y -n rapids --force-remove \
+      rapids-doc-env=${RAPIDS_VER}
 
 {% include 'partials/env_debug.dockerfile.j2' %}
 

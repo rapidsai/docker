@@ -16,8 +16,8 @@ FROM rapidsaistaging/rapidsai-nightly-staging:{{ RAPIDS_VERSION }}-cuda${CUDA_VE
 ARG CUDA_MAJORMINOR_VERSION
 
 {# base/runtime install specs #}
-ARG DASK_XGBOOST_CONDA_VERSION_SPEC=0.2*
-ARG RAPIDS_CONDA_VERSION_SPEC={{ RAPIDS_VERSION }}*
+ARG DASK_XGBOOST_VER=0.2*
+ARG RAPIDS_VER={{ RAPIDS_VERSION }}*
 
 {# Install the notebook dependencies and the notebook repo #}
 {% include 'partials/env_debug.dockerfile.j2' %}
