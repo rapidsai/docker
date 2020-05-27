@@ -60,16 +60,16 @@ docker build -f generated-dockerfiles/ubuntu18.04-base.Dockerfile context/
 
 If no build arguments are specified, the image will be built with the OS specified in the file name (i.e. `ubuntu18.04` or `centos7`) and the default _Python_ and _CUDA_ versions specified in [settings.yaml](settings.yaml).
 
-You can override these defaults by specifiying Docker build arguments:
+You can override these defaults by specifying Docker build arguments:
 
 ```sh
-docker build --build-arg CUDA_VERSION=10.2 --build-arg PYTHON_VERSION=3.7 -f generated-dockerfiles/centos7-base.Dockerfile context/
+docker build --build-arg CUDA_VER=10.2 --build-arg PYTHON_VER=3.7 -f generated-dockerfiles/centos7-base.Dockerfile context/
 ```
 
-The _Ubuntu_ images can take an additional `LINUX_VERSION` build argument to use other supported Ubuntu versions:
+The _Ubuntu_ images can take an additional `LINUX_VER` build argument to use other supported Ubuntu versions:
 
 ```sh
-docker build --build-arg CUDA_VERSION=10.2 --build-arg PYTHON_VERSION=3.7 --build-arg LINUX_VERSION=ubuntu16.04 -f generated-dockerfiles/ubuntu18.04-base.Dockerfile context/
+docker build --build-arg CUDA_VER=10.2 --build-arg PYTHON_VER=3.7 --build-arg LINUX_VER=ubuntu16.04 -f generated-dockerfiles/ubuntu18.04-base.Dockerfile context/
 ```
 
 ## Contributing
