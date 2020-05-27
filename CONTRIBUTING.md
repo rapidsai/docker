@@ -30,7 +30,7 @@ Make sure to have the following dependencies installed to compile the Dockerfile
     └── partials/
 ```
 
-- [`settings.yaml`](/settings.yaml) - Contains some default values used by all of the Jinaj2 templates. All values from this file are available in the Jinja2 templates.
+- [`settings.yaml`](/settings.yaml) - Contains some default values used by all of the Jinja2 templates. All values from this file are available in the Jinja2 templates.
 - [`context/`](/context/) - Contains any files that will be copied into the Docker images during the Docker build process.
 - [`generated-dockerfiles/`](/generated-dockerfiles/) - Contains the latest compiled Dockerfiles. This folder is populated automatically and it's contents should never be edited directly by developers.
 - [`generate_dockerfiles.py`](/generate_dockerfiles.py) - Python script to compile Jinja templates.
