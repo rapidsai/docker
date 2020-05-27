@@ -35,7 +35,7 @@ Make sure to have the following dependencies installed to compile the Dockerfile
 - [`generated-dockerfiles/`](/generated-dockerfiles/) - Contains the latest compiled Dockerfiles. This folder is populated automatically and it's contents should never be edited directly by developers.
 - [`generate_dockerfiles.py`](/generate_dockerfiles.py) - Python script to compile Jinja templates.
 - [`templates/`](/templates/) - Contains the Jinja2 templates for the different RAPIDS image types.
-- [`partials/`](/templates/partials/) - Contains Jinja2 templates that may be included from multiple parent files in `templates/`. Only create a partial if a piece of code needs to be repeated across multiple parent templates.
+- [`partials/`](/templates/partials/) - Contains Jinja2 templates that may be included from files in the parent `templates` folder. Only create a partial if a piece of code needs to be repeated across multiple parent templates.
 
 ## Development
 
