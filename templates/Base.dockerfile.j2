@@ -37,7 +37,6 @@ COPY .condarc /opt/conda/.condarc
 {% include 'partials/env_debug.dockerfile.j2' %}
 
 RUN ${RAPIDS_DIR}/utils/condaretry install -y -n rapids --freeze-installed \
-  cudatoolkit=${CUDA_MAJORMINOR_VERSION} \
   rapids=${RAPIDS_VER} \
   && conda clean -afy \
   && chmod -R ugo+w /opt/conda ${RAPIDS_DIR}
