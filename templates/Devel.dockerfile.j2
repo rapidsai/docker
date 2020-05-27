@@ -29,11 +29,6 @@ RUN apt-get update && apt-get install -y \
 {% endif %}
 
 {% if "centos" in os %}
-{# FIXME 20191002: remove this once gpuci base is rebuilt #}
-RUN yum -y update \
-  && yum -y install which patch \
-  && yum clean all
-
 {# Install gcc7 from prebuilt image #}
 COPY --from=gpuci/builds-gcc7:10.0-devel-centos7 /usr/local/gcc7 /usr/local/gcc7
 {% endif %}
