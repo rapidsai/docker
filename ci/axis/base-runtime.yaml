@@ -1,3 +1,6 @@
+BUILD_IMAGE:
+  - "rapidsai/{{ RAPIDS_CHANNEL }}"
+
 FROM_IMAGE:
   - gpuci/rapidsai
 
