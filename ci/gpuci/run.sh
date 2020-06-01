@@ -4,9 +4,6 @@ set -e
 # Overwrite HOME to WORKSPACE
 export HOME=$WORKSPACE
 
-# Set BUILD_IMAGE (the destination) based on RAPIDS_CHANNEL
-export BUILD_IMAGE="rapidsai/${RAPIDS_CHANNEL}"
-
 # Install gpuCI tools
 curl -s https://raw.githubusercontent.com/rapidsai/gpuci-tools/master/install.sh | bash
 source ~/.bashrc
