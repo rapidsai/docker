@@ -36,8 +36,6 @@ COPY start_jupyter.sh nbtest.sh nbtestlog2junitxml.py ${RAPIDS_DIR}/utils/
 {# Install dependencies needed for devel: build deps + RAPIDS runtime deps +
 notebook deps.  This is done as a single install to ensure compatibility
 between packages. #}
-COPY .condarc /opt/conda/.condarc
-
 {% include 'partials/env_debug.dockerfile.j2' %}
 
 {# Install rapids-build-env from conda meta-pkg #}

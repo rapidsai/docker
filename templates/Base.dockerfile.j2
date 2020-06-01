@@ -29,8 +29,6 @@ COPY start_jupyter.sh nbtest.sh nbtestlog2junitxml.py ${RAPIDS_DIR}/utils/
 COPY libm.so.6 ${GCC7_DIR}/lib64
 {% endif %}
 
-COPY .condarc /opt/conda/.condarc
-
 {% include 'partials/env_debug.dockerfile.j2' %}
 
 RUN gpuci_retry install -y -n rapids --freeze-installed \
