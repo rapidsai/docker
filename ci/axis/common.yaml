@@ -1,9 +1,9 @@
+BUILD_IMAGE:
+  - rapidsai/rapidsai
+  - rapidsai/rapidsai-nightly
+
 FROM_IMAGE:
   - gpuci/rapidsai
-
-IMAGE_TYPE:
-  - base
-  - runtime
 
 RAPIDS_VER:
   - 0.13
