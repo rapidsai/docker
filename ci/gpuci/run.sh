@@ -70,7 +70,7 @@ fi
 gpuci_logger "Build config info..."
 echo "Build image and tag: ${BUILD_IMAGE}:${BUILD_TAG}"
 echo "Build args: ${BUILD_ARGS}"
-echo "Docker build command:"
+gpuci_logger "Docker build command..."
 echo "docker build --no-cache --pull -t ${BUILD_IMAGE}:${BUILD_TAG} ${BUILD_ARGS} -f build/${DOCKERFILE} context/"
 
 # Build image
