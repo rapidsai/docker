@@ -41,13 +41,13 @@ COPY .condarc /opt/conda/.condarc
 {% include 'partials/env_debug.dockerfile.j2' %}
 
 {# Install rapids-build-env from conda meta-pkg #}
-RUN ${RAPIDS_DIR}/utils/condaretry install -y -n rapids --freeze-installed \
+RUN gpuci_retry install -y -n rapids --freeze-installed \
       rapids-build-env=${RAPIDS_VER} \
     && conda remove -y -n rapids --force-remove \
       rapids-build-env=${RAPIDS_VER}
 
 {# Install rapids-doc-env from conda meta-pkg #}
-RUN ${RAPIDS_DIR}/utils/condaretry install -y -n rapids --freeze-installed \
+RUN gpuci_retry install -y -n rapids --freeze-installed \
       rapids-doc-env=${RAPIDS_VER} \
     && conda remove -y -n rapids --force-remove \
       rapids-doc-env=${RAPIDS_VER}
