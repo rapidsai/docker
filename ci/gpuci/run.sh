@@ -78,6 +78,7 @@ gpuci_logger "Starting build..."
 #docker build --no-cache --pull -t ${BUILD_IMAGE}:${BUILD_TAG} ${BUILD_ARGS} -f build/${DOCKERFILE} context/
 
 # List image info
+gpuci_logger "Displaying image info..."
 #docker images ${BUILD_IMAGE}:${BUILD_TAG}
 
 # Upload image
