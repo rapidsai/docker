@@ -79,10 +79,10 @@ gpuci_retry docker build --pull -t ${BUILD_IMAGE}:${BUILD_TAG} ${BUILD_ARGS} -f 
 
 # List image info
 gpuci_logger "Displaying image info..."
-#docker images ${BUILD_IMAGE}:${BUILD_TAG}
+docker images ${BUILD_IMAGE}:${BUILD_TAG}
 
 # Upload image
 gpuci_logger "Starting upload..."
 GPUCI_RETRY_MAX=5
 GPUCI_RETRY_SLEEP=120
-#gpuci_retry docker push ${BUILD_IMAGE}:${BUILD_TAG}
+gpuci_retry docker push ${BUILD_IMAGE}:${BUILD_TAG}
