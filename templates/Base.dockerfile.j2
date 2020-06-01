@@ -22,7 +22,7 @@ ENV LD_LIBRARY_PATH=/opt/conda/envs/rapids/lib:${LD_LIBRARY_PATH}
 
 {# Copy files needed by RAPIDS and 3rd parties for builds, test, and runtime. #}
 RUN mkdir -p ${RAPIDS_DIR}/utils {{ "${GCC7_DIR}/lib64" if "centos" in os }}
-COPY start_jupyter.sh condaretry nbtest.sh nbtestlog2junitxml.py ${RAPIDS_DIR}/utils/
+COPY start_jupyter.sh nbtest.sh nbtestlog2junitxml.py ${RAPIDS_DIR}/utils/
 
 {% if "centos" in os %}
 {# Add compatible libm #}
