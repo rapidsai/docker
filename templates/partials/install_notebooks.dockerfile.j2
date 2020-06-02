@@ -1,5 +1,5 @@
 {# Install the rapids-notebook-env meta-pkg #}
-RUN gpuci_retry install -y -n rapids --freeze-installed \
+RUN gpuci_retry conda install -y -n rapids --freeze-installed \
         rapids-notebook-env=${RAPIDS_VER} \
     && conda remove -y -n rapids --force-remove \
         rapids-notebook-env=${RAPIDS_VER} \
