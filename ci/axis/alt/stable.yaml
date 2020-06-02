@@ -1,0 +1,34 @@
+BUILD_IMAGE:
+  - gpuci/build-rapidsai
+  - gpuci/build-rapidsai-dev
+
+FROM_IMAGE:
+  - gpuci/rapidsai
+
+RAPIDS_VER:
+  - 0.13
+  
+RAPIDS_CHANNEL:
+  - rapidsai
+
+CUDA_VER:
+  - 10.2
+  - 10.1
+  - 10.0
+
+LINUX_VER:
+  - ubuntu16.04
+  - ubuntu18.04
+  - centos7
+
+PYTHON_VER:
+  - 3.6
+  - 3.7
+
+exclude:
+  - BUILD_IMAGE: gpuci/build-rapidsai-dev
+    IMAGE_TYPE: base
+  - BUILD_IMAGE: gpuci/build-rapidsai-dev
+    IMAGE_TYPE: runtime
+  - BUILD_IMAGE: gpuci/build-rapidsai
+    IMAGE_TYPE: devel
