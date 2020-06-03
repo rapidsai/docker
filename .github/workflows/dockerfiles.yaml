@@ -1,0 +1,32 @@
+name: Update Dockerfiles on Default Branch Merge
+
+on:
+  pull_request:
+    types: [closed]
+
+jobs:
+  update-dockerfiles:
+    name: Update Dockerfiles on Default Branch Merge
+    runs-on: ubuntu-latest
+    container: python:3.8
+    if: github.event.pull_request.base.ref == github.event.repository.default_branch && github.event.pull_request.merged == true
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v2.1.1
+      - name: Generate new Dockerfiles
+        run: |
+          rm -rf generated-dockerfiles/*.Dockerfile
+          pip install Jinja2 PyYAML
+          python generate_dockerfiles.py
+          mv build/* generated-dockerfiles/
+      - name: Setup git Config
+        run: |
+          git config user.name "GitHub Actions Bot"
+          git config user.email "<>"
+      - name: Commit to Repository (if there are changes)
+        env:
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+        run: |
+          git add generated-dockerfiles/*
+          git commit -m "[GH Actions] Generate Dockerfiles for PR $PR_NUMBER" || echo 'no changes to commit'
+          git push

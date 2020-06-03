@@ -1,0 +1,25 @@
+# RAPIDS Dockerfile for {{ os }} "runtime" image
+#
+# runtime: RAPIDS is installed from published conda packages to the 'rapids'
+# conda environment. RAPIDS jupyter notebooks are also provided, as well as
+# jupyterlab and all the dependencies required to run them.
+#
+# Copyright (c) {{ now.year }}, NVIDIA CORPORATION.
+
+ARG CUDA_VERSION={{ DEFAULT_CUDA_VERSION }}
+ARG CUDA_MAJORMINOR_VERSION=${CUDA_VERSION}
+ARG LINUX_VERSION={{ os }}
+ARG PYTHON_VERSION={{ DEFAULT_PYTHON_VERSION }}
+
+FROM rapidsaistaging/rapidsai-nightly-staging:{{ RAPIDS_VERSION }}-cuda${CUDA_VERSION}-base-${LINUX_VERSION}-py${PYTHON_VERSION}
+
+ARG CUDA_MAJORMINOR_VERSION
+
+{# base/runtime install specs #}
+ARG DASK_XGBOOST_CONDA_VERSION_SPEC=0.2*
+ARG RAPIDS_CONDA_VERSION_SPEC={{ RAPIDS_VERSION }}*
+
+{# Install the notebook dependencies and the notebook repo #}
+{% include 'partials/env_debug.dockerfile.j2' %}
+
+{% include 'partials/install_notebooks.dockerfile.j2' %}
