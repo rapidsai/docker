@@ -11,7 +11,7 @@ ARG CUDA_VERSION=10.0
 ARG LINUX_VERSION=ubuntu18.04
 ARG PYTHON_VERSION=3.6
 
-FROM rapidsaistaging/rapidsai-dev-nightly-staging:0.14-cuda${CUDA_VERSION}-devel-${LINUX_VERSION}-py${PYTHON_VERSION}
+FROM rapidsaistaging/rapidsai-dev-nightly-staging:0.15-cuda${CUDA_VERSION}-devel-${LINUX_VERSION}-py${PYTHON_VERSION}
 
 ARG PARALLEL_LEVEL
 
