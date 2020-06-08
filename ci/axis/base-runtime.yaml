@@ -1,5 +1,5 @@
 BUILD_IMAGE:
-  - gpuci/build-rapidsai
+  - gpuci/build-rapidsai-nightly
 
 FROM_IMAGE:
   - gpuci/rapidsai
@@ -9,11 +9,9 @@ IMAGE_TYPE:
   - runtime
 
 RAPIDS_VER:
-  - 0.14
   - 0.15
   
 RAPIDS_CHANNEL:
-  - rapidsai
   - rapidsai-nightly
 
 CUDA_VER:
@@ -34,4 +32,8 @@ exclude:
   - RAPIDS_VER: 0.14
     RAPIDS_CHANNEL: rapidsai-nightly
   - RAPIDS_VER: 0.15
+    RAPIDS_CHANNEL: rapidsai
+  - BUILD_IMAGE: gpuci/build-rapidsai
+    RAPIDS_CHANNEL: rapidsai-nightly
+  - BUILD_IMAGE: gpuci/build-rapidsai-nightly
     RAPIDS_CHANNEL: rapidsai

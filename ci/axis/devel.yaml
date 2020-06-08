@@ -1,5 +1,4 @@
 BUILD_IMAGE:
-  - gpuci/build-rapidsai-dev
   - gpuci/build-rapidsai-dev-nightly
 
 FROM_IMAGE:
@@ -9,12 +8,10 @@ IMAGE_TYPE:
   - devel
 
 RAPIDS_VER:
-  - 0.14
   - 0.15
   
 RAPIDS_CHANNEL:
   - rapidsai
-  - rapidsai-nightly
 
 CUDA_VER:
   - 10.2
