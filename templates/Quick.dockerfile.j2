@@ -15,7 +15,7 @@ ARG FROM_IMAGE=rapidsaistaging/rapidsai-dev-nightly-staging
 
 FROM ${FROM_IMAGE}:${RAPIDS_VER}-cuda${CUDA_VER}-devel-${LINUX_VER}-py${PYTHON_VER}
 
-ARG PARALLEL_LEVEL
+ARG PARALLEL_LEVEL=16
 
 {# Update RAPIDS repos #}
 {% for lib in RAPIDS_LIBS %}
