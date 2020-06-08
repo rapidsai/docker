@@ -35,7 +35,3 @@ exclude:
     RAPIDS_CHANNEL: rapidsai-nightly
   - RAPIDS_VER: 0.15
     RAPIDS_CHANNEL: rapidsai
-  - BUILD_IMAGE: gpuci/build-rapidsai
-    RAPIDS_CHANNEL: rapidsai-nightly
-  - BUILD_IMAGE: gpuci/build-rapidsai-nightly
-    RAPIDS_CHANNEL: rapidsai
