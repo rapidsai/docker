@@ -5,9 +5,13 @@ BUILD_IMAGE:
 FROM_IMAGE:
   - gpuci/rapidsai
 
+IMAGE_TYPE:
+  - base
+  - runtime
+
 RAPIDS_VER:
-  - 0.13
   - 0.14
+  - 0.15
   
 RAPIDS_CHANNEL:
   - rapidsai
@@ -28,9 +32,9 @@ PYTHON_VER:
   - 3.7
 
 exclude:
-  - RAPIDS_VER: 0.13
-    RAPIDS_CHANNEL: rapidsai-nightly
   - RAPIDS_VER: 0.14
+    RAPIDS_CHANNEL: rapidsai-nightly
+  - RAPIDS_VER: 0.15
     RAPIDS_CHANNEL: rapidsai
   - BUILD_IMAGE: gpuci/build-rapidsai
     RAPIDS_CHANNEL: rapidsai-nightly
