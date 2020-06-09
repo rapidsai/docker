@@ -45,10 +45,7 @@ RUN cd ${RAPIDS_DIR}/rmm && \
 
 RUN cd ${RAPIDS_DIR}/cudf && \
   source activate rapids && \
-  ./build.sh -l && \
-  cd cpp/build && \
-  make -j${PARALLEL_LEVEL} build_tests_nvstrings && \
-  make -j${PARALLEL_LEVEL} build_tests_cudf
+  ./build.sh tests
 
 RUN cd ${RAPIDS_DIR}/cusignal && \
   source activate rapids && \
