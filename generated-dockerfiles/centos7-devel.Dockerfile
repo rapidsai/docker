@@ -140,6 +140,7 @@ RUN cd ${RAPIDS_DIR}/rmm && \
 
 RUN cd ${RAPIDS_DIR}/cudf && \
   source activate rapids && \
+  ./build.sh && \
   ./build.sh tests
 
 RUN cd ${RAPIDS_DIR}/cusignal && \
