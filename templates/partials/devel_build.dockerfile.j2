@@ -8,10 +8,7 @@ ENV PARALLEL_LEVEL=${PARALLEL_LEVEL}
 RUN cd ${RAPIDS_DIR}/{{ lib.name }} && \
   source activate rapids && \
   {% if lib.name == "cudf" %}
-  ./build.sh -l && \
-  cd cpp/build && \
-  make -j${PARALLEL_LEVEL} build_tests_nvstrings && \
-  make -j${PARALLEL_LEVEL} build_tests_cudf
+  ./build.sh tests
 
   {% elif lib.name == "cuspatial" %}
   export CUSPATIAL_HOME="$PWD" && \
