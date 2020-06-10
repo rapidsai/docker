@@ -1,4 +1,4 @@
-# <div align="left"><img src="https://rapids.ai/assets/images/rapids_logo.png" width="90px"/>&nbsp;build
+# <div align="left"><img src="https://rapids.ai/assets/images/rapids_logo.png" width="90px"/>&nbsp;docker
 
 This repository contains the source files for [rapidsai Docker images](https://hub.docker.com/u/rapidsai)
 
