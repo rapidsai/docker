@@ -19,12 +19,12 @@ echo $DH_TOKEN | docker login --username $DH_USER --password-stdin
 
 # Install Jinja deps
 gpuci_logger "Install Jinja and PyYAML..."
-python3.7 -m pip install --user Jinja2 PyYAML
-python3.7 --version
+python3 --version
+python3 -m pip install --user Jinja2 PyYAML
 
 # Generate dockerfiles
 gpuci_logger "Generating dockerfiles..."
-python3.7 generate_dockerfiles.py
+python3 generate_dockerfiles.py
 
 # Select dockerfile based on matrix var
 if (echo ${LINUX_VERSION} | grep -i ubuntu); then
