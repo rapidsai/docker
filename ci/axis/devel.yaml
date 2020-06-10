@@ -11,7 +11,7 @@ RAPIDS_VER:
   - 0.15
   
 RAPIDS_CHANNEL:
-  - rapidsai
+  - rapidsai-nightly
 
 CUDA_VER:
   - 10.2
