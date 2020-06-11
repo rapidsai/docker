@@ -71,6 +71,9 @@ RUN cd ${RAPIDS_DIR} \
   {{ "&& cd ${RAPIDS_DIR} \\" if not loop.last }}
 {% endfor %}
 
+{# Include 'rapids' conda env in LD_LIBRARY_PATH #}
+ENV LD_LIBRARY_PATH=${LD_LIBRARY_PATH}:/opt/conda/envs/rapids
+
 {% if "centos" in os %}
 {# Add /usr/local/cuda/* temporarily to LD_LIBRARY_PATH to support various build steps
 This will need to be removed later since it causes problems with certain runtime libs (numba.cuda) #}
