@@ -16,9 +16,10 @@ FROM rapidsaistaging/rapidsai-dev-nightly-staging:{{ RAPIDS_VERSION }}-cuda${CUD
 ARG PARALLEL_LEVEL
 
 {# Update RAPIDS repos #}
+RUN source activate rapids && \
 {% for lib in RAPIDS_LIBS %}
-RUN cd ${RAPIDS_DIR}/{{ lib.name }} && \
-    git pull
+    cd ${RAPIDS_DIR}/{{ lib.name }} && \
+    git pull {{ " \\" if not loop.last }}
 {% endfor %}
 
 {# Build RAPIDS #}
