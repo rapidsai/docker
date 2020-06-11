@@ -15,26 +15,27 @@ FROM rapidsaistaging/rapidsai-dev-nightly-staging:0.15-cuda${CUDA_VERSION}-devel
 
 ARG PARALLEL_LEVEL
 
-RUN cd ${RAPIDS_DIR}/rmm && \
-    git pull
-RUN cd ${RAPIDS_DIR}/cudf && \
-    git pull
-RUN cd ${RAPIDS_DIR}/cusignal && \
-    git pull
-RUN cd ${RAPIDS_DIR}/cuxfilter && \
-    git pull
-RUN cd ${RAPIDS_DIR}/cuspatial && \
-    git pull
-RUN cd ${RAPIDS_DIR}/cuml && \
-    git pull
-RUN cd ${RAPIDS_DIR}/cugraph && \
-    git pull
-RUN cd ${RAPIDS_DIR}/xgboost && \
-    git pull
-RUN cd ${RAPIDS_DIR}/dask-xgboost && \
-    git pull
-RUN cd ${RAPIDS_DIR}/dask-cuda && \
-    git pull
+RUN source activate rapids && \
+    cd ${RAPIDS_DIR}/rmm && \
+    git pull  \
+    cd ${RAPIDS_DIR}/cudf && \
+    git pull  \
+    cd ${RAPIDS_DIR}/cusignal && \
+    git pull  \
+    cd ${RAPIDS_DIR}/cuxfilter && \
+    git pull  \
+    cd ${RAPIDS_DIR}/cuspatial && \
+    git pull  \
+    cd ${RAPIDS_DIR}/cuml && \
+    git pull  \
+    cd ${RAPIDS_DIR}/cugraph && \
+    git pull  \
+    cd ${RAPIDS_DIR}/xgboost && \
+    git pull  \
+    cd ${RAPIDS_DIR}/dask-xgboost && \
+    git pull  \
+    cd ${RAPIDS_DIR}/dask-cuda && \
+    git pull 
 
 ENV NCCL_ROOT=/opt/conda/envs/rapids
 ENV PARALLEL_LEVEL=${PARALLEL_LEVEL}
