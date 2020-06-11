@@ -7,12 +7,12 @@
 #
 # Copyright (c) 2020, NVIDIA CORPORATION.
 
-ARG CUDA_VERSION=10.0
+ARG CUDA_VERSION=10.2
 ARG CUDA_MAJORMINOR_VERSION=${CUDA_VERSION}
 ARG LINUX_VERSION=ubuntu18.04
 ARG PYTHON_VERSION=3.6
 
-FROM  gpuci/rapidsai-enh-ccache-testing:${CUDA_VERSION}-devel-${LINUX_VERSION}-py${PYTHON_VERSION}
+FROM gpuci/rapidsai-enh-ccache-testing:0.15-cuda${CUDA_VERSION}-devel-${LINUX_VERSION}-py${PYTHON_VERSION}
 
 ARG CC_VERSION=7
 ARG CXX_VERSION=7
@@ -34,6 +34,7 @@ RUN apt-get update && apt-get install -y \
     gsfonts \
     && rm -rf /var/lib/apt/lists/*
 
+ADD /ccacheLocal/ccache /ccache
 
 RUN mkdir -p ${RAPIDS_DIR}/utils 
 COPY start_jupyter.sh condaretry nbtest.sh nbtestlog2junitxml.py ${RAPIDS_DIR}/utils/
