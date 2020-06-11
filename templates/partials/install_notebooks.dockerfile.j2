@@ -2,9 +2,7 @@
 RUN gpuci_retry conda install -y -n rapids \
         rapids-notebook-env=${RAPIDS_VER} \
     && conda remove -y -n rapids --force-remove \
-        rapids-notebook-env=${RAPIDS_VER} \
-    && conda clean -afy \
-    && chmod -R ugo+w /opt/conda
+        rapids-notebook-env=${RAPIDS_VER}
 
 {# Install jupyter lab stuff #}
 RUN source activate rapids \
@@ -16,8 +14,7 @@ RUN cd ${RAPIDS_DIR} \
   && source activate rapids \
   && git clone -b branch-{{ RAPIDS_VERSION }} --depth 1 --single-branch https://github.com/rapidsai/notebooks.git \
   && cd notebooks \
-  && git submodule update --init --remote --recursive --no-single-branch --depth 1 \
-  && chmod -R ugo+w /opt/conda ${RAPIDS_DIR}
+  && git submodule update --init --remote --recursive --no-single-branch --depth 1
 
 {# Add test file for testing notebooks from within the container #}
 COPY test.sh test-nbcontrib.sh /

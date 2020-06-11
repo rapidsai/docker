@@ -42,5 +42,3 @@ RUN cd ${RAPIDS_DIR}/{{ lib.name }} && \
 
   {% endif %}
 {% endfor %}
-
-RUN chmod -R ugo+w /opt/conda ${RAPIDS_DIR}

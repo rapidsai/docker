@@ -83,6 +83,9 @@ numba.cuda cannot load that, and instead have it load
 ENV LD_LIBRARY_PATH=${LD_LIBRARY_PATH_PREBUILD}
 {% endif %}
 
+{# Cleaup conda and set ACLs for all users #}
+{% include 'partials/cleanup-chmod.dockerfile.j2' %}
+
 COPY .run_in_rapids.sh /.run_in_rapids
 ENTRYPOINT [ "/usr/bin/tini", "--", "/.run_in_rapids" ]
 

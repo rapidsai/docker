@@ -25,3 +25,6 @@ RUN cd ${RAPIDS_DIR}/{{ lib.name }} && \
 
 {# Build RAPIDS #}
 {% include 'partials/devel_build.dockerfile.j2' %}
+
+{# Cleaup conda and set ACLs for all users #}
+{% include 'partials/cleanup-chmod.dockerfile.j2' %}
