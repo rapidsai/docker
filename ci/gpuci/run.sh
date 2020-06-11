@@ -75,7 +75,7 @@ echo "docker build --pull -t ${BUILD_IMAGE}:${BUILD_TAG} ${BUILD_ARGS} -f build/
 
 # Build image
 gpuci_logger "Starting build..."
-gpuci_retry docker build --pull -t ${BUILD_IMAGE}:${BUILD_TAG} ${BUILD_ARGS} -f build/${DOCKERFILE} context/
+docker build --pull -t ${BUILD_IMAGE}:${BUILD_TAG} ${BUILD_ARGS} -f build/${DOCKERFILE} context/
 
 # List image info
 gpuci_logger "Displaying image info..."
