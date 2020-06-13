@@ -5,7 +5,7 @@ ENV NCCL_ROOT=/opt/conda/envs/rapids
 ENV PARALLEL_LEVEL=${PARALLEL_LEVEL}
 
 {# Include 'rapids' conda env in LD_LIBRARY_PATH #}
-ENV LD_LIBRARY_PATH=${LD_LIBRARY_PATH}:/opt/conda/envs/rapids
+ENV LD_LIBRARY_PATH=${LD_LIBRARY_PATH}:/opt/conda/envs/rapids/lib
 
 {% for lib in RAPIDS_LIBS %}
 RUN cd ${RAPIDS_DIR}/{{ lib.name }} && \
