@@ -16,7 +16,7 @@ RUN cd ${RAPIDS_DIR} \
   && source activate rapids \
   && git clone -b branch-{{ RAPIDS_VERSION }} --depth 1 --single-branch https://github.com/rapidsai/notebooks.git \
   && cd notebooks \
-  && git submodule update --init --remote --recursive --no-single-branch --depth 1
+  && git submodule update --init --remote --no-single-branch --depth 1
 
 {# Add test file for testing notebooks from within the container #}
 COPY test.sh test-nbcontrib.sh /
