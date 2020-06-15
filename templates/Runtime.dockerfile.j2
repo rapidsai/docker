@@ -22,3 +22,6 @@ ARG RAPIDS_VER={{ RAPIDS_VERSION }}*
 {% include 'partials/env_debug.dockerfile.j2' %}
 
 {% include 'partials/install_notebooks.dockerfile.j2' %}
+
+{# Cleaup conda and set ACLs for all users #}
+{% include 'partials/cleanup-chmod.dockerfile.j2' %}

@@ -40,16 +40,12 @@ notebook deps.  This is done as a single install to ensure compatibility
 between packages. #}
 {% include 'partials/env_debug.dockerfile.j2' %}
 
-{# Install rapids-build-env from conda meta-pkg #}
-RUN gpuci_retry conda install -y -n rapids --freeze-installed \
+{# Install rapids-build-env and rapids-doc-env from conda meta-pkg #}
+RUN gpuci_retry conda install -y -n rapids \
       rapids-build-env=${RAPIDS_VER} \
-    && conda remove -y -n rapids --force-remove \
-      rapids-build-env=${RAPIDS_VER}
-
-{# Install rapids-doc-env from conda meta-pkg #}
-RUN gpuci_retry conda install -y -n rapids --freeze-installed \
       rapids-doc-env=${RAPIDS_VER} \
     && conda remove -y -n rapids --force-remove \
+      rapids-build-env=${RAPIDS_VER} \
       rapids-doc-env=${RAPIDS_VER}
 
 {% include 'partials/env_debug.dockerfile.j2' %}
@@ -71,9 +67,6 @@ RUN cd ${RAPIDS_DIR} \
   {{ "&& cd ${RAPIDS_DIR} \\" if not loop.last }}
 {% endfor %}
 
-{# Include 'rapids' conda env in LD_LIBRARY_PATH #}
-ENV LD_LIBRARY_PATH=${LD_LIBRARY_PATH}:/opt/conda/envs/rapids
-
 {% if "centos" in os %}
 {# Add /usr/local/cuda/* temporarily to LD_LIBRARY_PATH to support various build steps
 This will need to be removed later since it causes problems with certain runtime libs (numba.cuda) #}
@@ -89,6 +82,9 @@ numba.cuda cannot load that, and instead have it load
 /lib64/libcuda.so instead #}
 ENV LD_LIBRARY_PATH=${LD_LIBRARY_PATH_PREBUILD}
 {% endif %}
+
+{# Cleaup conda and set ACLs for all users #}
+{% include 'partials/cleanup-chmod.dockerfile.j2' %}
 
 COPY .run_in_rapids.sh /.run_in_rapids
 ENTRYPOINT [ "/usr/bin/tini", "--", "/.run_in_rapids" ]
