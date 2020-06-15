@@ -17,23 +17,23 @@ ARG PARALLEL_LEVEL
 
 RUN source activate rapids && \
     cd ${RAPIDS_DIR}/rmm && \
-    git pull  \
+    git pull && \
     cd ${RAPIDS_DIR}/cudf && \
-    git pull  \
+    git pull && \
     cd ${RAPIDS_DIR}/cusignal && \
-    git pull  \
+    git pull && \
     cd ${RAPIDS_DIR}/cuxfilter && \
-    git pull  \
+    git pull && \
     cd ${RAPIDS_DIR}/cuspatial && \
-    git pull  \
+    git pull && \
     cd ${RAPIDS_DIR}/cuml && \
-    git pull  \
+    git pull && \
     cd ${RAPIDS_DIR}/cugraph && \
-    git pull  \
+    git pull && \
     cd ${RAPIDS_DIR}/xgboost && \
-    git pull  \
+    git pull && \
     cd ${RAPIDS_DIR}/dask-xgboost && \
-    git pull  \
+    git pull && \
     cd ${RAPIDS_DIR}/dask-cuda && \
     git pull 
 
