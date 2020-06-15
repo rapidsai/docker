@@ -11,12 +11,12 @@ ARG CUDA_MAJORMINOR_VERSION=${CUDA_VERSION}
 ARG LINUX_VERSION=ubuntu18.04
 ARG PYTHON_VERSION=3.6
 
-FROM rapidsaistaging/rapidsai-nightly-staging:0.14-cuda${CUDA_VERSION}-base-${LINUX_VERSION}-py${PYTHON_VERSION}
+FROM rapidsaistaging/rapidsai-nightly-staging:0.15-cuda${CUDA_VERSION}-base-${LINUX_VERSION}-py${PYTHON_VERSION}
 
 ARG CUDA_MAJORMINOR_VERSION
 
 ARG DASK_XGBOOST_CONDA_VERSION_SPEC=0.2*
-ARG RAPIDS_CONDA_VERSION_SPEC=0.14*
+ARG RAPIDS_CONDA_VERSION_SPEC=0.15*
 
 RUN source activate rapids \
   && env \
@@ -34,7 +34,7 @@ RUN source activate rapids \
 
 RUN cd ${RAPIDS_DIR} \
   && source activate rapids \
-  && git clone -b branch-0.14 --depth 1 --single-branch https://github.com/rapidsai/notebooks.git \
+  && git clone -b branch-0.15 --depth 1 --single-branch https://github.com/rapidsai/notebooks.git \
   && cd notebooks \
   && git submodule update --init --remote --recursive --no-single-branch --depth 1 \
   && chmod -R ugo+w /opt/conda ${RAPIDS_DIR}

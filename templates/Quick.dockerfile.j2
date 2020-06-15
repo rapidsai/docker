@@ -18,9 +18,10 @@ FROM ${FROM_IMAGE}:${RAPIDS_VER}-cuda${CUDA_VER}-devel-${LINUX_VER}-py${PYTHON_V
 ARG PARALLEL_LEVEL=16
 
 {# Update RAPIDS repos #}
+RUN source activate rapids && \
 {% for lib in RAPIDS_LIBS %}
-RUN cd ${RAPIDS_DIR}/{{ lib.name }} && \
-    git pull
+    cd ${RAPIDS_DIR}/{{ lib.name }} && \
+    git pull {{ "&& \\" if not loop.last }}
 {% endfor %}
 
 {# Build RAPIDS #}

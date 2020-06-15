@@ -11,30 +11,31 @@ ARG CUDA_VERSION=10.0
 ARG LINUX_VERSION=centos7
 ARG PYTHON_VERSION=3.6
 
-FROM rapidsaistaging/rapidsai-dev-nightly-staging:0.14-cuda${CUDA_VERSION}-devel-${LINUX_VERSION}-py${PYTHON_VERSION}
+FROM rapidsaistaging/rapidsai-dev-nightly-staging:0.15-cuda${CUDA_VERSION}-devel-${LINUX_VERSION}-py${PYTHON_VERSION}
 
 ARG PARALLEL_LEVEL
 
-RUN cd ${RAPIDS_DIR}/rmm && \
-    git pull
-RUN cd ${RAPIDS_DIR}/cudf && \
-    git pull
-RUN cd ${RAPIDS_DIR}/cusignal && \
-    git pull
-RUN cd ${RAPIDS_DIR}/cuxfilter && \
-    git pull
-RUN cd ${RAPIDS_DIR}/cuspatial && \
-    git pull
-RUN cd ${RAPIDS_DIR}/cuml && \
-    git pull
-RUN cd ${RAPIDS_DIR}/cugraph && \
-    git pull
-RUN cd ${RAPIDS_DIR}/xgboost && \
-    git pull
-RUN cd ${RAPIDS_DIR}/dask-xgboost && \
-    git pull
-RUN cd ${RAPIDS_DIR}/dask-cuda && \
-    git pull
+RUN source activate rapids && \
+    cd ${RAPIDS_DIR}/rmm && \
+    git pull && \
+    cd ${RAPIDS_DIR}/cudf && \
+    git pull && \
+    cd ${RAPIDS_DIR}/cusignal && \
+    git pull && \
+    cd ${RAPIDS_DIR}/cuxfilter && \
+    git pull && \
+    cd ${RAPIDS_DIR}/cuspatial && \
+    git pull && \
+    cd ${RAPIDS_DIR}/cuml && \
+    git pull && \
+    cd ${RAPIDS_DIR}/cugraph && \
+    git pull && \
+    cd ${RAPIDS_DIR}/xgboost && \
+    git pull && \
+    cd ${RAPIDS_DIR}/dask-xgboost && \
+    git pull && \
+    cd ${RAPIDS_DIR}/dask-cuda && \
+    git pull 
 
 ENV NCCL_ROOT=/opt/conda/envs/rapids
 ENV PARALLEL_LEVEL=${PARALLEL_LEVEL}
@@ -45,10 +46,8 @@ RUN cd ${RAPIDS_DIR}/rmm && \
 
 RUN cd ${RAPIDS_DIR}/cudf && \
   source activate rapids && \
-  ./build.sh -l && \
-  cd cpp/build && \
-  make -j${PARALLEL_LEVEL} build_tests_nvstrings && \
-  make -j${PARALLEL_LEVEL} build_tests_cudf
+  ./build.sh && \
+  ./build.sh tests
 
 RUN cd ${RAPIDS_DIR}/cusignal && \
   source activate rapids && \
