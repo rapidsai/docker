@@ -20,7 +20,7 @@ echo $DH_TOKEN | docker login --username $DH_USER --password-stdin
 # Install Jinja deps
 gpuci_logger "Install Jinja and PyYAML..."
 python3 --version
-python3 -m pip install --user Jinja2 PyYAML
+python3 -m pip install --user -r requirements.txt
 
 # Generate dockerfiles
 gpuci_logger "Generating dockerfiles..."
