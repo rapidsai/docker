@@ -19,7 +19,7 @@ ARG PARALLEL_LEVEL
 RUN source activate rapids && \
 {% for lib in RAPIDS_LIBS %}
     cd ${RAPIDS_DIR}/{{ lib.name }} && \
-    git pull {{ " \\" if not loop.last }}
+    git pull {{ "&& \\" if not loop.last }}
 {% endfor %}
 
 {# Build RAPIDS #}
