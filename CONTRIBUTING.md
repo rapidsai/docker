@@ -49,11 +49,11 @@ python generate_dockerfiles.py
 ./generate_dockerfiles.py
 ```
 
-`generate_dockerfiles.py` will write files to a `build` directory only if they don't exist already _or_ if they've changed since the last time the script was run. This helps to identify the impact of changes made to the `templates/` directory.
+This will write the Dockerfiles to the `generated-dockerfiles` directory.
 
 ## Building the Docker Images
 
-See the [_Building Images_](README.md#Building-Images) section in the `README.md` for details on how to build the compiled Dockerfiles. Replace the `generated-dockerfiles` folder with the `build` folder to build images compiled locally.
+See the [_Building Images_](README.md#Building-Images) section in the `README.md` for details on how to build the compiled Dockerfiles.
 
 ## Adding a new Repo to Devel Images
 

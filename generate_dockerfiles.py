@@ -1,19 +1,22 @@
 #!/usr/bin/env python3
+"""
+Python script to generate Dockerfiles
+"""
 
+import os
 from datetime import datetime
 from jinja2 import Environment, FileSystemLoader
-import os
 import yaml
 
 file_loader = FileSystemLoader("templates")
 env = Environment(loader=file_loader, lstrip_blocks=True, trim_blocks=True)
-output_dir = "build"
+OUTPUT_DIR = "generated-dockerfiles"
 
 
 def load_settings():
     """Loads settings.yaml and sets default variables on necessary RAPIDS_LIBS entries"""
-    with open("settings.yaml") as f:
-        settings = yaml.load(f, Loader=yaml.FullLoader)
+    with open("settings.yaml") as settings_file:
+        settings = yaml.load(settings_file, Loader=yaml.FullLoader)
     # Set default RAPIDS_LIBS values
     for lib in settings["RAPIDS_LIBS"]:
         if "branch" not in lib.keys():
@@ -23,27 +26,21 @@ def load_settings():
     return settings
 
 
-def isFileMissingOrDifferent(filename, new_file_contents):
-    """
-    Determines whether a given filename is missing from the output_dir directory
-    or if its contents are different from the given new_file_contents
-    """
-    if not (os.path.exists(f"{output_dir}/{filename}")):
-        return True
-    with open(f"{output_dir}/{filename}", "r") as f:
-        existing_file_contents = f.read()
-    if existing_file_contents != new_file_contents:
-        return True
-    return False
+def initialize_output_dir():
+    """Creates or empties the OUTPUT_DIR directory"""
+    if not os.path.exists(OUTPUT_DIR):
+        os.makedirs(OUTPUT_DIR)
+        return
+    filelist = [f for f in os.listdir(OUTPUT_DIR) if f.endswith(".Dockerfile")]
+    for dockerfile in filelist:
+        os.remove(os.path.join(OUTPUT_DIR, dockerfile))
+    return
 
 
 def main():
-    """Generates missing or changed Dockerfiles using Jinja2"""
-    files_changed = []
+    """Generates Dockerfiles using Jinja2"""
+    initialize_output_dir()
     settings = load_settings()
-    if not os.path.exists(output_dir):
-        os.makedirs(output_dir)
-
     for docker_os in ["centos7", "ubuntu18.04"]:
         for image_type in ["Base", "Devel", "Runtime", "Quick"]:
             dockerfile_name = f"{docker_os}-{image_type.lower()}.Dockerfile"
@@ -51,18 +48,9 @@ def main():
             output = template.render(
                 os=docker_os, image_type=image_type, now=datetime.utcnow(), **settings,
             )
-            if isFileMissingOrDifferent(dockerfile_name, output):
-                files_changed.append(dockerfile_name)
-                with open(f"{output_dir}/{dockerfile_name}", "w") as f:
-                    f.write(output)
-    if not files_changed:
-        print(f"No files in the {output_dir} directory were changed.")
-    else:
-        print(
-            f"The following files were generated or changed and written to the {output_dir} directory:"
-        )
-        for file in files_changed:
-            print(f"  - {file}")
+            with open(f"{OUTPUT_DIR}/{dockerfile_name}", "w") as dockerfile:
+                dockerfile.write(output)
+    print(f"Dockerfiles successfully written to the '{OUTPUT_DIR}' directory.")
 
 
 if __name__ == "__main__":
