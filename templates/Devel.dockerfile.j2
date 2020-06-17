@@ -85,6 +85,11 @@ numba.cuda cannot load that, and instead have it load
 ENV LD_LIBRARY_PATH=${LD_LIBRARY_PATH_PREBUILD}
 {% endif %}
 
+{# Report ccache stats and cleanup; also fix  #}
+RUN ccache -s \
+    && ccache -c \
+    && chmod -R ugo+w /ccache
+
 {# Cleaup conda and set ACLs for all users #}
 {% include 'partials/cleanup-chmod.dockerfile.j2' %}
 
