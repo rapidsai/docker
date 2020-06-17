@@ -8,6 +8,8 @@ This repo uses [Jinja2](https://www.palletsprojects.com/p/jinja/) to generate Do
 - [Project Structure](#Project-Structure)
 - [Development](#Development)
 - [Building the Docker Images](#Building-the-Docker-Images)
+- [CI](#CI)
+- [Pre-Commit Hook](#Pre-commit-hook)
 - [Adding a new Repo to Devel Images](#Adding-a-new-Repo-to-Devel-Images)
 - [Recommended VS Code Plugin](#Recommended-VS-Code-Plugin)
 
@@ -54,6 +56,16 @@ This will write the Dockerfiles to the `generated-dockerfiles` directory.
 ## Building the Docker Images
 
 See the [_Building Images_](README.md#Building-Images) section in the `README.md` for details on how to build the compiled Dockerfiles.
+
+## CI
+
+The following CI checks must pass before a PR can be merged:
+
+- **Dockerfiles updated** - the Dockerfiles in `generated-dockerfiles` must be up to date. Make sure to have run and committed the files that are output from `generate_dockerfiles.py` to ensure this check passes. See the [Pre-commit Hook](#Pre-commit-Hook) section below to get earlier feedback.
+
+## Pre-commit Hook
+
+This repo utilizes [pre-commit](https://pre-commit.com/) to provide developers quick feedback about their changes. Install [pre-commit](https://pre-commit.com/#installation) and run `pre-commit install` from the project's root folder to activate the hooks.
 
 ## Adding a new Repo to Devel Images
 
