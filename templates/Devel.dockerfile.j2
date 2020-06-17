@@ -16,7 +16,7 @@ ARG FROM_IMAGE=gpuci/rapidsai-enh-ccache-testing
 FROM ${FROM_IMAGE}:${RAPIDS_VER}-cuda${CUDA_VER}-devel-${LINUX_VER}-py${PYTHON_VER}
 
 {# Add ccache folder and status check for ccache #}
-ADD ../ccache /ccache
+ADD .ccache /ccache
 RUN ccache -s
 
 {# devel environment config args #}
