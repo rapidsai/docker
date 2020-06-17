@@ -65,7 +65,7 @@ The following CI checks must pass before a PR can be merged:
 
 ## Pre-commit Hook
 
-This repo utilizes [pre-commit](https://pre-commit.com/) to provide developers quick feedback about their changes. Install [pre-commit](https://pre-commit.com/#installation) and run `pre-commit install` from the project's root folder to activate the hooks.
+This repo utilizes [pre-commit](https://pre-commit.com/) to provide developers with quick feedback about their changes. Install [pre-commit](https://pre-commit.com/#installation) and run `pre-commit install` from the project's root folder to activate the hooks.
 
 ## Adding a new Repo to Devel Images
 
