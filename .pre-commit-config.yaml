@@ -3,9 +3,8 @@ repos:
   - repo: local
     hooks:
       - id: generate-dockerfiles
-        name: Generate Dockerfiles
+        name: Dockerfiles updated?
         language: script
         entry: generate_dockerfiles.py
         pass_filenames: no
         always_run: yes
-        verbose: true
