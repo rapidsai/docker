@@ -11,6 +11,7 @@ ENV LD_LIBRARY_PATH=${LD_LIBRARY_PATH}:/opt/conda/envs/rapids/lib
 RUN cd ${RAPIDS_DIR}/{{ lib.name }} && \
   source activate rapids && \
   env && \
+  ccache -s \
   {% if lib.name == "cudf" %}
   ./build.sh && \
   ./build.sh tests
