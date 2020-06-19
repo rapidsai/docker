@@ -17,11 +17,6 @@ env
 gpuci_logger "Logging into Docker..."
 echo $DH_TOKEN | docker login --username $DH_USER --password-stdin
 
-# Install Jinja deps
-gpuci_logger "Install Jinja and PyYAML..."
-python3 --version
-python3 -m pip install --user -r requirements.txt
-
 # Select dockerfile based on matrix var
 if (echo ${LINUX_VERSION} | grep -i ubuntu); then
     DOCKERFILE=ubuntu18.04-${IMAGE_TYPE}.Dockerfile
