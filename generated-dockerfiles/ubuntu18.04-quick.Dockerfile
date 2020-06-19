@@ -7,13 +7,15 @@
 #
 # Copyright (c) 2020, NVIDIA CORPORATION.
 
-ARG CUDA_VERSION=10.0
-ARG LINUX_VERSION=ubuntu18.04
-ARG PYTHON_VERSION=3.6
+ARG CUDA_VER=10.0
+ARG LINUX_VER=ubuntu18.04
+ARG PYTHON_VER=3.6
+ARG RAPIDS_VER=0.15
+ARG FROM_IMAGE=rapidsaistaging/rapidsai-dev-nightly-staging
 
-FROM rapidsaistaging/rapidsai-dev-nightly-staging:0.15-cuda${CUDA_VERSION}-devel-${LINUX_VERSION}-py${PYTHON_VERSION}
+FROM ${FROM_IMAGE}:${RAPIDS_VER}-cuda${CUDA_VER}-devel-${LINUX_VER}-py${PYTHON_VER}
 
-ARG PARALLEL_LEVEL
+ARG PARALLEL_LEVEL=16
 
 RUN source activate rapids && \
     cd ${RAPIDS_DIR}/rmm && \
@@ -39,6 +41,8 @@ RUN source activate rapids && \
 
 ENV NCCL_ROOT=/opt/conda/envs/rapids
 ENV PARALLEL_LEVEL=${PARALLEL_LEVEL}
+
+ENV LD_LIBRARY_PATH=${LD_LIBRARY_PATH}:/opt/conda/envs/rapids/lib
 
 RUN cd ${RAPIDS_DIR}/rmm && \
   source activate rapids && \
@@ -92,4 +96,6 @@ RUN cd ${RAPIDS_DIR}/dask-cuda && \
   python setup.py install
 
 
-RUN chmod -R ugo+w /opt/conda ${RAPIDS_DIR}
+
+RUN conda clean -afy \
+  && chmod -R ugo+w /opt/conda ${RAPIDS_DIR}

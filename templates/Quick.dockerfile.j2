@@ -7,13 +7,15 @@
 #
 # Copyright (c) {{ now.year }}, NVIDIA CORPORATION.
 
-ARG CUDA_VERSION={{ DEFAULT_CUDA_VERSION }}
-ARG LINUX_VERSION={{ os }}
-ARG PYTHON_VERSION={{ DEFAULT_PYTHON_VERSION }}
+ARG CUDA_VER={{ DEFAULT_CUDA_VERSION }}
+ARG LINUX_VER={{ os }}
+ARG PYTHON_VER={{ DEFAULT_PYTHON_VERSION }}
+ARG RAPIDS_VER={{ RAPIDS_VERSION }}
+ARG FROM_IMAGE=rapidsaistaging/rapidsai-dev-nightly-staging
 
-FROM rapidsaistaging/rapidsai-dev-nightly-staging:{{ RAPIDS_VERSION }}-cuda${CUDA_VERSION}-devel-${LINUX_VERSION}-py${PYTHON_VERSION}
+FROM ${FROM_IMAGE}:${RAPIDS_VER}-cuda${CUDA_VER}-devel-${LINUX_VER}-py${PYTHON_VER}
 
-ARG PARALLEL_LEVEL
+ARG PARALLEL_LEVEL=16
 
 {# Update RAPIDS repos #}
 RUN source activate rapids && \
@@ -24,3 +26,6 @@ RUN source activate rapids && \
 
 {# Build RAPIDS #}
 {% include 'partials/devel_build.dockerfile.j2' %}
+
+{# Cleaup conda and set ACLs for all users #}
+{% include 'partials/cleanup-chmod.dockerfile.j2' %}

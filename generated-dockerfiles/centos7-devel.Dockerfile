@@ -7,62 +7,49 @@
 #
 # Copyright (c) 2020, NVIDIA CORPORATION.
 
-ARG CUDA_VERSION=10.0
-ARG CUDA_MAJORMINOR_VERSION=${CUDA_VERSION}
-ARG LINUX_VERSION=centos7
-ARG PYTHON_VERSION=3.6
+ARG CUDA_VER=10.0
+ARG LINUX_VER=centos7
+ARG PYTHON_VER=3.6
+ARG RAPIDS_VER=0.15
+ARG FROM_IMAGE=gpuci/rapidsai
 
-FROM gpuci/miniconda-cuda-rapidsenv:${CUDA_VERSION}-devel-${LINUX_VERSION}-py${PYTHON_VERSION}
+FROM ${FROM_IMAGE}:${RAPIDS_VER}-cuda${CUDA_VER}-devel-${LINUX_VER}-py${PYTHON_VER}
 
-ARG CC_VERSION=7
-ARG CXX_VERSION=7
 ARG PARALLEL_LEVEL=16
-ARG RAPIDS_CONDA_VERSION_SPEC=0.15*
+ARG RAPIDS_VER=0.15*
 
-ARG CUDA_MAJORMINOR_VERSION
-ARG PYTHON_VERSION
+ARG PYTHON_VER
 
 ENV RAPIDS_DIR=/rapids
 
 
-RUN yum -y update \
-  && yum -y install which patch \
-  && yum clean all
-
-COPY --from=gpuci/builds-gcc7:10.0-devel-centos7 /usr/local/gcc7 /usr/local/gcc7
-
-ENV GCC7_DIR=/usr/local/gcc7
-ENV CC=${GCC7_DIR}/bin/gcc
-ENV CXX=${GCC7_DIR}/bin/g++
-ENV PATH=${GCC7_DIR}/bin:$PATH
-ENV CUDAHOSTCXX=${GCC7_DIR}/bin/g++
-ENV LD_LIBRARY_PATH=${GCC7_DIR}/lib64
-
 RUN mkdir -p ${RAPIDS_DIR}/utils ${GCC7_DIR}/lib64
-COPY start_jupyter.sh condaretry nbtest.sh nbtestlog2junitxml.py ${RAPIDS_DIR}/utils/
+COPY start_jupyter.sh nbtest.sh nbtestlog2junitxml.py ${RAPIDS_DIR}/utils/
 
-COPY .condarc /opt/conda/.condarc
-
-RUN source activate rapids \
-  && env \
-  && conda info \
-  && conda config --show-sources \
-  && conda list --show-channel-urls
-RUN ${RAPIDS_DIR}/utils/condaretry install -y -n rapids --freeze-installed \
-  rapids-build-env=${RAPIDS_CONDA_VERSION_SPEC}
-
-RUN ${RAPIDS_DIR}/utils/condaretry install -y -n rapids --freeze-installed \
-  rapids-doc-env=${RAPIDS_CONDA_VERSION_SPEC}
 
 RUN source activate rapids \
   && env \
   && conda info \
   && conda config --show-sources \
   && conda list --show-channel-urls
-RUN ${RAPIDS_DIR}/utils/condaretry install -y -n rapids --freeze-installed \
-    rapids-notebook-env=${RAPIDS_CONDA_VERSION_SPEC} \
-  && conda clean -afy \
-  && chmod -R ugo+w /opt/conda
+RUN gpuci_retry conda install -y -n rapids \
+      rapids-build-env=${RAPIDS_VER} \
+      rapids-doc-env=${RAPIDS_VER} \
+    && conda remove -y -n rapids --force-remove \
+      rapids-build-env=${RAPIDS_VER} \
+      rapids-doc-env=${RAPIDS_VER}
+
+
+RUN source activate rapids \
+  && env \
+  && conda info \
+  && conda config --show-sources \
+  && conda list --show-channel-urls
+
+RUN gpuci_retry conda install -y -n rapids \
+        rapids-notebook-env=${RAPIDS_VER} \
+    && conda remove -y -n rapids --force-remove \
+        rapids-notebook-env=${RAPIDS_VER}
 
 RUN source activate rapids \
   && pip install "git+https://github.com/rapidsai/jupyterlab-nvdashboard.git@master#egg=jupyterlab-nvdashboard" --upgrade \
@@ -72,8 +59,7 @@ RUN cd ${RAPIDS_DIR} \
   && source activate rapids \
   && git clone -b branch-0.15 --depth 1 --single-branch https://github.com/rapidsai/notebooks.git \
   && cd notebooks \
-  && git submodule update --init --remote --recursive --no-single-branch --depth 1 \
-  && chmod -R ugo+w /opt/conda ${RAPIDS_DIR}
+  && git submodule update --init --remote --no-single-branch --depth 1
 
 COPY test.sh test-nbcontrib.sh /
 
@@ -134,6 +120,8 @@ ENV LD_LIBRARY_PATH=${LD_LIBRARY_PATH}:/usr/local/cuda/lib64:/usr/local/cuda/lib
 ENV NCCL_ROOT=/opt/conda/envs/rapids
 ENV PARALLEL_LEVEL=${PARALLEL_LEVEL}
 
+ENV LD_LIBRARY_PATH=${LD_LIBRARY_PATH}:/opt/conda/envs/rapids/lib
+
 RUN cd ${RAPIDS_DIR}/rmm && \
   source activate rapids && \
   ./build.sh
@@ -186,9 +174,11 @@ RUN cd ${RAPIDS_DIR}/dask-cuda && \
   python setup.py install
 
 
-RUN chmod -R ugo+w /opt/conda ${RAPIDS_DIR}
 ENV LD_LIBRARY_PATH=${LD_LIBRARY_PATH_PREBUILD}
 
+
+RUN conda clean -afy \
+  && chmod -R ugo+w /opt/conda ${RAPIDS_DIR}
 COPY .run_in_rapids.sh /.run_in_rapids
 ENTRYPOINT [ "/usr/bin/tini", "--", "/.run_in_rapids" ]
 

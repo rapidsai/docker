@@ -6,20 +6,22 @@
 #
 # Copyright (c) {{ now.year }}, NVIDIA CORPORATION.
 
-ARG CUDA_VERSION={{ DEFAULT_CUDA_VERSION }}
-ARG CUDA_MAJORMINOR_VERSION=${CUDA_VERSION}
-ARG LINUX_VERSION={{ os }}
-ARG PYTHON_VERSION={{ DEFAULT_PYTHON_VERSION }}
+ARG CUDA_VER={{ DEFAULT_CUDA_VERSION }}
+ARG LINUX_VER={{ os }}
+ARG PYTHON_VER={{ DEFAULT_PYTHON_VERSION }}
+ARG RAPIDS_VER={{ RAPIDS_VERSION }}
+ARG FROM_IMAGE=gpuci/rapidsai
 
-FROM rapidsaistaging/rapidsai-nightly-staging:{{ RAPIDS_VERSION }}-cuda${CUDA_VERSION}-base-${LINUX_VERSION}-py${PYTHON_VERSION}
-
-ARG CUDA_MAJORMINOR_VERSION
+FROM ${FROM_IMAGE}:${RAPIDS_VER}-cuda${CUDA_VER}-runtime-${LINUX_VER}-py${PYTHON_VER}
 
 {# base/runtime install specs #}
-ARG DASK_XGBOOST_CONDA_VERSION_SPEC=0.2*
-ARG RAPIDS_CONDA_VERSION_SPEC={{ RAPIDS_VERSION }}*
+ARG DASK_XGBOOST_VER=0.2*
+ARG RAPIDS_VER={{ RAPIDS_VERSION }}*
 
 {# Install the notebook dependencies and the notebook repo #}
 {% include 'partials/env_debug.dockerfile.j2' %}
 
 {% include 'partials/install_notebooks.dockerfile.j2' %}
+
+{# Cleaup conda and set ACLs for all users #}
+{% include 'partials/cleanup-chmod.dockerfile.j2' %}
