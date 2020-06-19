@@ -67,11 +67,11 @@ gpuci_logger "Build config info..."
 echo "Build image and tag: ${BUILD_IMAGE}:${BUILD_TAG}"
 echo "Build args: ${BUILD_ARGS}"
 gpuci_logger "Docker build command..."
-echo "docker build --pull -t ${BUILD_IMAGE}:${BUILD_TAG} ${BUILD_ARGS} -f build/${DOCKERFILE} context/"
+echo "docker build --pull -t ${BUILD_IMAGE}:${BUILD_TAG} ${BUILD_ARGS} -f generated-dockerfiles/${DOCKERFILE} context/"
 
 # Build image
 gpuci_logger "Starting build..."
-docker build --pull -t ${BUILD_IMAGE}:${BUILD_TAG} ${BUILD_ARGS} -f build/${DOCKERFILE} context/
+docker build --pull -t ${BUILD_IMAGE}:${BUILD_TAG} ${BUILD_ARGS} -f generated-dockerfiles/${DOCKERFILE} context/
 
 # List image info
 gpuci_logger "Displaying image info..."
