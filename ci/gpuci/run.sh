@@ -26,7 +26,7 @@ fi
 
 # Debug output selected dockerfile
 gpuci_logger ">>>> BEGIN Dockerfile <<<<"
-cat build/${DOCKERFILE}
+cat generated-dockerfiles/${DOCKERFILE}
 gpuci_logger ">>>> END Dockerfile <<<<"
 
 # Get build info ready
