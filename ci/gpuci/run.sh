@@ -19,9 +19,9 @@ echo $DH_TOKEN | docker login --username $DH_USER --password-stdin
 
 # Select dockerfile based on matrix var
 if (echo ${LINUX_VERSION} | grep -i ubuntu); then
-    DOCKERFILE=ubuntu18.04-${IMAGE_TYPE}.Dockerfile
+  DOCKERFILE=ubuntu18.04-${IMAGE_TYPE}.Dockerfile
 else
-    DOCKERFILE=centos7-${IMAGE_TYPE}.Dockerfile
+  DOCKERFILE=centos7-${IMAGE_TYPE}.Dockerfile
 fi
 
 # Debug output selected dockerfile
