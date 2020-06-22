@@ -122,36 +122,36 @@ ENV PARALLEL_LEVEL=${PARALLEL_LEVEL}
 
 ENV LD_LIBRARY_PATH=${LD_LIBRARY_PATH}:/opt/conda/envs/rapids/lib
 
-RUN cd ${RAPIDS_DIR}/rmm && \
-  source activate rapids && \
-  ./build.sh
+# RUN cd ${RAPIDS_DIR}/rmm && \
+#   source activate rapids && \
+#   ./build.sh
 
-RUN cd ${RAPIDS_DIR}/cudf && \
-  source activate rapids && \
-  ./build.sh && \
-  ./build.sh tests
+# RUN cd ${RAPIDS_DIR}/cudf && \
+#   source activate rapids && \
+#   ./build.sh && \
+#   ./build.sh tests
 
-RUN cd ${RAPIDS_DIR}/cusignal && \
-  source activate rapids && \
-  ./build.sh
+# RUN cd ${RAPIDS_DIR}/cusignal && \
+#   source activate rapids && \
+#   ./build.sh
 
-RUN cd ${RAPIDS_DIR}/cuxfilter && \
-  source activate rapids && \
-  ./build.sh
+# RUN cd ${RAPIDS_DIR}/cuxfilter && \
+#   source activate rapids && \
+#   ./build.sh
 
-RUN cd ${RAPIDS_DIR}/cuspatial && \
-  source activate rapids && \
-  export CUSPATIAL_HOME="$PWD" && \
-  export CUDF_HOME="$PWD/../cudf" && \
-  ./build.sh
+# RUN cd ${RAPIDS_DIR}/cuspatial && \
+#   source activate rapids && \
+#   export CUSPATIAL_HOME="$PWD" && \
+#   export CUDF_HOME="$PWD/../cudf" && \
+#   ./build.sh
 
-RUN cd ${RAPIDS_DIR}/cuml && \
-  source activate rapids && \
-  ./build.sh --allgpuarch libcuml cuml prims
+# RUN cd ${RAPIDS_DIR}/cuml && \
+#   source activate rapids && \
+#   ./build.sh --allgpuarch libcuml cuml prims
 
-RUN cd ${RAPIDS_DIR}/cugraph && \
-  source activate rapids && \
-  ./build.sh
+# RUN cd ${RAPIDS_DIR}/cugraph && \
+#   source activate rapids && \
+#   ./build.sh
 
 RUN cd ${RAPIDS_DIR}/xgboost && \
   source activate rapids && \
@@ -169,9 +169,9 @@ RUN cd ${RAPIDS_DIR}/dask-xgboost && \
   source activate rapids && \
   python setup.py install
 
-RUN cd ${RAPIDS_DIR}/dask-cuda && \
-  source activate rapids && \
-  python setup.py install
+# RUN cd ${RAPIDS_DIR}/dask-cuda && \
+#   source activate rapids && \
+#   python setup.py install
 
 
 ENV LD_LIBRARY_PATH=${LD_LIBRARY_PATH_PREBUILD}
