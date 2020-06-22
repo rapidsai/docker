@@ -1,6 +1,6 @@
 BUILD_IMAGE:
   - rapidsai/rapidsai
-  - rapidasi/rapidsai-nightly
+  - rapidsai/rapidsai-nightly
 
 FROM_IMAGE:
   - gpuci/rapidsai
