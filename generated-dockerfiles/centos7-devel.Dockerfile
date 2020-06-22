@@ -155,6 +155,7 @@ ENV LD_LIBRARY_PATH=${LD_LIBRARY_PATH}:/opt/conda/envs/rapids/lib
 
 RUN cd ${RAPIDS_DIR}/xgboost && \
   source activate rapids && \
+  env && \
   mkdir -p build && cd build && \
   cmake -DCMAKE_INSTALL_PREFIX=$CONDA_PREFIX \
         -DUSE_NCCL=ON -DUSE_CUDA=ON -DUSE_CUDF=ON \
