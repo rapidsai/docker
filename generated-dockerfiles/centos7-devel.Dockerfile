@@ -22,6 +22,10 @@ ARG PYTHON_VER
 
 ENV RAPIDS_DIR=/rapids
 
+RUN yum -y update \	
+  && yum -y install which patch \	
+  && yum clean all
+
 
 RUN mkdir -p ${RAPIDS_DIR}/utils ${GCC7_DIR}/lib64
 COPY start_jupyter.sh nbtest.sh nbtestlog2junitxml.py ${RAPIDS_DIR}/utils/
