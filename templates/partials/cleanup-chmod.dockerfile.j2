@@ -2,4 +2,4 @@
 
 {# Clean-up conda and update ACLs for all users #}
 RUN conda clean -afy \
-  && chmod -R ugo+w /opt/conda ${RAPIDS_DIR}
+    && chmod -R ugo+w /opt/conda ${RAPIDS_DIR}

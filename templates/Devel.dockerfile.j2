@@ -11,9 +11,13 @@ ARG CUDA_VER={{ DEFAULT_CUDA_VERSION }}
 ARG LINUX_VER={{ os }}
 ARG PYTHON_VER={{ DEFAULT_PYTHON_VERSION }}
 ARG RAPIDS_VER={{ RAPIDS_VERSION }}
-ARG FROM_IMAGE=gpuci/rapidsai
+ARG FROM_IMAGE=gpuci/rapidsai-enh-ccache-testing
 
 FROM ${FROM_IMAGE}:${RAPIDS_VER}-cuda${CUDA_VER}-devel-${LINUX_VER}-py${PYTHON_VER}
+
+{# Add ccache folder and status check for ccache #}
+ADD ccache /ccache
+RUN ccache -s
 
 {# devel environment config args #}
 ARG PARALLEL_LEVEL=16
@@ -82,6 +86,11 @@ numba.cuda cannot load that, and instead have it load
 /lib64/libcuda.so instead #}
 ENV LD_LIBRARY_PATH=${LD_LIBRARY_PATH_PREBUILD}
 {% endif %}
+
+{# Report ccache stats and cleanup; also fix  #}
+RUN ccache -s \
+    && ccache -c \
+    && chmod -R ugo+w /ccache
 
 {# Cleaup conda and set ACLs for all users #}
 {% include 'partials/cleanup-chmod.dockerfile.j2' %}
