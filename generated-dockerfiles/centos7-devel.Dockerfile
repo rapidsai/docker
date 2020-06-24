@@ -119,7 +119,6 @@ ENV LD_LIBRARY_PATH=${LD_LIBRARY_PATH}:/usr/local/cuda/lib64:/usr/local/cuda/lib
 
 RUN mv /opt/conda/envs/rapids/include/dmlc/ /opt/conda/envs/rapids/include/dmlc-OFF
 
-
 ENV NCCL_ROOT=/opt/conda/envs/rapids
 ENV PARALLEL_LEVEL=${PARALLEL_LEVEL}
 
