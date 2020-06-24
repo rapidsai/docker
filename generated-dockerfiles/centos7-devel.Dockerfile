@@ -154,6 +154,8 @@ ENV LD_LIBRARY_PATH=${LD_LIBRARY_PATH}:/opt/conda/envs/rapids/lib
 #   source activate rapids && \
 #   ./build.sh
 
+RUN mv /opt/conda/envs/rapids/include/dmlc/ /opt/conda/envs/rapids/include/dmlc-OFF
+
 RUN cd ${RAPIDS_DIR}/xgboost && \
   source activate rapids && \
   env && \
