@@ -114,6 +114,12 @@ RUN cd ${RAPIDS_DIR} \
   && git submodule update --init --remote --recursive --no-single-branch --depth 1 
   
 
+ENV LD_LIBRARY_PATH_PREBUILD=${LD_LIBRARY_PATH}
+ENV LD_LIBRARY_PATH=${LD_LIBRARY_PATH}:/usr/local/cuda/lib64:/usr/local/cuda/lib64/stubs
+
+RUN mv /opt/conda/envs/rapids/include/dmlc/ /opt/conda/envs/rapids/include/dmlc-OFF
+
+
 ENV NCCL_ROOT=/opt/conda/envs/rapids
 ENV PARALLEL_LEVEL=${PARALLEL_LEVEL}
 
@@ -169,6 +175,10 @@ RUN cd ${RAPIDS_DIR}/dask-xgboost && \
 RUN cd ${RAPIDS_DIR}/dask-cuda && \
   source activate rapids && \
   python setup.py install
+
+
+ENV LD_LIBRARY_PATH=${LD_LIBRARY_PATH_PREBUILD}
+
 
 RUN conda clean -afy \
   && chmod -R ugo+w /opt/conda ${RAPIDS_DIR}
