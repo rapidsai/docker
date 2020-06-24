@@ -20,8 +20,8 @@ CUDA_VER:
   - 10.0
 
 LINUX_VER:
-  # - ubuntu16.04
-  # - ubuntu18.04
+  - ubuntu16.04
+  - ubuntu18.04
   - centos7
 
 PYTHON_VER:

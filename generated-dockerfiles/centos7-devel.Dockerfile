@@ -22,10 +22,6 @@ ARG PYTHON_VER
 
 ENV RAPIDS_DIR=/rapids
 
-RUN yum -y update \	
-  && yum -y install which patch \	
-  && yum clean all
-
 
 RUN mkdir -p ${RAPIDS_DIR}/utils ${GCC7_DIR}/lib64
 COPY start_jupyter.sh nbtest.sh nbtestlog2junitxml.py ${RAPIDS_DIR}/utils/
@@ -123,42 +119,39 @@ ENV PARALLEL_LEVEL=${PARALLEL_LEVEL}
 
 ENV LD_LIBRARY_PATH=${LD_LIBRARY_PATH}:/opt/conda/envs/rapids/lib
 
-# RUN cd ${RAPIDS_DIR}/rmm && \
-#   source activate rapids && \
-#   ./build.sh
+RUN cd ${RAPIDS_DIR}/rmm && \
+  source activate rapids && \
+  ./build.sh
 
-# RUN cd ${RAPIDS_DIR}/cudf && \
-#   source activate rapids && \
-#   ./build.sh && \
-#   ./build.sh tests
+RUN cd ${RAPIDS_DIR}/cudf && \
+  source activate rapids && \
+  ./build.sh && \
+  ./build.sh tests
 
-# RUN cd ${RAPIDS_DIR}/cusignal && \
-#   source activate rapids && \
-#   ./build.sh
+RUN cd ${RAPIDS_DIR}/cusignal && \
+  source activate rapids && \
+  ./build.sh
 
-# RUN cd ${RAPIDS_DIR}/cuxfilter && \
-#   source activate rapids && \
-#   ./build.sh
+RUN cd ${RAPIDS_DIR}/cuxfilter && \
+  source activate rapids && \
+  ./build.sh
 
-# RUN cd ${RAPIDS_DIR}/cuspatial && \
-#   source activate rapids && \
-#   export CUSPATIAL_HOME="$PWD" && \
-#   export CUDF_HOME="$PWD/../cudf" && \
-#   ./build.sh
+RUN cd ${RAPIDS_DIR}/cuspatial && \
+  source activate rapids && \
+  export CUSPATIAL_HOME="$PWD" && \
+  export CUDF_HOME="$PWD/../cudf" && \
+  ./build.sh
 
-# RUN cd ${RAPIDS_DIR}/cuml && \
-#   source activate rapids && \
-#   ./build.sh --allgpuarch libcuml cuml prims
+RUN cd ${RAPIDS_DIR}/cuml && \
+  source activate rapids && \
+  ./build.sh --allgpuarch libcuml cuml prims
 
-# RUN cd ${RAPIDS_DIR}/cugraph && \
-#   source activate rapids && \
-#   ./build.sh
-
-RUN mv /opt/conda/envs/rapids/include/dmlc/ /opt/conda/envs/rapids/include/dmlc-OFF
+RUN cd ${RAPIDS_DIR}/cugraph && \
+  source activate rapids && \
+  ./build.sh
 
 RUN cd ${RAPIDS_DIR}/xgboost && \
   source activate rapids && \
-  env && \
   mkdir -p build && cd build && \
   cmake -DCMAKE_INSTALL_PREFIX=$CONDA_PREFIX \
         -DUSE_NCCL=ON -DUSE_CUDA=ON -DUSE_CUDF=ON \
@@ -173,9 +166,9 @@ RUN cd ${RAPIDS_DIR}/dask-xgboost && \
   source activate rapids && \
   python setup.py install
 
-# RUN cd ${RAPIDS_DIR}/dask-cuda && \
-#   source activate rapids && \
-#   python setup.py install
+RUN cd ${RAPIDS_DIR}/dask-cuda && \
+  source activate rapids && \
+  python setup.py install
 
 RUN conda clean -afy \
   && chmod -R ugo+w /opt/conda ${RAPIDS_DIR}
