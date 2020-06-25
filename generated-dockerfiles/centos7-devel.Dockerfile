@@ -18,8 +18,8 @@ FROM ${FROM_IMAGE}:${RAPIDS_VER}-cuda${CUDA_VER}-devel-${LINUX_VER}-py${PYTHON_V
 ADD ccache /ccache
 RUN ccache -s \
     && ccache -c \
-    && chmod -R ugo+w /ccache
-RUN ccache -s
+    && chmod -R ugo+w /ccache \
+    && ccache -s
 
 ARG PARALLEL_LEVEL=16
 ARG RAPIDS_VER=0.15*
@@ -206,8 +206,8 @@ ENV LD_LIBRARY_PATH=${LD_LIBRARY_PATH_PREBUILD}
 
 RUN ccache -s \
     && ccache -c \
-    && chmod -R ugo+w /ccache
-RUN ccache -s
+    && chmod -R ugo+w /ccache \
+    && ccache -s
 
 
 RUN conda clean -afy \
