@@ -16,6 +16,9 @@ ARG FROM_IMAGE=gpuci/rapidsai-enh-ccache-testing
 FROM ${FROM_IMAGE}:${RAPIDS_VER}-cuda${CUDA_VER}-devel-${LINUX_VER}-py${PYTHON_VER}
 
 ADD ccache /ccache
+RUN ccache -s \
+    && ccache -c \
+    && chmod -R ugo+w /ccache
 RUN ccache -s
 
 ARG PARALLEL_LEVEL=16
@@ -204,6 +207,7 @@ ENV LD_LIBRARY_PATH=${LD_LIBRARY_PATH_PREBUILD}
 RUN ccache -s \
     && ccache -c \
     && chmod -R ugo+w /ccache
+RUN ccache -s
 
 
 RUN conda clean -afy \
