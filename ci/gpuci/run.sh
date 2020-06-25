@@ -5,9 +5,7 @@ set -e
 export HOME=$WORKSPACE
 
 # Install gpuCI tools
-curl -s https://raw.githubusercontent.com/rapidsai/gpuci-tools/main/install.sh | bash
-source ~/.bashrc
-cd ~
+conda install -y -c gpuci gpuci-tools
 
 # Show env
 gpuci_logger "Exposing current environment..."
