@@ -16,8 +16,8 @@ ARG FROM_IMAGE=gpuci/rapidsai-enh-ccache-testing
 FROM ${FROM_IMAGE}:${RAPIDS_VER}-cuda${CUDA_VER}-devel-${LINUX_VER}-py${PYTHON_VER}
 
 ADD ccache /ccache
-RUN ccache -s \
-    && ccache -c \
+RUN ccache -s
+RUN ccache -c \
     && chmod -R ugo+w /ccache
 RUN ccache -s
 
@@ -204,11 +204,10 @@ RUN cd ${RAPIDS_DIR}/dask-cuda && \
 
 ENV LD_LIBRARY_PATH=${LD_LIBRARY_PATH_PREBUILD}
 
-RUN ccache -s \
-    && ccache -c \
+RUN ccache -s
+RUN ccache -c \
     && chmod -R ugo+w /ccache
 RUN ccache -s
-
 
 RUN conda clean -afy \
     && chmod -R ugo+w /opt/conda ${RAPIDS_DIR}
