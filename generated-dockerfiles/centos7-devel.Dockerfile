@@ -15,6 +15,8 @@ ARG FROM_IMAGE=gpuci/rapidsai-enh-ccache-testing
 
 FROM ${FROM_IMAGE}:${RAPIDS_VER}-cuda${CUDA_VER}-devel-${LINUX_VER}-py${PYTHON_VER}
 
+ENV CCACHE_LOG="/ccache/ccache.log"
+
 ADD ccache /ccache
 RUN ccache -s
 RUN ccache -c \
