@@ -15,7 +15,7 @@ ARG FROM_IMAGE=gpuci/rapidsai
 
 FROM ${FROM_IMAGE}:${RAPIDS_VER}-cuda${CUDA_VER}-devel-${LINUX_VER}-py${PYTHON_VER}
 
-ADD ccache /ccache
+COPY ccache /ccache
 RUN ccache -s
 RUN ccache -c \
     && chmod -R ugo+w /ccache
