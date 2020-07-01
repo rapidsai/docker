@@ -34,7 +34,7 @@ RUN gpuci_retry conda install -y -n rapids \
 
 
 RUN conda clean -afy \
-    && chmod -R ugo+w /opt/conda ${RAPIDS_DIR}
+  && chmod -R ugo+w /opt/conda ${RAPIDS_DIR}
 WORKDIR ${RAPIDS_DIR}
 
 COPY .run_in_rapids.sh /.run_in_rapids
