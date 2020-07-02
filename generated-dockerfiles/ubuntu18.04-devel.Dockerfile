@@ -23,8 +23,6 @@ RUN ln -s "$(which ccache)" "/usr/local/bin/gcc" \
     && ln -s "$(which ccache)" "/usr/local/bin/g++" \
     && ln -s "$(which ccache)" "/usr/local/bin/nvcc"
 
-ENV CCACHE_LOGFILE="/ccache/ccache.log"
-
 ADD ccache /ccache
 RUN ccache -s
 RUN ccache -c \
