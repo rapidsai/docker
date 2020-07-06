@@ -11,12 +11,11 @@ ARG CUDA_VER={{ DEFAULT_CUDA_VERSION }}
 ARG LINUX_VER={{ os }}
 ARG PYTHON_VER={{ DEFAULT_PYTHON_VERSION }}
 ARG RAPIDS_VER={{ RAPIDS_VERSION }}
-{# ARG FROM_IMAGE=gpuci/rapidsai-enh-ccache-testing #}
 ARG FROM_IMAGE=gpuci/rapidsai
 
 FROM ${FROM_IMAGE}:${RAPIDS_VER}-cuda${CUDA_VER}-devel-${LINUX_VER}-py${PYTHON_VER}
 
-
+{# Install ccache from source #}
 RUN git clone https://github.com/ccache/ccache.git /tmp/ccache && cd /tmp/ccache \
  && git checkout -b rapids-compose-tmp b1fcfbca224b2af5b6499794edd8615dbc3dc7b5 \
  && ./autogen.sh \
@@ -30,22 +29,21 @@ ENV CCACHE_NOHASHDIR=
 ENV CCACHE_DIR="/ccache"
 ENV CCACHE_COMPILERCHECK="%compiler% --version"
 
-
 {# Uncomment these env vars to force ccache to be enabled by default #}
-{# ENV CC="/usr/local/bin/gcc"
+ENV CC="/usr/local/bin/gcc"
 ENV CXX="/usr/local/bin/g++"
 ENV NVCC="/usr/local/bin/nvcc"
 ENV CUDAHOSTCXX="/usr/local/bin/g++"
 RUN ln -s "$(which ccache)" "/usr/local/bin/gcc" \
     && ln -s "$(which ccache)" "/usr/local/bin/g++" \
-    && ln -s "$(which ccache)" "/usr/local/bin/nvcc" #}
+    && ln -s "$(which ccache)" "/usr/local/bin/nvcc"
 
 {# Add ccache folder and status check for ccache #}
-{# ADD ccache /ccache
+ADD ccache /ccache
 RUN ccache -s
 RUN ccache -c \
     && chmod -R ugo+w /ccache
-RUN ccache -s #}
+RUN ccache -s
 
 {# devel environment config args #}
 ARG PARALLEL_LEVEL=16
@@ -119,10 +117,10 @@ ENV LD_LIBRARY_PATH=${LD_LIBRARY_PATH_PREBUILD}
 {% endif %}
 
 {# Report ccache stats and cleanup; also fix  #}
-{# RUN ccache -s
+RUN ccache -s
 RUN ccache -c \
     && chmod -R ugo+w /ccache
-RUN ccache -s #}
+RUN ccache -s
 
 {# Cleaup conda and set ACLs for all users #}
 {% include 'partials/cleanup-chmod.dockerfile.j2' %}

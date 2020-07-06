@@ -15,7 +15,6 @@ ARG FROM_IMAGE=gpuci/rapidsai
 
 FROM ${FROM_IMAGE}:${RAPIDS_VER}-cuda${CUDA_VER}-devel-${LINUX_VER}-py${PYTHON_VER}
 
-
 RUN git clone https://github.com/ccache/ccache.git /tmp/ccache && cd /tmp/ccache \
  && git checkout -b rapids-compose-tmp b1fcfbca224b2af5b6499794edd8615dbc3dc7b5 \
  && ./autogen.sh \
@@ -29,8 +28,19 @@ ENV CCACHE_NOHASHDIR=
 ENV CCACHE_DIR="/ccache"
 ENV CCACHE_COMPILERCHECK="%compiler% --version"
 
+ENV CC="/usr/local/bin/gcc"
+ENV CXX="/usr/local/bin/g++"
+ENV NVCC="/usr/local/bin/nvcc"
+ENV CUDAHOSTCXX="/usr/local/bin/g++"
+RUN ln -s "$(which ccache)" "/usr/local/bin/gcc" \
+    && ln -s "$(which ccache)" "/usr/local/bin/g++" \
+    && ln -s "$(which ccache)" "/usr/local/bin/nvcc"
 
-
+ADD ccache /ccache
+RUN ccache -s
+RUN ccache -c \
+    && chmod -R ugo+w /ccache
+RUN ccache -s
 
 ARG PARALLEL_LEVEL=16
 ARG RAPIDS_VER=0.15*
@@ -141,37 +151,53 @@ ENV LD_LIBRARY_PATH=${LD_LIBRARY_PATH}:/opt/conda/envs/rapids/lib
 
 RUN cd ${RAPIDS_DIR}/rmm && \
   source activate rapids && \
+  env && \
+  ccache -s && \
   ./build.sh
 
 RUN cd ${RAPIDS_DIR}/cudf && \
   source activate rapids && \
+  env && \
+  ccache -s && \
   ./build.sh && \
   ./build.sh tests
 
 RUN cd ${RAPIDS_DIR}/cusignal && \
   source activate rapids && \
+  env && \
+  ccache -s && \
   ./build.sh
 
 RUN cd ${RAPIDS_DIR}/cuxfilter && \
   source activate rapids && \
+  env && \
+  ccache -s && \
   ./build.sh
 
 RUN cd ${RAPIDS_DIR}/cuspatial && \
   source activate rapids && \
+  env && \
+  ccache -s && \
   export CUSPATIAL_HOME="$PWD" && \
   export CUDF_HOME="$PWD/../cudf" && \
   ./build.sh
 
 RUN cd ${RAPIDS_DIR}/cuml && \
   source activate rapids && \
+  env && \
+  ccache -s && \
   ./build.sh --allgpuarch libcuml cuml prims
 
 RUN cd ${RAPIDS_DIR}/cugraph && \
   source activate rapids && \
+  env && \
+  ccache -s && \
   ./build.sh
 
 RUN cd ${RAPIDS_DIR}/xgboost && \
   source activate rapids && \
+  env && \
+  ccache -s && \
   mkdir -p build && cd build && \
   cmake -DCMAKE_INSTALL_PREFIX=$CONDA_PREFIX \
         -DUSE_NCCL=ON -DUSE_CUDA=ON -DUSE_CUDF=ON \
@@ -184,14 +210,22 @@ RUN cd ${RAPIDS_DIR}/xgboost && \
 
 RUN cd ${RAPIDS_DIR}/dask-xgboost && \
   source activate rapids && \
+  env && \
+  ccache -s && \
   python setup.py install
 
 RUN cd ${RAPIDS_DIR}/dask-cuda && \
   source activate rapids && \
+  env && \
+  ccache -s && \
   python setup.py install
 
 
 
+RUN ccache -s
+RUN ccache -c \
+    && chmod -R ugo+w /ccache
+RUN ccache -s
 
 
 RUN conda clean -afy \
