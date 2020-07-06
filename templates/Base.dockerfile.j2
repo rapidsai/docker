@@ -33,7 +33,7 @@ COPY libm.so.6 ${GCC7_DIR}/lib64
 
 {% include 'partials/env_debug.dockerfile.j2' %}
 
-RUN gpuci_retry conda install -y -n rapids \
+RUN gpuci_conda_retry conda install -y -n rapids \
   rapids=${RAPIDS_VER} 
 
 {# Cleaup conda and set ACLs for all users #}

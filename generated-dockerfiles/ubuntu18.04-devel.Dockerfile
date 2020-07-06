@@ -49,7 +49,7 @@ RUN source activate rapids \
   && conda config --show-sources \
   && conda list --show-channel-urls
 
-RUN gpuci_retry conda install -y -n rapids \
+RUN gpuci_conda_retry conda install -y -n rapids \
         rapids-notebook-env=${RAPIDS_VER} \
     && conda remove -y -n rapids --force-remove \
         rapids-notebook-env=${RAPIDS_VER}
