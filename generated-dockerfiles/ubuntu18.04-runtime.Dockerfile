@@ -60,3 +60,6 @@ COPY .start_jupyter_run_in_rapids.sh /.run_in_rapids
 
 RUN conda clean -afy \
     && chmod -R ugo+w /opt/conda ${RAPIDS_DIR}
+ENTRYPOINT [ "/usr/bin/tini", "--", "/.run_in_rapids" ]
+
+CMD [ "/bin/bash" ]
