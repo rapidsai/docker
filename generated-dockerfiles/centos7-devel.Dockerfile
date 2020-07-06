@@ -181,7 +181,6 @@ ENV LD_LIBRARY_PATH=${LD_LIBRARY_PATH_PREBUILD}
 
 RUN conda clean -afy \
   && chmod -R ugo+w /opt/conda ${RAPIDS_DIR}
-COPY .run_in_rapids.sh /.run_in_rapids
 ENTRYPOINT [ "/usr/bin/tini", "--", "/.run_in_rapids" ]
 
 CMD [ "/bin/bash" ]
