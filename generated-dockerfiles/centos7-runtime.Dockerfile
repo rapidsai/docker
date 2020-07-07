@@ -17,14 +17,24 @@ FROM ${FROM_IMAGE}:${RAPIDS_VER}-cuda${CUDA_VER}-runtime-${LINUX_VER}-py${PYTHON
 ARG DASK_XGBOOST_VER=0.2*
 ARG RAPIDS_VER=0.15*
 
+ENV RAPIDS_DIR=/rapids
+
+RUN mkdir -p ${RAPIDS_DIR}/utils ${GCC7_DIR}/lib64
+COPY start_jupyter.sh nbtest.sh nbtestlog2junitxml.py ${RAPIDS_DIR}/utils/
+
+COPY libm.so.6 ${GCC7_DIR}/lib64
+
 
 RUN source activate rapids \
   && env \
   && conda info \
   && conda config --show-sources \
   && conda list --show-channel-urls
+RUN gpuci_conda_retry install -y -n rapids \
+  rapids=${RAPIDS_VER}
 
-RUN gpuci_retry conda install -y -n rapids \
+
+RUN gpuci_conda_retry install -y -n rapids \
         rapids-notebook-env=${RAPIDS_VER} \
     && conda remove -y -n rapids --force-remove \
         rapids-notebook-env=${RAPIDS_VER}
@@ -50,3 +60,6 @@ COPY .start_jupyter_run_in_rapids.sh /.run_in_rapids
 
 RUN conda clean -afy \
   && chmod -R ugo+w /opt/conda ${RAPIDS_DIR}
+ENTRYPOINT [ "/usr/bin/tini", "--", "/.run_in_rapids" ]
+
+CMD [ "/bin/bash" ]
