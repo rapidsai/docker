@@ -15,6 +15,30 @@ ARG FROM_IMAGE=gpuci/rapidsai
 
 FROM ${FROM_IMAGE}:${RAPIDS_VER}-cuda${CUDA_VER}-devel-${LINUX_VER}-py${PYTHON_VER}
 
+RUN git clone https://github.com/ccache/ccache.git /tmp/ccache && cd /tmp/ccache \
+ && git checkout -b rapids-compose-tmp b1fcfbca224b2af5b6499794edd8615dbc3dc7b5 \
+ && ./autogen.sh \
+ && ./configure --disable-man --with-libb2-from-internet --with-libzstd-from-internet\
+ && make install -j \
+ && cd / \
+ && rm -rf /tmp/ccache* \
+ && mkdir -p /ccache
+
+ENV CCACHE_NOHASHDIR=
+ENV CCACHE_DIR="/ccache"
+ENV CCACHE_COMPILERCHECK="%compiler% --version"
+
+ENV CC="/usr/local/bin/gcc"
+ENV CXX="/usr/local/bin/g++"
+ENV NVCC="/usr/local/bin/nvcc"
+ENV CUDAHOSTCXX="/usr/local/bin/g++"
+RUN ln -s "$(which ccache)" "/usr/local/bin/gcc" \
+    && ln -s "$(which ccache)" "/usr/local/bin/g++" \
+    && ln -s "$(which ccache)" "/usr/local/bin/nvcc"
+
+COPY ccache /ccache
+RUN ccache -s
+
 ARG PARALLEL_LEVEL=16
 ARG RAPIDS_VER=0.15*
 
@@ -174,6 +198,11 @@ RUN cd ${RAPIDS_DIR}/dask-cuda && \
   python setup.py install
 
 
+
+RUN ccache -s \
+  && ccache -c \
+  && chmod -R ugo+w /ccache \
+  && ccache -s
 
 
 RUN conda clean -afy \
