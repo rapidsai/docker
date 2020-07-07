@@ -32,7 +32,7 @@ RUN source activate rapids \
   && conda info \
   && conda config --show-sources \
   && conda list --show-channel-urls
-RUN gpuci_retry conda install -y -n rapids \
+RUN gpuci_conda_retry install -y -n rapids \
       rapids-build-env=${RAPIDS_VER} \
       rapids-doc-env=${RAPIDS_VER} \
     && conda remove -y -n rapids --force-remove \
@@ -178,6 +178,34 @@ RUN cd ${RAPIDS_DIR}/dask-cuda && \
 
 ENV LD_LIBRARY_PATH=${LD_LIBRARY_PATH_PREBUILD}
 
+ENV BLAZING_DIR=/blazing
+
+RUN source activate rapids \
+    && conda install -y \
+        google-cloud-cpp \
+        ninja \
+        gtest \
+        gmock \
+        cppzmq \
+        openjdk=8.0 \
+        maven \
+        thrift=0.13.0 \
+        jpype1 \
+        netifaces \
+        pyhive
+
+ENV CUDF_HOME=/rapids/cudf
+
+RUN mkdir -p ${BLAZING_DIR} \
+    && cd ${BLAZING_DIR} \
+    && git clone https://github.com/BlazingDB/blazingsql.git
+
+RUN source activate rapids \
+    && cd ${BLAZING_DIR}/blazingsql \
+    && ./build.sh
+RUN mkdir -p ${BLAZING_DIR} \
+    && cd ${BLAZING_DIR} \
+    && git clone https://github.com/BlazingDB/Welcome_to_BlazingSQL_Notebooks.git
 
 RUN conda clean -afy \
   && chmod -R ugo+w /opt/conda ${RAPIDS_DIR}

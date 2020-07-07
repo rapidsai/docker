@@ -1,0 +1,6 @@
+{# This partial clones the "Welcome to BlazingSQL" repo containing example notebooks. #}
+
+{# Clone, build, install #}
+RUN mkdir -p ${BLAZING_DIR} \
+    && cd ${BLAZING_DIR} \
+    && git clone https://github.com/BlazingDB/Welcome_to_BlazingSQL_Notebooks.git

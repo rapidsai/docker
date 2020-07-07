@@ -26,18 +26,19 @@ def load_settings():
     return settings
 
 
-def initialize_output_dir():
-    """Creates or empties the OUTPUT_DIR directory"""
+def initialize_output_dir(clean=False):
+    """Creates or empties (if clean==True) the OUTPUT_DIR directory"""
     if not os.path.exists(OUTPUT_DIR):
         os.makedirs(OUTPUT_DIR)
         return
-    filelist = [f for f in os.listdir(OUTPUT_DIR) if f.endswith(".Dockerfile")]
-    for dockerfile in filelist:
-        os.remove(os.path.join(OUTPUT_DIR, dockerfile))
+    if clean:
+        filelist = [f for f in os.listdir(OUTPUT_DIR) if f.endswith(".Dockerfile")]
+        for dockerfile in filelist:
+            os.remove(os.path.join(OUTPUT_DIR, dockerfile))
     return
 
 
-def main():
+def main(verbose=False):
     """Generates Dockerfiles using Jinja2"""
     initialize_output_dir()
     settings = load_settings()
@@ -48,10 +49,19 @@ def main():
             output = template.render(
                 os=docker_os, image_type=image_type, now=datetime.utcnow(), **settings,
             )
-            with open(f"{OUTPUT_DIR}/{dockerfile_name}", "w") as dockerfile:
-                dockerfile.write(output)
+            output_dockerfile_path = f"{OUTPUT_DIR}/{dockerfile_name}"
+            if not(os.path.exists(output_dockerfile_path)) \
+               or (open(output_dockerfile_path).read() != output):
+
+                with open(output_dockerfile_path, "w") as dockerfile:
+                    dockerfile.write(output)
+                if verbose:
+                    print(f"Updated: {output_dockerfile_path}")
+
     print(f"Dockerfiles successfully written to the '{OUTPUT_DIR}' directory.")
 
 
 if __name__ == "__main__":
-    main()
+    # FIXME: use argparse
+    import sys
+    main(verbose=("-v" in sys.argv))

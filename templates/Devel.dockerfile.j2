@@ -41,7 +41,7 @@ between packages. #}
 {% include 'partials/env_debug.dockerfile.j2' %}
 
 {# Install rapids-build-env and rapids-doc-env from conda meta-pkg #}
-RUN gpuci_retry conda install -y -n rapids \
+RUN gpuci_conda_retry install -y -n rapids \
       rapids-build-env=${RAPIDS_VER} \
       rapids-doc-env=${RAPIDS_VER} \
     && conda remove -y -n rapids --force-remove \
@@ -85,6 +85,11 @@ numba.cuda cannot load that, and instead have it load
 /lib64/libcuda.so instead #}
 ENV LD_LIBRARY_PATH=${LD_LIBRARY_PATH_PREBUILD}
 {% endif %}
+
+{# Additions for BlazingSQL #}
+ENV BLAZING_DIR=/blazing
+{% include 'partials/clone_and_build_blazing.j2' %}
+{% include 'partials/clone_blazing_notebooks.j2' %}
 
 {# Cleaup conda and set ACLs for all users #}
 {% include 'partials/cleanup-chmod.dockerfile.j2' %}
