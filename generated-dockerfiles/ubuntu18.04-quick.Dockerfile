@@ -118,4 +118,4 @@ RUN cd ${RAPIDS_DIR}/dask-cuda && \
 
 
 RUN conda clean -afy \
-    && chmod -R ugo+w /opt/conda ${RAPIDS_DIR}
+  && chmod -R ugo+w /opt/conda ${RAPIDS_DIR}

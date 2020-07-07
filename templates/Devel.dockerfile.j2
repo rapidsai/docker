@@ -15,7 +15,9 @@ ARG FROM_IMAGE=gpuci/rapidsai
 
 FROM ${FROM_IMAGE}:${RAPIDS_VER}-cuda${CUDA_VER}-devel-${LINUX_VER}-py${PYTHON_VER}
 
-{# Install ccache from source #}
+ARG CCACHE_VERSION=master
+
+{# Install ccache from source (use specific version in projects commit history) #}
 RUN git clone https://github.com/ccache/ccache.git /tmp/ccache && cd /tmp/ccache \
  && git checkout -b rapids-compose-tmp b1fcfbca224b2af5b6499794edd8615dbc3dc7b5 \
  && ./autogen.sh \
@@ -40,9 +42,6 @@ RUN ln -s "$(which ccache)" "/usr/local/bin/gcc" \
 
 {# Add ccache folder and status check for ccache #}
 ADD ccache /ccache
-RUN ccache -s
-RUN ccache -c \
-    && chmod -R ugo+w /ccache
 RUN ccache -s
 
 {# devel environment config args #}

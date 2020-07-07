@@ -15,6 +15,8 @@ ARG FROM_IMAGE=gpuci/rapidsai
 
 FROM ${FROM_IMAGE}:${RAPIDS_VER}-cuda${CUDA_VER}-devel-${LINUX_VER}-py${PYTHON_VER}
 
+ARG CCACHE_VERSION=master
+
 RUN git clone https://github.com/ccache/ccache.git /tmp/ccache && cd /tmp/ccache \
  && git checkout -b rapids-compose-tmp b1fcfbca224b2af5b6499794edd8615dbc3dc7b5 \
  && ./autogen.sh \
@@ -37,9 +39,6 @@ RUN ln -s "$(which ccache)" "/usr/local/bin/gcc" \
     && ln -s "$(which ccache)" "/usr/local/bin/nvcc"
 
 ADD ccache /ccache
-RUN ccache -s
-RUN ccache -c \
-    && chmod -R ugo+w /ccache
 RUN ccache -s
 
 ARG PARALLEL_LEVEL=16
@@ -232,7 +231,7 @@ RUN ccache -s
 
 
 RUN conda clean -afy \
-    && chmod -R ugo+w /opt/conda ${RAPIDS_DIR}
+  && chmod -R ugo+w /opt/conda ${RAPIDS_DIR}
 ENTRYPOINT [ "/usr/bin/tini", "--", "/.run_in_rapids" ]
 
 CMD [ "/bin/bash" ]
