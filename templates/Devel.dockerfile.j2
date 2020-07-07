@@ -41,7 +41,7 @@ RUN ln -s "$(which ccache)" "/usr/local/bin/gcc" \
     && ln -s "$(which ccache)" "/usr/local/bin/nvcc"
 
 {# Add ccache folder and status check for ccache #}
-ADD ccache /ccache
+COPY ccache /ccache
 RUN ccache -s
 
 {# devel environment config args #}
