@@ -17,7 +17,6 @@ RAPIDS_CHANNEL:
 CUDA_VER:
   - 10.2
   - 10.1
-  - 10.0
 
 LINUX_VER:
   - ubuntu16.04
@@ -25,7 +24,6 @@ LINUX_VER:
   - centos7
 
 PYTHON_VER:
-  - 3.6
   - 3.7
 
 exclude:

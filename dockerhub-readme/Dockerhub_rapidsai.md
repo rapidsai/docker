@@ -47,7 +47,7 @@ The [rapidsai/rapidsai-dev](https://hub.docker.com/r/rapidsai/rapidsai-dev/tags)
 
 The tag naming scheme for RAPIDS images incorporates key platform details into the tag as shown below:
 ```
-0.13-cuda10.1-runtime-ubuntu18.04-py3.6
+0.13-cuda10.1-runtime-ubuntu18.04-py3.7
  ^       ^    ^        ^         ^
  |       |    type     |         python version
  |       |             |
@@ -56,17 +56,17 @@ The tag naming scheme for RAPIDS images incorporates key platform details into t
  RAPIDS version        linux version
 ```
 
-To get the latest RAPIDS version of a specific platform combination, simply exclude the RAPIDS version.  For example, to pull the latest version of RAPIDS for the `runtime` image with support for CUDA 10.1, Python 3.6, and Ubuntu 18.04, use the following tag:
+To get the latest RAPIDS version of a specific platform combination, simply exclude the RAPIDS version.  For example, to pull the latest version of RAPIDS for the `runtime` image with support for CUDA 10.1, Python 3.7, and Ubuntu 18.04, use the following tag:
 ```
-cuda10.1-runtime-ubuntu18.04-py3.6
+cuda10.1-runtime-ubuntu18.04-py3.7
 ```
 
-Many users do not need a specific platform combination but would like to ensure they're getting the latest version of RAPIDS, so as an additional convenience, a tag named simply `latest` is also provided which is equivalent to `cuda10.0-runtime-ubuntu16.04-py3.6`.
+Many users do not need a specific platform combination but would like to ensure they're getting the latest version of RAPIDS, so as an additional convenience, a tag named simply `latest` is also provided which is equivalent to `cuda10.1-runtime-ubuntu16.04-py3.7`.
 
 ## Prerequisites
 
 * NVIDIA Pascal™ GPU architecture or better
-* CUDA [10](https://developer.nvidia.com/cuda-downloads) compatible NVIDIA driver
+* CUDA [10.1](https://developer.nvidia.com/cuda-downloads) compatible NVIDIA driver
 * Ubuntu 16.04/18.04 or CentOS 7
 * Docker CE v18+
 * [nvidia-docker](https://github.com/nvidia/nvidia-docker/wiki/Installation-(version-2.0)) v2+
@@ -77,9 +77,9 @@ Many users do not need a specific platform combination but would like to ensure 
 
 #### Preferred - Docker CE v19+ and `nvidia-container-toolkit`
 ```bash
-$ docker pull rapidsai/rapidsai:cuda10.0-runtime-ubuntu18.04-py3.6
+$ docker pull rapidsai/rapidsai:cuda10.1-runtime-ubuntu18.04-py3.7
 $ docker run --gpus all --rm -it -p 8888:8888 -p 8787:8787 -p 8786:8786 \
-         rapidsai/rapidsai:cuda10.0-runtime-ubuntu18.04-py3.6
+         rapidsai/rapidsai:cuda10.1-runtime-ubuntu18.04-py3.7
 ```
 **NOTE:** This will open a shell with [JupyterLab](https://jupyterlab.readthedocs.io/en/stable/) running in the background on port 8888 on your host machine.
 
@@ -111,7 +111,7 @@ You are free to modify the above steps. For example, you can launch an interacti
 ```bash
 $ docker run --gpus all --rm -it -p 8888:8888 -p 8787:8787 -p 8786:8786 \
          -v /path/to/host/data:/rapids/my_data \
-                  rapidsai/rapidsai:cuda10.0-runtime-ubuntu18.04-py3.6
+                  rapidsai/rapidsai:cuda10.1-runtime-ubuntu18.04-py3.7
 ```
 
 #### Legacy - Docker CE v18 and `nvidia-docker2`
