@@ -7,13 +7,37 @@
 #
 # Copyright (c) 2020, NVIDIA CORPORATION.
 
-ARG CUDA_VER=10.0
+ARG CUDA_VER=10.1
 ARG LINUX_VER=centos7
-ARG PYTHON_VER=3.6
+ARG PYTHON_VER=3.7
 ARG RAPIDS_VER=0.15
 ARG FROM_IMAGE=gpuci/rapidsai
 
 FROM ${FROM_IMAGE}:${RAPIDS_VER}-cuda${CUDA_VER}-devel-${LINUX_VER}-py${PYTHON_VER}
+
+RUN git clone https://github.com/ccache/ccache.git /tmp/ccache && cd /tmp/ccache \
+ && git checkout -b rapids-compose-tmp b1fcfbca224b2af5b6499794edd8615dbc3dc7b5 \
+ && ./autogen.sh \
+ && ./configure --disable-man --with-libb2-from-internet --with-libzstd-from-internet\
+ && make install -j \
+ && cd / \
+ && rm -rf /tmp/ccache* \
+ && mkdir -p /ccache
+
+ENV CCACHE_NOHASHDIR=
+ENV CCACHE_DIR="/ccache"
+ENV CCACHE_COMPILERCHECK="%compiler% --version"
+
+ENV CC="/usr/local/bin/gcc"
+ENV CXX="/usr/local/bin/g++"
+ENV NVCC="/usr/local/bin/nvcc"
+ENV CUDAHOSTCXX="/usr/local/bin/g++"
+RUN ln -s "$(which ccache)" "/usr/local/bin/gcc" \
+    && ln -s "$(which ccache)" "/usr/local/bin/g++" \
+    && ln -s "$(which ccache)" "/usr/local/bin/nvcc"
+
+COPY ccache /ccache
+RUN ccache -s
 
 ARG PARALLEL_LEVEL=16
 ARG RAPIDS_VER=0.15*
@@ -32,7 +56,7 @@ RUN source activate rapids \
   && conda info \
   && conda config --show-sources \
   && conda list --show-channel-urls
-RUN gpuci_conda_retry install -y -n rapids \
+RUN gpuci_retry conda install -y -n rapids \
       rapids-build-env=${RAPIDS_VER} \
       rapids-doc-env=${RAPIDS_VER} \
     && conda remove -y -n rapids --force-remove \
@@ -178,34 +202,11 @@ RUN cd ${RAPIDS_DIR}/dask-cuda && \
 
 ENV LD_LIBRARY_PATH=${LD_LIBRARY_PATH_PREBUILD}
 
-ENV BLAZING_DIR=/blazing
+RUN ccache -s \
+  && ccache -c \
+  && chmod -R ugo+w /ccache \
+  && ccache -s
 
-RUN source activate rapids \
-    && conda install -y \
-        google-cloud-cpp \
-        ninja \
-        gtest \
-        gmock \
-        cppzmq \
-        openjdk=8.0 \
-        maven \
-        thrift=0.13.0 \
-        jpype1 \
-        netifaces \
-        pyhive
-
-ENV CUDF_HOME=/rapids/cudf
-
-RUN mkdir -p ${BLAZING_DIR} \
-    && cd ${BLAZING_DIR} \
-    && git clone https://github.com/BlazingDB/blazingsql.git
-
-RUN source activate rapids \
-    && cd ${BLAZING_DIR}/blazingsql \
-    && ./build.sh
-RUN mkdir -p ${BLAZING_DIR} \
-    && cd ${BLAZING_DIR} \
-    && git clone https://github.com/BlazingDB/Welcome_to_BlazingSQL_Notebooks.git
 
 RUN conda clean -afy \
   && chmod -R ugo+w /opt/conda ${RAPIDS_DIR}
