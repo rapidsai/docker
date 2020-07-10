@@ -55,7 +55,7 @@ The tag naming scheme for RAPIDS images incorporates key platform details into t
  RAPIDS version        linux version
 ```
 
-To get the latest RAPIDS version of a specific platform combination, simply exclude the RAPIDS version.  For example, to pull the latest version of RAPIDS for the `runtime` image with support for CUDA 10.1, Python 3.6, and Ubuntu 18.04, use the following tag:
+To get the latest RAPIDS version of a specific platform combination, simply exclude the RAPIDS version.  For example, to pull the latest version of RAPIDS for the `runtime` image with support for CUDA 10.1, Python 3.7, and Ubuntu 18.04, use the following tag:
 ```
 cuda10.1-runtime-ubuntu18.04
 ```
@@ -64,7 +64,7 @@ For most users the latest `runtime` image will be sufficient to get started with
 ## Prerequisites
 
 * NVIDIA Pascal™ GPU architecture or better
-* [CUDA](https://developer.nvidia.com/cuda-downloads) 10.0, 10.1, or 10.2 with compatible NVIDIA driver
+* [CUDA](https://developer.nvidia.com/cuda-downloads) 10.1, or 10.2 with compatible NVIDIA driver
 * Ubuntu 16.04/18.04 or CentOS 7
 * Docker CE v18+
 * [nvidia-docker](https://github.com/nvidia/nvidia-docker/wiki/Installation-(version-2.0)) v2+

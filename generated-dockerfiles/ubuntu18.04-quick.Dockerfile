@@ -7,9 +7,9 @@
 #
 # Copyright (c) 2020, NVIDIA CORPORATION.
 
-ARG CUDA_VER=10.0
+ARG CUDA_VER=10.1
 ARG LINUX_VER=ubuntu18.04
-ARG PYTHON_VER=3.6
+ARG PYTHON_VER=3.7
 ARG RAPIDS_VER=0.15
 ARG FROM_IMAGE=rapidsaistaging/rapidsai-dev-nightly-staging
 
