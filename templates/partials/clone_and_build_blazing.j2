@@ -2,7 +2,7 @@
 
 {# Install build prerequisites #}
 RUN source activate rapids \
-    && conda install -y \
+    && gpuci_conda_retry install -y \
         google-cloud-cpp \
         ninja \
         gtest \

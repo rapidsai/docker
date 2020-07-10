@@ -26,15 +26,11 @@ def load_settings():
     return settings
 
 
-def initialize_output_dir(clean=False):
+def initialize_output_dir():
     """Creates or empties (if clean==True) the OUTPUT_DIR directory"""
     if not os.path.exists(OUTPUT_DIR):
         os.makedirs(OUTPUT_DIR)
         return
-    if clean:
-        filelist = [f for f in os.listdir(OUTPUT_DIR) if f.endswith(".Dockerfile")]
-        for dockerfile in filelist:
-            os.remove(os.path.join(OUTPUT_DIR, dockerfile))
     return
 
 
