@@ -1,8 +1,7 @@
 {# This partial clones the BlazingSQL repo and build and installs it into the rapids conda env. #}
 
 {# Install build prerequisites #}
-RUN source activate rapids \
-    && gpuci_conda_retry install -y \
+RUN gpuci_conda_retry install -y -n rapids \
         google-cloud-cpp \
         ninja \
         gtest \

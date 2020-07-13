@@ -204,8 +204,7 @@ ENV LD_LIBRARY_PATH=${LD_LIBRARY_PATH_PREBUILD}
 
 ENV BLAZING_DIR=/blazing
 
-RUN source activate rapids \
-    && gpuci_conda_retry install -y \
+RUN gpuci_conda_retry install -y -n rapids \
         google-cloud-cpp \
         ninja \
         gtest \
