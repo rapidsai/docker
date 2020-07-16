@@ -6,7 +6,7 @@ RUN ${RAPIDS_DIR}/utils/condaretry install -y -n rapids --freeze-installed \
 
 {# Install jupyter lab stuff #}
 RUN source activate rapids \
-  && pip install "git+https://github.com/rapidsai/jupyterlab-nvdashboard.git@master#egg=jupyterlab-nvdashboard" --upgrade \
+  && pip install "git+https://github.com/rapidsai/jupyterlab-nvdashboard.git@main#egg=jupyterlab-nvdashboard" --upgrade \
   && jupyter labextension install dask-labextension jupyterlab-nvdashboard
 
 {# Install notebooks repo #}
