@@ -16,10 +16,14 @@ ARG FROM_IMAGE=gpuci/rapidsai
 FROM ${FROM_IMAGE}:${RAPIDS_VER}-cuda${CUDA_VER}-devel-${LINUX_VER}-py${PYTHON_VER}
 
 {# Install ccache from source (use specific version in projects commit history) #}
-ARG CCACHE_VERSION=3.7.11
-RUN curl -s -L https://github.com/ccache/ccache/releases/download/v${CCACHE_VERSION}/ccache-${CCACHE_VERSION}.tar.gz -o ccache-${CCACHE_VERSION}.tar.gz \
- && tar -xvzf ccache-${CCACHE_VERSION}.tar.gz && cd ccache-${CCACHE_VERSION} \
- && ./configure && make install -j16 && cd - && rm -rf ./ccache-${CCACHE_VERSION} ./ccache-${CCACHE_VERSION}.tar.gz
+RUN git clone https://github.com/ccache/ccache.git /tmp/ccache && cd /tmp/ccache \
+  && git checkout -b rapids-compose-tmp b1fcfbca224b2af5b6499794edd8615dbc3dc7b5 \
+  && ./autogen.sh \
+  && ./configure --disable-man --with-libb2-from-internet --with-libzstd-from-internet\
+  && make install -j \
+  && cd / \
+  && rm -rf /tmp/ccache* \
+  && mkdir -p /ccache
 
 ENV CCACHE_NOHASHDIR=
 ENV CCACHE_DIR="/ccache"
