@@ -148,37 +148,45 @@ ENV LD_LIBRARY_PATH=${LD_LIBRARY_PATH}:/opt/conda/envs/rapids/lib
 
 RUN cd ${RAPIDS_DIR}/rmm && \
   source activate rapids && \
+  ccache -s && \
   ./build.sh
 
 RUN cd ${RAPIDS_DIR}/cudf && \
   source activate rapids && \
+  ccache -s && \
   ./build.sh && \
   ./build.sh tests
 
 RUN cd ${RAPIDS_DIR}/cusignal && \
   source activate rapids && \
+  ccache -s && \
   ./build.sh
 
 RUN cd ${RAPIDS_DIR}/cuxfilter && \
   source activate rapids && \
+  ccache -s && \
   ./build.sh
 
 RUN cd ${RAPIDS_DIR}/cuspatial && \
   source activate rapids && \
+  ccache -s && \
   export CUSPATIAL_HOME="$PWD" && \
   export CUDF_HOME="$PWD/../cudf" && \
   ./build.sh
 
 RUN cd ${RAPIDS_DIR}/cuml && \
   source activate rapids && \
+  ccache -s && \
   ./build.sh --allgpuarch libcuml cuml prims
 
 RUN cd ${RAPIDS_DIR}/cugraph && \
   source activate rapids && \
+  ccache -s && \
   ./build.sh
 
 RUN cd ${RAPIDS_DIR}/xgboost && \
   source activate rapids && \
+  ccache -s && \
   mkdir -p build && cd build && \
   cmake -DCMAKE_INSTALL_PREFIX=$CONDA_PREFIX \
         -DUSE_NCCL=ON -DUSE_CUDA=ON -DUSE_CUDF=ON \
@@ -191,10 +199,12 @@ RUN cd ${RAPIDS_DIR}/xgboost && \
 
 RUN cd ${RAPIDS_DIR}/dask-xgboost && \
   source activate rapids && \
+  ccache -s && \
   python setup.py install
 
 RUN cd ${RAPIDS_DIR}/dask-cuda && \
   source activate rapids && \
+  ccache -s && \
   python setup.py install
 
 
