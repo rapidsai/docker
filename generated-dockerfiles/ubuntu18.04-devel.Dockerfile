@@ -23,8 +23,6 @@ RUN apt-get update -y --fix-missing \
   && apt-get clean \
   && rm -rf /var/lib/apt/lists/*
 
-
-
 ARG CMAKE_VERSION=3.17.2
 ENV CMAKE_VERSION=${CMAKE_VERSION}
 RUN curl -fsSLO --compressed "https://github.com/Kitware/CMake/releases/download/v$CMAKE_VERSION/cmake-$CMAKE_VERSION.tar.gz" \
