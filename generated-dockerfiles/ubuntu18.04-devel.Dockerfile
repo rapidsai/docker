@@ -15,21 +15,15 @@ ARG FROM_IMAGE=gpuci/rapidsai
 
 FROM ${FROM_IMAGE}:${RAPIDS_VER}-cuda${CUDA_VER}-devel-${LINUX_VER}-py${PYTHON_VER}
 
-RUN cd ${RAPIDS_DIR} \
-  && source activate rapids
-RUN apt-get update -y --fix-missing \
-    && apt-get -qq install apt-utils -y --no-install-recommends \
-    && apt-get install -y \
-      jq \
-      libnuma1 \
-      libnuma-dev \
-      screen \
-      tzdata \
-      vim \
-      libssl-dev libcurl4-openssl-dev \
-    && apt-get clean \
-    && rm -rf /var/lib/apt/lists/*
-RUN git clone https://github.com/ccache/ccache.git /tmp/ccache && cd /tmp/ccache \
+
+ARG CMAKE_VERSION=3.17.2
+ENV CMAKE_VERSION=${CMAKE_VERSION}
+RUN curl -fsSLO --compressed "https://github.com/Kitware/CMake/releases/download/v$CMAKE_VERSION/cmake-$CMAKE_VERSION.tar.gz" \
+ && tar -xvzf cmake-$CMAKE_VERSION.tar.gz && cd cmake-$CMAKE_VERSION \
+ && ./bootstrap --system-curl --parallel=32 && make install -j32 \
+ && cd - && rm -rf ./cmake-$CMAKE_VERSION ./cmake-$CMAKE_VERSION.tar.gz \
+ # Install ccache
+ && git clone https://github.com/ccache/ccache.git /tmp/ccache && cd /tmp/ccache \
  && git checkout -b rapids-compose-tmp e071bcfd37dfb02b4f1fa4b45fff8feb10d1cbd2 \
  && mkdir -p /tmp/ccache/build && cd /tmp/ccache/build \
  && cmake \
