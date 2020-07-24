@@ -15,6 +15,8 @@ ARG FROM_IMAGE=gpuci/rapidsai
 
 FROM ${FROM_IMAGE}:${RAPIDS_VER}-cuda${CUDA_VER}-devel-${LINUX_VER}-py${PYTHON_VER}
 
+RUN cd ${RAPIDS_DIR} \
+  && source activate rapids
 RUN apt-get update -y --fix-missing \
     && apt-get -qq install apt-utils -y --no-install-recommends \
     && apt-get install -y \
@@ -24,7 +26,7 @@ RUN apt-get update -y --fix-missing \
       screen \
       tzdata \
       vim \
-      libssl-dev libcurl4-openssl-dev zlib1g-dev \
+      libssl-dev libcurl4-openssl-dev \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 ARG CMAKE_VERSION=3.17.2
@@ -40,7 +42,7 @@ RUN curl -fsSLO --compressed "https://github.com/Kitware/CMake/releases/download
  && cmake \
     -DENABLE_TESTING=OFF \
     -DUSE_LIBB2_FROM_INTERNET=ON \
-    -DZSTD_FROM_INTERNET=ON .. \
+    -DUSE_LIBZSTD_FROM_INTERNET=ON .. \
  && make ccache -j32 && make install && cd / && rm -rf /tmp/ccache
 
 ENV CCACHE_NOHASHDIR=
