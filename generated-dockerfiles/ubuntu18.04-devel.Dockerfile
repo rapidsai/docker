@@ -35,12 +35,12 @@ RUN curl -fsSLO --compressed "https://github.com/Kitware/CMake/releases/download
  && cd - && rm -rf ./cmake-$CMAKE_VERSION ./cmake-$CMAKE_VERSION.tar.gz \
  # Install ccache
  && git clone https://github.com/ccache/ccache.git /tmp/ccache && cd /tmp/ccache \
- && git checkout -b rapids-compose-tmp d64eb963a0c5557a2818cc0348966a10a6bcd07c \
+ && git checkout -b rapids-compose-tmp ea991027489f2e101f1355701bf32b3201e7c67a \
  && mkdir -p /tmp/ccache/build && cd /tmp/ccache/build \
  && cmake \
     -DENABLE_TESTING=OFF \
     -DUSE_LIBB2_FROM_INTERNET=ON \
-    -DUSE_LIBZSTD_FROM_INTERNET=ON .. \
+    -DZSTD_FROM_INTERNET=ON .. \
  && make ccache -j32 && make install && cd / && rm -rf /tmp/ccache
 
 ENV CCACHE_NOHASHDIR=
