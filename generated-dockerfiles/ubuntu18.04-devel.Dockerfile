@@ -35,7 +35,7 @@ RUN curl -fsSLO --compressed "https://github.com/Kitware/CMake/releases/download
  && cd - && rm -rf ./cmake-$CMAKE_VERSION ./cmake-$CMAKE_VERSION.tar.gz \
  # Install ccache
  && git clone https://github.com/ccache/ccache.git /tmp/ccache && cd /tmp/ccache \
- && git checkout -b rapids-compose-tmp 5b32e9555acefec344fef1ad74c9a9cc0aebc750 \
+ && git checkout -b rapids-compose-tmp e071bcfd37dfb02b4f1fa4b45fff8feb10d1cbd2 \
  && mkdir -p /tmp/ccache/build && cd /tmp/ccache/build \
  && cmake \
     -DENABLE_TESTING=OFF \
