@@ -15,26 +15,13 @@ ARG FROM_IMAGE=gpuci/rapidsai
 
 FROM ${FROM_IMAGE}:${RAPIDS_VER}-cuda${CUDA_VER}-devel-${LINUX_VER}-py${PYTHON_VER}
 
-RUN yum install -y \
-    openssl-devel libcurl-openssl-devel zlib-devel libcurl-devel \
-    && yum clean all
+RUN source activate rapids \
+ && git clone https://github.com/rapidsai/ccache-feedstock.git /tmp/ccache-feedstock && cd /tmp/ccache-feedstock \
+ && git checkout enh-rapids-ccache  \
+ && cd recipe \
+ && conda build . \
+ && conda install --use-local ccache
 
-
-ARG CMAKE_VERSION=3.17.2
-ENV CMAKE_VERSION=${CMAKE_VERSION}
-RUN curl -fsSLO --compressed "https://github.com/Kitware/CMake/releases/download/v$CMAKE_VERSION/cmake-$CMAKE_VERSION.tar.gz" \
- && tar -xvzf cmake-$CMAKE_VERSION.tar.gz && cd cmake-$CMAKE_VERSION \
- && ./bootstrap --system-curl --parallel=32 && make install -j32 \
- && cd - && rm -rf ./cmake-$CMAKE_VERSION ./cmake-$CMAKE_VERSION.tar.gz \
- # Install ccache
- && git clone https://github.com/ccache/ccache.git /tmp/ccache && cd /tmp/ccache \
- && git checkout -b rapids-compose-tmp e071bcfd37dfb02b4f1fa4b45fff8feb10d1cbd2 \
- && mkdir -p /tmp/ccache/build && cd /tmp/ccache/build \
- && cmake \
-    -DENABLE_TESTING=OFF \
-    -DUSE_LIBB2_FROM_INTERNET=ON \
-    -DUSE_LIBZSTD_FROM_INTERNET=ON .. \
- && make ccache -j32 && make install && cd / && rm -rf /tmp/ccache
 
 ENV CCACHE_NOHASHDIR=
 ENV CCACHE_DIR="/ccache"
