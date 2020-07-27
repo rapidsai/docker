@@ -29,6 +29,7 @@ ENV CCACHE_DIR="/ccache"
 ENV CCACHE_COMPILERCHECK="%compiler% --version"
 
 {# Uncomment these env vars to force ccache to be enabled by default #}
+RUN which gcc
 ENV CC="/usr/bin/gcc"
 ENV CXX="/usr/bin/g++"
 ENV NVCC="/usr/bin/nvcc"
