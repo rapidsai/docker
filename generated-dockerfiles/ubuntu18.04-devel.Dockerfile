@@ -20,6 +20,7 @@ RUN source activate rapids \
  && git checkout enh-rapids-ccache  \
  && cd recipe 
 RUN conda install conda-build
+RUN echo "$(pwd)"
 RUN conda build .
 RUN conda install --use-local ccache
 
