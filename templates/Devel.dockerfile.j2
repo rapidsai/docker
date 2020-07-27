@@ -19,9 +19,9 @@ FROM ${FROM_IMAGE}:${RAPIDS_VER}-cuda${CUDA_VER}-devel-${LINUX_VER}-py${PYTHON_V
 RUN source activate rapids \
  && git clone https://github.com/rapidsai/ccache-feedstock.git /tmp/ccache-feedstock && cd /tmp/ccache-feedstock \
  && git checkout enh-rapids-ccache  \
- && cd recipe \
- && conda build . \
- && conda install --use-local ccache
+ && cd recipe 
+RUN conda build .
+RUN conda install --use-local ccache
 
 
 ENV CCACHE_NOHASHDIR=
