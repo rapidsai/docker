@@ -23,7 +23,7 @@ RUN source activate rapids \
 RUN conda install conda-build
 RUN echo "$(pwd)"
 RUN conda build .
-RUN conda install --use-local ccache
+RUN conda install -c conda-forge --use-local ccache
 
 
 ENV CCACHE_NOHASHDIR=
