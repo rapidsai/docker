@@ -22,7 +22,7 @@ RUN source activate rapids \
  && cd recipe 
 RUN conda install conda-build
 RUN echo "$(pwd)"
-RUN conda build .
+RUN conda build -c conda-forge .
 RUN conda install -c conda-forge --use-local ccache
 
 
