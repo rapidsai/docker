@@ -15,17 +15,8 @@ ARG FROM_IMAGE=gpuci/rapidsai
 
 FROM ${FROM_IMAGE}:${RAPIDS_VER}-cuda${CUDA_VER}-devel-${LINUX_VER}-py${PYTHON_VER}
 
-RUN source activate rapids \
- && git clone https://github.com/rapidsai/ccache-feedstock.git /tmp/ccache-feedstock && cd /tmp/ccache-feedstock \
- && git checkout enh-rapids-ccache  \
- && cd recipe 
-RUN conda config --add channels conda-forge
-RUN conda install conda-build
-RUN conda update conda
-RUN echo "$(pwd)"
-RUN conda build . -c conda-forge
-RUN conda install --use-local ccache -c conda-forge
-
+RUN source activate rapids
+RUN conda install gpuci-ccache
 
 ENV CCACHE_NOHASHDIR=
 ENV CCACHE_DIR="/ccache"
