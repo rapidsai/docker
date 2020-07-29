@@ -19,6 +19,7 @@ RUN source activate rapids \
  && git clone https://github.com/rapidsai/ccache-feedstock.git /tmp/ccache-feedstock && cd /tmp/ccache-feedstock \
  && git checkout enh-rapids-ccache  \
  && cd recipe 
+RUN conda config --add channels conda-forge
 RUN conda install conda-build
 RUN conda update conda
 RUN echo "$(pwd)"
