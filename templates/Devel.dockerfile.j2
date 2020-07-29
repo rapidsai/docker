@@ -26,13 +26,13 @@ ENV CCACHE_COMPILERCHECK="%compiler% --version"
 {# Uncomment these env vars to force ccache to be enabled by default #}
 RUN which gcc
 RUN which ccache
-ENV CC="/usr/bin/gcc"
-ENV CXX="/usr/bin/g++"
-ENV NVCC="/usr/bin/nvcc"
-ENV CUDAHOSTCXX="/usr/bin/g++"
-RUN ln -s "$(which ccache)" "/usr/bin/gcc" \
-    && ln -s "$(which ccache)" "/usr/bin/g++" \
-    && ln -s "$(which ccache)" "/usr/bin/nvcc"
+ENV CC="/usr/local/bin/gcc"
+ENV CXX="/usr/local/bin/g++"
+ENV NVCC="/usr/local/bin/nvcc"
+ENV CUDAHOSTCXX="/usr/local/bin/g++"
+RUN ln -s "$(which ccache)" "/usr/local/bin/gcc" \
+    && ln -s "$(which ccache)" "/usr/local/bin/g++" \
+    && ln -s "$(which ccache)" "/usr/local/bin/nvcc"
 
 {# Add ccache folder and status check for ccache #}
 COPY ccache /ccache
