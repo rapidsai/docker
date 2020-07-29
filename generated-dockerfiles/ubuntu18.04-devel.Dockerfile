@@ -15,8 +15,8 @@ ARG FROM_IMAGE=gpuci/rapidsai
 
 FROM ${FROM_IMAGE}:${RAPIDS_VER}-cuda${CUDA_VER}-devel-${LINUX_VER}-py${PYTHON_VER}
 
-RUN source activate rapids
-RUN conda install -c gpuci gpuci-ccache
+RUN source activate rapids \
+ && conda install -c gpuci gpuci-ccache
 
 ENV CCACHE_NOHASHDIR=
 ENV CCACHE_DIR="/ccache"
