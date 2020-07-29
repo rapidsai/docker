@@ -22,8 +22,6 @@ ENV CCACHE_NOHASHDIR=
 ENV CCACHE_DIR="/ccache"
 ENV CCACHE_COMPILERCHECK="%compiler% --version"
 
-RUN which gcc
-RUN which ccache
 ENV CC="/usr/local/bin/gcc"
 ENV CXX="/usr/local/bin/g++"
 ENV NVCC="/usr/local/bin/nvcc"
