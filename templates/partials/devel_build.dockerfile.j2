@@ -13,6 +13,7 @@ RUN cd ${RAPIDS_DIR}/{{ lib.name }} && \
   ccache -s && \
   {% if lib.name == "cudf" %}
   ./build.sh && \
+  ./build.sh libcudf_kafka cudf_kafka && \
   ./build.sh tests
 
   {% elif lib.name == "cuspatial" %}
