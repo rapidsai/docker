@@ -2,11 +2,11 @@
 . /opt/conda/etc/profile.d/conda.sh
 conda activate rapids
 
+OUTPUT="/dev/null"
+
 # Run Jupyter in foreground if $JUPYTER_FG is set
 if [[ -v JUPYTER_FG ]]; then
    OUTPUT="/dev/tty"
-else
-   OUTPUT="/dev/null"
 fi
 
 source /rapids/utils/start_jupyter.sh > "${OUTPUT}"
