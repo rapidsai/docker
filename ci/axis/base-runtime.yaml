@@ -11,6 +11,7 @@ IMAGE_TYPE:
 
 RAPIDS_VER:
   - 0.15
+  - 0.16
   
 RAPIDS_CHANNEL:
   - rapidsai-nightly
@@ -32,6 +33,8 @@ exclude:
   - RAPIDS_VER: 0.14
     RAPIDS_CHANNEL: rapidsai-nightly
   - RAPIDS_VER: 0.15
+    RAPIDS_CHANNEL: rapidsai
+  - RAPIDS_VER: 0.16
     RAPIDS_CHANNEL: rapidsai
   - BUILD_IMAGE: rapidsai/rapidsai
     RAPIDS_CHANNEL: rapidsai-nightly
