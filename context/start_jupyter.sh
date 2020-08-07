@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Run Jupyter in foreground if $JUPYTER_FG is set
-if [[ -v JUPYTER_FG ]]; then
+if [[ "${JUPYTER_FG}" == "true" ]]; then
    jupyter-lab --allow-root --ip=0.0.0.0 --no-browser --NotebookApp.token=''
    exit 0
 fi

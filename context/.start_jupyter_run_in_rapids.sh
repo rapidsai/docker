@@ -5,7 +5,7 @@ conda activate rapids
 OUTPUT="/dev/null"
 
 # Run Jupyter in foreground if $JUPYTER_FG is set
-if [[ -v JUPYTER_FG ]]; then
+if [[ "${JUPYTER_FG}" == "true" ]]; then
    OUTPUT="/dev/tty"
 fi
 
