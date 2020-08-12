@@ -27,7 +27,7 @@ def load_settings():
 
 
 def initialize_output_dir():
-    """Creates or empties (if clean==True) the OUTPUT_DIR directory"""
+    """Creates the OUTPUT_DIR directory"""
     if not os.path.exists(OUTPUT_DIR):
         os.makedirs(OUTPUT_DIR)
         return
