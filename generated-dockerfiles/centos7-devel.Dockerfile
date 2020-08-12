@@ -51,6 +51,8 @@ RUN source activate rapids \
 RUN gpuci_conda_retry install -y -n rapids \
       rapids-build-env=${RAPIDS_VER} \
       rapids-doc-env=${RAPIDS_VER} \
+      libcumlprims=${RAPIDS_VER} \
+      ucx-py=${RAPIDS_VER} \
     && conda remove -y -n rapids --force-remove \
       rapids-build-env=${RAPIDS_VER} \
       rapids-doc-env=${RAPIDS_VER}
@@ -149,6 +151,7 @@ RUN cd ${RAPIDS_DIR}/cudf && \
   source activate rapids && \
   ccache -s && \
   ./build.sh && \
+  ./build.sh libcudf_kafka cudf_kafka && \
   ./build.sh tests
 
 RUN cd ${RAPIDS_DIR}/cusignal && \
