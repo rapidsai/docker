@@ -46,16 +46,24 @@ ENV RAPIDS_DIR=/rapids
 {# gsfonts is used to correctly render fonts in doxygen/graphviz diagrams #}
 RUN apt-get update && apt-get install -y \
     gsfonts \
+    sudo \
     && rm -rf /var/lib/apt/lists/*
 {% endif %}
 
-{# 'rapidsdevtool.sh buildDockerImage' sets up the build context, including the
-rapids directory being COPY'd below. See rapidsdevtool.sh help for details. #}
 RUN mkdir -p ${RAPIDS_DIR}/utils {{ "${GCC7_DIR}/lib64" if "centos" in os }}
-COPY start_jupyter.sh nbtest.sh nbtestlog2junitxml.py ${RAPIDS_DIR}/utils/
+COPY nbtest.sh nbtestlog2junitxml.py ${RAPIDS_DIR}/utils/
+
+{% if "centos" in os %}
+{# Add compatible libm #}
+COPY libm.so.6 ${GCC7_DIR}/lib64
+RUN yum update -y \
+    && yum install -y \
+        sudo \
+    && rm -rf /var/cache/yum/*
+{% endif %}
 
 {# Install dependencies needed for devel: build deps + RAPIDS runtime deps +
-notebook deps.  This is done as a single install to ensure compatibility
+notebook deps. This is done as a single install to ensure compatibility
 between packages. #}
 {% include 'partials/env_debug.dockerfile.j2' %}
 
@@ -73,10 +81,6 @@ RUN gpuci_retry conda install -y -n rapids \
 
 {% include 'partials/install_notebooks.dockerfile.j2' %}
 
-{% if "centos" in os %}
-{# Add compatible libm #}
-COPY libm.so.6 ${GCC7_DIR}/lib64
-{% endif %}
 
 {# Clone RAPIDS libraries #}
 RUN cd ${RAPIDS_DIR} \
@@ -113,10 +117,16 @@ RUN ccache -s \
   && chmod -R ugo+w /ccache \
   && ccache -s
 
+{# Run common commands #}
+COPY run_commands.sh /opt/docker/bin/run_commands
+RUN /opt/docker/bin/run_commands
+
 {# Cleaup conda and set ACLs for all users #}
 {% include 'partials/cleanup-chmod.dockerfile.j2' %}
 
-ENTRYPOINT [ "/usr/bin/tini", "--", "/.run_in_rapids" ]
+COPY source_entrypoints/runtime_devel.sh /opt/docker/bin/entrypoint_source
+COPY entrypoint.sh /opt/docker/bin/entrypoint
+ENTRYPOINT [ "/usr/bin/tini", "--", "/opt/docker/bin/entrypoint" ]
 
 {# Set the default command to pass to the ENTRYPOINT if no command was given #}
 CMD [ "/bin/bash" ]

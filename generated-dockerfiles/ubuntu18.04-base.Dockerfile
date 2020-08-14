@@ -18,9 +18,13 @@ ARG RAPIDS_VER=0.15*
 
 ENV RAPIDS_DIR=/rapids
 ENV LD_LIBRARY_PATH=/opt/conda/envs/rapids/lib:${LD_LIBRARY_PATH}
+RUN apt-get update \
+  && apt-get install -y \
+    sudo \
+  && rm -rf /var/lib/apt/lists/*
 
 RUN mkdir -p ${RAPIDS_DIR}/utils 
-COPY start_jupyter.sh nbtest.sh nbtestlog2junitxml.py ${RAPIDS_DIR}/utils/
+COPY nbtest.sh nbtestlog2junitxml.py ${RAPIDS_DIR}/utils/
 
 
 
@@ -30,14 +34,17 @@ RUN source activate rapids \
   && conda config --show-sources \
   && conda list --show-channel-urls
 RUN gpuci_conda_retry install -y -n rapids \
-  rapids=${RAPIDS_VER} 
+  rapids=${RAPIDS_VER}
+
+COPY run_commands.sh /opt/docker/bin/run_commands
+RUN /opt/docker/bin/run_commands
 
 
 RUN conda clean -afy \
   && chmod -R ugo+w /opt/conda ${RAPIDS_DIR}
 WORKDIR ${RAPIDS_DIR}
 
-COPY .run_in_rapids.sh /.run_in_rapids
-ENTRYPOINT [ "/usr/bin/tini", "--", "/.run_in_rapids" ]
+COPY entrypoint.sh /opt/docker/bin/entrypoint
+ENTRYPOINT [ "/usr/bin/tini", "--", "/opt/docker/bin/entrypoint" ]
 
 CMD [ "/bin/bash" ]
