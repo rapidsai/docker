@@ -23,10 +23,11 @@ ENV CCACHE_COMPILERCHECK="%compiler% --version"
 ENV CC="/usr/local/bin/gcc"
 ENV CXX="/usr/local/bin/g++"
 ENV NVCC="/usr/local/bin/nvcc"
-ENV CUDAHOSTCXX="/usr/local/bin/g++"
 RUN ln -s "$(which ccache)" "/usr/local/bin/gcc" \
     && ln -s "$(which ccache)" "/usr/local/bin/g++" \
     && ln -s "$(which ccache)" "/usr/local/bin/nvcc"
+
+
 
 COPY ccache /ccache
 RUN ccache -s
