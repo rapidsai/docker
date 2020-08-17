@@ -37,16 +37,16 @@ Like any Docker image, the RAPIDS images can be extended to suit the needs of in
 
 ### Custom Token Example
 
-For example, the `runtime` and `devel` images use an empty token for securing the Jupyter notebook server. While this is a fast easy solution for dev and exploratory environments, those in production environments may need more security. 
+For example, the `runtime` and `devel` images use an empty token for securing the Jupyter notebook server. While this is a fast easy solution for dev and exploratory environments, those in production environments may need more security.
 
 Using the following short `Dockerfile` users can leverage the existing RAPIDS images and build a custom secure image:
 
 ```docker
 FROM rapidsai/rapidsai-nightly:cuda10.2-runtime-ubuntu18.04-py3.7
-RUN sed -i "s/NotebookApp.token=''/NotebookApp.token='secure-token-here'/g" /rapids/utils/start_jupyter.sh
+RUN sed -i "s/NotebookApp.token=''/NotebookApp.token='secure-token-here'/g" /opt/docker/bin/entrypoint_source
 ```
 
-Once built, the resulting image will be secured with the new token. 
+Once built, the resulting image will be secured with the new token.
 
 This example can be repurposed by replacing the `sed` command with other commands for custom libraries or settings.
 
