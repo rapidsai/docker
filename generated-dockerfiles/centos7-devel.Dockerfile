@@ -70,7 +70,7 @@ RUN gpuci_conda_retry install -y -n rapids \
         rapids-notebook-env=${RAPIDS_VER}
 
 RUN source activate rapids \
-  && pip install "git+https://github.com/rapidsai/jupyterlab-nvdashboard.git@master#egg=jupyterlab-nvdashboard" --upgrade \
+  && gpuci_conda_retry install -n rapids jupyterlab-nvdashboard \
   && jupyter labextension install dask-labextension jupyterlab-nvdashboard
 
 RUN cd ${RAPIDS_DIR} \
