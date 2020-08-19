@@ -39,8 +39,9 @@ RUN gpuci_conda_retry install -y -n rapids \
     && conda remove -y -n rapids --force-remove \
         rapids-notebook-env=${RAPIDS_VER}
 
+RUN gpuci_conda_retry install -y -n rapids jupyterlab-nvdashboard
+
 RUN source activate rapids \
-  && gpuci_conda_retry install -n rapids jupyterlab-nvdashboard \
   && jupyter labextension install dask-labextension jupyterlab-nvdashboard
 
 RUN cd ${RAPIDS_DIR} \
