@@ -22,5 +22,6 @@ RUN mkdir -p ${BLAZING_DIR} \
     && git clone https://github.com/BlazingDB/blazingsql.git
 
 RUN source activate rapids \
+    && ccache -s \
     && cd ${BLAZING_DIR}/blazingsql \
     && ./build.sh

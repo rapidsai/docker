@@ -90,7 +90,6 @@ EXPOSE 8787
 EXPOSE 8786
 
 COPY .start_jupyter_run_in_rapids.sh /.run_in_rapids
-
 RUN cd ${RAPIDS_DIR} \
   && source activate rapids \
   && git clone -b branch-0.15 --depth 1 --single-branch https://github.com/rapidsai/cudf.git \
@@ -226,6 +225,7 @@ RUN mkdir -p ${BLAZING_DIR} \
     && git clone https://github.com/BlazingDB/blazingsql.git
 
 RUN source activate rapids \
+    && ccache -s \
     && cd ${BLAZING_DIR}/blazingsql \
     && ./build.sh
 RUN mkdir -p ${BLAZING_DIR} \

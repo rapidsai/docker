@@ -20,6 +20,10 @@ EXITCODE=0
 NOTEBOOKS="$(find ${NOTEBOOKS_DIR}/repos/*/notebooks/* -name *.ipynb) \
            ${BLAZING_NOTEBOOKS_DIR}/welcome.ipynb"
 
+# Special case: cugraph notebooks need specific datasets downloaded (this script
+# only downloads them if they do not exist, so it's safe to run multiple times)
+(cd ${NOTEBOOKS_DIR}/cugraph; ./cugraph_benchmarks/dataPrep.sh)
+
 for nb in ${NOTEBOOKS}; do
     nbBasename=$(basename ${nb})
 
