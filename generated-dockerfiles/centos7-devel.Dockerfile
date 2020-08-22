@@ -100,7 +100,7 @@ RUN cd ${RAPIDS_DIR} \
   && cd cuml \
   && git submodule update --init --recursive --no-single-branch --depth 1 \
   && cd ${RAPIDS_DIR} \
-  && git clone -b v1.1.0 --depth 1 --single-branch https://github.com/dmlc/xgboost.git \
+  && git clone -b rapids-v0.15 --depth 1 --single-branch https://github.com/rapidsai/xgboost.git \
   && cd xgboost \
   && git submodule update --init --recursive --no-single-branch --depth 1 \
   && cd ${RAPIDS_DIR} \
@@ -185,15 +185,31 @@ RUN cd ${RAPIDS_DIR}/cugraph && \
 RUN cd ${RAPIDS_DIR}/xgboost && \
   source activate rapids && \
   ccache -s && \
-  mkdir -p build && cd build && \
-  cmake -DCMAKE_INSTALL_PREFIX=$CONDA_PREFIX \
-        -DUSE_NCCL=ON -DUSE_CUDA=ON -DUSE_CUDF=ON \
-        -DBUILD_WITH_SHARED_NCCL=ON \
-        -DGDF_INCLUDE_DIR=$CONDA_PREFIX/include \
-        -DCMAKE_CXX11_ABI=ON \
-        -DCMAKE_BUILD_TYPE=release .. && \
-  make -j && make -j install && \
-  cd ../python-package && python setup.py install
+  if [[ "$CUDA_VER" == "11.0" ]]; then \
+    mkdir -p build && cd build && \
+    cmake -DCMAKE_INSTALL_PREFIX=$CONDA_PREFIX \
+          -DUSE_NCCL=ON -DUSE_CUDA=ON -DUSE_CUDF=ON \
+          -DBUILD_WITH_SHARED_NCCL=ON \
+          -DGDF_INCLUDE_DIR=$CONDA_PREFIX/include \
+          -DCMAKE_CXX_STANDARD:STRING="14" \
+          -DPLUGIN_RMM=ON \
+          -DRMM_ROOT=${RAPIDS_DIR}/rmm \
+          -DCMAKE_BUILD_TYPE=release .. && \
+    make -j && make -j install && \
+    cd ../python-package && python setup.py install; \
+  else \
+    mkdir -p build && cd build && \
+    cmake -DCMAKE_INSTALL_PREFIX=$CONDA_PREFIX \
+          -DUSE_NCCL=ON -DUSE_CUDA=ON -DUSE_CUDF=ON \
+          -DBUILD_WITH_SHARED_NCCL=ON \
+          -DGDF_INCLUDE_DIR=$CONDA_PREFIX/include \
+          -DCMAKE_CXX11_ABI=ON \
+          -DPLUGIN_RMM=ON \
+          -DRMM_ROOT=${RAPIDS_DIR}/rmm \
+          -DCMAKE_BUILD_TYPE=release .. && \
+    make -j && make -j install && \
+    cd ../python-package && python setup.py install; \
+  fi
 
 RUN cd ${RAPIDS_DIR}/dask-xgboost && \
   source activate rapids && \
