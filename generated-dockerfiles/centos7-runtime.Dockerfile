@@ -15,7 +15,7 @@ ARG FROM_IMAGE=gpuci/rapidsai
 FROM ${FROM_IMAGE}:${RAPIDS_VER}-cuda${CUDA_VER}-runtime-${LINUX_VER}-py${PYTHON_VER}
 
 ARG DASK_XGBOOST_VER=0.2*
-ARG RAPIDS_VER=0.15*
+ARG RAPIDS_VER
 
 ENV RAPIDS_DIR=/rapids
 
@@ -31,13 +31,13 @@ RUN source activate rapids \
   && conda config --show-sources \
   && conda list --show-channel-urls
 RUN gpuci_conda_retry install -y -n rapids \
-  rapids=${RAPIDS_VER}
+  "rapids=${RAPIDS_VER}*"
 
 
 RUN gpuci_conda_retry install -y -n rapids \
-        rapids-notebook-env=${RAPIDS_VER} \
+        "rapids-notebook-env=${RAPIDS_VER}*" \
     && conda remove -y -n rapids --force-remove \
-        rapids-notebook-env=${RAPIDS_VER}
+        "rapids-notebook-env=${RAPIDS_VER}*"
 
 RUN gpuci_conda_retry install -y -n rapids jupyterlab-nvdashboard
 
@@ -46,7 +46,7 @@ RUN source activate rapids \
 
 RUN cd ${RAPIDS_DIR} \
   && source activate rapids \
-  && git clone -b branch-0.15 --depth 1 --single-branch https://github.com/rapidsai/notebooks.git \
+  && git clone -b branch- --depth 1 --single-branch https://github.com/rapidsai/notebooks.git \
   && cd notebooks \
   && git submodule update --init --remote --no-single-branch --depth 1
 
