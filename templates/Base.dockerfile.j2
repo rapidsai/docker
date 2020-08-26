@@ -8,14 +8,14 @@
 ARG CUDA_VER={{ DEFAULT_CUDA_VERSION }}
 ARG LINUX_VER={{ os }}
 ARG PYTHON_VER={{ DEFAULT_PYTHON_VERSION }}
-ARG RAPIDS_VER={{ RAPIDS_VERSION }}
+ARG RAPIDS_VER={{ DEFAULT_RAPIDS_VERSION }}
 ARG FROM_IMAGE=gpuci/rapidsai
 
 FROM ${FROM_IMAGE}:${RAPIDS_VER}-cuda${CUDA_VER}-base-${LINUX_VER}-py${PYTHON_VER}
 
 {# base/runtime install specs #}
 ARG DASK_XGBOOST_VER=0.2*
-ARG RAPIDS_VER={{ RAPIDS_VERSION }}*
+ARG RAPIDS_VER
 
 ENV RAPIDS_DIR=/rapids
 {% if "ubuntu" in os %}
@@ -34,7 +34,7 @@ COPY libm.so.6 ${GCC7_DIR}/lib64
 {% include 'partials/env_debug.dockerfile.j2' %}
 
 RUN gpuci_conda_retry install -y -n rapids \
-  rapids=${RAPIDS_VER} 
+  "rapids=${RAPIDS_VER}*"
 
 {# Cleaup conda and set ACLs for all users #}
 {% include 'partials/cleanup-chmod.dockerfile.j2' %}

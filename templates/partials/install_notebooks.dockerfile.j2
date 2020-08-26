@@ -2,9 +2,9 @@
 
 {# Install the rapids-notebook-env meta-pkg #}
 RUN gpuci_conda_retry install -y -n rapids \
-        rapids-notebook-env=${RAPIDS_VER} \
+        "rapids-notebook-env=${RAPIDS_VER}*" \
     && conda remove -y -n rapids --force-remove \
-        rapids-notebook-env=${RAPIDS_VER}
+        "rapids-notebook-env=${RAPIDS_VER}*"
 
 {# Install jupyter lab stuff #}
 RUN gpuci_conda_retry install -y -n rapids jupyterlab-nvdashboard
