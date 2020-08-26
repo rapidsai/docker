@@ -76,7 +76,7 @@ RUN source activate rapids \
 
 RUN cd ${RAPIDS_DIR} \
   && source activate rapids \
-  && git clone -b branch- --depth 1 --single-branch https://github.com/rapidsai/notebooks.git \
+  && git clone -b branch-${RAPIDS_VER} --depth 1 --single-branch https://github.com/rapidsai/notebooks.git \
   && cd notebooks \
   && git submodule update --init --remote --no-single-branch --depth 1
 
