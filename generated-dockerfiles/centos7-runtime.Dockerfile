@@ -9,13 +9,13 @@
 ARG CUDA_VER=10.1
 ARG LINUX_VER=centos7
 ARG PYTHON_VER=3.7
-ARG RAPIDS_VER=0.15
+ARG RAPIDS_VER=0.16
 ARG FROM_IMAGE=gpuci/rapidsai
 
 FROM ${FROM_IMAGE}:${RAPIDS_VER}-cuda${CUDA_VER}-runtime-${LINUX_VER}-py${PYTHON_VER}
 
 ARG DASK_XGBOOST_VER=0.2*
-ARG RAPIDS_VER=0.15*
+ARG RAPIDS_VER=0.16*
 
 ENV RAPIDS_DIR=/rapids
 
@@ -46,7 +46,7 @@ RUN source activate rapids \
 
 RUN cd ${RAPIDS_DIR} \
   && source activate rapids \
-  && git clone -b branch-0.15 --depth 1 --single-branch https://github.com/rapidsai/notebooks.git \
+  && git clone -b branch-0.16 --depth 1 --single-branch https://github.com/rapidsai/notebooks.git \
   && cd notebooks \
   && git submodule update --init --remote --no-single-branch --depth 1
 

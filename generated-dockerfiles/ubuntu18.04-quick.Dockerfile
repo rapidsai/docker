@@ -10,7 +10,7 @@
 ARG CUDA_VER=10.1
 ARG LINUX_VER=ubuntu18.04
 ARG PYTHON_VER=3.7
-ARG RAPIDS_VER=0.15
+ARG RAPIDS_VER=0.16
 ARG FROM_IMAGE=rapidsaistaging/rapidsai-dev-nightly-staging
 
 FROM ${FROM_IMAGE}:${RAPIDS_VER}-cuda${CUDA_VER}-devel-${LINUX_VER}-py${PYTHON_VER}
