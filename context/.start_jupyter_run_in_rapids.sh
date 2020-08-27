@@ -1,4 +1,7 @@
 #!/bin/bash
-source activate rapids
-/rapids/utils/start_jupyter.sh > /dev/null
+. /opt/conda/etc/profile.d/conda.sh
+conda activate rapids
+
+source /rapids/utils/start_jupyter.sh
+
 exec "$@"

@@ -1,0 +1,34 @@
+BUILD_IMAGE:
+  - rapidsai/rapidsai
+  - rapidsai/rapidsai-nightly
+
+FROM_IMAGE:
+  - gpuci/rapidsai
+
+IMAGE_TYPE:
+  - base
+  - runtime
+
+RAPIDS_VER:
+  - 0.15
+
+RAPIDS_CHANNEL:
+  - rapidsai
+
+CUDA_VER:
+  - 11.0
+  - 10.2
+  - 10.1
+
+LINUX_VER:
+  - ubuntu16.04
+  - ubuntu18.04
+  - centos7
+
+PYTHON_VER:
+  - 3.7
+  - 3.8
+
+exclude:
+  - BUILD_IMAGE: rapidsai/rapidsai-nightly
+    RAPIDS_CHANNEL: rapidsai

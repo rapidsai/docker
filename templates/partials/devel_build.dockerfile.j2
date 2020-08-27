@@ -4,14 +4,17 @@
 ENV NCCL_ROOT=/opt/conda/envs/rapids
 ENV PARALLEL_LEVEL=${PARALLEL_LEVEL}
 
+{# Include 'rapids' conda env in LD_LIBRARY_PATH #}
+ENV LD_LIBRARY_PATH=${LD_LIBRARY_PATH}:/opt/conda/envs/rapids/lib
+
 {% for lib in RAPIDS_LIBS %}
 RUN cd ${RAPIDS_DIR}/{{ lib.name }} && \
   source activate rapids && \
+  ccache -s && \
   {% if lib.name == "cudf" %}
-  ./build.sh -l && \
-  cd cpp/build && \
-  make -j${PARALLEL_LEVEL} build_tests_nvstrings && \
-  make -j${PARALLEL_LEVEL} build_tests_cudf
+  ./build.sh && \
+  ./build.sh libcudf_kafka cudf_kafka && \
+  ./build.sh tests
 
   {% elif lib.name == "cuspatial" %}
   export CUSPATIAL_HOME="$PWD" && \
@@ -19,15 +22,31 @@ RUN cd ${RAPIDS_DIR}/{{ lib.name }} && \
   ./build.sh
 
   {% elif lib.name == "xgboost" %}
-  mkdir -p build && cd build && \
-  cmake -DCMAKE_INSTALL_PREFIX=$CONDA_PREFIX \
-        -DUSE_NCCL=ON -DUSE_CUDA=ON -DUSE_CUDF=ON \
-        -DBUILD_WITH_SHARED_NCCL=ON \
-        -DGDF_INCLUDE_DIR=$CONDA_PREFIX/include \
-        -DCMAKE_CXX11_ABI=ON \
-        -DCMAKE_BUILD_TYPE=release .. && \
-  make -j && make -j install && \
-  cd ../python-package && python setup.py install
+  if [[ "$CUDA_VER" == "11.0" ]]; then \
+    mkdir -p build && cd build && \
+    cmake -DCMAKE_INSTALL_PREFIX=$CONDA_PREFIX \
+          -DUSE_NCCL=ON -DUSE_CUDA=ON -DUSE_CUDF=ON \
+          -DBUILD_WITH_SHARED_NCCL=ON \
+          -DGDF_INCLUDE_DIR=$CONDA_PREFIX/include \
+          -DCMAKE_CXX_STANDARD:STRING="14" \
+          -DPLUGIN_RMM=ON \
+          -DRMM_ROOT=${RAPIDS_DIR}/rmm \
+          -DCMAKE_BUILD_TYPE=release .. && \
+    make -j && make -j install && \
+    cd ../python-package && python setup.py install; \
+  else \
+    mkdir -p build && cd build && \
+    cmake -DCMAKE_INSTALL_PREFIX=$CONDA_PREFIX \
+          -DUSE_NCCL=ON -DUSE_CUDA=ON -DUSE_CUDF=ON \
+          -DBUILD_WITH_SHARED_NCCL=ON \
+          -DGDF_INCLUDE_DIR=$CONDA_PREFIX/include \
+          -DCMAKE_CXX11_ABI=ON \
+          -DPLUGIN_RMM=ON \
+          -DRMM_ROOT=${RAPIDS_DIR}/rmm \
+          -DCMAKE_BUILD_TYPE=release .. && \
+    make -j && make -j install && \
+    cd ../python-package && python setup.py install; \
+  fi
 
   {% elif lib.name == "cuml" %}
   ./build.sh --allgpuarch libcuml cuml prims
@@ -40,5 +59,3 @@ RUN cd ${RAPIDS_DIR}/{{ lib.name }} && \
 
   {% endif %}
 {% endfor %}
-
-RUN chmod -R ugo+w /opt/conda ${RAPIDS_DIR}

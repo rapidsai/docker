@@ -1,0 +1,10 @@
+# See https://pre-commit.com for more information
+repos:
+  - repo: local
+    hooks:
+      - id: generate-dockerfiles
+        name: Dockerfiles updated?
+        language: script
+        entry: generate_dockerfiles.py
+        pass_filenames: no
+        always_run: yes
