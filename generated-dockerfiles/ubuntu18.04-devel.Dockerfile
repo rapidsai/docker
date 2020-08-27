@@ -10,7 +10,7 @@
 ARG CUDA_VER=10.1
 ARG LINUX_VER=ubuntu18.04
 ARG PYTHON_VER=3.7
-ARG RAPIDS_VER=0.15
+ARG RAPIDS_VER=0.16
 ARG FROM_IMAGE=gpuci/rapidsai
 
 FROM ${FROM_IMAGE}:${RAPIDS_VER}-cuda${CUDA_VER}-devel-${LINUX_VER}-py${PYTHON_VER}
@@ -32,7 +32,7 @@ COPY ccache /ccache
 RUN ccache -s
 
 ARG PARALLEL_LEVEL=16
-ARG RAPIDS_VER=0.15*
+ARG RAPIDS_VER=0.16*
 
 ARG PYTHON_VER
 
@@ -79,7 +79,7 @@ RUN source activate rapids \
 
 RUN cd ${RAPIDS_DIR} \
   && source activate rapids \
-  && git clone -b branch-0.15 --depth 1 --single-branch https://github.com/rapidsai/notebooks.git \
+  && git clone -b branch-0.16 --depth 1 --single-branch https://github.com/rapidsai/notebooks.git \
   && cd notebooks \
   && git submodule update --init --remote --no-single-branch --depth 1
 
@@ -94,11 +94,11 @@ COPY .start_jupyter_run_in_rapids.sh /.run_in_rapids
 
 RUN cd ${RAPIDS_DIR} \
   && source activate rapids \
-  && git clone -b branch-0.15 --depth 1 --single-branch https://github.com/rapidsai/cudf.git \
+  && git clone -b branch-0.16 --depth 1 --single-branch https://github.com/rapidsai/cudf.git \
   && cd cudf \
   && git submodule update --init --recursive --no-single-branch --depth 1 \
   && cd ${RAPIDS_DIR} \
-  && git clone -b branch-0.15 --depth 1 --single-branch https://github.com/rapidsai/cuml.git \
+  && git clone -b branch-0.16 --depth 1 --single-branch https://github.com/rapidsai/cuml.git \
   && cd cuml \
   && git submodule update --init --recursive --no-single-branch --depth 1 \
   && cd ${RAPIDS_DIR} \
@@ -106,27 +106,27 @@ RUN cd ${RAPIDS_DIR} \
   && cd xgboost \
   && git submodule update --init --recursive --no-single-branch --depth 1 \
   && cd ${RAPIDS_DIR} \
-  && git clone -b branch-0.15 --depth 1 --single-branch https://github.com/rapidsai/rmm.git \
+  && git clone -b branch-0.16 --depth 1 --single-branch https://github.com/rapidsai/rmm.git \
   && cd rmm \
   && git submodule update --init --remote --recursive --no-single-branch --depth 1 \
   && cd ${RAPIDS_DIR} \
-  && git clone -b branch-0.15 --depth 1 --single-branch https://github.com/rapidsai/cusignal.git \
+  && git clone -b branch-0.16 --depth 1 --single-branch https://github.com/rapidsai/cusignal.git \
   && cd cusignal \
   && git submodule update --init --remote --recursive --no-single-branch --depth 1 \
   && cd ${RAPIDS_DIR} \
-  && git clone -b branch-0.15 --depth 1 --single-branch https://github.com/rapidsai/cuxfilter \
+  && git clone -b branch-0.16 --depth 1 --single-branch https://github.com/rapidsai/cuxfilter \
   && cd cuxfilter \
   && git submodule update --init --remote --recursive --no-single-branch --depth 1 \
   && cd ${RAPIDS_DIR} \
-  && git clone -b branch-0.15 --depth 1 --single-branch https://github.com/rapidsai/cuspatial.git \
+  && git clone -b branch-0.16 --depth 1 --single-branch https://github.com/rapidsai/cuspatial.git \
   && cd cuspatial \
   && git submodule update --init --remote --recursive --no-single-branch --depth 1 \
   && cd ${RAPIDS_DIR} \
-  && git clone -b branch-0.15 --depth 1 --single-branch https://github.com/rapidsai/cugraph.git \
+  && git clone -b branch-0.16 --depth 1 --single-branch https://github.com/rapidsai/cugraph.git \
   && cd cugraph \
   && git submodule update --init --remote --recursive --no-single-branch --depth 1 \
   && cd ${RAPIDS_DIR} \
-  && git clone -b branch-0.15 --depth 1 --single-branch https://github.com/rapidsai/dask-cuda.git \
+  && git clone -b branch-0.16 --depth 1 --single-branch https://github.com/rapidsai/dask-cuda.git \
   && cd dask-cuda \
   && git submodule update --init --remote --recursive --no-single-branch --depth 1 \
   && cd ${RAPIDS_DIR} \
