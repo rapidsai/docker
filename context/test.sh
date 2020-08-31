@@ -17,6 +17,10 @@ EXITCODE=0
 # Always run nbtest in NOTEBOOKS_DIR, set EXITCODE to failure if any run fails
 cd ${NOTEBOOKS_DIR}
 
+# Special case: cugraph notebooks need specific datasets downloaded (this script
+# only downloads them if they do not exist, so it's safe to run multiple times)
+(cd cugraph; ./cugraph_benchmarks/dataPrep.sh)
+
 # Every repo is submoduled into "repos/<repo>" and notebooks have been stored
 # into a "notebooks" dir, this loop finds all notebooks specifically added to CI
 for nb in $(find repos/*/notebooks/* -name *.ipynb); do

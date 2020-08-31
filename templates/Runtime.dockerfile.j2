@@ -9,14 +9,14 @@
 ARG CUDA_VER={{ DEFAULT_CUDA_VERSION }}
 ARG LINUX_VER={{ os }}
 ARG PYTHON_VER={{ DEFAULT_PYTHON_VERSION }}
-ARG RAPIDS_VER={{ RAPIDS_VERSION }}
+ARG RAPIDS_VER={{ DEFAULT_RAPIDS_VERSION }}
 ARG FROM_IMAGE=gpuci/rapidsai
 
 FROM ${FROM_IMAGE}:${RAPIDS_VER}-cuda${CUDA_VER}-runtime-${LINUX_VER}-py${PYTHON_VER}
 
 {# base/runtime install specs #}
 ARG DASK_XGBOOST_VER=0.2*
-ARG RAPIDS_VER={{ RAPIDS_VERSION }}*
+ARG RAPIDS_VER
 
 ENV RAPIDS_DIR=/rapids
 {% if "ubuntu" in os %}
@@ -44,7 +44,7 @@ RUN yum update -y \
 {% include 'partials/env_debug.dockerfile.j2' %}
 
 RUN gpuci_conda_retry install -y -n rapids \
-  rapids=${RAPIDS_VER}
+  "rapids=${RAPIDS_VER}*"
 
 {% include 'partials/install_notebooks.dockerfile.j2' %}
 

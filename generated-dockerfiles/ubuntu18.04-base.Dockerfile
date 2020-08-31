@@ -8,13 +8,13 @@
 ARG CUDA_VER=10.1
 ARG LINUX_VER=ubuntu18.04
 ARG PYTHON_VER=3.7
-ARG RAPIDS_VER=0.15
+ARG RAPIDS_VER=0.16
 ARG FROM_IMAGE=gpuci/rapidsai
 
 FROM ${FROM_IMAGE}:${RAPIDS_VER}-cuda${CUDA_VER}-base-${LINUX_VER}-py${PYTHON_VER}
 
 ARG DASK_XGBOOST_VER=0.2*
-ARG RAPIDS_VER=0.15*
+ARG RAPIDS_VER
 
 ENV RAPIDS_DIR=/rapids
 ENV LD_LIBRARY_PATH=/opt/conda/envs/rapids/lib:${LD_LIBRARY_PATH}
@@ -34,7 +34,7 @@ RUN source activate rapids \
   && conda config --show-sources \
   && conda list --show-channel-urls
 RUN gpuci_conda_retry install -y -n rapids \
-  rapids=${RAPIDS_VER}
+  "rapids=${RAPIDS_VER}*"
 
 COPY run_commands.sh /opt/docker/bin/run_commands
 RUN /opt/docker/bin/run_commands

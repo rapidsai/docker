@@ -10,7 +10,7 @@
 ARG CUDA_VER={{ DEFAULT_CUDA_VERSION }}
 ARG LINUX_VER={{ os }}
 ARG PYTHON_VER={{ DEFAULT_PYTHON_VERSION }}
-ARG RAPIDS_VER={{ RAPIDS_VERSION }}
+ARG RAPIDS_VER={{ DEFAULT_RAPIDS_VERSION }}
 ARG FROM_IMAGE=gpuci/rapidsai
 
 FROM ${FROM_IMAGE}:${RAPIDS_VER}-cuda${CUDA_VER}-devel-${LINUX_VER}-py${PYTHON_VER}
@@ -36,7 +36,7 @@ RUN ccache -s
 
 {# devel environment config args #}
 ARG PARALLEL_LEVEL=16
-ARG RAPIDS_VER={{ RAPIDS_VERSION }}*
+ARG RAPIDS_VER
 
 ARG PYTHON_VER
 
@@ -69,13 +69,13 @@ between packages. #}
 
 {# Install rapids-build-env and rapids-doc-env from conda meta-pkg #}
 RUN gpuci_retry conda install -y -n rapids \
-      rapids-build-env=${RAPIDS_VER} \
-      rapids-doc-env=${RAPIDS_VER} \
-      libcumlprims=${RAPIDS_VER} \
-      ucx-py=${RAPIDS_VER} \
+      "rapids-build-env=${RAPIDS_VER}*" \
+      "rapids-doc-env=${RAPIDS_VER}*" \
+      "libcumlprims=${RAPIDS_VER}*" \
+      "ucx-py=${RAPIDS_VER}*" \
     && conda remove -y -n rapids --force-remove \
-      rapids-build-env=${RAPIDS_VER} \
-      rapids-doc-env=${RAPIDS_VER}
+      "rapids-build-env=${RAPIDS_VER}*" \
+      "rapids-doc-env=${RAPIDS_VER}*"
 
 {% include 'partials/env_debug.dockerfile.j2' %}
 

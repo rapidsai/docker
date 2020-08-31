@@ -20,7 +20,7 @@ def load_settings():
     # Set default RAPIDS_LIBS values
     for lib in settings["RAPIDS_LIBS"]:
         if "branch" not in lib.keys():
-            lib["branch"] = f'branch-{settings["RAPIDS_VERSION"]}'
+            lib["branch"] = f'branch-{settings["DEFAULT_RAPIDS_VERSION"]}'
         if "update_submodules" not in lib.keys():
             lib["update_submodules"] = True
     return settings
