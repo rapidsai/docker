@@ -102,7 +102,66 @@ ENV LD_LIBRARY_PATH=${LD_LIBRARY_PATH}:/usr/local/cuda/lib64:/usr/local/cuda/lib
 RUN mv /opt/conda/envs/rapids/include/dmlc/ /opt/conda/envs/rapids/include/dmlc-OFF
 {% endif %}
 
-{% include 'partials/devel_build.dockerfile.j2' %}
+{# xgboost build will not find nccl in the conda env without this env var #}
+ENV NCCL_ROOT=/opt/conda/envs/rapids
+ENV PARALLEL_LEVEL=${PARALLEL_LEVEL}
+
+{# Include 'rapids' conda env in LD_LIBRARY_PATH #}
+ENV LD_LIBRARY_PATH=${LD_LIBRARY_PATH}:/opt/conda/envs/rapids/lib
+
+{% for lib in RAPIDS_LIBS %}
+RUN cd ${RAPIDS_DIR}/{{ lib.name }} && \
+  source activate rapids && \
+  ccache -s && \
+  {% if lib.name == "cudf" %}
+  ./build.sh && \
+  ./build.sh libcudf_kafka cudf_kafka && \
+  ./build.sh tests
+
+  {% elif lib.name == "cuspatial" %}
+  export CUSPATIAL_HOME="$PWD" && \
+  export CUDF_HOME="$PWD/../cudf" && \
+  ./build.sh
+
+  {% elif lib.name == "xgboost" %}
+  if [[ "$CUDA_VER" == "11.0" ]]; then \
+    mkdir -p build && cd build && \
+    cmake -DCMAKE_INSTALL_PREFIX=$CONDA_PREFIX \
+          -DUSE_NCCL=ON -DUSE_CUDA=ON -DUSE_CUDF=ON \
+          -DBUILD_WITH_SHARED_NCCL=ON \
+          -DGDF_INCLUDE_DIR=$CONDA_PREFIX/include \
+          -DCMAKE_CXX_STANDARD:STRING="14" \
+          -DPLUGIN_RMM=ON \
+          -DRMM_ROOT=${RAPIDS_DIR}/rmm \
+          -DCMAKE_BUILD_TYPE=release .. && \
+    make -j && make -j install && \
+    cd ../python-package && python setup.py install; \
+  else \
+    mkdir -p build && cd build && \
+    cmake -DCMAKE_INSTALL_PREFIX=$CONDA_PREFIX \
+          -DUSE_NCCL=ON -DUSE_CUDA=ON -DUSE_CUDF=ON \
+          -DBUILD_WITH_SHARED_NCCL=ON \
+          -DGDF_INCLUDE_DIR=$CONDA_PREFIX/include \
+          -DCMAKE_CXX11_ABI=ON \
+          -DPLUGIN_RMM=ON \
+          -DRMM_ROOT=${RAPIDS_DIR}/rmm \
+          -DCMAKE_BUILD_TYPE=release .. && \
+    make -j && make -j install && \
+    cd ../python-package && python setup.py install; \
+  fi
+
+  {% elif lib.name == "cuml" %}
+  ./build.sh --allgpuarch libcuml cuml prims
+
+  {% elif lib.name == "dask-cuda" or lib.name == "dask-xgboost" %}
+  python setup.py install
+
+  {% else %}
+  ./build.sh
+
+  {% endif %}
+{% endfor %}
+
 
 {% if "centos" in os %}
 {# Change LD_LIBRARY_PATH to exclude /usr/local/cuda/* since
