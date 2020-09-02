@@ -42,7 +42,7 @@ def main():
     initialize_output_dir()
     settings = load_settings()
     for docker_os in ["centos7", "ubuntu18.04"]:
-        for image_type in ["Base", "Devel", "Runtime", "Quick"]:
+        for image_type in ["Base", "Devel", "Runtime"]:
             dockerfile_name = f"{docker_os}-{image_type.lower()}.Dockerfile"
             template = env.get_template(f"{image_type}.dockerfile.j2")
             output = template.render(
