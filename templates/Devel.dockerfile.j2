@@ -109,6 +109,7 @@ ENV PARALLEL_LEVEL=${PARALLEL_LEVEL}
 {# Include 'rapids' conda env in LD_LIBRARY_PATH #}
 ENV LD_LIBRARY_PATH=${LD_LIBRARY_PATH}:/opt/conda/envs/rapids/lib
 
+{# RAPIDS library build loop #}
 {% for lib in RAPIDS_LIBS %}
 RUN cd ${RAPIDS_DIR}/{{ lib.name }} && \
   source activate rapids && \
