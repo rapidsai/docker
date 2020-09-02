@@ -91,6 +91,20 @@ $ docker run --runtime=nvidia --rm -it -p 8888:8888 -p 8787:8787 -p 8786:8786 \
 ```
 **NOTE:** This will open a shell with [JupyterLab](https://jupyterlab.readthedocs.io/en/stable/) running in the background on port 8888 on your host machine.
 
+### Runtime Arguments
+
+The following environment variables can be passed to the `docker run` commands:
+
+- `HOST_USER_ID` - used to set the `uid` of the user when the container starts. Useful for ensuring that files written to Docker volumes do not belong to the `root` user
+- `JUPYTER_FG` - set to `true` to start jupyter server in foreground instead of background (not applicable for `base` images)
+
+Example:
+
+```sh
+$ docker run --runtime=nvidia --rm -it -e HOST_USER_ID=$(id -u $USER) -p 8888:8888 -p 8787:8787 -p 8786:8786 \
+         rapidsai/rapidsai:cuda10.1-runtime-ubuntu18.04-py3.7
+```
+
 ### Use JupyterLab to Explore the Notebooks
 
 Notebooks can be found in the following directories within the 0.10 container:

@@ -21,15 +21,23 @@ ARG RAPIDS_VER
 ENV RAPIDS_DIR=/rapids
 {% if "ubuntu" in os %}
 ENV LD_LIBRARY_PATH=/opt/conda/envs/rapids/lib:${LD_LIBRARY_PATH}
+RUN apt-get update \
+  && apt-get install -y \
+    sudo \
+  && rm -rf /var/lib/apt/lists/*
 {% endif %}
 
 {# Copy files needed by RAPIDS and 3rd parties for builds, test, and runtime. #}
 RUN mkdir -p ${RAPIDS_DIR}/utils {{ "${GCC7_DIR}/lib64" if "centos" in os }}
-COPY start_jupyter.sh nbtest.sh nbtestlog2junitxml.py ${RAPIDS_DIR}/utils/
+COPY nbtest.sh nbtestlog2junitxml.py ${RAPIDS_DIR}/utils/
 
 {% if "centos" in os %}
 {# Add compatible libm #}
 COPY libm.so.6 ${GCC7_DIR}/lib64
+RUN yum update -y \
+    && yum install -y \
+        sudo \
+    && rm -rf /var/cache/yum/*
 {% endif %}
 
 {# Install the notebook dependencies and the notebook repo #}
@@ -40,10 +48,16 @@ RUN gpuci_conda_retry install -y -n rapids \
 
 {% include 'partials/install_notebooks.dockerfile.j2' %}
 
+{# Run common commands #}
+COPY run_commands.sh /opt/docker/bin/run_commands
+RUN /opt/docker/bin/run_commands
+
 {# Cleaup conda and set ACLs for all users #}
 {% include 'partials/cleanup-chmod.dockerfile.j2' %}
 
-ENTRYPOINT [ "/usr/bin/tini", "--", "/.run_in_rapids" ]
+COPY source_entrypoints/runtime_devel.sh /opt/docker/bin/entrypoint_source
+COPY entrypoint.sh /opt/docker/bin/entrypoint
+ENTRYPOINT [ "/usr/bin/tini", "--", "/opt/docker/bin/entrypoint" ]
 
 {# Set the default command to pass to the ENTRYPOINT if no command was given #}
 CMD [ "/bin/bash" ]

@@ -19,9 +19,13 @@ ARG RAPIDS_VER
 
 ENV RAPIDS_DIR=/rapids
 ENV LD_LIBRARY_PATH=/opt/conda/envs/rapids/lib:${LD_LIBRARY_PATH}
+RUN apt-get update \
+  && apt-get install -y \
+    sudo \
+  && rm -rf /var/lib/apt/lists/*
 
 RUN mkdir -p ${RAPIDS_DIR}/utils 
-COPY start_jupyter.sh nbtest.sh nbtestlog2junitxml.py ${RAPIDS_DIR}/utils/
+COPY nbtest.sh nbtestlog2junitxml.py ${RAPIDS_DIR}/utils/
 
 
 
@@ -56,11 +60,14 @@ WORKDIR ${RAPIDS_DIR}/notebooks
 EXPOSE 8888
 EXPOSE 8787
 EXPOSE 8786
+COPY run_commands.sh /opt/docker/bin/run_commands
+RUN /opt/docker/bin/run_commands
 
-COPY .start_jupyter_run_in_rapids.sh /.run_in_rapids
 
 RUN conda clean -afy \
   && chmod -R ugo+w /opt/conda ${RAPIDS_DIR}
-ENTRYPOINT [ "/usr/bin/tini", "--", "/.run_in_rapids" ]
+COPY source_entrypoints/runtime_devel.sh /opt/docker/bin/entrypoint_source
+COPY entrypoint.sh /opt/docker/bin/entrypoint
+ENTRYPOINT [ "/usr/bin/tini", "--", "/opt/docker/bin/entrypoint" ]
 
 CMD [ "/bin/bash" ]
