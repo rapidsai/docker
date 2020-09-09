@@ -24,6 +24,7 @@ ENV CC="/usr/local/bin/gcc"
 ENV CXX="/usr/local/bin/g++"
 ENV NVCC="/usr/local/bin/nvcc"
 ENV CUDAHOSTCXX="/usr/local/bin/g++"
+ENV CUDAToolkit_ROOT="/usr/local/cuda"
 RUN ln -s "$(which ccache)" "/usr/local/bin/gcc" \
     && ln -s "$(which ccache)" "/usr/local/bin/g++" \
     && ln -s "$(which ccache)" "/usr/local/bin/nvcc"
