@@ -40,7 +40,7 @@ For smaller RAPIDS Docker images consisting of a full conda-based install and no
 
 The tag naming scheme for RAPIDS images incorporates key platform details into the tag as shown below:
 ```
-0.13-cuda10.1-devel-ubuntu18.04-py3.7
+0.15-cuda10.1-devel-ubuntu18.04-py3.7
  ^       ^    ^        ^         ^
  |       |    type     |         python version
  |       |             |
@@ -49,22 +49,44 @@ The tag naming scheme for RAPIDS images incorporates key platform details into t
  RAPIDS version        linux version
 ```
 
+To get the latest RAPIDS version of a specific platform combination, simply exclude the RAPIDS version.  For example, to pull the latest version of RAPIDS for the `runtime` image with support for CUDA 10.1, Python 3.7, and Ubuntu 18.04, use the following tag:
+```
+cuda10.1-devel-ubuntu18.04-py3.7
+```
+
+Many users do not need a specific platform combination but would like to ensure they're getting the latest version of RAPIDS, so as an additional convenience, a tag named simply `latest` is also provided which is equivalent to `cuda10.1-devel-ubuntu16.04-py3.7`.
+
 ## Prerequisites
 
 * NVIDIA Pascal™ GPU architecture or better
-* CUDA [10.1](https://developer.nvidia.com/cuda-downloads) compatible NVIDIA driver
+* CUDA [10.1/10.2/11.0](https://developer.nvidia.com/cuda-downloads) with a compatible NVIDIA driver
 * Ubuntu 16.04/18.04 or CentOS 7
 * Docker CE v18+
 * [nvidia-docker](https://github.com/nvidia/nvidia-docker/wiki/Installation-(version-2.0)) v2+
 
 ## Usage
 
-See [usage instructions](https://hub.docker.com/r/rapidsai/rapidsai#usage) for information and replace references to `rapidsai/rapidsai` with `rapidsai/rapidsai-dev-nightly`.
+See the _Usage_ section in [rapidsai/rapidsai](https://hub.docker.com/r/rapidsai/rapidsai) for information and replace references to `rapidsai/rapidsai` with `rapidsai/rapidsai-dev-nightly`.
+
+### Runtime Arguments
+
+The arguments below only exist in the nightly images, however stable runtime arguments can also be used in the nightlies unless otherwise noted. To see a list of the stable runtime arguments, see the _Runtime Arguments_ section in [rapidsai/rapidsai-dev](https://hub.docker.com/r/rapidsai/rapidsai-dev).
+
+The following environment variables can be passed to the `docker run` commands:
+
+- `HOST_USER_ID` - used to set the `uid` of the user when the container starts. Useful for ensuring that files written to Docker volumes do not belong to the `root` user
+
+Example:
+
+```sh
+$ docker run --runtime=nvidia --rm -it -e HOST_USER_ID=$(id -u $USER) -p 8888:8888 -p 8787:8787 -p 8786:8786 \
+         rapidsai/rapidsai:cuda10.1-runtime-ubuntu18.04-py3.7
+```
 
 ## Where can I get help or file bugs/requests?
 
-For more information about the containers or to submit a container issue, visit: [https://github.com/rapidsai/build](https://github.com/rapidsai/build).
+Please submit issues with the container to this GitHub repository: [https://github.com/rapidsai/docs](https://github.com/rapidsai/docs/issues/new)
 
-For issues with RAPIDS libraries like cuDF, cuML, RMM, cuGraph, or others file an issue in the related GitHub project.
+For issues with RAPIDS libraries like cuDF, cuML, RMM, or others file an issue in the related GitHub project.
 
 Additional help can be found on [Stack Overflow](https://stackoverflow.com/tags/rapids) or [Google Groups](https://groups.google.com/forum/#!forum/rapidsai).
