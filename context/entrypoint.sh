@@ -9,7 +9,7 @@ export HOME=/home/rapids
 export USER=rapids
 export LOGNAME=rapids
 export MAIL=/var/spool/mail/rapids
-export PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/home/rapids/bin
+export PATH=$PATH:/home/rapids/bin
 export supkg="su-exec"
 chown rapids:rapids $HOME
 
