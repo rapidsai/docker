@@ -100,6 +100,9 @@ ENV LD_LIBRARY_PATH=${LD_LIBRARY_PATH}:/usr/local/cuda/lib64:/usr/local/cuda/lib
 
 {# Remove dmlc that is leftover from prior xgboost install #}
 RUN mv /opt/conda/envs/rapids/include/dmlc/ /opt/conda/envs/rapids/include/dmlc-OFF
+
+{# This ENV var solves the missing cublas_v2.h error that occurs on centos-cuda10.1 images. #}
+ENV CPLUS_INCLUDE_PATH="/usr/local/cuda-10.2/include"
 {% endif %}
 
 {# xgboost build will not find nccl in the conda env without this env var #}
