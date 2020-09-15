@@ -13,13 +13,13 @@ export PATH=$PATH:/home/rapids/bin
 export supkg="su-exec"
 chown rapids:rapids $HOME
 
-# Source "source" file if it exists
-SRC_FILE="/opt/docker/bin/entrypoint_source"
-[ -f "${SRC_FILE}" ] && source "${SRC_FILE}"
-
 # Activate the `rapids` conda environment.
 . /opt/conda/etc/profile.d/conda.sh
 conda activate rapids
+
+# Source "source" file if it exists
+SRC_FILE="/opt/docker/bin/entrypoint_source"
+[ -f "${SRC_FILE}" ] && source "${SRC_FILE}"
 
 # Run whatever the user wants.
 exec /opt/conda/bin/$supkg rapids "$@"
