@@ -97,7 +97,7 @@ $ docker run \
 
 Mounting files/folders to the locations specified below provide additional functionality for the images.
 
-- `/opt/app/environment.yml` - a YAML file that contains a list of dependencies that will be installed by `conda`. The file should look like:
+- `/opt/rapids/environment.yml` - a YAML file that contains a list of dependencies that will be installed by `conda`. The file should look like:
 
 ```yml
 dependencies:

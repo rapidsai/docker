@@ -22,9 +22,9 @@ if [ "$EXTRA_YUM_PACKAGES" ]; then
     yum install -y $EXTRA_YUM_PACKAGES
 fi
 
-if [ -e "/opt/app/environment.yml" ]; then
+if [ -e "/opt/rapids/environment.yml" ]; then
     echo "environment.yml found. Installing packages"
-    conda env update -f /opt/app/environment.yml
+    conda env update -f /opt/rapids/environment.yml
 fi
 
 if [ "$EXTRA_CONDA_PACKAGES" ]; then
