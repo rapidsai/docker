@@ -36,8 +36,8 @@ RUN source activate rapids \
 RUN gpuci_conda_retry install -y -n rapids \
   "rapids=${RAPIDS_VER}*"
 
-COPY run_commands.sh /opt/docker/bin/run_commands
-RUN /opt/docker/bin/run_commands
+COPY create_user.sh packages.sh /opt/docker/bin/
+RUN /opt/docker/bin/create_user.sh
 
 
 RUN conda clean -afy \
