@@ -69,19 +69,43 @@ Many users do not need a specific platform combination but would like to ensure 
 
 See the _Usage_ section in [rapidsai/rapidsai](https://hub.docker.com/r/rapidsai/rapidsai) for information and replace references to `rapidsai/rapidsai` with `rapidsai/rapidsai-nightly`.
 
-### Runtime Arguments
+### Environment Variables
 
-The arguments below only exist in the nightly images, however stable runtime arguments can also be used in the nightlies unless otherwise noted. To see a list of the stable runtime arguments, see the _Runtime Arguments_ section in [rapidsai/rapidsai](https://hub.docker.com/r/rapidsai/rapidsai).
-
-The following environment variables can be passed to the `docker run` commands:
+The environment variables below can be passed to the `docker run` commands for nightly images. Any variables listed in the _Environment Variables_ section of the stable images, [rapidsai/rapidsai](https://hub.docker.com/r/rapidsai/rapidsai), may also be used unless otherwise stated.
 
 - `HOST_USER_ID` - used to set the `uid` of the user when the container starts. Useful for ensuring that files written to Docker volumes do not belong to the `root` user
+- `EXTRA_APT_PACKAGES` - (**Ubuntu images only**) used to install additional `apt` packages in the container. Use a space separated list of values
+- `EXTRA_YUM_PACKAGES` - (**CentOS images only**) used to install additional `yum` packages in the container. Use a space separated list of values
+- `EXTRA_CONDA_PACKAGES` - used to install additional `conda` packages in the container. Use a space separated list of values
+- `EXTRA_PIP_PACKAGES` - used to install additional `pip` packages in the container. Use a space separated list of values
 
 Example:
 
 ```sh
-$ docker run --runtime=nvidia --rm -it -e HOST_USER_ID=$(id -u $USER) -p 8888:8888 -p 8787:8787 -p 8786:8786 \
-         rapidsai/rapidsai:cuda10.1-runtime-ubuntu18.04-py3.7
+$ docker run \
+    --rm \
+    -it \
+    --gpus all \
+    -e HOST_USER_ID=$(id -u $USER) \
+    -e EXTRA_APT_PACKAGES="vim nano" \
+    -e EXTRA_CONDA_PACKAGES="jq" \
+    -e EXTRA_PIP_PACKAGES="beautifulsoup4" \
+    -p 8888:8888 \
+    -p 8787:8787 \
+    -p 8786:8786 \
+    rapidsai/rapidsai:cuda10.1-runtime-ubuntu18.04-py3.7
+```
+
+### Bind Mounts
+
+Mounting files/folders to the locations specified below provide additional functionality for the images.
+
+- `/opt/rapids/environment.yml` - a YAML file that contains a list of dependencies that will be installed by `conda`. The file should look like:
+
+```yml
+dependencies:
+  - beautifulsoup4
+  - jq
 ```
 
 ## Where can I get help or file bugs/requests?

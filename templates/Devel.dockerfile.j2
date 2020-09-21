@@ -178,8 +178,8 @@ RUN ccache -s \
   && ccache -s
 
 {# Run common commands #}
-COPY run_commands.sh /opt/docker/bin/run_commands
-RUN /opt/docker/bin/run_commands
+COPY create_user.sh packages.sh /opt/docker/bin/
+RUN /opt/docker/bin/create_user.sh
 
 {# Cleaup conda and set ACLs for all users #}
 {% include 'partials/cleanup-chmod.dockerfile.j2' %}

@@ -91,7 +91,7 @@ $ docker run --runtime=nvidia --rm -it -p 8888:8888 -p 8787:8787 -p 8786:8786 \
 ```
 **NOTE:** This will open a shell with [JupyterLab](https://jupyterlab.readthedocs.io/en/stable/) running in the background on port 8888 on your host machine.
 
-### Runtime Arguments
+### Environment Variables
 
 The following environment variables can be passed to the `docker run` commands:
 

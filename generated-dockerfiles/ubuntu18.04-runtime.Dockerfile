@@ -60,8 +60,8 @@ WORKDIR ${RAPIDS_DIR}/notebooks
 EXPOSE 8888
 EXPOSE 8787
 EXPOSE 8786
-COPY run_commands.sh /opt/docker/bin/run_commands
-RUN /opt/docker/bin/run_commands
+COPY create_user.sh packages.sh /opt/docker/bin/
+RUN /opt/docker/bin/create_user.sh
 
 
 RUN conda clean -afy \
