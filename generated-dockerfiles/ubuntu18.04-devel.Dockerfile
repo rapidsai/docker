@@ -39,7 +39,7 @@ ARG PYTHON_VER
 
 ENV RAPIDS_DIR=/rapids
 
-RUN apt-get update && apt-get install -y \
+RUN apt-get update && apt-get install -y --no-install-recommends \
     gsfonts \
     sudo \
     && rm -rf /var/lib/apt/lists/*

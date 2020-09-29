@@ -19,7 +19,7 @@ ARG RAPIDS_VER
 ENV RAPIDS_DIR=/rapids
 ENV LD_LIBRARY_PATH=/opt/conda/envs/rapids/lib:${LD_LIBRARY_PATH}
 RUN apt-get update \
-  && apt-get install -y \
+  && apt-get install -y --no-install-recommends \
     sudo \
   && rm -rf /var/lib/apt/lists/*
 

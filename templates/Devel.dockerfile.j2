@@ -44,7 +44,7 @@ ENV RAPIDS_DIR=/rapids
 
 {% if "ubuntu" in os %}
 {# gsfonts is used to correctly render fonts in doxygen/graphviz diagrams #}
-RUN apt-get update && apt-get install -y \
+RUN apt-get update && apt-get install -y --no-install-recommends \
     gsfonts \
     sudo \
     && rm -rf /var/lib/apt/lists/*
