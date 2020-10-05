@@ -10,21 +10,21 @@ The RAPIDS suite of software libraries gives you the freedom to execute end-to-e
 
 ### Current Version
 
-#### RAPIDS 0.13 - 31 March 2020
+#### RAPIDS 0.15 - 26 Aug 2020
 
-Versions of libraries included in the `0.13` images:
-- `cuDF` [v0.13.0](https://github.com/rapidsai/cudf/tree/v0.13.0), `cuML` [v0.13.0](https://github.com/rapidsai/cuml/tree/v0.13.0), `cuGraph` [v0.13.0](https://github.com/rapidsai/cugraph/tree/v0.13.0), `RMM` [v0.13.0](https://github.com/rapidsai/RMM/tree/v0.13.0), `cuSpatial` [v0.13.0](https://github.com/rapidsai/cuspatial/tree/v0.13.0), `cuxfilter` [v0.13.0](https://github.com/rapidsai/cuxfilter/tree/branch-0.13)
-  - **NOTE:** `cuxfilter` is only available in `runtime` containers
-- `xgboost` [branch](https://github.com/rapidsai/xgboost/tree/rapids-0.13-release), `dask-xgboost` [branch](https://github.com/rapidsai/dask-xgboost/tree/dask-cudf) `dask-cuda` [branch](https://github.com/rapidsai/dask-cuda/tree/branch-0.13)
+Versions of libraries included in the `0.15` images:
+- `cuDF` [v0.15](https://github.com/rapidsai/cudf/tree/v0.15.0), `cuML` [v0.15](https://github.com/rapidsai/cuml/tree/v0.15.0), `cuGraph` [v0.15](https://github.com/rapidsai/cugraph/tree/v0.15.0), `RMM` [v0.15](https://github.com/rapidsai/RMM/tree/v0.15.0), `cuSpatial` [v0.15](https://github.com/rapidsai/cuspatial/tree/v0.15.0), `cuSignal` [v0.15](https://github.com/rapidsai/cusignal/tree/v0.15.0), `cuxfilter` [v0.15](https://github.com/rapidsai/cuxfilter/tree/v0.15.0)
+  - **IMPORTANT:** CUDA 10.0 & Python 3.6 support ended in v0.14; v0.15 includes CUDA 11.0 & Python 3.8 support
+  - **NOTE:** See [RAPIDS Notices](https://docs.rapids.ai/notices) for release changes for `clx` as well as other recent changes
 
 ### Former Version
 
-#### RAPIDS 0.12 - 4 February 2020
+#### RAPIDS 0.14 - 3 June 2020
 
-Versions of libraries included in the `0.12` images:
-- `cuDF` [v0.12.0](https://github.com/rapidsai/cudf/tree/v0.12.0), `cuML` [v0.12.0](https://github.com/rapidsai/cuml/tree/v0.12.0), `cuGraph` [v0.12.0](https://github.com/rapidsai/cugraph/tree/v0.12.0), `RMM` [v0.12.0](https://github.com/rapidsai/RMM/tree/v0.12.0), `cuSpatial` [v0.12.0](https://github.com/rapidsai/cuspatial/tree/v0.12.0), `cuxfilter` [v0.12.0](https://github.com/rapidsai/cuxfilter/tree/branch-0.12)
+Versions of libraries included in the `0.14` images:
+- `cuDF` [v0.14](https://github.com/rapidsai/cudf/tree/v0.14.0), `cuML` [v0.14](https://github.com/rapidsai/cuml/tree/v0.14.0), `cuGraph` [v0.14](https://github.com/rapidsai/cugraph/tree/v0.14.0), `RMM` [v0.14](https://github.com/rapidsai/RMM/tree/v0.14.0), `cuSpatial` [v0.14](https://github.com/rapidsai/cuspatial/tree/v0.14.0), `cuxfilter` [v0.14](https://github.com/rapidsai/cuxfilter/tree/v0.14.0), `cuSignal` [v0.14](https://github.com/rapidsai/cusignal/tree/v0.14.0)
   - **NOTE:** `cuxfilter` is only available in `runtime` containers
-- `xgboost` [branch](https://github.com/rapidsai/xgboost/tree/rapids-0.12-release), `dask-xgboost` [branch](https://github.com/rapidsai/dask-xgboost/tree/dask-cudf) `dask-cuda` [branch](https://github.com/rapidsai/dask-cuda/tree/branch-0.12)
+- `xgboost` [branch](https://github.com/rapidsai/xgboost/tree/rapids-0.14-release), `dask-xgboost` [branch](https://github.com/rapidsai/dask-xgboost/tree/dask-cudf) `dask-cuda` [branch](https://github.com/rapidsai/dask-cuda/tree/branch-0.14)
 
 ### Image Types
 
@@ -33,7 +33,7 @@ images in order to make it easy to add RAPIDS libraries while maintaining suppor
 
 RAPIDS images come in three types, distributed in two different repos:
 
-This repo (rapidsai), contains the following:
+The [rapidsai/rapidsai](https://hub.docker.com/r/rapidsai/rapidsai/tags) repo contains the following:
 - `base` - contains a RAPIDS environment ready for use.
   - **TIP: Use this image if you want to use RAPIDS as a part of your pipeline.**
 - `runtime` - extends the `base` image by adding a notebook server and example notebooks.
@@ -47,7 +47,7 @@ The [rapidsai/rapidsai-dev](https://hub.docker.com/r/rapidsai/rapidsai-dev/tags)
 
 The tag naming scheme for RAPIDS images incorporates key platform details into the tag as shown below:
 ```
-0.13-cuda10.1-runtime-ubuntu18.04-py3.7
+0.15-cuda10.1-runtime-ubuntu18.04-py3.7
  ^       ^    ^        ^         ^
  |       |    type     |         python version
  |       |             |
@@ -66,7 +66,7 @@ Many users do not need a specific platform combination but would like to ensure 
 ## Prerequisites
 
 * NVIDIA Pascal™ GPU architecture or better
-* CUDA [10.1](https://developer.nvidia.com/cuda-downloads) compatible NVIDIA driver
+* CUDA [10.1/10.2/11.0](https://developer.nvidia.com/cuda-downloads) with a compatible NVIDIA driver
 * Ubuntu 16.04/18.04 or CentOS 7
 * Docker CE v18+
 * [nvidia-docker](https://github.com/nvidia/nvidia-docker/wiki/Installation-(version-2.0)) v2+
@@ -91,17 +91,31 @@ $ docker run --runtime=nvidia --rm -it -p 8888:8888 -p 8787:8787 -p 8786:8786 \
 ```
 **NOTE:** This will open a shell with [JupyterLab](https://jupyterlab.readthedocs.io/en/stable/) running in the background on port 8888 on your host machine.
 
+### Environment Variables
+
+The following environment variables can be passed to the `docker run` commands:
+
+- `JUPYTER_FG` - set to `true` to start jupyter server in foreground instead of background (not applicable for `base` images)
+
+Example:
+
+```sh
+$ docker run --runtime=nvidia --rm -it -e JUPYTER_FG="true" -p 8888:8888 -p 8787:8787 -p 8786:8786 \
+         rapidsai/rapidsai:cuda10.1-runtime-ubuntu18.04-py3.7
+```
+
 ### Use JupyterLab to Explore the Notebooks
 
-Notebooks can be found in the following directories within the 0.10 container:
+Notebooks can be found in the following directories within the 0.15 container:
 
-* `/rapids/notebooks/xgboost` - XGBoost demo notebooks
-* `/rapids/notebooks/cudf` - cuDF demo notebooks
-* `/rapids/notebooks/cuml` - cuML demo notebooks
+* `/rapids/notebooks/clx` - CLX demo notebooks
 * `/rapids/notebooks/cugraph` - cuGraph demo notebooks
-* `/rapids/notebooks/tutorials` - Tutorials with end-to-end workflows
+* `/rapids/notebooks/cuml` - cuML demo notebooks
+* `/rapids/notebooks/cusignal` - cuSignal demo notebooks
+* `/rapids/notebooks/cuxfilter` - cuXfilter demo notebooks
+* `/rapids/notebooks/xgboost` - XGBoost demo notebooks
 
-For a full description of each notebook, see the [README](https://github.com/rapidsai/notebooks/blob/branch-0.9/README.md) in the notebooks repository.
+For a full description of each notebook, see the [README](https://github.com/rapidsai/notebooks/blob/branch-0.15/README.md) in the notebooks repository.
 
 ### Custom Data and Advanced Usage
 
@@ -142,7 +156,7 @@ Learn how to setup a mult-node cuDF and XGBoost data preparation and distributed
 
 ## Where can I get help or file bugs/requests?
 
-For more information about the containers or to submit a container issue, visit: [https://github.com/rapidsai/build](https://github.com/rapidsai/build).
+Please submit issues with the container to this GitHub repository: [https://github.com/rapidsai/docs](https://github.com/rapidsai/docs/issues/new)
 
 For issues with RAPIDS libraries like cuDF, cuML, RMM, or others file an issue in the related GitHub project.
 

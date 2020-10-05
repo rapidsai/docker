@@ -20,7 +20,7 @@ def load_settings():
     # Set default RAPIDS_LIBS values
     for lib in settings["RAPIDS_LIBS"]:
         if "branch" not in lib.keys():
-            lib["branch"] = f'branch-{settings["RAPIDS_VERSION"]}'
+            lib["branch"] = f'branch-{settings["DEFAULT_RAPIDS_VERSION"]}'
         if "update_submodules" not in lib.keys():
             lib["update_submodules"] = True
     return settings
@@ -39,7 +39,7 @@ def main(verbose=False):
     initialize_output_dir()
     settings = load_settings()
     for docker_os in ["centos7", "ubuntu18.04"]:
-        for image_type in ["Base", "Devel", "Runtime", "Quick"]:
+        for image_type in ["Base", "Devel", "Runtime"]:
             dockerfile_name = f"{docker_os}-{image_type.lower()}.Dockerfile"
             template = env.get_template(f"{image_type}.dockerfile.j2")
             output = template.render(

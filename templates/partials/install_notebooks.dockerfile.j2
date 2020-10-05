@@ -2,9 +2,9 @@
 
 {# Install the rapids-notebook-env meta-pkg #}
 RUN gpuci_conda_retry install -y -n rapids \
-        rapids-notebook-env=${RAPIDS_VER} \
+        "rapids-notebook-env=${RAPIDS_VER}*" \
     && conda remove -y -n rapids --force-remove \
-        rapids-notebook-env=${RAPIDS_VER}
+        "rapids-notebook-env=${RAPIDS_VER}*"
 
 {# Install jupyter lab stuff #}
 RUN gpuci_conda_retry install -y -n rapids jupyterlab-nvdashboard
@@ -15,7 +15,7 @@ RUN source activate rapids \
 {# Install notebooks repo #}
 RUN cd ${RAPIDS_DIR} \
   && source activate rapids \
-  && git clone -b branch-{{ RAPIDS_VERSION }} --depth 1 --single-branch https://github.com/rapidsai/notebooks.git \
+  && git clone -b branch-${RAPIDS_VER} --depth 1 --single-branch https://github.com/rapidsai/notebooks.git \
   && cd notebooks \
   && git submodule update --init --remote --no-single-branch --depth 1
 
@@ -28,6 +28,3 @@ EXPOSE 8888
 {# Dask Scheduler Bokeh port #}
 EXPOSE 8787
 EXPOSE 8786
-
-{# Change the entrypoint to start the Jupyter server prior to running commands #}
-COPY .start_jupyter_run_in_rapids.sh /.run_in_rapids

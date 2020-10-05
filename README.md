@@ -1,4 +1,4 @@
-# <div align="left"><img src="https://rapids.ai/assets/images/rapids_logo.png" width="90px"/>&nbsp;docker
+# <div align="left"><img src="https://rapids.ai/assets/images/RAPIDS-logo-white.svg" width="90px"/>&nbsp;docker
 
 This repository contains the source files for [rapidsai Docker images](https://hub.docker.com/u/rapidsai)
 
@@ -43,7 +43,7 @@ Using the following short `Dockerfile` users can leverage the existing RAPIDS im
 
 ```docker
 FROM rapidsai/rapidsai-nightly:cuda10.2-runtime-ubuntu18.04-py3.7
-RUN sed -i "s/NotebookApp.token=''/NotebookApp.token='secure-token-here'/g" /rapids/utils/start_jupyter.sh
+RUN sed -i "s/NotebookApp.token=''/NotebookApp.token='secure-token-here'/g" /opt/docker/bin/entrypoint_source
 ```
 
 Once built, the resulting image will be secured with the new token.
