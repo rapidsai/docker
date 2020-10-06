@@ -1,0 +1,5 @@
+{# This partial file is used for cleanup and ACL changes at the end of each image #}
+
+{# Clean-up conda and update ACLs for all users #}
+RUN conda clean -afy \
+  && chmod -R ugo+w /opt/conda ${RAPIDS_DIR}

@@ -171,11 +171,6 @@ numba.cuda cannot load that, and instead have it load
 ENV LD_LIBRARY_PATH=${LD_LIBRARY_PATH_PREBUILD}
 {% endif %}
 
-{# Additions for BlazingSQL #}
-ENV BLAZING_DIR=/blazing
-{% include 'partials/clone_and_build_blazing.j2' %}
-{% include 'partials/clone_blazing_notebooks.j2' %}
-
 {# Report ccache stats and cleanup; also fix  #}
 RUN ccache -s \
   && ccache -c \
