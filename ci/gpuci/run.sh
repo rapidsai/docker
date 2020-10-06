@@ -52,13 +52,6 @@ else
   BUILD_ARGS="${BUILD_ARGS} --build-arg RAPIDS_VER=${RAPIDS_VER}"
   BUILD_TAG="${RAPIDS_VER}-${BUILD_TAG}" #pre-prend version number
 fi
-# Check if RAPIDS_CHANNEL is set
-if [ -z "$RAPIDS_CHANNEL" ] ; then
-  echo "RAPIDS_CHANNEL is not set, skipping..."
-else
-  echo "RAPIDS_CHANNEL is set to '$RAPIDS_CHANNEL', adding to build args..."
-  BUILD_ARGS="${BUILD_ARGS} --build-arg RAPIDS_CHANNEL=${RAPIDS_CHANNEL}"
-fi
 
 # Ouput build config
 gpuci_logger "Build config info..."
