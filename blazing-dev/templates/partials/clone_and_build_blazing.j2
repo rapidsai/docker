@@ -2,7 +2,7 @@
 
 {# Install build prerequisites #}
 RUN gpuci_conda_retry install -y -n rapids \
-        google-cloud-cpp \
+        google-cloud-cpp=1.16.0 \
         ninja \
         gtest \
         gmock \
@@ -12,7 +12,9 @@ RUN gpuci_conda_retry install -y -n rapids \
         thrift=0.13.0 \
         jpype1 \
         netifaces \
-        pyhive
+        pyhive \
+        nlohmann_json \
+        arrow-cpp
 
 ENV CUDF_HOME=/rapids/cudf
 
