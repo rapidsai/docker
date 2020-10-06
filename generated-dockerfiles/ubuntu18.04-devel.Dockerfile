@@ -129,10 +129,6 @@ RUN cd ${RAPIDS_DIR} \
   && cd ${RAPIDS_DIR} \
   && git clone -b branch-0.16 --depth 1 --single-branch https://github.com/rapidsai/dask-cuda.git \
   && cd dask-cuda \
-  && git submodule update --init --remote --recursive --no-single-branch --depth 1 \
-  && cd ${RAPIDS_DIR} \
-  && git clone -b dask-cudf --depth 1 --single-branch https://github.com/rapidsai/dask-xgboost.git \
-  && cd dask-xgboost \
   && git submodule update --init --remote --recursive --no-single-branch --depth 1 
   
 
@@ -209,11 +205,6 @@ RUN cd ${RAPIDS_DIR}/xgboost && \
     make -j && make -j install && \
     cd ../python-package && python setup.py install; \
   fi
-
-RUN cd ${RAPIDS_DIR}/dask-xgboost && \
-  source activate rapids && \
-  ccache -s && \
-  python setup.py install
 
 RUN cd ${RAPIDS_DIR}/dask-cuda && \
   source activate rapids && \
