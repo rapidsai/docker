@@ -22,6 +22,3 @@ ENV BLAZING_DIR=/blazing
 
 {# Cleaup conda and set ACLs for all users #}
 {% include 'partials/cleanup-chmod.dockerfile.j2' %}
-
-COPY source_entrypoints/runtime_devel.sh /opt/docker/bin/entrypoint_source
-COPY entrypoint.sh /opt/docker/bin/entrypoint

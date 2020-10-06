@@ -4,6 +4,7 @@ RAPIDS_DIR=/rapids
 NBTEST=${RAPIDS_DIR}/utils/nbtest.sh
 LIBCUDF_KERNEL_CACHE_PATH=${WORKSPACE}/.jitcache
 NOTEBOOKS_DIR=${RAPIDS_DIR}/notebooks
+BLAZING_NOTEBOOKS_DIR=/blazing/Welcome_to_BlazingSQL_Notebooks
 
 # Add notebooks that should be skipped here
 # (space-separated list of filenames without paths)
@@ -14,28 +15,40 @@ env
 
 EXITCODE=0
 
-# Always run nbtest in NOTEBOOKS_DIR, set EXITCODE to failure if any run fails
-cd ${NOTEBOOKS_DIR}
+# Find all notebooks to run in both the RAPIDS notebook repo and the Blazing
+# "welcome" NB repo.
+NOTEBOOKS="$(find ${NOTEBOOKS_DIR}/repos/*/notebooks/* -name *.ipynb) \
+           ${BLAZING_NOTEBOOKS_DIR}/welcome.ipynb"
 
 # Special case: cugraph notebooks need specific datasets downloaded (this script
 # only downloads them if they do not exist, so it's safe to run multiple times)
-(cd cugraph; ./cugraph_benchmarks/dataPrep.sh)
+(cd ${NOTEBOOKS_DIR}/cugraph; ./cugraph_benchmarks/dataPrep.sh)
 
-# Every repo is submoduled into "repos/<repo>" and notebooks have been stored
-# into a "notebooks" dir, this loop finds all notebooks specifically added to CI
-for nb in $(find repos/*/notebooks/* -name *.ipynb); do
+for nb in ${NOTEBOOKS}; do
     nbBasename=$(basename ${nb})
-    # Output of find command looks like this: ./repos/<repo>/notebooks/<notebook> -name
-    # This grabs the <repo> element, skip CLX notebooks as they are not part of the runtime images yet
-    nbRepo=$(echo ${nb} | awk -F/ '{print $2}')
 
+    # Notebook paths can look like the following:
+    # "/rapids/notebooks/repos/<repo>/notebooks/<notebook>" or
+    # "/blazing/Welcome_to_BlazingSQL_Notebooks/welcome.ipynb"
+    # The repo name is extracted by pulling out a specific field in the path.
+    # For Blazing, simply use the blazing "root" dir.
+    if [[ ${nb:0:8} == "/blazing" ]]; then
+        nbRepo="blazing"
+    else
+        nbRepo=$(echo ${nb} | awk -F/ '{print $5}')
+    fi
+
+    # Output the name of the repo.  This is needed for the nbtestlog2junitxml
+    # script, as well as to improve output readability.
     echo "========================================"
     echo "REPO: ${nbRepo}"
     echo "========================================"
 
-    # Skip all NBs that use dask (in the code or even in their name)
-    if ((echo ${nb}|grep -qi dask) || \
-        (grep -q dask ${nb})); then
+    # Skip all NBs that use dask (in the code or even in their name).
+    # Blazing has a comment that mentions dask, so allow blazing to run
+    if [[ ${nbRepo} != "blazing" ]] \
+        && ((echo ${nb}|grep -qi dask) \
+            || (grep -q dask ${nb})); then
         echo "--------------------------------------------------------------------------------"
         echo "SKIPPING: ${nb} (suspected Dask usage, not currently automatable)"
         echo "--------------------------------------------------------------------------------"
