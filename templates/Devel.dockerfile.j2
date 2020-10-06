@@ -154,7 +154,7 @@ RUN cd ${RAPIDS_DIR}/{{ lib.name }} && \
   {% elif lib.name == "cuml" %}
   ./build.sh --allgpuarch libcuml cuml prims
 
-  {% elif lib.name == "dask-cuda" or lib.name == "dask-xgboost" %}
+  {% elif lib.name == "dask-cuda"%}
   python setup.py install
 
   {% else %}
