@@ -15,10 +15,12 @@ ARG FROM_IMAGE=rapidsai/rapidsai-dev-nightly
 
 FROM ${FROM_IMAGE}:${RAPIDS_VER}-cuda${CUDA_VER}-devel-${LINUX_VER}-py${PYTHON_VER}
 
-{# Additions for BlazingSQL #}
+{# Additions for BlazingSQL, change the default WORKDIR to run BlazingSQL NBs by default #}
 ENV BLAZING_DIR=/blazing
 {% include 'partials/clone_and_build_blazing.j2' %}
 {% include 'partials/clone_blazing_notebooks.j2' %}
+
+WORKDIR ${BLAZING_DIR}/Welcome_to_BlazingSQL_Notebooks
 
 {# Cleaup conda and set ACLs for all users #}
 {% include 'partials/cleanup-chmod.dockerfile.j2' %}

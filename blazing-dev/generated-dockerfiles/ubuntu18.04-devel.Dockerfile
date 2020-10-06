@@ -47,6 +47,8 @@ RUN mkdir -p ${BLAZING_DIR} \
     && git clone https://github.com/BlazingDB/Welcome_to_BlazingSQL_Notebooks.git
 
 COPY test.sh /
+WORKDIR ${BLAZING_DIR}/Welcome_to_BlazingSQL_Notebooks
+
 
 RUN conda clean -afy \
-  && chmod -R ugo+w /opt/conda ${RAPIDS_DIR}
+  && chmod -R ugo+w /opt/conda ${RAPIDS_DIR} ${BLAZING_DIR}
