@@ -43,6 +43,7 @@ RUN mkdir -p ${BLAZING_DIR} \
 # not needed when using the nvidia runtime with "docker run" since the nvidia
 # runtime also installs libcuda to a system location that client builds often
 # find.
+
 ENV LD_LIBRARY_PATH=${LD_LIBRARY_PATH}:/usr/local/cuda/compat
 
 # Remove libm added for older build compatibility, since this is not compatible
