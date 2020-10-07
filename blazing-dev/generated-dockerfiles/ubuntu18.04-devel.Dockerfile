@@ -46,6 +46,7 @@ RUN mkdir -p ${BLAZING_DIR} \
 
 ENV LD_LIBRARY_PATH=${LD_LIBRARY_PATH}:/usr/local/cuda/compat
 
+
 RUN source activate rapids \
     && ccache -s \
     && cd ${BLAZING_DIR}/blazingsql \
