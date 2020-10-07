@@ -34,18 +34,28 @@ RUN gpuci_conda_retry install -y -n rapids \
 
 ENV CUDF_HOME=/rapids/cudf
 
+# Clone, build, install. Note: This uses the current default branch instead of main.
 RUN mkdir -p ${BLAZING_DIR} \
     && cd ${BLAZING_DIR} \
     && git clone https://github.com/BlazingDB/blazingsql.git
+
+# Add additional CUDA lib dir to LD_LIBRARY_PATH for "docker build".  This is
+# not needed when using the nvidia runtime with "docker run" since the nvidia
+# runtime also installs libcuda to a system location that client builds often
+# find.
+ARG CUDA_VER
+ENV LD_LIBRARY_PATH=${LD_LIBRARY_PATH}:/usr/local/cuda-${CUDA_VER}/compat
 
 RUN source activate rapids \
     && ccache -s \
     && cd ${BLAZING_DIR}/blazingsql \
     && ./build.sh
+# Clone, build, install
 RUN mkdir -p ${BLAZING_DIR} \
     && cd ${BLAZING_DIR} \
     && git clone https://github.com/BlazingDB/Welcome_to_BlazingSQL_Notebooks.git
 
+# Update the test script to include BlazingSQL notebooks
 COPY test.sh /
 WORKDIR ${BLAZING_DIR}/Welcome_to_BlazingSQL_Notebooks
 
