@@ -10,9 +10,7 @@ IMAGE_TYPE:
 
 RAPIDS_VER:
   - 0.16
-
-RAPIDS_CHANNEL:
-  - rapidsai-nightly
+  - 0.17
 
 CUDA_VER:
   - 11.0
@@ -30,8 +28,6 @@ PYTHON_VER:
 
 exclude:
   - RAPIDS_VER: 0.16
-    RAPIDS_CHANNEL: rapidsai
-  - BUILD_IMAGE: rapidsai/rapidsai-dev
-    RAPIDS_CHANNEL: rapidsai-nightly
-  - BUILD_IMAGE: rapidsai/rapidsai-dev-nightly
-    RAPIDS_CHANNEL: rapidsai
+    BUILD_IMAGE: rapidsai/rapidsai-dev
+  - RAPIDS_VER: 0.17
+    BUILD_IMAGE: rapidsai/rapidsai-dev
