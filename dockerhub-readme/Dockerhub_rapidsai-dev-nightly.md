@@ -20,7 +20,7 @@ Unlike the Docker images in [rapidsai/rapidsai-nightly](https://hub.docker.com/r
 
 Versions of libraries included in the `0.16` images:
 - `cuDF` [v0.16.0a](https://github.com/rapidsai/cudf), `cuML` [v0.16.0a](https://github.com/rapidsai/cuml), `cuGraph` [v0.16.0a](https://github.com/rapidsai/cugraph), `RMM` [v0.16.0a](https://github.com/rapidsai/RMM), `cuSpatial` [v0.16.0a](https://github.com/rapidsai/cuspatial), `cuSignal` [v0.16.0a](https://github.com/rapidsai/cusignal), `cuxfilter` [v0.16.0a](https://github.com/rapidsai/cuxfilter)
-- `xgboost` [branch](https://github.com/rapidsai/xgboost), `dask-xgboost` [branch](https://github.com/rapidsai/dask-xgboost/tree/dask-cudf) `dask-cuda` [branch](https://github.com/rapidsai/dask-cuda)
+- `xgboost` [branch](https://github.com/rapidsai/xgboost), `dask-cuda` [branch](https://github.com/rapidsai/dask-cuda)
 
 ### Image Types
 
