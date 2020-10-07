@@ -80,7 +80,7 @@ if __name__ == "__main__":
                             help="Print extra details about the run")
     arg_parser.add_argument("--project", metavar="<project>", type=str,
                             action="store", default=DEFAULT_PROJECT_DIR,
-                            help="Generated Dockerfile(s) for the %(metavar)s "
+                            help="Generate Dockerfile(s) for the %(metavar)s "
                             "project. Default is the project in %(default)s")
     args = arg_parser.parse_args()
     main(project_dir=args.project, verbose=args.v)

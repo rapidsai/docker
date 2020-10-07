@@ -1,0 +1,30 @@
+BUILD_IMAGE:
+  - rapidsai/blazingdb-dev
+  - rapidsai/blazingdb-dev-nightly
+
+FROM_IMAGE:
+  - rapidsai/rapidsai-dev-nightly
+
+IMAGE_TYPE:
+  - devel
+
+RAPIDS_VER:
+  - 0.16
+
+CUDA_VER:
+  - 11.0
+  - 10.2
+  - 10.1
+
+LINUX_VER:
+  - ubuntu16.04
+  - ubuntu18.04
+  - centos7
+
+PYTHON_VER:
+  - 3.7
+  - 3.8
+
+exclude:
+  - RAPIDS_VER: 0.16
+    BUILD_IMAGE: rapidsai/blazingdb-dev
