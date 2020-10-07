@@ -43,8 +43,13 @@ RUN mkdir -p ${BLAZING_DIR} \
 # not needed when using the nvidia runtime with "docker run" since the nvidia
 # runtime also installs libcuda to a system location that client builds often
 # find.
-ARG CUDA_VER
-ENV LD_LIBRARY_PATH=${LD_LIBRARY_PATH}:/usr/local/cuda-${CUDA_VER}/compat
+ENV LD_LIBRARY_PATH=${LD_LIBRARY_PATH}:/usr/local/cuda/compat
+
+# Remove libm added for older build compatibility, since this is not compatible
+# with libjvm needed by BlazingSQL
+# FIXME: this libm should no longer be needed anywhere, so consider removing it
+# in the RAPIDS images
+RUN rm -f ${GCC7_DIR}/lib64/libm.so.6
 
 RUN source activate rapids \
     && ccache -s \
