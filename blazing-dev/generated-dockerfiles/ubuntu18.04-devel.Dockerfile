@@ -44,6 +44,9 @@ RUN mkdir -p ${BLAZING_DIR} \
 # runtime also installs libcuda to a system location that client builds often
 # find.
 
+# Explicitly add the cuda runtime dir for the Blazing build, then remove once
+# build is done to keep the original LD_LIBRARY_PATH intact.
+ENV LD_LIBRARY_PATH_ORIG=${LD_LIBRARY_PATH}
 ENV LD_LIBRARY_PATH=${LD_LIBRARY_PATH}:/usr/local/cuda/compat
 
 
@@ -51,6 +54,9 @@ RUN source activate rapids \
     && ccache -s \
     && cd ${BLAZING_DIR}/blazingsql \
     && ./build.sh
+
+ENV LD_LIBRARY_PATH=${LD_LIBRARY_PATH_ORIG}
+ENV LD_LIBRARY_PATH_ORIG=
 # Clone, build, install
 RUN mkdir -p ${BLAZING_DIR} \
     && cd ${BLAZING_DIR} \
