@@ -11,7 +11,7 @@ This repository contains the source files for [rapidsai Docker images](https://h
 
 ## Image Types
 
-There are currently three different types of Docker images, which follow the same conventions provided by the [NVIDIA CUDA Docker images](https://github.com/NVIDIA/nvidia-docker/wiki/CUDA), and allow users to use the RAPIDS images a drop-in replacements for their CUDA images.  Each type is supported on a combination of OS, Python version, and CUDA version which produces a variety of available image types. The different types are described below:
+There are currently three different types of Docker images, which follow the same conventions provided by the [NVIDIA CUDA Docker images](https://github.com/NVIDIA/nvidia-docker/wiki/CUDA), and allow users to use the RAPIDS images as a drop-in replacements for their CUDA images.  Each type is supported on a combination of OS, Python version, and CUDA version which produces a variety of available image types. The different types are described below:
 
 Type | Description | Target Audience
 ---|---|---
