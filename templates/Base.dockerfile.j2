@@ -20,10 +20,6 @@ ARG RAPIDS_VER
 ENV RAPIDS_DIR=/rapids
 {% if "ubuntu" in os %}
 ENV LD_LIBRARY_PATH=/opt/conda/envs/rapids/lib:${LD_LIBRARY_PATH}
-RUN apt-get update \
-  && apt-get install -y --no-install-recommends \
-    sudo \
-  && rm -rf /var/lib/apt/lists/*
 {% endif %}
 
 {# Copy files needed by RAPIDS and 3rd parties for builds, test, and runtime. #}
@@ -33,10 +29,6 @@ COPY nbtest.sh nbtestlog2junitxml.py ${RAPIDS_DIR}/utils/
 {% if "centos" in os %}
 {# Add compatible libm #}
 COPY libm.so.6 ${GCC7_DIR}/lib64
-RUN yum update -y \
-    && yum install -y \
-        sudo \
-    && rm -rf /var/cache/yum/*
 {% endif %}
 
 {% include 'partials/env_debug.dockerfile.j2' %}
@@ -45,8 +37,7 @@ RUN gpuci_conda_retry install -y -n rapids \
   "rapids=${RAPIDS_VER}*"
 
 {# Run common commands #}
-COPY create_user.sh packages.sh /opt/docker/bin/
-RUN /opt/docker/bin/create_user.sh
+COPY packages.sh /opt/docker/bin/
 
 {# Cleaup conda and set ACLs for all users #}
 {% include 'partials/cleanup-chmod.dockerfile.j2' %}

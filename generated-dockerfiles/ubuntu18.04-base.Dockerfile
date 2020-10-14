@@ -18,10 +18,6 @@ ARG RAPIDS_VER
 
 ENV RAPIDS_DIR=/rapids
 ENV LD_LIBRARY_PATH=/opt/conda/envs/rapids/lib:${LD_LIBRARY_PATH}
-RUN apt-get update \
-  && apt-get install -y --no-install-recommends \
-    sudo \
-  && rm -rf /var/lib/apt/lists/*
 
 RUN mkdir -p ${RAPIDS_DIR}/utils 
 COPY nbtest.sh nbtestlog2junitxml.py ${RAPIDS_DIR}/utils/
@@ -36,8 +32,7 @@ RUN source activate rapids \
 RUN gpuci_conda_retry install -y -n rapids \
   "rapids=${RAPIDS_VER}*"
 
-COPY create_user.sh packages.sh /opt/docker/bin/
-RUN /opt/docker/bin/create_user.sh
+COPY packages.sh /opt/docker/bin/
 
 
 RUN conda clean -afy \

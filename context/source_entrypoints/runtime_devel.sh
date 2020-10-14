@@ -2,10 +2,10 @@
 
 # Run Jupyter in foreground if $JUPYTER_FG is set
 if [[ "${JUPYTER_FG}" == "true" ]]; then
-   /opt/conda/bin/$supkg $USER bash -c "jupyter-lab --allow-root --ip=0.0.0.0 --no-browser --NotebookApp.token=''"
+   jupyter-lab --allow-root --ip=0.0.0.0 --no-browser --NotebookApp.token=''
    exit 0
 else
-   /opt/conda/bin/$supkg $USER bash -c "nohup jupyter-lab --allow-root --ip=0.0.0.0 --no-browser --NotebookApp.token='' > /dev/null 2>&1 &"
+   nohup jupyter-lab --allow-root --ip=0.0.0.0 --no-browser --NotebookApp.token='' > /dev/null 2>&1 &
 
    echo "A JupyterLab server has been started!"
    echo "To access it, visit http://localhost:8888 on your host machine."

@@ -41,7 +41,6 @@ ENV RAPIDS_DIR=/rapids
 
 RUN apt-get update && apt-get install -y --no-install-recommends \
     gsfonts \
-    sudo \
     && rm -rf /var/lib/apt/lists/*
 
 RUN mkdir -p ${RAPIDS_DIR}/utils 
@@ -218,9 +217,6 @@ RUN ccache -s \
   && ccache -c \
   && chmod -R ugo+w /ccache \
   && ccache -s
-
-COPY create_user.sh packages.sh /opt/docker/bin/
-RUN /opt/docker/bin/create_user.sh
 
 
 RUN conda clean -afy \
