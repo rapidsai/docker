@@ -44,10 +44,6 @@ RUN mkdir -p ${RAPIDS_DIR}/utils ${GCC7_DIR}/lib64
 COPY nbtest.sh nbtestlog2junitxml.py ${RAPIDS_DIR}/utils/
 
 COPY libm.so.6 ${GCC7_DIR}/lib64
-RUN yum update -y \
-    && yum install -y \
-        sudo \
-    && rm -rf /var/cache/yum/*
 
 
 RUN source activate rapids \
@@ -224,9 +220,6 @@ RUN ccache -s \
   && ccache -c \
   && chmod -R ugo+w /ccache \
   && ccache -s
-
-COPY create_user.sh packages.sh /opt/docker/bin/
-RUN /opt/docker/bin/create_user.sh
 
 
 RUN conda clean -afy \

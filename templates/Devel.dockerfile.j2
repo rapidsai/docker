@@ -46,7 +46,6 @@ ENV RAPIDS_DIR=/rapids
 {# gsfonts is used to correctly render fonts in doxygen/graphviz diagrams #}
 RUN apt-get update && apt-get install -y --no-install-recommends \
     gsfonts \
-    sudo \
     && rm -rf /var/lib/apt/lists/*
 {% endif %}
 
@@ -56,10 +55,6 @@ COPY nbtest.sh nbtestlog2junitxml.py ${RAPIDS_DIR}/utils/
 {% if "centos" in os %}
 {# Add compatible libm #}
 COPY libm.so.6 ${GCC7_DIR}/lib64
-RUN yum update -y \
-    && yum install -y \
-        sudo \
-    && rm -rf /var/cache/yum/*
 {% endif %}
 
 {# Install dependencies needed for devel: build deps + RAPIDS runtime deps +
@@ -176,10 +171,6 @@ RUN ccache -s \
   && ccache -c \
   && chmod -R ugo+w /ccache \
   && ccache -s
-
-{# Run common commands #}
-COPY create_user.sh packages.sh /opt/docker/bin/
-RUN /opt/docker/bin/create_user.sh
 
 {# Cleaup conda and set ACLs for all users #}
 {% include 'partials/cleanup-chmod.dockerfile.j2' %}
