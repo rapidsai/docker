@@ -56,6 +56,8 @@ WORKDIR ${RAPIDS_DIR}/notebooks
 EXPOSE 8888
 EXPOSE 8787
 EXPOSE 8786
+COPY packages.sh /opt/docker/bin/
+
 
 RUN conda clean -afy \
   && chmod -R ugo+w /opt/conda ${RAPIDS_DIR}

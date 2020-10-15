@@ -221,6 +221,8 @@ RUN ccache -s \
   && chmod -R ugo+w /ccache \
   && ccache -s
 
+COPY packages.sh /opt/docker/bin/
+
 
 RUN conda clean -afy \
   && chmod -R ugo+w /opt/conda ${RAPIDS_DIR}
