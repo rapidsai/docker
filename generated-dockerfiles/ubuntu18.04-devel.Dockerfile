@@ -145,9 +145,7 @@ RUN cd ${RAPIDS_DIR}/rmm && \
 RUN cd ${RAPIDS_DIR}/cudf && \
   source activate rapids && \
   ccache -s && \
-  ./build.sh && \
-  ./build.sh libcudf_kafka cudf_kafka && \
-  ./build.sh tests
+  ./build.sh libcudf cudf dask_cudf libcudf_kafka cudf_kafka tests && \
 
 RUN cd ${RAPIDS_DIR}/cusignal && \
   source activate rapids && \
