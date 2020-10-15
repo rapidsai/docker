@@ -50,12 +50,14 @@ RUN cd ${RAPIDS_DIR} \
   && cd notebooks \
   && git submodule update --init --remote --no-single-branch --depth 1
 
-COPY test.sh test-nbcontrib.sh /
+COPY test.sh /
 
 WORKDIR ${RAPIDS_DIR}/notebooks
 EXPOSE 8888
 EXPOSE 8787
 EXPOSE 8786
+COPY packages.sh /opt/docker/bin/
+
 
 RUN conda clean -afy \
   && chmod -R ugo+w /opt/conda ${RAPIDS_DIR}

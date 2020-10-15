@@ -40,6 +40,8 @@ RUN gpuci_conda_retry install -y -n rapids \
 
 {% include 'partials/install_notebooks.dockerfile.j2' %}
 
+COPY packages.sh /opt/docker/bin/
+
 {# Cleaup conda and set ACLs for all users #}
 {% include 'partials/cleanup-chmod.dockerfile.j2' %}
 
