@@ -20,7 +20,7 @@ RUN cd ${RAPIDS_DIR} \
   && git submodule update --init --remote --no-single-branch --depth 1
 
 {# Add test file for testing notebooks from within the container #}
-COPY test.sh test-nbcontrib.sh /
+COPY test.sh /
 
 WORKDIR ${RAPIDS_DIR}/notebooks
 {# Jupyter notebook port #}
