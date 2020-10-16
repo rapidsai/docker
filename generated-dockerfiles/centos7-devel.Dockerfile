@@ -51,12 +51,12 @@ RUN source activate rapids \
   && conda info \
   && conda config --show-sources \
   && conda list --show-channel-urls
-RUN gpuci_retry conda install -y -n rapids \
+RUN gpuci_conda_retry install -y -n rapids \
       "rapids-build-env=${RAPIDS_VER}*" \
       "rapids-doc-env=${RAPIDS_VER}*" \
       "libcumlprims=${RAPIDS_VER}*" \
       "ucx-py=${RAPIDS_VER}*" \
-    && conda remove -y -n rapids --force-remove \
+    && gpuci_conda_retry remove -y -n rapids --force-remove \
       "rapids-build-env=${RAPIDS_VER}*" \
       "rapids-doc-env=${RAPIDS_VER}*"
 
@@ -69,7 +69,7 @@ RUN source activate rapids \
 
 RUN gpuci_conda_retry install -y -n rapids \
         "rapids-notebook-env=${RAPIDS_VER}*" \
-    && conda remove -y -n rapids --force-remove \
+    && gpuci_conda_retry remove -y -n rapids --force-remove \
         "rapids-notebook-env=${RAPIDS_VER}*"
 
 RUN gpuci_conda_retry install -y -n rapids jupyterlab-nvdashboard
