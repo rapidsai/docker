@@ -27,4 +27,4 @@ PYTHON_VER:
 
 exclude:
   - RAPIDS_VER: 0.16
-    BUILD_IMAGE: rapidsai/blazingdb-dev
+    BUILD_IMAGE: rapidsai/blazingsql-dev
