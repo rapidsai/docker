@@ -36,7 +36,7 @@ RUN gpuci_conda_retry install -y -n rapids \
 
 RUN gpuci_conda_retry install -y -n rapids \
         "rapids-notebook-env=${RAPIDS_VER}*" \
-    && conda remove -y -n rapids --force-remove \
+    && gpuci_conda_retry remove -y -n rapids --force-remove \
         "rapids-notebook-env=${RAPIDS_VER}*"
 
 RUN gpuci_conda_retry install -y -n rapids jupyterlab-nvdashboard
