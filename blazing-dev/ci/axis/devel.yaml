@@ -1,6 +1,6 @@
 BUILD_IMAGE:
-  - rapidsai/blazingdb-dev
-  - rapidsai/blazingdb-dev-nightly
+  - rapidsai/blazingsql-dev
+  - rapidsai/blazingsql-dev-nightly
 
 FROM_IMAGE:
   - rapidsai/rapidsai-dev-nightly
