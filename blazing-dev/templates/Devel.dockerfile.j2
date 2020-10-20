@@ -17,8 +17,8 @@ FROM ${FROM_IMAGE}:${RAPIDS_VER}-cuda${CUDA_VER}-devel-${LINUX_VER}-py${PYTHON_V
 
 {# Additions for BlazingSQL, change the default WORKDIR to run BlazingSQL NBs by default #}
 ENV BLAZING_DIR=/blazing
-{% include 'partials/clone_and_build_blazing.j2' %}
-{% include 'partials/clone_blazing_notebooks.j2' %}
+{% include 'partials/clone_and_build_blazing.dockerfile.j2' %}
+{% include 'partials/clone_blazing_notebooks.dockerfile.j2' %}
 
 WORKDIR ${BLAZING_DIR}/Welcome_to_BlazingSQL_Notebooks
 
