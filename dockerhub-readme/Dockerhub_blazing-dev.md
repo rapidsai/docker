@@ -64,7 +64,13 @@ The following ports are used by the `devel` containers:
 
 ### Environment Variables
 
-All environment variables listed in the _Environment Variables_ section of the stable images, [rapidsai/rapidsai-dev](https://hub.docker.com/r/rapidsai/rapidsai-dev), may be used unless otherwise stated.
+The following environment variables can be passed to the `docker run` commands:
+
+- `JUPYTER_FG` - set to `true` to start jupyter server in foreground instead of background (not applicable for `base` images)
+- `EXTRA_APT_PACKAGES` - (**Ubuntu images only**) used to install additional `apt` packages in the container. Use a space separated list of values
+- `EXTRA_YUM_PACKAGES` - (**CentOS images only**) used to install additional `yum` packages in the container. Use a space separated list of values
+- `EXTRA_CONDA_PACKAGES` - used to install additional `conda` packages in the container. Use a space separated list of values
+- `EXTRA_PIP_PACKAGES` - used to install additional `pip` packages in the container. Use a space separated list of values
 
 Example:
 
