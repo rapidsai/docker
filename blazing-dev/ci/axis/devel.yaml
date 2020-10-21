@@ -3,7 +3,7 @@ BUILD_IMAGE:
   - rapidsai/blazingsql-dev-nightly
 
 FROM_IMAGE:
-  - rapidsai/rapidsai-dev-nightly
+  - rapidsai/rapidsai-dev
 
 IMAGE_TYPE:
   - devel
