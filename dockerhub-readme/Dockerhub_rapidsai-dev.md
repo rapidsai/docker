@@ -76,7 +76,6 @@ $ docker pull rapidsai/rapidsai-dev:0.16-cuda10.1-devel-ubuntu18.04-py3.7
 $ docker run --gpus all --rm -it -p 8888:8888 -p 8787:8787 -p 8786:8786 \
          rapidsai/rapidsai-dev:0.16-cuda10.1-devel-ubuntu18.04-py3.7
 ```
-**NOTE:** This will open a shell with [JupyterLab](https://jupyterlab.readthedocs.io/en/stable/) running in the background on port 8888 on your host machine.
 
 #### Legacy - Docker CE v18 and `nvidia-docker2`
 ```bash
@@ -84,7 +83,6 @@ $ docker pull rapidsai/rapidsai-dev:0.16-cuda10.1-devel-ubuntu18.04-py3.7
 $ docker run --runtime=nvidia --rm -it -p 8888:8888 -p 8787:8787 -p 8786:8786 \
          rapidsai/rapidsai-dev:0.16-cuda10.1-devel-ubuntu18.04-py3.7
 ```
-**NOTE:** This will open a shell with [JupyterLab](https://jupyterlab.readthedocs.io/en/stable/) running in the background on port 8888 on your host machine.
 
 ### Container Ports
 
@@ -194,11 +192,11 @@ Check out the RAPIDS [documentation](http://rapids.ai/start.html) for more detai
 
 Check out the [RAPIDS](https://docs.rapids.ai/api) and [XGBoost](https://xgboost.readthedocs.io/en/latest/) API docs.
 
-Learn how to setup a mult-node cuDF and XGBoost data preparation and distributed training environment by following the [mortgage data example notebook and scripts](https://github.com/rapidsai/notebooks).
+Learn how to setup a multi-node cuDF and XGBoost data preparation and distributed training environment by following the [mortgage data example notebook and scripts](https://github.com/rapidsai/notebooks).
 
 ## Where can I get help or file bugs/requests?
 
-Please submit issues with the container to this GitHub repository: [https://github.com/rapidsai/docs](https://github.com/rapidsai/docs/issues/new)
+Please submit issues with the container to this GitHub repository: [https://github.com/rapidsai/docker](https://github.com/rapidsai/docker/issues/new)
 
 For issues with RAPIDS libraries like cuDF, cuML, RMM, or others file an issue in the related GitHub project.
 

@@ -67,7 +67,21 @@ Many users do not need a specific platform combination but would like to ensure 
 
 ## Usage
 
-See the _Usage_ section in [rapidsai/rapidsai](https://hub.docker.com/r/rapidsai/rapidsai) for information and replace references to `rapidsai/rapidsai` with `rapidsai/rapidsai-nightly`.
+### Start Container and Notebook Server
+
+#### Preferred - Docker CE v19+ and `nvidia-container-toolkit`
+```bash
+$ docker pull rapidsai/rapidsai-nightly:cuda10.1-runtime-ubuntu18.04-py3.7
+$ docker run --gpus all --rm -it -p 8888:8888 -p 8787:8787 -p 8786:8786 \
+         rapidsai/rapidsai-nightly:cuda10.1-runtime-ubuntu18.04-py3.7
+```
+
+#### Legacy - Docker CE v18 and `nvidia-docker2`
+```bash
+$ docker pull rapidsai/rapidsai-nightly:cuda10.1-runtime-ubuntu18.04-py3.7
+$ docker run --runtime=nvidia --rm -it -p 8888:8888 -p 8787:8787 -p 8786:8786 \
+         rapidsai/rapidsai-nightly:cuda10.1-runtime-ubuntu18.04-py3.7
+```
 
 ### Container Ports
 
@@ -79,7 +93,13 @@ The following ports are used by the **`runtime` containers only** (not `base` co
 
 ### Environment Variables
 
-All environment variables listed in the _Environment Variables_ section of the stable images, [rapidsai/rapidsai](https://hub.docker.com/r/rapidsai/rapidsai), may be used unless otherwise stated.
+The following environment variables can be passed to the `docker run` commands:
+
+- `JUPYTER_FG` - set to `true` to start jupyter server in foreground instead of background (not applicable for `base` images)
+- `EXTRA_APT_PACKAGES` - (**Ubuntu images only**) used to install additional `apt` packages in the container. Use a space separated list of values
+- `EXTRA_YUM_PACKAGES` - (**CentOS images only**) used to install additional `yum` packages in the container. Use a space separated list of values
+- `EXTRA_CONDA_PACKAGES` - used to install additional `conda` packages in the container. Use a space separated list of values
+- `EXTRA_PIP_PACKAGES` - used to install additional `pip` packages in the container. Use a space separated list of values
 
 Example:
 
@@ -94,12 +114,20 @@ $ docker run \
     -p 8888:8888 \
     -p 8787:8787 \
     -p 8786:8786 \
-    rapidsai/rapidsai-nightly:cuda10.1-runtime-ubuntu18.04-py3.7
+    rapidsai/rapidsai-nightly:0.17-cuda10.1-base-ubuntu18.04-py3.7
 ```
 
 ### Bind Mounts
 
-All bind mounts listed in the _Bind Mounts_ section of the stable images, [rapidsai/rapidsai](https://hub.docker.com/r/rapidsai/rapidsai), may be used unless otherwise stated.
+Mounting files/folders to the locations specified below provide additional functionality for the images.
+
+- `/opt/rapids/environment.yml` - a YAML file that contains a list of dependencies that will be installed by `conda`. The file should look like:
+
+```yml
+dependencies:
+  - beautifulsoup4
+  - jq
+```
 
 Example:
 
@@ -109,12 +137,12 @@ $ docker run \
     -it \
     --gpus all \
     -v $(pwd)/environment.yml:/opt/rapids/environment.yml \
-    rapidsai/rapidsai:0.17-cuda10.1-base-ubuntu18.04-py3.7
+    rapidsai/rapidsai-nightly:0.17-cuda10.1-base-ubuntu18.04-py3.7
 ```
 
 ## Where can I get help or file bugs/requests?
 
-Please submit issues with the container to this GitHub repository: [https://github.com/rapidsai/docs](https://github.com/rapidsai/docs/issues/new)
+Please submit issues with the container to this GitHub repository: [https://github.com/rapidsai/docker](https://github.com/rapidsai/docker/issues/new)
 
 For issues with RAPIDS libraries like cuDF, cuML, RMM, or others file an issue in the related GitHub project.
 
