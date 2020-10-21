@@ -14,10 +14,10 @@ The RAPIDS suite of software libraries gives you the freedom to execute end-to-e
 
 The `rapidsai/rapidsai-nightly` repo contains nightly docker builds of the latest WIP changes merged into Github repos throughout the day for the next RAPIDS release. These containers are generally considered unstable, and should only be used for development and testing. For our latest stable release, please use the [rapidsai/rapidsai](https://hub.docker.com/r/rapidsai/rapidsai) containers.
 
-#### RAPIDS NIGHTLY v0.16.0a
+#### RAPIDS NIGHTLY v0.17.0a
 
-Versions of libraries included in the `0.16` images:
-- `cuDF` [v0.16.0a](https://github.com/rapidsai/cudf), `cuML` [v0.16.0a](https://github.com/rapidsai/cuml), `cuGraph` [v0.16.0a](https://github.com/rapidsai/cugraph), `RMM` [v0.16.0a](https://github.com/rapidsai/RMM), `cuSpatial` [v0.16.0a](https://github.com/rapidsai/cuspatial), `cuSignal` [v0.16.0a](https://github.com/rapidsai/cusignal), `cuxfilter` [v0.16.0a](https://github.com/rapidsai/cuxfilter)
+Versions of libraries included in the `0.17` images:
+- `cuDF` [v0.17.0a](https://github.com/rapidsai/cudf), `cuML` [v0.17.0a](https://github.com/rapidsai/cuml), `cuGraph` [v0.17.0a](https://github.com/rapidsai/cugraph), `RMM` [v0.17.0a](https://github.com/rapidsai/RMM), `cuSpatial` [v0.17.0a](https://github.com/rapidsai/cuspatial), `cuSignal` [v0.17.0a](https://github.com/rapidsai/cusignal), `cuxfilter` [v0.17.0a](https://github.com/rapidsai/cuxfilter)
 - `xgboost` [branch](https://github.com/rapidsai/xgboost), `dask-cuda` [branch](https://github.com/rapidsai/dask-cuda)
 
 ### Image Types
@@ -41,7 +41,7 @@ The [rapidsai/rapidsai-dev-nightly](https://hub.docker.com/r/rapidsai/rapidsai-d
 
 The tag naming scheme for RAPIDS images incorporates key platform details into the tag as shown below:
 ```
-0.16-cuda10.1-runtime-ubuntu18.04-py3.7
+0.17-cuda10.1-runtime-ubuntu18.04-py3.7
  ^       ^    ^        ^         ^
  |       |    type     |         python version
  |       |             |
@@ -50,7 +50,7 @@ The tag naming scheme for RAPIDS images incorporates key platform details into t
  RAPIDS version        linux version
 ```
 
-To get the latest RAPIDS version of a specific platform combination, simply exclude the RAPIDS version.  For example, to pull the latest version of RAPIDS for the `runtime` image with support for CUDA 10.1, Python 3.6, and Ubuntu 18.04, use the following tag:
+To get the latest RAPIDS version of a specific platform combination, simply exclude the RAPIDS version. For example, to pull the latest version of RAPIDS for the `runtime` image with support for CUDA 10.1, Python 3.6, and Ubuntu 18.04, use the following tag:
 ```
 cuda10.1-runtime-ubuntu18.04-py3.6
 ```
@@ -69,14 +69,17 @@ Many users do not need a specific platform combination but would like to ensure 
 
 See the _Usage_ section in [rapidsai/rapidsai](https://hub.docker.com/r/rapidsai/rapidsai) for information and replace references to `rapidsai/rapidsai` with `rapidsai/rapidsai-nightly`.
 
+### Container Ports
+
+The following ports are used by the **`runtime` containers only** (not `base` containers):
+
+- `8888` - exposes a [JupyterLab](https://jupyterlab.readthedocs.io/en/stable/) notebook server
+- `8786` - exposes a [Dask](https://docs.dask.org/en/latest/) scheduler
+- `8787` - exposes a Dask [diagnostic web server](https://docs.dask.org/en/latest/setup/cli.html#diagnostic-web-servers)
+
 ### Environment Variables
 
-The environment variables below can be passed to the `docker run` commands for nightly images. Any variables listed in the _Environment Variables_ section of the stable images, [rapidsai/rapidsai](https://hub.docker.com/r/rapidsai/rapidsai), may also be used unless otherwise stated.
-
-- `EXTRA_APT_PACKAGES` - (**Ubuntu images only**) used to install additional `apt` packages in the container. Use a space separated list of values
-- `EXTRA_YUM_PACKAGES` - (**CentOS images only**) used to install additional `yum` packages in the container. Use a space separated list of values
-- `EXTRA_CONDA_PACKAGES` - used to install additional `conda` packages in the container. Use a space separated list of values
-- `EXTRA_PIP_PACKAGES` - used to install additional `pip` packages in the container. Use a space separated list of values
+All environment variables listed in the _Environment Variables_ section of the stable images, [rapidsai/rapidsai](https://hub.docker.com/r/rapidsai/rapidsai), may be used unless otherwise stated.
 
 Example:
 
@@ -91,19 +94,22 @@ $ docker run \
     -p 8888:8888 \
     -p 8787:8787 \
     -p 8786:8786 \
-    rapidsai/rapidsai:cuda10.1-runtime-ubuntu18.04-py3.7
+    rapidsai/rapidsai-nightly:cuda10.1-runtime-ubuntu18.04-py3.7
 ```
 
 ### Bind Mounts
 
-Mounting files/folders to the locations specified below provide additional functionality for the images.
+All bind mounts listed in the _Bind Mounts_ section of the stable images, [rapidsai/rapidsai](https://hub.docker.com/r/rapidsai/rapidsai), may be used unless otherwise stated.
 
-- `/opt/rapids/environment.yml` - a YAML file that contains a list of dependencies that will be installed by `conda`. The file should look like:
+Example:
 
-```yml
-dependencies:
-  - beautifulsoup4
-  - jq
+```sh
+$ docker run \
+    --rm \
+    -it \
+    --gpus all \
+    -v $(pwd)/environment.yml:/opt/rapids/environment.yml \
+    rapidsai/rapidsai:0.17-cuda10.1-base-ubuntu18.04-py3.7
 ```
 
 ## Where can I get help or file bugs/requests?

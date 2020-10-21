@@ -10,21 +10,19 @@ The RAPIDS suite of software libraries gives you the freedom to execute end-to-e
 
 ### Current Version
 
+#### RAPIDS 0.16 - 21 Oct 2020
+
+Versions of libraries included in the `0.16` images:
+- `cuDF` [v0.16](https://github.com/rapidsai/cudf/tree/v0.16.0), `cuML` [v0.16](https://github.com/rapidsai/cuml/tree/v0.16.0), `cuGraph` [v0.16](https://github.com/rapidsai/cugraph/tree/v0.16.0), `RMM` [v0.16](https://github.com/rapidsai/RMM/tree/v0.16.0), `cuSpatial` [v0.16](https://github.com/rapidsai/cuspatial/tree/v0.16.0), `cuSignal` [v0.16](https://github.com/rapidsai/cusignal/tree/v0.16.0), `cuxfilter` [v0.16](https://github.com/rapidsai/cuxfilter/tree/v0.16.0)
+
+### Former Version
+
 #### RAPIDS 0.15 - 26 Aug 2020
 
 Versions of libraries included in the `0.15` images:
 - `cuDF` [v0.15](https://github.com/rapidsai/cudf/tree/v0.15.0), `cuML` [v0.15](https://github.com/rapidsai/cuml/tree/v0.15.0), `cuGraph` [v0.15](https://github.com/rapidsai/cugraph/tree/v0.15.0), `RMM` [v0.15](https://github.com/rapidsai/RMM/tree/v0.15.0), `cuSpatial` [v0.15](https://github.com/rapidsai/cuspatial/tree/v0.15.0), `cuSignal` [v0.15](https://github.com/rapidsai/cusignal/tree/v0.15.0), `cuxfilter` [v0.15](https://github.com/rapidsai/cuxfilter/tree/v0.15.0)
   - **IMPORTANT:** CUDA 10.0 & Python 3.6 support ended in v0.14; v0.15 includes CUDA 11.0 & Python 3.8 support
   - **NOTE:** See [RAPIDS Notices](https://docs.rapids.ai/notices) for release changes for `clx` as well as other recent changes
-
-### Former Version
-
-#### RAPIDS 0.14 - 3 June 2020
-
-Versions of libraries included in the `0.14` images:
-- `cuDF` [v0.14](https://github.com/rapidsai/cudf/tree/v0.14.0), `cuML` [v0.14](https://github.com/rapidsai/cuml/tree/v0.14.0), `cuGraph` [v0.14](https://github.com/rapidsai/cugraph/tree/v0.14.0), `RMM` [v0.14](https://github.com/rapidsai/RMM/tree/v0.14.0), `cuSpatial` [v0.14](https://github.com/rapidsai/cuspatial/tree/v0.14.0), `cuxfilter` [v0.14](https://github.com/rapidsai/cuxfilter/tree/v0.14.0), `cuSignal` [v0.14](https://github.com/rapidsai/cusignal/tree/v0.14.0)
-  - **NOTE:** `cuxfilter` is only available in `runtime` containers
-- `xgboost` [branch](https://github.com/rapidsai/xgboost/tree/rapids-0.14-release), `dask-xgboost` [branch](https://github.com/rapidsai/dask-xgboost/tree/dask-cudf) `dask-cuda` [branch](https://github.com/rapidsai/dask-cuda/tree/branch-0.14)
 
 ### Image Types
 
@@ -47,7 +45,7 @@ The [rapidsai/rapidsai-dev](https://hub.docker.com/r/rapidsai/rapidsai-dev/tags)
 
 The tag naming scheme for RAPIDS images incorporates key platform details into the tag as shown below:
 ```
-0.15-cuda10.1-runtime-ubuntu18.04-py3.7
+0.16-cuda10.1-runtime-ubuntu18.04-py3.7
  ^       ^    ^        ^         ^
  |       |    type     |         python version
  |       |             |
@@ -56,7 +54,7 @@ The tag naming scheme for RAPIDS images incorporates key platform details into t
  RAPIDS version        linux version
 ```
 
-To get the latest RAPIDS version of a specific platform combination, simply exclude the RAPIDS version.  For example, to pull the latest version of RAPIDS for the `runtime` image with support for CUDA 10.1, Python 3.7, and Ubuntu 18.04, use the following tag:
+To get the latest RAPIDS version of a specific platform combination, simply exclude the RAPIDS version. For example, to pull the latest version of RAPIDS for the `runtime` image with support for CUDA 10.1, Python 3.7, and Ubuntu 18.04, use the following tag:
 ```
 cuda10.1-runtime-ubuntu18.04-py3.7
 ```
@@ -81,7 +79,6 @@ $ docker pull rapidsai/rapidsai:cuda10.1-runtime-ubuntu18.04-py3.7
 $ docker run --gpus all --rm -it -p 8888:8888 -p 8787:8787 -p 8786:8786 \
          rapidsai/rapidsai:cuda10.1-runtime-ubuntu18.04-py3.7
 ```
-**NOTE:** This will open a shell with [JupyterLab](https://jupyterlab.readthedocs.io/en/stable/) running in the background on port 8888 on your host machine.
 
 #### Legacy - Docker CE v18 and `nvidia-docker2`
 ```bash
@@ -89,24 +86,67 @@ $ docker pull rapidsai/rapidsai:cuda10.1-runtime-ubuntu18.04-py3.7
 $ docker run --runtime=nvidia --rm -it -p 8888:8888 -p 8787:8787 -p 8786:8786 \
          rapidsai/rapidsai:cuda10.1-runtime-ubuntu18.04-py3.7
 ```
-**NOTE:** This will open a shell with [JupyterLab](https://jupyterlab.readthedocs.io/en/stable/) running in the background on port 8888 on your host machine.
+
+### Container Ports
+
+The following ports are used by the **`runtime` containers only** (not `base` containers):
+
+- `8888` - exposes a [JupyterLab](https://jupyterlab.readthedocs.io/en/stable/) notebook server
+- `8786` - exposes a [Dask](https://docs.dask.org/en/latest/) scheduler
+- `8787` - exposes a Dask [diagnostic web server](https://docs.dask.org/en/latest/setup/cli.html#diagnostic-web-servers)
 
 ### Environment Variables
 
 The following environment variables can be passed to the `docker run` commands:
 
 - `JUPYTER_FG` - set to `true` to start jupyter server in foreground instead of background (not applicable for `base` images)
+- `EXTRA_APT_PACKAGES` - (**Ubuntu images only**) used to install additional `apt` packages in the container. Use a space separated list of values
+- `EXTRA_YUM_PACKAGES` - (**CentOS images only**) used to install additional `yum` packages in the container. Use a space separated list of values
+- `EXTRA_CONDA_PACKAGES` - used to install additional `conda` packages in the container. Use a space separated list of values
+- `EXTRA_PIP_PACKAGES` - used to install additional `pip` packages in the container. Use a space separated list of values
 
 Example:
 
 ```sh
-$ docker run --runtime=nvidia --rm -it -e JUPYTER_FG="true" -p 8888:8888 -p 8787:8787 -p 8786:8786 \
-         rapidsai/rapidsai:cuda10.1-runtime-ubuntu18.04-py3.7
+$ docker run \
+    --rm \
+    -it \
+    --gpus all \
+    -e EXTRA_APT_PACKAGES="vim nano" \
+    -e EXTRA_CONDA_PACKAGES="jq" \
+    -e EXTRA_PIP_PACKAGES="beautifulsoup4" \
+    -p 8888:8888 \
+    -p 8787:8787 \
+    -p 8786:8786 \
+    rapidsai/rapidsai:cuda10.1-runtime-ubuntu18.04-py3.7
+```
+
+### Bind Mounts
+
+Mounting files/folders to the locations specified below provide additional functionality for the images.
+
+- `/opt/rapids/environment.yml` - a YAML file that contains a list of dependencies that will be installed by `conda`. The file should look like:
+
+```yml
+dependencies:
+  - beautifulsoup4
+  - jq
+```
+
+Example:
+
+```sh
+$ docker run \
+    --rm \
+    -it \
+    --gpus all \
+    -v $(pwd)/environment.yml:/opt/rapids/environment.yml \
+    rapidsai/rapidsai:0.16-cuda10.1-base-ubuntu18.04-py3.7
 ```
 
 ### Use JupyterLab to Explore the Notebooks
 
-Notebooks can be found in the following directories within the 0.15 container:
+Notebooks can be found in the following directories within the 0.16 container:
 
 * `/rapids/notebooks/clx` - CLX demo notebooks
 * `/rapids/notebooks/cugraph` - cuGraph demo notebooks
@@ -115,7 +155,7 @@ Notebooks can be found in the following directories within the 0.15 container:
 * `/rapids/notebooks/cuxfilter` - cuXfilter demo notebooks
 * `/rapids/notebooks/xgboost` - XGBoost demo notebooks
 
-For a full description of each notebook, see the [README](https://github.com/rapidsai/notebooks/blob/branch-0.15/README.md) in the notebooks repository.
+For a full description of each notebook, see the [README](https://github.com/rapidsai/notebooks/blob/branch-0.16/README.md) in the notebooks repository.
 
 ### Custom Data and Advanced Usage
 
