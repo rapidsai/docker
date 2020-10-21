@@ -13,7 +13,7 @@ BlazingSQL is a SQL interface for cuDF, with various features to support large s
 
 ## What are BlazingSQL "dev" images?
 
-The `rapidsai/blazingsql-dev` images are an extension of the `rapidsai/rapidsai-dev` images that also include the latest developments from the [BlazingSQL](https://blazingsql.com/) project. Because `rapidsai/blazingsql-dev` images extend the official RAPIDS images, all of the RAPIDS libraries are also available in the `rapidsai/blazingsql-dev` images.
+The `rapidsai/blazingsql-dev` images are an extension of the `rapidsai/rapidsai-dev` images that also include the latest stable release from the [BlazingSQL](https://blazingsql.com/) project. Because `rapidsai/blazingsql-dev` images extend the official RAPIDS images, all of the RAPIDS libraries are also available in the `rapidsai/blazingsql-dev` images.
 
 ### Image Tag Naming Scheme
 
