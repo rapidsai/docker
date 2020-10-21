@@ -29,6 +29,8 @@ PYTHON_VER:
 
 exclude:
   - RAPIDS_VER: 0.16
-    BUILD_IMAGE: rapidsai/rapidsai
+    BUILD_IMAGE: rapidsai/rapidsai-nightly
   - RAPIDS_VER: 0.17
     BUILD_IMAGE: rapidsai/rapidsai
+  - RAPIDS_VER: 0.17
+    BUILD_IMAGE: rapidsai/rapidsai-nightly
