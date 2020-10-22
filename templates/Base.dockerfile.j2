@@ -36,6 +36,9 @@ COPY libm.so.6 ${GCC7_DIR}/lib64
 RUN gpuci_conda_retry install -y -n rapids \
   "rapids=${RAPIDS_VER}*"
 
+{# Patch for CVEs #}
+{% include 'partials/patch.dockerfile.j2' %}
+
 {# Run common commands #}
 COPY packages.sh /opt/docker/bin/
 

@@ -1,0 +1,6 @@
+{# This partial is used to install patches to resolve known CVEs #}
+
+{# Patch for CVE-2020-8116 https://github.com/advisories/GHSA-ff7x-qrg7-qggm #}
+RUN source activate rapids \
+    && cd /opt/conda/envs/rapids/lib/node_modules/npm \
+    && NODE_PATH=/opt/conda/envs/rapids/lib/node_modules/npm/node_modules npm install dot-prop@4.2.1
