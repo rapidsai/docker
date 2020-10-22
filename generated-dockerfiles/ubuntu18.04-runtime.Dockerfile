@@ -35,8 +35,7 @@ RUN gpuci_conda_retry install -y -n rapids \
 
 
 RUN source activate rapids \
-    && cd /opt/conda/envs/rapids/lib/node_modules/npm \
-    && NODE_PATH=/opt/conda/envs/rapids/lib/node_modules/npm/node_modules npm install dot-prop@4.2.1
+    && npm i -g npm@">=7"
 
 RUN gpuci_conda_retry install -y -n rapids \
         "rapids-notebook-env=${RAPIDS_VER}*" \
