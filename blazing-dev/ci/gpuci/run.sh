@@ -25,11 +25,11 @@ else
   # ubuntu18.04 & centos7 use their variables to select the Dockerfile
   DOCKERFILE="${LINUX_VER}-${IMAGE_TYPE}.Dockerfile"
 fi
-gpuci_logger "Using Dockerfile: generated-dockerfiles/${DOCKERFILE}"
+gpuci_logger "Using Dockerfile: blazing-dev/generated-dockerfiles/${DOCKERFILE}"
 
 # Debug output selected dockerfile
 gpuci_logger ">>>> BEGIN Dockerfile <<<<"
-cat generated-dockerfiles/${DOCKERFILE}
+cat blazing-dev/generated-dockerfiles/${DOCKERFILE}
 gpuci_logger ">>>> END Dockerfile <<<<"
 
 # Get build info ready
@@ -58,11 +58,11 @@ gpuci_logger "Build config info..."
 echo "Build image and tag: ${BUILD_IMAGE}:${BUILD_TAG}"
 echo "Build args: ${BUILD_ARGS}"
 gpuci_logger "Docker build command..."
-echo "docker build --pull -t ${BUILD_IMAGE}:${BUILD_TAG} ${BUILD_ARGS} -f generated-dockerfiles/${DOCKERFILE} context/"
+echo "docker build --pull -t ${BUILD_IMAGE}:${BUILD_TAG} ${BUILD_ARGS} -f blazing-dev/generated-dockerfiles/${DOCKERFILE} blazing-dev/context/"
 
 # Build image
 gpuci_logger "Starting build..."
-docker build --pull -t ${BUILD_IMAGE}:${BUILD_TAG} ${BUILD_ARGS} -f generated-dockerfiles/${DOCKERFILE} context/
+docker build --pull -t ${BUILD_IMAGE}:${BUILD_TAG} ${BUILD_ARGS} -f blazing-dev/generated-dockerfiles/${DOCKERFILE} blazing-dev/context/
 
 # List image info
 gpuci_logger "Displaying image info..."

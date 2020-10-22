@@ -10,7 +10,7 @@
 ARG CUDA_VER={{ DEFAULT_CUDA_VERSION }}
 ARG LINUX_VER={{ os }}
 ARG PYTHON_VER={{ DEFAULT_PYTHON_VERSION }}
-ARG RAPIDS_VER={{ RAPIDS_VERSION }}
+ARG RAPIDS_VER={{ DEFAULT_RAPIDS_VERSION }}
 ARG FROM_IMAGE=gpuci/rapidsai
 
 FROM ${FROM_IMAGE}:${RAPIDS_VER}-cuda${CUDA_VER}-devel-${LINUX_VER}-py${PYTHON_VER}
@@ -21,11 +21,11 @@ ENV CCACHE_NOHASHDIR=
 ENV CCACHE_DIR="/ccache"
 ENV CCACHE_COMPILERCHECK="%compiler% --version"
 
-{# Uncomment these env vars to force ccache to be enabled by default #}
 ENV CC="/usr/local/bin/gcc"
 ENV CXX="/usr/local/bin/g++"
 ENV NVCC="/usr/local/bin/nvcc"
 ENV CUDAHOSTCXX="/usr/local/bin/g++"
+ENV CUDAToolkit_ROOT="/usr/local/cuda"
 RUN ln -s "$(which ccache)" "/usr/local/bin/gcc" \
     && ln -s "$(which ccache)" "/usr/local/bin/g++" \
     && ln -s "$(which ccache)" "/usr/local/bin/nvcc"
@@ -36,7 +36,7 @@ RUN ccache -s
 
 {# devel environment config args #}
 ARG PARALLEL_LEVEL=16
-ARG RAPIDS_VER={{ RAPIDS_VERSION }}*
+ARG RAPIDS_VER
 
 ARG PYTHON_VER
 
@@ -44,39 +44,38 @@ ENV RAPIDS_DIR=/rapids
 
 {% if "ubuntu" in os %}
 {# gsfonts is used to correctly render fonts in doxygen/graphviz diagrams #}
-RUN apt-get update && apt-get install -y \
+RUN apt-get update && apt-get install -y --no-install-recommends \
     gsfonts \
     && rm -rf /var/lib/apt/lists/*
 {% endif %}
 
-{# 'rapidsdevtool.sh buildDockerImage' sets up the build context, including the
-rapids directory being COPY'd below. See rapidsdevtool.sh help for details. #}
 RUN mkdir -p ${RAPIDS_DIR}/utils {{ "${GCC7_DIR}/lib64" if "centos" in os }}
-COPY start_jupyter.sh nbtest.sh nbtestlog2junitxml.py ${RAPIDS_DIR}/utils/
-
-{# Install dependencies needed for devel: build deps + RAPIDS runtime deps +
-notebook deps.  This is done as a single install to ensure compatibility
-between packages. #}
-{% include 'partials/env_debug.dockerfile.j2' %}
-
-{# Install rapids-build-env and rapids-doc-env from conda meta-pkg #}
-RUN gpuci_retry conda install -y -n rapids \
-      rapids-build-env=${RAPIDS_VER} \
-      rapids-doc-env=${RAPIDS_VER} \
-      libcumlprims=${RAPIDS_VER} \
-      ucx-py=${RAPIDS_VER} \
-    && conda remove -y -n rapids --force-remove \
-      rapids-build-env=${RAPIDS_VER} \
-      rapids-doc-env=${RAPIDS_VER}
-
-{% include 'partials/env_debug.dockerfile.j2' %}
-
-{% include 'partials/install_notebooks.dockerfile.j2' %}
+COPY nbtest.sh nbtestlog2junitxml.py ${RAPIDS_DIR}/utils/
 
 {% if "centos" in os %}
 {# Add compatible libm #}
 COPY libm.so.6 ${GCC7_DIR}/lib64
 {% endif %}
+
+{# Install dependencies needed for devel: build deps + RAPIDS runtime deps +
+notebook deps. This is done as a single install to ensure compatibility
+between packages. #}
+{% include 'partials/env_debug.dockerfile.j2' %}
+
+{# Install rapids-build-env and rapids-doc-env from conda meta-pkg #}
+RUN gpuci_conda_retry install -y -n rapids \
+      "rapids-build-env=${RAPIDS_VER}*" \
+      "rapids-doc-env=${RAPIDS_VER}*" \
+      "libcumlprims=${RAPIDS_VER}*" \
+      "ucx-py=${RAPIDS_VER}*" \
+    && gpuci_conda_retry remove -y -n rapids --force-remove \
+      "rapids-build-env=${RAPIDS_VER}*" \
+      "rapids-doc-env=${RAPIDS_VER}*"
+
+{% include 'partials/env_debug.dockerfile.j2' %}
+
+{% include 'partials/install_notebooks.dockerfile.j2' %}
+
 
 {# Clone RAPIDS libraries #}
 RUN cd ${RAPIDS_DIR} \
@@ -98,7 +97,65 @@ ENV LD_LIBRARY_PATH=${LD_LIBRARY_PATH}:/usr/local/cuda/lib64:/usr/local/cuda/lib
 RUN mv /opt/conda/envs/rapids/include/dmlc/ /opt/conda/envs/rapids/include/dmlc-OFF
 {% endif %}
 
-{% include 'partials/devel_build.dockerfile.j2' %}
+{# xgboost build will not find nccl in the conda env without this env var #}
+ENV NCCL_ROOT=/opt/conda/envs/rapids
+ENV PARALLEL_LEVEL=${PARALLEL_LEVEL}
+
+{# Include 'rapids' conda env in LD_LIBRARY_PATH #}
+ENV LD_LIBRARY_PATH=${LD_LIBRARY_PATH}:/opt/conda/envs/rapids/lib
+
+{# RAPIDS library build loop #}
+{% for lib in RAPIDS_LIBS %}
+RUN cd ${RAPIDS_DIR}/{{ lib.name }} && \
+  source activate rapids && \
+  ccache -s && \
+  {% if lib.name == "cudf" %}
+  ./build.sh libcudf cudf dask_cudf libcudf_kafka cudf_kafka tests
+
+  {% elif lib.name == "cuspatial" %}
+  export CUSPATIAL_HOME="$PWD" && \
+  export CUDF_HOME="$PWD/../cudf" && \
+  ./build.sh
+
+  {% elif lib.name == "xgboost" %}
+  if [[ "$CUDA_VER" == "11.0" ]]; then \
+    mkdir -p build && cd build && \
+    cmake -DCMAKE_INSTALL_PREFIX=$CONDA_PREFIX \
+          -DUSE_NCCL=ON -DUSE_CUDA=ON -DUSE_CUDF=ON \
+          -DBUILD_WITH_SHARED_NCCL=ON \
+          -DGDF_INCLUDE_DIR=$CONDA_PREFIX/include \
+          -DCMAKE_CXX_STANDARD:STRING="14" \
+          -DPLUGIN_RMM=ON \
+          -DRMM_ROOT=${RAPIDS_DIR}/rmm \
+          -DCMAKE_BUILD_TYPE=release .. && \
+    make -j && make -j install && \
+    cd ../python-package && python setup.py install; \
+  else \
+    mkdir -p build && cd build && \
+    cmake -DCMAKE_INSTALL_PREFIX=$CONDA_PREFIX \
+          -DUSE_NCCL=ON -DUSE_CUDA=ON -DUSE_CUDF=ON \
+          -DBUILD_WITH_SHARED_NCCL=ON \
+          -DGDF_INCLUDE_DIR=$CONDA_PREFIX/include \
+          -DCMAKE_CXX11_ABI=ON \
+          -DPLUGIN_RMM=ON \
+          -DRMM_ROOT=${RAPIDS_DIR}/rmm \
+          -DCMAKE_BUILD_TYPE=release .. && \
+    make -j && make -j install && \
+    cd ../python-package && python setup.py install; \
+  fi
+
+  {% elif lib.name == "cuml" %}
+  ./build.sh --allgpuarch libcuml cuml prims
+
+  {% elif lib.name == "dask-cuda"%}
+  python setup.py install
+
+  {% else %}
+  ./build.sh
+
+  {% endif %}
+{% endfor %}
+
 
 {% if "centos" in os %}
 {# Change LD_LIBRARY_PATH to exclude /usr/local/cuda/* since
@@ -113,10 +170,14 @@ RUN ccache -s \
   && chmod -R ugo+w /ccache \
   && ccache -s
 
+COPY packages.sh /opt/docker/bin/
+
 {# Cleaup conda and set ACLs for all users #}
 {% include 'partials/cleanup-chmod.dockerfile.j2' %}
 
-ENTRYPOINT [ "/usr/bin/tini", "--", "/.run_in_rapids" ]
+COPY source_entrypoints/runtime_devel.sh /opt/docker/bin/entrypoint_source
+COPY entrypoint.sh /opt/docker/bin/entrypoint
+ENTRYPOINT [ "/usr/bin/tini", "--", "/opt/docker/bin/entrypoint" ]
 
 {# Set the default command to pass to the ENTRYPOINT if no command was given #}
 CMD [ "/bin/bash" ]

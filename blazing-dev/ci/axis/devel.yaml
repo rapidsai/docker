@@ -1,9 +1,9 @@
 BUILD_IMAGE:
-  - rapidsai/rapidsai-dev
-  - rapidsai/rapidsai-dev-nightly
+  - rapidsai/blazingsql-dev
+  - rapidsai/blazingsql-dev-nightly
 
 FROM_IMAGE:
-  - gpuci/rapidsai
+  - rapidsai/rapidsai-dev
 
 IMAGE_TYPE:
   - devel
@@ -28,8 +28,8 @@ PYTHON_VER:
 
 exclude:
   - RAPIDS_VER: 0.16
-    BUILD_IMAGE: rapidsai/rapidsai-dev-nightly
+    BUILD_IMAGE: rapidsai/blazingsql-dev-nightly
   - RAPIDS_VER: 0.17
-    BUILD_IMAGE: rapidsai/rapidsai-dev
+    BUILD_IMAGE: rapidsai/blazingsql-dev
   - RAPIDS_VER: 0.17
-    BUILD_IMAGE: rapidsai/rapidsai-dev-nightly
+    BUILD_IMAGE: rapidsai/blazingsql-dev-nightly

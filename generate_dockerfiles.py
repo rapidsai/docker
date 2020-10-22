@@ -3,14 +3,18 @@
 Python script to generate Dockerfiles
 """
 
+import argparse
 import os
 from datetime import datetime
+import jinja2
 from jinja2 import Environment, FileSystemLoader
 import yaml
 
-file_loader = FileSystemLoader("templates")
-env = Environment(loader=file_loader, lstrip_blocks=True, trim_blocks=True)
-OUTPUT_DIR = "generated-dockerfiles"
+TEMPLATES_DIRNAME = "templates"
+OUTPUT_DIRNAME = "generated-dockerfiles"
+DEFAULT_PROJECT_DIR = os.path.dirname(os.path.abspath(__file__))
+DEFAULT_OUTPUT_DIR = os.path.join(DEFAULT_PROJECT_DIR, OUTPUT_DIRNAME)
+DEFAULT_TEMPLATES_DIR = os.path.join(DEFAULT_PROJECT_DIR, TEMPLATES_DIRNAME)
 
 
 def load_settings():
@@ -20,38 +24,63 @@ def load_settings():
     # Set default RAPIDS_LIBS values
     for lib in settings["RAPIDS_LIBS"]:
         if "branch" not in lib.keys():
-            lib["branch"] = f'branch-{settings["RAPIDS_VERSION"]}'
+            lib["branch"] = f'branch-{settings["DEFAULT_RAPIDS_VERSION"]}'
         if "update_submodules" not in lib.keys():
             lib["update_submodules"] = True
     return settings
 
 
-def initialize_output_dir():
-    """Creates or empties the OUTPUT_DIR directory"""
-    if not os.path.exists(OUTPUT_DIR):
-        os.makedirs(OUTPUT_DIR)
+def initialize_output_dir(output_dir):
+    """Creates the OUTPUT_DIR directory"""
+    if not os.path.exists(output_dir):
+        os.makedirs(output_dir)
         return
-    filelist = [f for f in os.listdir(OUTPUT_DIR) if f.endswith(".Dockerfile")]
-    for dockerfile in filelist:
-        os.remove(os.path.join(OUTPUT_DIR, dockerfile))
     return
 
 
-def main():
+def main(project_dir, verbose=False):
     """Generates Dockerfiles using Jinja2"""
-    initialize_output_dir()
+
+    templates_dir = os.path.join(project_dir, TEMPLATES_DIRNAME)
+    output_dir = os.path.join(project_dir, OUTPUT_DIRNAME)
+
+    file_loader = FileSystemLoader(templates_dir)
+    env = Environment(loader=file_loader, lstrip_blocks=True, trim_blocks=True)
+    initialize_output_dir(output_dir)
+
     settings = load_settings()
     for docker_os in ["centos7", "ubuntu18.04"]:
-        for image_type in ["Base", "Devel", "Runtime", "Quick"]:
+        for image_type in ["Base", "Devel", "Runtime"]:
             dockerfile_name = f"{docker_os}-{image_type.lower()}.Dockerfile"
-            template = env.get_template(f"{image_type}.dockerfile.j2")
+            try:
+                template = env.get_template(f"{image_type}.dockerfile.j2")
+            except jinja2.exceptions.TemplateNotFound:
+                if verbose:
+                    print(f"Warning: template for image type {image_type} not "
+                          "found, skipping for {docker_os}.")
+                continue
             output = template.render(
                 os=docker_os, image_type=image_type, now=datetime.utcnow(), **settings,
             )
-            with open(f"{OUTPUT_DIR}/{dockerfile_name}", "w") as dockerfile:
-                dockerfile.write(output)
-    print(f"Dockerfiles successfully written to the '{OUTPUT_DIR}' directory.")
+            output_dockerfile_path = f"{output_dir}/{dockerfile_name}"
+            if not(os.path.exists(output_dockerfile_path)) \
+               or (open(output_dockerfile_path).read() != output):
+
+                with open(output_dockerfile_path, "w") as dockerfile:
+                    dockerfile.write(output)
+                if verbose:
+                    print(f"Updated: {output_dockerfile_path}")
+
+    print(f"Dockerfiles successfully written to the '{output_dir}' directory.")
 
 
 if __name__ == "__main__":
-    main()
+    arg_parser = argparse.ArgumentParser()
+    arg_parser.add_argument("-v", action="store_true",
+                            help="Print extra details about the run")
+    arg_parser.add_argument("--project", metavar="<project>", type=str,
+                            action="store", default=DEFAULT_PROJECT_DIR,
+                            help="Generate Dockerfile(s) for the %(metavar)s "
+                            "project. Default is the project in %(default)s")
+    args = arg_parser.parse_args()
+    main(project_dir=args.project, verbose=args.v)

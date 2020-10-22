@@ -79,7 +79,7 @@ RAPIDS_LIBS:
     branch: rapids-0.14-release # (optional, default: "branch-<rapids_version>") branch to be cloned inside of the image
 ```
 
-If the new repo does not have a `build.sh` file in it's root directory and thus requires special instructions to build, make sure to add an additional `elif` block in [devel_build.dockerfile.j2](/templates/partials/devel_build.dockerfile.j2).
+If the new repo does not have a `build.sh` file in it's root directory and thus requires special instructions to build, make sure to add an additional `elif` block to the build loop in [Devel.dockerfile.j2](templates/Devel.dockerfile.j2).
 
 ## Recommended VS Code Plugin
 

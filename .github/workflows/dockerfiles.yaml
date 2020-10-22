@@ -14,5 +14,6 @@ jobs:
         run: |
           pip install -r requirements.txt
           ./generate_dockerfiles.py
+          ./generate_dockerfiles.py --project blazing-dev
       - name: Check diffs
         run: git diff --exit-code --quiet

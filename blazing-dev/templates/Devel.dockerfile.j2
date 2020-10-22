@@ -1,4 +1,4 @@
-# RAPIDS Dockerfile for Ubuntu "quick devel" image
+# RAPIDS Dockerfile for {{ os }} "devel" image
 #
 # RAPIDS is built from-source and installed in the base conda environment. The
 # sources and toolchains to build RAPIDS are included in this image. RAPIDS
@@ -10,22 +10,17 @@
 ARG CUDA_VER={{ DEFAULT_CUDA_VERSION }}
 ARG LINUX_VER={{ os }}
 ARG PYTHON_VER={{ DEFAULT_PYTHON_VERSION }}
-ARG RAPIDS_VER={{ RAPIDS_VERSION }}
-ARG FROM_IMAGE=rapidsaistaging/rapidsai-dev-nightly-staging
+ARG RAPIDS_VER={{ DEFAULT_RAPIDS_VERSION }}
+ARG FROM_IMAGE=rapidsai/rapidsai-dev-nightly
 
 FROM ${FROM_IMAGE}:${RAPIDS_VER}-cuda${CUDA_VER}-devel-${LINUX_VER}-py${PYTHON_VER}
 
-ARG PARALLEL_LEVEL=16
+{# Additions for BlazingSQL, change the default WORKDIR to run BlazingSQL NBs by default #}
+ENV BLAZING_DIR=/blazing
+{% include 'partials/clone_and_build_blazing.dockerfile.j2' %}
+{% include 'partials/clone_blazing_notebooks.dockerfile.j2' %}
 
-{# Update RAPIDS repos #}
-RUN source activate rapids && \
-{% for lib in RAPIDS_LIBS %}
-    cd ${RAPIDS_DIR}/{{ lib.name }} && \
-    git pull {{ "&& \\" if not loop.last }}
-{% endfor %}
-
-{# Build RAPIDS #}
-{% include 'partials/devel_build.dockerfile.j2' %}
+WORKDIR ${BLAZING_DIR}/Welcome_to_BlazingSQL_Notebooks
 
 {# Cleaup conda and set ACLs for all users #}
 {% include 'partials/cleanup-chmod.dockerfile.j2' %}

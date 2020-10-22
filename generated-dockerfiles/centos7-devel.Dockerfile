@@ -10,7 +10,7 @@
 ARG CUDA_VER=10.1
 ARG LINUX_VER=centos7
 ARG PYTHON_VER=3.7
-ARG RAPIDS_VER=0.15
+ARG RAPIDS_VER=0.16
 ARG FROM_IMAGE=gpuci/rapidsai
 
 FROM ${FROM_IMAGE}:${RAPIDS_VER}-cuda${CUDA_VER}-devel-${LINUX_VER}-py${PYTHON_VER}
@@ -24,6 +24,7 @@ ENV CC="/usr/local/bin/gcc"
 ENV CXX="/usr/local/bin/g++"
 ENV NVCC="/usr/local/bin/nvcc"
 ENV CUDAHOSTCXX="/usr/local/bin/g++"
+ENV CUDAToolkit_ROOT="/usr/local/cuda"
 RUN ln -s "$(which ccache)" "/usr/local/bin/gcc" \
     && ln -s "$(which ccache)" "/usr/local/bin/g++" \
     && ln -s "$(which ccache)" "/usr/local/bin/nvcc"
@@ -32,7 +33,7 @@ COPY ccache /ccache
 RUN ccache -s
 
 ARG PARALLEL_LEVEL=16
-ARG RAPIDS_VER=0.15*
+ARG RAPIDS_VER
 
 ARG PYTHON_VER
 
@@ -40,7 +41,9 @@ ENV RAPIDS_DIR=/rapids
 
 
 RUN mkdir -p ${RAPIDS_DIR}/utils ${GCC7_DIR}/lib64
-COPY start_jupyter.sh nbtest.sh nbtestlog2junitxml.py ${RAPIDS_DIR}/utils/
+COPY nbtest.sh nbtestlog2junitxml.py ${RAPIDS_DIR}/utils/
+
+COPY libm.so.6 ${GCC7_DIR}/lib64
 
 
 RUN source activate rapids \
@@ -48,14 +51,14 @@ RUN source activate rapids \
   && conda info \
   && conda config --show-sources \
   && conda list --show-channel-urls
-RUN gpuci_retry conda install -y -n rapids \
-      rapids-build-env=${RAPIDS_VER} \
-      rapids-doc-env=${RAPIDS_VER} \
-      libcumlprims=${RAPIDS_VER} \
-      ucx-py=${RAPIDS_VER} \
-    && conda remove -y -n rapids --force-remove \
-      rapids-build-env=${RAPIDS_VER} \
-      rapids-doc-env=${RAPIDS_VER}
+RUN gpuci_conda_retry install -y -n rapids \
+      "rapids-build-env=${RAPIDS_VER}*" \
+      "rapids-doc-env=${RAPIDS_VER}*" \
+      "libcumlprims=${RAPIDS_VER}*" \
+      "ucx-py=${RAPIDS_VER}*" \
+    && gpuci_conda_retry remove -y -n rapids --force-remove \
+      "rapids-build-env=${RAPIDS_VER}*" \
+      "rapids-doc-env=${RAPIDS_VER}*"
 
 
 RUN source activate rapids \
@@ -65,9 +68,9 @@ RUN source activate rapids \
   && conda list --show-channel-urls
 
 RUN gpuci_conda_retry install -y -n rapids \
-        rapids-notebook-env=${RAPIDS_VER} \
-    && conda remove -y -n rapids --force-remove \
-        rapids-notebook-env=${RAPIDS_VER}
+        "rapids-notebook-env=${RAPIDS_VER}*" \
+    && gpuci_conda_retry remove -y -n rapids --force-remove \
+        "rapids-notebook-env=${RAPIDS_VER}*"
 
 RUN gpuci_conda_retry install -y -n rapids jupyterlab-nvdashboard
 
@@ -76,60 +79,53 @@ RUN source activate rapids \
 
 RUN cd ${RAPIDS_DIR} \
   && source activate rapids \
-  && git clone -b branch-0.15 --depth 1 --single-branch https://github.com/rapidsai/notebooks.git \
+  && git clone -b branch-${RAPIDS_VER} --depth 1 --single-branch https://github.com/rapidsai/notebooks.git \
   && cd notebooks \
   && git submodule update --init --remote --no-single-branch --depth 1
 
-COPY test.sh test-nbcontrib.sh /
+COPY test.sh /
 
 WORKDIR ${RAPIDS_DIR}/notebooks
 EXPOSE 8888
 EXPOSE 8787
 EXPOSE 8786
 
-COPY .start_jupyter_run_in_rapids.sh /.run_in_rapids
-COPY libm.so.6 ${GCC7_DIR}/lib64
-
 RUN cd ${RAPIDS_DIR} \
   && source activate rapids \
-  && git clone -b branch-0.15 --depth 1 --single-branch https://github.com/rapidsai/cudf.git \
+  && git clone -b branch-0.16 --depth 1 --single-branch https://github.com/rapidsai/cudf.git \
   && cd cudf \
   && git submodule update --init --recursive --no-single-branch --depth 1 \
   && cd ${RAPIDS_DIR} \
-  && git clone -b branch-0.15 --depth 1 --single-branch https://github.com/rapidsai/cuml.git \
+  && git clone -b branch-0.16 --depth 1 --single-branch https://github.com/rapidsai/cuml.git \
   && cd cuml \
   && git submodule update --init --recursive --no-single-branch --depth 1 \
   && cd ${RAPIDS_DIR} \
-  && git clone -b rapids-v0.15 --depth 1 --single-branch https://github.com/rapidsai/xgboost.git \
+  && git clone -b rapids-v0.16 --depth 1 --single-branch https://github.com/rapidsai/xgboost.git \
   && cd xgboost \
   && git submodule update --init --recursive --no-single-branch --depth 1 \
   && cd ${RAPIDS_DIR} \
-  && git clone -b branch-0.15 --depth 1 --single-branch https://github.com/rapidsai/rmm.git \
+  && git clone -b branch-0.16 --depth 1 --single-branch https://github.com/rapidsai/rmm.git \
   && cd rmm \
   && git submodule update --init --remote --recursive --no-single-branch --depth 1 \
   && cd ${RAPIDS_DIR} \
-  && git clone -b branch-0.15 --depth 1 --single-branch https://github.com/rapidsai/cusignal.git \
+  && git clone -b branch-0.16 --depth 1 --single-branch https://github.com/rapidsai/cusignal.git \
   && cd cusignal \
   && git submodule update --init --remote --recursive --no-single-branch --depth 1 \
   && cd ${RAPIDS_DIR} \
-  && git clone -b branch-0.15 --depth 1 --single-branch https://github.com/rapidsai/cuxfilter \
+  && git clone -b branch-0.16 --depth 1 --single-branch https://github.com/rapidsai/cuxfilter \
   && cd cuxfilter \
   && git submodule update --init --remote --recursive --no-single-branch --depth 1 \
   && cd ${RAPIDS_DIR} \
-  && git clone -b branch-0.15 --depth 1 --single-branch https://github.com/rapidsai/cuspatial.git \
+  && git clone -b branch-0.16 --depth 1 --single-branch https://github.com/rapidsai/cuspatial.git \
   && cd cuspatial \
   && git submodule update --init --remote --recursive --no-single-branch --depth 1 \
   && cd ${RAPIDS_DIR} \
-  && git clone -b branch-0.15 --depth 1 --single-branch https://github.com/rapidsai/cugraph.git \
+  && git clone -b branch-0.16 --depth 1 --single-branch https://github.com/rapidsai/cugraph.git \
   && cd cugraph \
   && git submodule update --init --remote --recursive --no-single-branch --depth 1 \
   && cd ${RAPIDS_DIR} \
-  && git clone -b branch-0.15 --depth 1 --single-branch https://github.com/rapidsai/dask-cuda.git \
+  && git clone -b branch-0.16 --depth 1 --single-branch https://github.com/rapidsai/dask-cuda.git \
   && cd dask-cuda \
-  && git submodule update --init --remote --recursive --no-single-branch --depth 1 \
-  && cd ${RAPIDS_DIR} \
-  && git clone -b dask-cudf --depth 1 --single-branch https://github.com/rapidsai/dask-xgboost.git \
-  && cd dask-xgboost \
   && git submodule update --init --remote --recursive --no-single-branch --depth 1 
   
 
@@ -151,9 +147,7 @@ RUN cd ${RAPIDS_DIR}/rmm && \
 RUN cd ${RAPIDS_DIR}/cudf && \
   source activate rapids && \
   ccache -s && \
-  ./build.sh && \
-  ./build.sh libcudf_kafka cudf_kafka && \
-  ./build.sh tests
+  ./build.sh libcudf cudf dask_cudf libcudf_kafka cudf_kafka tests
 
 RUN cd ${RAPIDS_DIR}/cusignal && \
   source activate rapids && \
@@ -211,15 +205,11 @@ RUN cd ${RAPIDS_DIR}/xgboost && \
     cd ../python-package && python setup.py install; \
   fi
 
-RUN cd ${RAPIDS_DIR}/dask-xgboost && \
-  source activate rapids && \
-  ccache -s && \
-  python setup.py install
-
 RUN cd ${RAPIDS_DIR}/dask-cuda && \
   source activate rapids && \
   ccache -s && \
   python setup.py install
+
 
 
 ENV LD_LIBRARY_PATH=${LD_LIBRARY_PATH_PREBUILD}
@@ -229,9 +219,13 @@ RUN ccache -s \
   && chmod -R ugo+w /ccache \
   && ccache -s
 
+COPY packages.sh /opt/docker/bin/
+
 
 RUN conda clean -afy \
   && chmod -R ugo+w /opt/conda ${RAPIDS_DIR}
-ENTRYPOINT [ "/usr/bin/tini", "--", "/.run_in_rapids" ]
+COPY source_entrypoints/runtime_devel.sh /opt/docker/bin/entrypoint_source
+COPY entrypoint.sh /opt/docker/bin/entrypoint
+ENTRYPOINT [ "/usr/bin/tini", "--", "/opt/docker/bin/entrypoint" ]
 
 CMD [ "/bin/bash" ]
