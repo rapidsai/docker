@@ -32,6 +32,10 @@ RUN source activate rapids \
 RUN gpuci_conda_retry install -y -n rapids \
   "rapids=${RAPIDS_VER}*"
 
+
+RUN source activate rapids \
+    && cd /opt/conda/envs/rapids/lib/node_modules/npm \
+    && NODE_PATH=/opt/conda/envs/rapids/lib/node_modules/npm/node_modules npm install dot-prop@4.2.1
 COPY packages.sh /opt/docker/bin/
 
 
