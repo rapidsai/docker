@@ -2,7 +2,7 @@
 # Default Docker build arguments
 DEFAULT_PYTHON_VERSION: "3.7"
 DEFAULT_CUDA_VERSION: "10.1"
-DEFAULT_RAPIDS_VERSION: "0.16"
+DEFAULT_RAPIDS_VERSION: "0.17"
 
 # Libraries included in devel images
 RAPIDS_LIBS:
