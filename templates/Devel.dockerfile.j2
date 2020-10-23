@@ -95,9 +95,6 @@ RUN cd ${RAPIDS_DIR} \
 This will need to be removed later since it causes problems with certain runtime libs (numba.cuda) #}
 ENV LD_LIBRARY_PATH_PREBUILD=${LD_LIBRARY_PATH}
 ENV LD_LIBRARY_PATH=${LD_LIBRARY_PATH}:/usr/local/cuda/lib64:/usr/local/cuda/lib64/stubs
-
-{# Remove dmlc that is leftover from prior xgboost install #}
-RUN mv /opt/conda/envs/rapids/include/dmlc/ /opt/conda/envs/rapids/include/dmlc-OFF
 {% endif %}
 
 {# xgboost build will not find nccl in the conda env without this env var #}
