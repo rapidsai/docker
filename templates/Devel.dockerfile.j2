@@ -115,7 +115,7 @@ RUN cd ${RAPIDS_DIR}/{{ lib.name }} && \
   {% elif lib.name == "cuspatial" %}
   export CUSPATIAL_HOME="$PWD" && \
   export CUDF_HOME="$PWD/../cudf" && \
-  ./build.sh
+  ./build.sh libcuspatial cuspatial tests
 
   {% elif lib.name == "xgboost" %}
   if [[ "$CUDA_VER" == "11.0" ]]; then \
@@ -145,7 +145,7 @@ RUN cd ${RAPIDS_DIR}/{{ lib.name }} && \
   fi
 
   {% elif lib.name == "cuml" %}
-  ./build.sh --allgpuarch libcuml cuml prims
+  ./build.sh --allgpuarch --buildgtest libcuml cuml prims
 
   {% elif lib.name == "dask-cuda"%}
   python setup.py install
