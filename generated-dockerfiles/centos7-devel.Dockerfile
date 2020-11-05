@@ -165,12 +165,12 @@ RUN cd ${RAPIDS_DIR}/cuspatial && \
   ccache -s && \
   export CUSPATIAL_HOME="$PWD" && \
   export CUDF_HOME="$PWD/../cudf" && \
-  ./build.sh
+  ./build.sh libcuspatial cuspatial tests
 
 RUN cd ${RAPIDS_DIR}/cuml && \
   source activate rapids && \
   ccache -s && \
-  ./build.sh --allgpuarch libcuml cuml prims
+  ./build.sh --allgpuarch --buildgtest libcuml cuml prims
 
 RUN cd ${RAPIDS_DIR}/cugraph && \
   source activate rapids && \
