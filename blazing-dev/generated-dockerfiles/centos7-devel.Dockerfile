@@ -37,7 +37,7 @@ ENV CUDF_HOME=/rapids/cudf
 # Clone, build, install. Note: This uses the current default branch instead of main.
 RUN mkdir -p ${BLAZING_DIR} \
     && cd ${BLAZING_DIR} \
-    && git clone -b branch-0.16 https://github.com/BlazingDB/blazingsql.git
+    && git clone -b branch-${RAPIDS_VER} https://github.com/BlazingDB/blazingsql.git
 
 # Add additional CUDA lib dir to LD_LIBRARY_PATH for "docker build".  This is
 # not needed when using the nvidia runtime with "docker run" since the nvidia

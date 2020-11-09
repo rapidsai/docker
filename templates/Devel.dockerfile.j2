@@ -83,8 +83,8 @@ RUN gpuci_conda_retry install -y -n rapids \
 {# Clone RAPIDS libraries #}
 RUN cd ${RAPIDS_DIR} \
   && source activate rapids \
-{% for lib in RAPIDS_LIBS | sort(attribute="update_submodules,branch") %}
-  && git clone -b {{ lib.branch }} --depth 1 --single-branch {{ lib.repo_url }} \
+{% for lib in RAPIDS_LIBS | sort(attribute="update_submodules") %}
+  && git clone -b {{ lib.branch | default('branch-${RAPIDS_VER}') }} --depth 1 --single-branch {{ lib.repo_url }} \
   && cd {{ lib.name }} \
   && git submodule update --init{{ ' --remote' if lib.update_submodules }} --recursive --no-single-branch --depth 1 {{ "\\" if not loop.last }}
   {{ "&& cd ${RAPIDS_DIR} \\" if not loop.last }}
