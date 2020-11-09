@@ -16,6 +16,7 @@ FROM ${FROM_IMAGE}:${RAPIDS_VER}-cuda${CUDA_VER}-runtime-${LINUX_VER}-py${PYTHON
 
 ARG DASK_XGBOOST_VER=0.2*
 ARG RAPIDS_VER
+ARG BUILD_BRANCH="branch-${RAPIDS_VER}"
 
 ENV RAPIDS_DIR=/rapids
 
@@ -49,7 +50,7 @@ RUN source activate rapids \
 
 RUN cd ${RAPIDS_DIR} \
   && source activate rapids \
-  && git clone -b branch-${RAPIDS_VER} --depth 1 --single-branch https://github.com/rapidsai/notebooks.git \
+  && git clone -b ${BUILD_BRANCH} --depth 1 --single-branch https://github.com/rapidsai/notebooks.git \
   && cd notebooks \
   && git submodule update --init --remote --no-single-branch --depth 1
 
