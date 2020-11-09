@@ -15,6 +15,9 @@ ARG FROM_IMAGE=rapidsai/rapidsai-dev-nightly
 
 FROM ${FROM_IMAGE}:${RAPIDS_VER}-cuda${CUDA_VER}-devel-${LINUX_VER}-py${PYTHON_VER}
 
+ARG RAPIDS_VER
+ARG BUILD_BRANCH="branch-${RAPIDS_VER}"
+
 ENV BLAZING_DIR=/blazing
 
 RUN gpuci_conda_retry install -y -n rapids \
@@ -37,7 +40,7 @@ ENV CUDF_HOME=/rapids/cudf
 # Clone, build, install. Note: This uses the current default branch instead of main.
 RUN mkdir -p ${BLAZING_DIR} \
     && cd ${BLAZING_DIR} \
-    && git clone -b branch-${RAPIDS_VER} https://github.com/BlazingDB/blazingsql.git
+    && git clone -b ${BUILD_BRANCH} https://github.com/BlazingDB/blazingsql.git
 
 # Add additional CUDA lib dir to LD_LIBRARY_PATH for "docker build".  This is
 # not needed when using the nvidia runtime with "docker run" since the nvidia
