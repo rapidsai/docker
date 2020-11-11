@@ -81,7 +81,7 @@ RUN gpuci_conda_retry install -y -n rapids \
 RUN gpuci_conda_retry install -y -n rapids jupyterlab-nvdashboard
 
 RUN source activate rapids \
-  && jupyter labextension install dask-labextension jupyterlab-nvdashboard
+  && jupyter labextension install @jupyter-widgets/jupyterlab-manager dask-labextension jupyterlab-nvdashboard
 
 RUN cd ${RAPIDS_DIR} \
   && source activate rapids \
