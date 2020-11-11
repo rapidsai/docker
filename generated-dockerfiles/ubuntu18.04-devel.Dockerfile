@@ -122,6 +122,10 @@ RUN cd ${RAPIDS_DIR} \
   && cd cuxfilter \
   && git submodule update --init --remote --recursive --no-single-branch --depth 1 \
   && cd ${RAPIDS_DIR} \
+  && git clone -b ${BUILD_BRANCH} --depth 1 --single-branch https://github.com/rapidsai/cuspatial.git \
+  && cd cuspatial \
+  && git submodule update --init --remote --recursive --no-single-branch --depth 1 \
+  && cd ${RAPIDS_DIR} \
   && git clone -b ${BUILD_BRANCH} --depth 1 --single-branch https://github.com/rapidsai/cugraph.git \
   && cd cugraph \
   && git submodule update --init --remote --recursive --no-single-branch --depth 1 \
@@ -156,6 +160,13 @@ RUN cd ${RAPIDS_DIR}/cuxfilter && \
   source activate rapids && \
   ccache -s && \
   ./build.sh
+
+RUN cd ${RAPIDS_DIR}/cuspatial && \
+  source activate rapids && \
+  ccache -s && \
+  export CUSPATIAL_HOME="$PWD" && \
+  export CUDF_HOME="$PWD/../cudf" && \
+  ./build.sh libcuspatial cuspatial tests
 
 RUN cd ${RAPIDS_DIR}/cuml && \
   source activate rapids && \
