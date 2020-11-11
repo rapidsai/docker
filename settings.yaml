@@ -15,8 +15,8 @@ RAPIDS_LIBS:
     repo_url: https://github.com/rapidsai/cusignal.git
   - name: cuxfilter
     repo_url: https://github.com/rapidsai/cuxfilter
-  # - name: cuspatial
-  #   repo_url: https://github.com/rapidsai/cuspatial.git
+  - name: cuspatial
+    repo_url: https://github.com/rapidsai/cuspatial.git
   - name: cuml
     repo_url: https://github.com/rapidsai/cuml.git
     update_submodules: no
