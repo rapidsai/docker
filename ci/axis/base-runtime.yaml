@@ -25,6 +25,7 @@ LINUX_VER:
 PYTHON_VER:
   - 3.7
   - 3.8
+  - 3.9
 
 exclude:
   - RAPIDS_VER: 0.17
