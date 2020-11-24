@@ -18,13 +18,8 @@ gpuci_logger "Logging into Docker..."
 echo $DH_TOKEN | docker login --username $DH_USER --password-stdin
 
 # Select dockerfile based on matrix var
-if [ "${LINUX_VER}" == "ubuntu16.04" ]; then
-  # ubuntu16.04 uses ubuntu18.04's Dockerfile
-  DOCKERFILE="${DOCKER_PREFIX}_ubuntu18.04-${IMAGE_TYPE}.Dockerfile"
-else
-  # ubuntu18.04 & centos7 use their variables to select the Dockerfile
-  DOCKERFILE="${DOCKER_PREFIX}_${LINUX_VER}-${IMAGE_TYPE}.Dockerfile"
-fi
+DOCKERFILE="${LINUX_VER}-${IMAGE_TYPE}.Dockerfile"
+
 gpuci_logger "Using Dockerfile: generated-dockerfiles/${DOCKERFILE}"
 
 # Debug output selected dockerfile
