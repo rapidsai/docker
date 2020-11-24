@@ -149,6 +149,9 @@ RUN cd ${RAPIDS_DIR}/{{ lib.name }} && \
     cd ../python-package && python setup.py install; \
   fi
 
+  {% elif lib.name == "cugraph" %}
+  ./build.sh --allgpuarch
+
   {% elif lib.name == "cuml" %}
   ./build.sh --allgpuarch --buildgtest libcuml cuml prims
 
