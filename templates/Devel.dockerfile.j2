@@ -150,7 +150,7 @@ RUN cd ${RAPIDS_DIR}/{{ lib.name }} && \
   fi
 
   {% elif lib.name == "cugraph" %}
-  ./build.sh --allgpuarch
+  ./build.sh --allgpuarch cugraph libcugraph
 
   {% elif lib.name == "cuml" %}
   ./build.sh --allgpuarch --buildgtest libcuml cuml prims
