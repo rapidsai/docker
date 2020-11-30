@@ -180,7 +180,7 @@ RUN cd ${RAPIDS_DIR}/cuml && \
 RUN cd ${RAPIDS_DIR}/cugraph && \
   source activate rapids && \
   ccache -s && \
-  ./build.sh --allgpuarch
+  ./build.sh --allgpuarch cugraph libcugraph
 
 RUN cd ${RAPIDS_DIR}/xgboost && \
   source activate rapids && \
