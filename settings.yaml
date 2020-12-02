@@ -25,6 +25,6 @@ RAPIDS_LIBS:
   - name: xgboost
     update_submodules: no
     repo_url: https://github.com/rapidsai/xgboost.git
-    branch: rapids-v0.16
+    branch: rapids-v0.17
   - name: dask-cuda
     repo_url: https://github.com/rapidsai/dask-cuda.git
