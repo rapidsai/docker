@@ -17,8 +17,6 @@ CUDA_VER:
   - 10.1
 
 LINUX_VER:
-  - ubuntu16.04
-  - ubuntu18.04
   - centos7
 
 PYTHON_VER:
