@@ -13,8 +13,11 @@ ARG FROM_IMAGE=rapidsai/rapidsai-core
 
 FROM ${FROM_IMAGE}:${RAPIDS_VER}-cuda${CUDA_VER}-base-${LINUX_VER}-py${PYTHON_VER}
 
+ARG RAPIDS_VER
+
 RUN gpuci_conda_retry install -y -n rapids -c blazingsql-nightly -c blazingsql\
-  "rapids-blazing=${RAPIDS_VER}*"
+  "rapids-blazing=${RAPIDS_VER}*" \
+  "cudatoolkit=${CUDA_VER}"
 
 WORKDIR ${RAPIDS_DIR}
 
