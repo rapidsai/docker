@@ -16,10 +16,10 @@ ARG FROM_IMAGE=rapidsai/rapidsai-dev-nightly
 FROM ${FROM_IMAGE}:${RAPIDS_VER}-cuda${CUDA_VER}-devel-${LINUX_VER}-py${PYTHON_VER}
 
 ARG RAPIDS_VER
-
+ARG BUILD_BRANCH="branch-${RAPIDS_VER}"
 {# Additions for BlazingSQL, change the default WORKDIR to run BlazingSQL NBs by default #}
 ENV BLAZING_DIR=/blazing
-{% include 'partials/clone_and_build_blazing.j2' %}
+{% include 'partials/clone_and_build_blazing.dockerfile.j2' %}
 
 WORKDIR ${RAPIDS_DIR}
 
