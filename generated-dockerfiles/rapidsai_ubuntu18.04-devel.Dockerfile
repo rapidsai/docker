@@ -15,11 +15,18 @@ ARG FROM_IMAGE=rapidsai/rapidsai-dev-nightly
 
 FROM ${FROM_IMAGE}:${RAPIDS_VER}-cuda${CUDA_VER}-devel-${LINUX_VER}-py${PYTHON_VER}
 
+ARG RAPIDS_VER
+
 ENV BLAZING_DIR=/blazing
 
-RUN gpuci_conda_retry install -y -n rapids \
-    blazingsql-build-env=${RAPIDS_VER} \
-    blazingsql-notebook-env=${RAPIDS_VER}
+RUN gpuci_conda_retry install -y -n rapids -c blazingsql-nightly -c blazingsql \
+      "blazingsql-build-env=${RAPIDS_VER}*" \
+      "rapids-build-env=${RAPIDS_VER}*" \
+      "cudatoolkit=${CUDA_VER}*" \
+    && gpuci_conda_retry remove -y -n rapids --force-remove \
+      "blazingsql-build-env=${RAPIDS_VER}*" \
+      "rapids-build-env=${RAPIDS_VER}*"
+
 
 ENV CUDF_HOME=/rapids/cudf
 
@@ -46,14 +53,7 @@ RUN source activate rapids \
 
 ENV LD_LIBRARY_PATH=${LD_LIBRARY_PATH_ORIG}
 ENV LD_LIBRARY_PATH_ORIG=
-# Clone, build, install
-RUN mkdir -p ${BLAZING_DIR} \
-    && cd ${BLAZING_DIR} \
-    && git clone https://github.com/BlazingDB/Welcome_to_BlazingSQL_Notebooks.git
-
-# Update the test script to include BlazingSQL notebooks
-COPY test.sh /
-WORKDIR ${BLAZING_DIR}/Welcome_to_BlazingSQL_Notebooks
+WORKDIR ${RAPIDS_DIR}
 
 
 RUN conda clean -afy \
