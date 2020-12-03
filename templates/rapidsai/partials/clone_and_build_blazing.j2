@@ -2,7 +2,7 @@
 
 {# Install build prerequisites #}
 RUN gpuci_conda_retry install -y -n rapids \
-    blazingsql-build-env=${RAPIDS_VER}
+    blazingsql-build-env=${RAPIDS_VER} \
     blazingsql-notebook-env=${RAPIDS_VER}
 
 ENV CUDF_HOME=/rapids/cudf

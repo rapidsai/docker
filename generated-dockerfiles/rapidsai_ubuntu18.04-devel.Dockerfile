@@ -18,7 +18,7 @@ FROM ${FROM_IMAGE}:${RAPIDS_VER}-cuda${CUDA_VER}-devel-${LINUX_VER}-py${PYTHON_V
 ENV BLAZING_DIR=/blazing
 
 RUN gpuci_conda_retry install -y -n rapids \
-    blazingsql-build-env=${RAPIDS_VER}
+    blazingsql-build-env=${RAPIDS_VER} \
     blazingsql-notebook-env=${RAPIDS_VER}
 
 ENV CUDF_HOME=/rapids/cudf
