@@ -1,9 +1,6 @@
 #!/bin/bash
 set -e
 
-#FIXME Override BUILD_BRANCH for testing
-export BUILD_BRANCH=branch-0.17
-
 # Overwrite HOME to WORKSPACE
 export HOME=$WORKSPACE
 
