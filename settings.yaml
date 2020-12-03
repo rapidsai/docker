@@ -4,7 +4,7 @@ DEFAULT_PYTHON_VERSION: "3.7"
 DEFAULT_CUDA_VERSION: "10.1"
 DEFAULT_RAPIDS_VERSION: "0.17"
 
-# Libraries included in devel images
+# Libraries included in RAPIDS core devel images
 RAPIDS_LIBS:
   - name: rmm
     repo_url: https://github.com/rapidsai/rmm.git
