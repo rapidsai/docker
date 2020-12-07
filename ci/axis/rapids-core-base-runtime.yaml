@@ -11,7 +11,6 @@ IMAGE_TYPE:
 
 RAPIDS_VER:
   - 0.17
-  - 0.18
 
 CUDA_VER:
   - 11.0
@@ -29,6 +28,6 @@ PYTHON_VER:
 
 exclude:
   - RAPIDS_VER: 0.17
-    BUILD_IMAGE: rapidsai/rapidsai-core
+    BUILD_IMAGE: rapidsai/rapids-core
   - RAPIDS_VER: 0.18
-    BUILD_IMAGE: rapidsai/rapidsai-core
+    BUILD_IMAGE: rapidsai/rapids-core
