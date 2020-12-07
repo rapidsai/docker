@@ -15,7 +15,13 @@ ARG FROM_IMAGE=rapidsai/rapidsai-core
 FROM ${FROM_IMAGE}:${RAPIDS_VER}-cuda${CUDA_VER}-runtime-${LINUX_VER}-py${PYTHON_VER}
 
 RUN gpuci_conda_retry install -y -n rapids -c blazingsql-nightly -c blazingsql \
-  "rapids-blazing=${RAPIDS_VER}*"
+  "rapids-blazing=${RAPIDS_VER}*" \
+  "cudatoolkit=${RAPIDS_VER}*"
+
+ENV BLAZING_DIR=/blazing
+
+{# Copy Blazing notebooks #}
+{%include 'partials/clone_blazing_notebooks.dockerfile.j2' %}
 
 WORKDIR ${RAPIDS_DIR}
 

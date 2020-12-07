@@ -1,6 +1,6 @@
 BUILD_IMAGE:
-  - rapidsai/rapidsai
-  - rapidsai/rapidsai-nightly
+  - rapidsai/rapids-core
+  - rapidsai/rapids-core-nightly
 
 FROM_IMAGE:
   - gpuci/rapidsai
@@ -29,6 +29,6 @@ PYTHON_VER:
 
 exclude:
   - RAPIDS_VER: 0.17
-    BUILD_IMAGE: rapidsai/rapidsai
+    BUILD_IMAGE: rapidsai/rapidsai-core
   - RAPIDS_VER: 0.18
-    BUILD_IMAGE: rapidsai/rapidsai
+    BUILD_IMAGE: rapidsai/rapidsai-core

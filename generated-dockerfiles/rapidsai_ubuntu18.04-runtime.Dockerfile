@@ -15,8 +15,19 @@ ARG FROM_IMAGE=rapidsai/rapidsai-core
 FROM ${FROM_IMAGE}:${RAPIDS_VER}-cuda${CUDA_VER}-runtime-${LINUX_VER}-py${PYTHON_VER}
 
 RUN gpuci_conda_retry install -y -n rapids -c blazingsql-nightly -c blazingsql \
-  "rapids-blazing=${RAPIDS_VER}*"
+  "rapids-blazing=${RAPIDS_VER}*" \
+  "cudatoolkit=${RAPIDS_VER}*"
 
+ENV BLAZING_DIR=/blazing
+
+
+# Clone, build, install
+RUN mkdir -p ${BLAZING_DIR} \
+    && cd ${BLAZING_DIR} \
+    && git clone https://github.com/BlazingDB/Welcome_to_BlazingSQL_Notebooks.git
+
+# Update the test script to include BlazingSQL notebooks
+COPY test.sh /
 WORKDIR ${RAPIDS_DIR}
 
 
