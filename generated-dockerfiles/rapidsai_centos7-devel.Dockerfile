@@ -11,12 +11,13 @@ ARG CUDA_VER=10.1
 ARG LINUX_VER=centos7
 ARG PYTHON_VER=3.7
 ARG RAPIDS_VER=0.17
-ARG FROM_IMAGE=rapidsai/rapidsai-dev-nightly
+ARG FROM_IMAGE=rapidsai/rapidsai-core-dev
 
 FROM ${FROM_IMAGE}:${RAPIDS_VER}-cuda${CUDA_VER}-devel-${LINUX_VER}-py${PYTHON_VER}
 
 ARG RAPIDS_VER
 ARG BUILD_BRANCH="branch-${RAPIDS_VER}"
+
 ENV BLAZING_DIR=/blazing
 
 RUN gpuci_conda_retry install -y -n rapids -c blazingsql-nightly -c blazingsql \

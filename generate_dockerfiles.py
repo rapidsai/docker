@@ -43,7 +43,7 @@ def main(verbose=False):
 
     settings = load_settings()
     for image_name in ["rapidsai", "rapidsai-core"]:
-        templates_dir = os.path.join(project_dir, TEMPLATES_DIRNAME, image_name)
+        templates_dir = os.path.join(TEMPLATES_DIRNAME, image_name)
         file_loader = FileSystemLoader(templates_dir)
         env = Environment(loader=file_loader, lstrip_blocks=True, trim_blocks=True)
         for docker_os in ["centos7", "ubuntu18.04"]:
@@ -59,7 +59,7 @@ def main(verbose=False):
                 output = template.render(
                     os=docker_os, image_type=image_type, now=datetime.utcnow(), **settings,
                 )
-                output_dockerfile_path = f"{output_dir}/{dockerfile_name}"
+                output_dockerfile_path = f"{OUTPUT_DIRNAME}/{dockerfile_name}"
                 if not(os.path.exists(output_dockerfile_path)) \
                    or (open(output_dockerfile_path).read() != output):
 
@@ -68,7 +68,7 @@ def main(verbose=False):
                     if verbose:
                         print(f"Updated: {output_dockerfile_path}")
 
-    print(f"Dockerfiles successfully written to the '{output_dir}' directory.")
+    print(f"Dockerfiles successfully written to the '{OUTPUT_DIRNAME}' directory.")
 
 
 if __name__ == "__main__":
@@ -76,4 +76,4 @@ if __name__ == "__main__":
     arg_parser.add_argument("-v", action="store_true",
                             help="Print extra details about the run")
     args = arg_parser.parse_args()
-    main(project_dir=args.project, verbose=args.v)
+    main(verbose=args.v)
