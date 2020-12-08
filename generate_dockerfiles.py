@@ -36,7 +36,7 @@ def initialize_output_dir(output_dir):
     return
 
 
-def main(project_dir, verbose=False):
+def main(verbose=False):
     """Generates Dockerfiles using Jinja2"""
 
     initialize_output_dir(OUTPUT_DIRNAME)
