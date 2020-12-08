@@ -39,11 +39,10 @@ def initialize_output_dir(output_dir):
 def main(project_dir, verbose=False):
     """Generates Dockerfiles using Jinja2"""
 
-    output_dir = os.path.join(project_dir, OUTPUT_DIRNAME)
-    initialize_output_dir(output_dir)
+    initialize_output_dir(OUTPUT_DIRNAME)
 
     settings = load_settings()
-    for image_name in ["rapidsai", "rapids-core"]:
+    for image_name in ["rapidsai", "rapidsai-core"]:
         templates_dir = os.path.join(project_dir, TEMPLATES_DIRNAME, image_name)
         file_loader = FileSystemLoader(templates_dir)
         env = Environment(loader=file_loader, lstrip_blocks=True, trim_blocks=True)
@@ -76,9 +75,5 @@ if __name__ == "__main__":
     arg_parser = argparse.ArgumentParser()
     arg_parser.add_argument("-v", action="store_true",
                             help="Print extra details about the run")
-    arg_parser.add_argument("--project", metavar="<project>", type=str,
-                            action="store", default=DEFAULT_PROJECT_DIR,
-                            help="Generate Dockerfile(s) for the %(metavar)s "
-                            "project. Default is the project in %(default)s")
     args = arg_parser.parse_args()
     main(project_dir=args.project, verbose=args.v)
