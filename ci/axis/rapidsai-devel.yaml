@@ -3,13 +3,14 @@ BUILD_IMAGE:
   - rapidsai/rapidsai-dev-nightly
 
 FROM_IMAGE:
-  - rapidsai/rapidsai-dev-nightly
+  - rapidsai/rapidsai-core-dev-nightly
 
 IMAGE_TYPE:
   - devel
 
 RAPIDS_VER:
   - 0.17
+  - 0.18
 
 CUDA_VER:
   - 11.0
