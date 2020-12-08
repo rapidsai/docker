@@ -72,4 +72,4 @@ docker images ${BUILD_IMAGE}:${BUILD_TAG}
 gpuci_logger "Starting upload..."
 GPUCI_RETRY_MAX=5
 GPUCI_RETRY_SLEEP=120
-#gpuci_retry docker push ${BUILD_IMAGE}:${BUILD_TAG}
+gpuci_retry docker push ${BUILD_IMAGE}:${BUILD_TAG}
