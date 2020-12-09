@@ -19,6 +19,8 @@ ARG RAPIDS_VER
 ARG BUILD_BRANCH="branch-${RAPIDS_VER}"
 
 ENV BLAZING_DIR=/blazing
+{% include 'partials/clone_blazing_notebooks.dockerfile.j2' %}
+
 {% include 'partials/clone_and_build_blazing.dockerfile.j2' %}
 
 WORKDIR ${RAPIDS_DIR}
