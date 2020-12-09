@@ -15,7 +15,7 @@ ARG FROM_IMAGE=gpuci/rapidsai
 
 FROM ${FROM_IMAGE}:${RAPIDS_VER}-cuda${CUDA_VER}-devel-${LINUX_VER}-py${PYTHON_VER}
 
-RUN conda install -c gpuci gpuci-ccache
+RUN gpuci_conda_retry install -c gpuci gpuci-ccache
 ENV CCACHE_NOHASHDIR=
 ENV CCACHE_DIR="/ccache"
 ENV CCACHE_COMPILERCHECK="%compiler% --version"

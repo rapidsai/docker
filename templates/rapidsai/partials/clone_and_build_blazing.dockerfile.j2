@@ -1,24 +1,18 @@
 {# This partial clones the BlazingSQL repo and build and installs it into the rapids conda env. #}
 
 {# Install build prerequisites #}
-RUN gpuci_conda_retry install -y -n rapids \
-        google-cloud-cpp=1.16.0 \
-        ninja \
-        gtest \
-        gmock \
-        cppzmq \
-        openjdk=8.0 \
-        maven \
-        thrift=0.13.0 \
-        jpype1 \
-        netifaces \
-        pyhive \
-        nlohmann_json \
-        arrow-cpp
+RUN gpuci_conda_retry install -y -n rapids -c blazingsql-nightly -c blazingsql \
+      "blazingsql-build-env=${RAPIDS_VER}*" \
+      "rapids-build-env=${RAPIDS_VER}*" \
+      "cudatoolkit=${CUDA_VER}*" \
+    && gpuci_conda_retry remove -y -n rapids --force-remove \
+      "blazingsql-build-env=${RAPIDS_VER}*" \
+      "rapids-build-env=${RAPIDS_VER}*"
+
 
 ENV CUDF_HOME=/rapids/cudf
 
-# Clone, build, install. Note: This uses the current default branch instead of main.
+# Clone, build, install
 RUN mkdir -p ${BLAZING_DIR} \
     && cd ${BLAZING_DIR} \
     && git clone -b ${BUILD_BRANCH} https://github.com/BlazingDB/blazingsql.git

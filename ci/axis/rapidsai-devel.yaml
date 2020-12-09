@@ -1,13 +1,12 @@
 BUILD_IMAGE:
-  - rapidsai/rapidsai
-  - rapidsai/rapidsai-nightly
+  - rapidsai/rapidsai-dev
+  - rapidsai/rapidsai-dev-nightly
 
 FROM_IMAGE:
-  - gpuci/rapidsai
+  - rapidsai/rapidsai-core-dev-nightly
 
 IMAGE_TYPE:
-  - base
-  - runtime
+  - devel
 
 RAPIDS_VER:
   - 0.17
@@ -29,6 +28,6 @@ PYTHON_VER:
 
 exclude:
   - RAPIDS_VER: 0.17
-    BUILD_IMAGE: rapidsai/rapidsai
+    BUILD_IMAGE: rapidsai/rapidsai-dev
   - RAPIDS_VER: 0.18
-    BUILD_IMAGE: rapidsai/rapidsai
+    BUILD_IMAGE: rapidsai/rapidsai-dev

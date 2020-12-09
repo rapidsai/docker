@@ -36,49 +36,44 @@ def initialize_output_dir(output_dir):
     return
 
 
-def main(project_dir, verbose=False):
+def main(verbose=False):
     """Generates Dockerfiles using Jinja2"""
 
-    templates_dir = os.path.join(project_dir, TEMPLATES_DIRNAME)
-    output_dir = os.path.join(project_dir, OUTPUT_DIRNAME)
-
-    file_loader = FileSystemLoader(templates_dir)
-    env = Environment(loader=file_loader, lstrip_blocks=True, trim_blocks=True)
-    initialize_output_dir(output_dir)
+    initialize_output_dir(OUTPUT_DIRNAME)
 
     settings = load_settings()
-    for docker_os in ["centos7", "ubuntu18.04"]:
-        for image_type in ["Base", "Devel", "Runtime"]:
-            dockerfile_name = f"{docker_os}-{image_type.lower()}.Dockerfile"
-            try:
-                template = env.get_template(f"{image_type}.dockerfile.j2")
-            except jinja2.exceptions.TemplateNotFound:
-                if verbose:
-                    print(f"Warning: template for image type {image_type} not "
-                          "found, skipping for {docker_os}.")
-                continue
-            output = template.render(
-                os=docker_os, image_type=image_type, now=datetime.utcnow(), **settings,
-            )
-            output_dockerfile_path = f"{output_dir}/{dockerfile_name}"
-            if not(os.path.exists(output_dockerfile_path)) \
-               or (open(output_dockerfile_path).read() != output):
+    for image_name in ["rapidsai", "rapidsai-core"]:
+        templates_dir = os.path.join(TEMPLATES_DIRNAME, image_name)
+        file_loader = FileSystemLoader(templates_dir)
+        env = Environment(loader=file_loader, lstrip_blocks=True, trim_blocks=True)
+        for docker_os in ["centos7", "ubuntu18.04"]:
+            for image_type in ["Base", "Devel", "Runtime"]:
+                dockerfile_name = f"{image_name}_{docker_os}-{image_type.lower()}.Dockerfile"
+                try:
+                    template = env.get_template(f"{image_type}.dockerfile.j2")
+                except jinja2.exceptions.TemplateNotFound:
+                    if verbose:
+                        print(f"Warning: template for image type {image_type} not "
+                              "found, skipping for {docker_os}.")
+                    continue
+                output = template.render(
+                    os=docker_os, image_type=image_type, now=datetime.utcnow(), **settings,
+                )
+                output_dockerfile_path = f"{OUTPUT_DIRNAME}/{dockerfile_name}"
+                if not(os.path.exists(output_dockerfile_path)) \
+                   or (open(output_dockerfile_path).read() != output):
 
-                with open(output_dockerfile_path, "w") as dockerfile:
-                    dockerfile.write(output)
-                if verbose:
-                    print(f"Updated: {output_dockerfile_path}")
+                    with open(output_dockerfile_path, "w") as dockerfile:
+                        dockerfile.write(output)
+                    if verbose:
+                        print(f"Updated: {output_dockerfile_path}")
 
-    print(f"Dockerfiles successfully written to the '{output_dir}' directory.")
+    print(f"Dockerfiles successfully written to the '{OUTPUT_DIRNAME}' directory.")
 
 
 if __name__ == "__main__":
     arg_parser = argparse.ArgumentParser()
     arg_parser.add_argument("-v", action="store_true",
                             help="Print extra details about the run")
-    arg_parser.add_argument("--project", metavar="<project>", type=str,
-                            action="store", default=DEFAULT_PROJECT_DIR,
-                            help="Generate Dockerfile(s) for the %(metavar)s "
-                            "project. Default is the project in %(default)s")
     args = arg_parser.parse_args()
-    main(project_dir=args.project, verbose=args.v)
+    main(verbose=args.v)
