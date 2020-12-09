@@ -85,6 +85,9 @@ RUN gpuci_conda_retry install -y -n rapids jupyterlab-nvdashboard
 RUN source activate rapids \
   && jupyter labextension install @jupyter-widgets/jupyterlab-manager dask-labextension jupyterlab-nvdashboard
 
+ENV DASK_LABEXTENSION__FACTORY__MODULE="dask_cuda"
+ENV DASK_LABEXTENSION__FACTORY__CLASS="LocalCUDACluster"
+
 RUN cd ${RAPIDS_DIR} \
   && source activate rapids \
   && git clone -b ${BUILD_BRANCH} --depth 1 --single-branch https://github.com/rapidsai/notebooks.git \
