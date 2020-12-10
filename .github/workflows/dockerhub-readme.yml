@@ -1,4 +1,4 @@
-name: Generate DockerHub READMEs
+name: Update DockerHub READMEs
 
 on:
   push:
@@ -11,38 +11,24 @@ on:
 jobs:
   readme:
     runs-on: ubuntu-latest
+    strategy: matrix
+      repo_name:
+        - rapidsai
+        - rapidsai-dev
+        - rapidsai-nightly
+        - rapidsai-dev-nightly
+        - rapidsai-core
+        - rapidsai-core-dev
+        - rapidsai-core-nightly
+        - rapidsai-core-dev-nightly
     steps:
       - name: checkout code
         uses: actions/checkout@v2
-      
-      - name: Docker Hub Description >>> Rapidsai dev nightly
+
+      - name: Docker Hub Description >>> ${{ matrix.repo_name }}
         uses: peter-evans/dockerhub-description@v2
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_PASSWORD }}
-          repository:  rapidsai/rapidsai-dev-nightly
-          readme-filepath: dockerhub-readme/Dockerhub_rapidsai-dev-nightly.md
-      
-      - name: Docker Hub Description >>> Rapidsai dev
-        uses: peter-evans/dockerhub-description@v2
-        with:
-          username: ${{ secrets.DOCKERHUB_USERNAME }}
-          password: ${{ secrets.DOCKERHUB_PASSWORD }}
-          repository:  rapidsai/rapidsai-dev
-          readme-filepath: dockerhub-readme/Dockerhub_rapidsai-dev.md
-      
-      - name: Docker Hub Description >>> Rapidsai nightly
-        uses: peter-evans/dockerhub-description@v2
-        with:
-          username: ${{ secrets.DOCKERHUB_USERNAME }}
-          password: ${{ secrets.DOCKERHUB_PASSWORD }}
-          repository:  rapidsai/rapidsai-nightly
-          readme-filepath: dockerhub-readme/Dockerhub_rapidsai-nightly.md
-      
-      - name: Docker Hub Description >>> Rapidsai
-        uses: peter-evans/dockerhub-description@v2
-        with:
-          username: ${{ secrets.DOCKERHUB_USERNAME }}
-          password: ${{ secrets.DOCKERHUB_PASSWORD }}
-          repository:  rapidsai/rapidsai
-          readme-filepath: dockerhub-readme/Dockerhub_rapidsai.md
+          repository:  rapidsai/${{ matrix.repo_name }}
+          readme-filepath: dockerhub-readme/Dockerhub_${{ matrix.repo_name }}.md
