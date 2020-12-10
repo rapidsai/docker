@@ -15,15 +15,15 @@ ARG FROM_IMAGE=gpuci/rapidsai
 
 FROM ${FROM_IMAGE}:${RAPIDS_VER}-cuda${CUDA_VER}-devel-${LINUX_VER}-py${PYTHON_VER}
 
-RUN conda install -c gpuci gpuci-ccache
+RUN gpuci_conda_retry install -c gpuci gpuci-ccache
 ENV CCACHE_NOHASHDIR=
 ENV CCACHE_DIR="/ccache"
 ENV CCACHE_COMPILERCHECK="%compiler% --version"
 
-ENV CC="/usr/bin/gcc"
-ENV CXX="/usr/bin/g++"
+ENV CC="/usr/local/bin/gcc"
+ENV CXX="/usr/local/bin/g++"
 ENV NVCC="/usr/local/bin/nvcc"
-ENV CUDAHOSTCXX="/usr/bin/g++"
+ENV CUDAHOSTCXX="/usr/local/bin/g++"
 ENV CUDAToolkit_ROOT="/usr/local/cuda"
 ENV CUDACXX="/usr/local/cuda/bin/nvcc"
 ENV CMAKE_CUDA_COMPILER_LAUNCHER="ccache"
@@ -110,7 +110,7 @@ RUN cd ${RAPIDS_DIR} \
   && cd cuml \
   && git submodule update --init --recursive --no-single-branch --depth 1 \
   && cd ${RAPIDS_DIR} \
-  && git clone -b rapids-v0.16 --depth 1 --single-branch https://github.com/rapidsai/xgboost.git \
+  && git clone -b rapids-v0.17 --depth 1 --single-branch https://github.com/rapidsai/xgboost.git \
   && cd xgboost \
   && git submodule update --init --recursive --no-single-branch --depth 1 \
   && cd ${RAPIDS_DIR} \
@@ -180,7 +180,7 @@ RUN cd ${RAPIDS_DIR}/cuml && \
 RUN cd ${RAPIDS_DIR}/cugraph && \
   source activate rapids && \
   ccache -s && \
-  ./build.sh
+  ./build.sh --allgpuarch cugraph libcugraph
 
 RUN cd ${RAPIDS_DIR}/xgboost && \
   source activate rapids && \

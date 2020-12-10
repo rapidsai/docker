@@ -1,4 +1,4 @@
-# RAPIDS Dockerfile for ubuntu20.04 "devel" image
+# RAPIDS Dockerfile for centos8 "devel" image
 #
 # RAPIDS is built from-source and installed in the base conda environment. The
 # sources and toolchains to build RAPIDS are included in this image. RAPIDS
@@ -8,22 +8,22 @@
 # Copyright (c) 2020, NVIDIA CORPORATION.
 
 ARG CUDA_VER=10.1
-ARG LINUX_VER=ubuntu20.04
+ARG LINUX_VER=centos8
 ARG PYTHON_VER=3.7
 ARG RAPIDS_VER=0.17
 ARG FROM_IMAGE=gpuci/rapidsai
 
 FROM ${FROM_IMAGE}:${RAPIDS_VER}-cuda${CUDA_VER}-devel-${LINUX_VER}-py${PYTHON_VER}
 
-RUN conda install -c gpuci gpuci-ccache
+RUN gpuci_conda_retry install -c gpuci gpuci-ccache
 ENV CCACHE_NOHASHDIR=
 ENV CCACHE_DIR="/ccache"
 ENV CCACHE_COMPILERCHECK="%compiler% --version"
 
-ENV CC="/usr/bin/gcc"
-ENV CXX="/usr/bin/g++"
+ENV CC="/usr/local/bin/gcc"
+ENV CXX="/usr/local/bin/g++"
 ENV NVCC="/usr/local/bin/nvcc"
-ENV CUDAHOSTCXX="/usr/bin/g++"
+ENV CUDAHOSTCXX="/usr/local/bin/g++"
 ENV CUDAToolkit_ROOT="/usr/local/cuda"
 ENV CUDACXX="/usr/local/cuda/bin/nvcc"
 ENV CMAKE_CUDA_COMPILER_LAUNCHER="ccache"
@@ -44,13 +44,11 @@ ARG PYTHON_VER
 
 ENV RAPIDS_DIR=/rapids
 
-RUN apt-get update && apt-get install -y --no-install-recommends \
-    gsfonts \
-    && rm -rf /var/lib/apt/lists/*
 
-RUN mkdir -p ${RAPIDS_DIR}/utils 
+RUN mkdir -p ${RAPIDS_DIR}/utils ${GCC7_DIR}/lib64
 COPY nbtest.sh nbtestlog2junitxml.py ${RAPIDS_DIR}/utils/
 
+COPY libm.so.6 ${GCC7_DIR}/lib64
 
 
 RUN source activate rapids \
@@ -110,7 +108,7 @@ RUN cd ${RAPIDS_DIR} \
   && cd cuml \
   && git submodule update --init --recursive --no-single-branch --depth 1 \
   && cd ${RAPIDS_DIR} \
-  && git clone -b rapids-v0.16 --depth 1 --single-branch https://github.com/rapidsai/xgboost.git \
+  && git clone -b rapids-v0.17 --depth 1 --single-branch https://github.com/rapidsai/xgboost.git \
   && cd xgboost \
   && git submodule update --init --recursive --no-single-branch --depth 1 \
   && cd ${RAPIDS_DIR} \
@@ -139,6 +137,8 @@ RUN cd ${RAPIDS_DIR} \
   && git submodule update --init --remote --recursive --no-single-branch --depth 1 
   
 
+ENV LD_LIBRARY_PATH_PREBUILD=${LD_LIBRARY_PATH}
+ENV LD_LIBRARY_PATH=${LD_LIBRARY_PATH}:/usr/local/cuda/lib64:/usr/local/cuda/lib64/stubs
 
 ENV NCCL_ROOT=/opt/conda/envs/rapids
 ENV PARALLEL_LEVEL=${PARALLEL_LEVEL}
@@ -180,7 +180,7 @@ RUN cd ${RAPIDS_DIR}/cuml && \
 RUN cd ${RAPIDS_DIR}/cugraph && \
   source activate rapids && \
   ccache -s && \
-  ./build.sh
+  ./build.sh --allgpuarch cugraph libcugraph
 
 RUN cd ${RAPIDS_DIR}/xgboost && \
   source activate rapids && \
@@ -218,6 +218,7 @@ RUN cd ${RAPIDS_DIR}/dask-cuda && \
 
 
 
+ENV LD_LIBRARY_PATH=${LD_LIBRARY_PATH_PREBUILD}
 
 RUN ccache -s \
   && ccache -c \
