@@ -14,22 +14,6 @@ jobs:
     steps:
       - name: checkout code
         uses: actions/checkout@v2
-        
-      - name: Docker Hub Description >>> Blazing dev nightly
-        uses: peter-evans/dockerhub-description@v2
-        with:
-          username: ${{ secrets.DOCKERHUB_USERNAME }}
-          password: ${{ secrets.DOCKERHUB_PASSWORD }}
-          repository:  rapidsai/blazingsql-dev-nightly
-          readme-filepath: dockerhub-readme/Dockerhub_blazing-dev-nightly.md
-          
-      - name: Docker Hub Description >>> Blazing dev
-        uses: peter-evans/dockerhub-description@v2
-        with:
-          username: ${{ secrets.DOCKERHUB_USERNAME }}
-          password: ${{ secrets.DOCKERHUB_PASSWORD }}
-          repository:  rapidsai/blazingsql-dev
-          readme-filepath: dockerhub-readme/Dockerhub_blazing-dev.md
       
       - name: Docker Hub Description >>> Rapidsai dev nightly
         uses: peter-evans/dockerhub-description@v2
