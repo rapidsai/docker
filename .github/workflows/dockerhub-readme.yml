@@ -11,16 +11,17 @@ on:
 jobs:
   readme:
     runs-on: ubuntu-latest
-    strategy: matrix
-      repo_name:
-        - rapidsai
-        - rapidsai-dev
-        - rapidsai-nightly
-        - rapidsai-dev-nightly
-        - rapidsai-core
-        - rapidsai-core-dev
-        - rapidsai-core-nightly
-        - rapidsai-core-dev-nightly
+    strategy: 
+      matrix:
+        repo_name:
+          - rapidsai
+          - rapidsai-dev
+          - rapidsai-nightly
+          - rapidsai-dev-nightly
+          - rapidsai-core
+          - rapidsai-core-dev
+          - rapidsai-core-nightly
+          - rapidsai-core-dev-nightly
     steps:
       - name: checkout code
         uses: actions/checkout@v2
