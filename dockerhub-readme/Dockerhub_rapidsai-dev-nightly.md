@@ -20,7 +20,7 @@ Unlike the Docker images in [rapidsai/rapidsai-nightly](https://hub.docker.com/r
 
 Versions of libraries included in the `0.18` images:
 - `cuDF` [v0.18.0a](https://github.com/rapidsai/cudf), `cuML` [v0.18.0a](https://github.com/rapidsai/cuml), `cuGraph` [v0.18.0a](https://github.com/rapidsai/cugraph), `RMM` [v0.18.0a](https://github.com/rapidsai/RMM), `cuSpatial` [v0.18.0a](https://github.com/rapidsai/cuspatial), `cuSignal` [v0.18.0a](https://github.com/rapidsai/cusignal), `cuxfilter` [v0.18.0a](https://github.com/rapidsai/cuxfilter)
-- `xgboost` [branch](https://github.com/rapidsai/xgboost), `dask-cuda` [branch](https://github.com/rapidsai/dask-cuda)
+- `blazingsql` [v0.17](https://github.com/rapidsai/blazingsql/tree/v0.17.0), `xgboost` [branch](https://github.com/rapidsai/xgboost), `dask-cuda` [branch](https://github.com/rapidsai/dask-cuda)
 
 ### Image Types
 

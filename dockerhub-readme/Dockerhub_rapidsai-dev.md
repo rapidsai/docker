@@ -17,7 +17,7 @@ Unlike the Docker images in [rapidsai/rapidsai](https://hub.docker.com/r/rapidsa
 #### RAPIDS 0.17 - 10 Dec 2020
 
 Versions of libraries included in the `0.17` images:
-- `cuDF` [v0.17](https://github.com/rapidsai/cudf/tree/v0.17.0), `cuML` [v0.17](https://github.com/rapidsai/cuml/tree/v0.17.0), `cuGraph` [v0.17](https://github.com/rapidsai/cugraph/tree/v0.17.0), `RMM` [v0.17](https://github.com/rapidsai/RMM/tree/v0.17.0), `cuSpatial` [v0.17](https://github.com/rapidsai/cuspatial/tree/v0.17.0), `cuSignal` [v0.17](https://github.com/rapidsai/cusignal/tree/v0.17.0), `cuxfilter` [v0.17](https://github.com/rapidsai/cuxfilter/tree/v0.17.0)
+- `cuDF` [v0.17](https://github.com/rapidsai/cudf/tree/v0.17.0), `cuML` [v0.17](https://github.com/rapidsai/cuml/tree/v0.17.0), `cuGraph` [v0.17](https://github.com/rapidsai/cugraph/tree/v0.17.0), `RMM` [v0.17](https://github.com/rapidsai/RMM/tree/v0.17.0), `cuSpatial` [v0.17](https://github.com/rapidsai/cuspatial/tree/v0.17.0), `cuSignal` [v0.17](https://github.com/rapidsai/cusignal/tree/v0.17.0), `cuxfilter` [v0.17](https://github.com/rapidsai/cuxfilter/tree/v0.17.0), `blazingsql` [v0.17](https://github.com/rapidsai/blazingsql/tree/v0.17.0)
 
 ### Former Version
 
