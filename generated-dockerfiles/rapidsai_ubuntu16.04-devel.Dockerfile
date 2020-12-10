@@ -20,6 +20,12 @@ ARG BUILD_BRANCH="branch-${RAPIDS_VER}"
 
 ENV BLAZING_DIR=/blazing
 
+RUN mkdir -p ${BLAZING_DIR} \
+    && cd ${BLAZING_DIR} \
+    && git clone https://github.com/BlazingDB/Welcome_to_BlazingSQL_Notebooks.git
+
+COPY test.sh /
+
 RUN gpuci_conda_retry install -y -n rapids -c blazingsql-nightly -c blazingsql \
       "blazingsql-build-env=${RAPIDS_VER}*" \
       "rapids-build-env=${RAPIDS_VER}*" \
@@ -31,18 +37,11 @@ RUN gpuci_conda_retry install -y -n rapids -c blazingsql-nightly -c blazingsql \
 
 ENV CUDF_HOME=/rapids/cudf
 
-# Clone, build, install
 RUN mkdir -p ${BLAZING_DIR} \
     && cd ${BLAZING_DIR} \
     && git clone -b ${BUILD_BRANCH} https://github.com/BlazingDB/blazingsql.git
 
-# Add additional CUDA lib dir to LD_LIBRARY_PATH for "docker build".  This is
-# not needed when using the nvidia runtime with "docker run" since the nvidia
-# runtime also installs libcuda to a system location that client builds often
-# find.
 
-# Explicitly add the cuda runtime dir for the Blazing build, then remove once
-# build is done to keep the original LD_LIBRARY_PATH intact.
 ENV LD_LIBRARY_PATH_ORIG=${LD_LIBRARY_PATH}
 ENV LD_LIBRARY_PATH=${LD_LIBRARY_PATH}:/usr/local/cuda/compat
 
