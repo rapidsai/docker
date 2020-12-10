@@ -10,19 +10,17 @@ The RAPIDS suite of software libraries gives you the freedom to execute end-to-e
 
 ### Current Version
 
+#### RAPIDS 0.17 - 10 Dec 2020
+
+Versions of libraries included in the `0.17` images:
+- `cuDF` [v0.17](https://github.com/rapidsai/cudf/tree/v0.17.0), `cuML` [v0.17](https://github.com/rapidsai/cuml/tree/v0.17.0), `cuGraph` [v0.17](https://github.com/rapidsai/cugraph/tree/v0.17.0), `RMM` [v0.17](https://github.com/rapidsai/RMM/tree/v0.17.0), `cuSpatial` [v0.17](https://github.com/rapidsai/cuspatial/tree/v0.17.0), `cuSignal` [v0.17](https://github.com/rapidsai/cusignal/tree/v0.17.0), `cuxfilter` [v0.17](https://github.com/rapidsai/cuxfilter/tree/v0.17.0)
+
+### Former Version
+
 #### RAPIDS 0.16 - 21 Oct 2020
 
 Versions of libraries included in the `0.16` images:
 - `cuDF` [v0.16](https://github.com/rapidsai/cudf/tree/v0.16.0), `cuML` [v0.16](https://github.com/rapidsai/cuml/tree/v0.16.0), `cuGraph` [v0.16](https://github.com/rapidsai/cugraph/tree/v0.16.0), `RMM` [v0.16](https://github.com/rapidsai/RMM/tree/v0.16.0), `cuSpatial` [v0.16](https://github.com/rapidsai/cuspatial/tree/v0.16.0), `cuSignal` [v0.16](https://github.com/rapidsai/cusignal/tree/v0.16.0), `cuxfilter` [v0.16](https://github.com/rapidsai/cuxfilter/tree/v0.16.0)
-
-### Former Version
-
-#### RAPIDS 0.15 - 26 Aug 2020
-
-Versions of libraries included in the `0.15` images:
-- `cuDF` [v0.15](https://github.com/rapidsai/cudf/tree/v0.15.0), `cuML` [v0.15](https://github.com/rapidsai/cuml/tree/v0.15.0), `cuGraph` [v0.15](https://github.com/rapidsai/cugraph/tree/v0.15.0), `RMM` [v0.15](https://github.com/rapidsai/RMM/tree/v0.15.0), `cuSpatial` [v0.15](https://github.com/rapidsai/cuspatial/tree/v0.15.0), `cuSignal` [v0.15](https://github.com/rapidsai/cusignal/tree/v0.15.0), `cuxfilter` [v0.15](https://github.com/rapidsai/cuxfilter/tree/v0.15.0)
-  - **IMPORTANT:** CUDA 10.0 & Python 3.6 support ended in v0.14; v0.15 includes CUDA 11.0 & Python 3.8 support
-  - **NOTE:** See [RAPIDS Notices](https://docs.rapids.ai/notices) for release changes for `clx` as well as other recent changes
 
 ### Image Types
 
@@ -45,7 +43,7 @@ The [rapidsai/rapidsai-dev](https://hub.docker.com/r/rapidsai/rapidsai-dev/tags)
 
 The tag naming scheme for RAPIDS images incorporates key platform details into the tag as shown below:
 ```
-0.16-cuda10.1-runtime-ubuntu18.04-py3.7
+0.17-cuda10.1-runtime-ubuntu18.04-py3.7
  ^       ^    ^        ^         ^
  |       |    type     |         python version
  |       |             |
@@ -141,12 +139,12 @@ $ docker run \
     -it \
     --gpus all \
     -v $(pwd)/environment.yml:/opt/rapids/environment.yml \
-    rapidsai/rapidsai:0.16-cuda10.1-base-ubuntu18.04-py3.7
+    rapidsai/rapidsai:0.17-cuda10.1-base-ubuntu18.04-py3.7
 ```
 
 ### Use JupyterLab to Explore the Notebooks
 
-Notebooks can be found in the following directories within the 0.16 container:
+Notebooks can be found in the following directories within the 0.17 container:
 
 * `/rapids/notebooks/clx` - CLX demo notebooks
 * `/rapids/notebooks/cugraph` - cuGraph demo notebooks
@@ -155,7 +153,7 @@ Notebooks can be found in the following directories within the 0.16 container:
 * `/rapids/notebooks/cuxfilter` - cuXfilter demo notebooks
 * `/rapids/notebooks/xgboost` - XGBoost demo notebooks
 
-For a full description of each notebook, see the [README](https://github.com/rapidsai/notebooks/blob/branch-0.16/README.md) in the notebooks repository.
+For a full description of each notebook, see the [README](https://github.com/rapidsai/notebooks/blob/branch-0.17/README.md) in the notebooks repository.
 
 ### Custom Data and Advanced Usage
 
