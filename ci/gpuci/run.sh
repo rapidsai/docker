@@ -18,7 +18,7 @@ gpuci_logger "Logging into Docker..."
 echo $DH_TOKEN | docker login --username $DH_USER --password-stdin
 
 # Select dockerfile based on matrix var
-DOCKERFILE="${LINUX_VER}-${IMAGE_TYPE}.Dockerfile"
+DOCKERFILE="${DOCKER_PREFIX}_${LINUX_VER}-${IMAGE_TYPE}.Dockerfile"
 
 gpuci_logger "Using Dockerfile: generated-dockerfiles/${DOCKERFILE}"
 
