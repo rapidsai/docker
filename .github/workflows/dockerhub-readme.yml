@@ -3,7 +3,7 @@ name: Update DockerHub READMEs
 on:
   push:
     branches:
-      - branch-*
+      - main
     paths:
       - dockerhub-readme/
       - .github/workflows/dockerhub-readme.yml
@@ -11,7 +11,7 @@ on:
 jobs:
   readme:
     runs-on: ubuntu-latest
-    strategy: 
+    strategy:
       matrix:
         repo_name:
           - rapidsai
@@ -31,5 +31,5 @@ jobs:
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_PASSWORD }}
-          repository:  rapidsai/${{ matrix.repo_name }}
+          repository: rapidsai/${{ matrix.repo_name }}
           readme-filepath: dockerhub-readme/Dockerhub_${{ matrix.repo_name }}.md
