@@ -30,13 +30,21 @@ gpuci_logger ">>>> END Dockerfile <<<<"
 # Get build info ready
 gpuci_logger "Preparing build config..."
 BUILD_TAG="cuda${CUDA_VER}-${IMAGE_TYPE}-${LINUX_VER}"
-BUILD_ARGS="--squash --build-arg FROM_IMAGE=$FROM_IMAGE --build-arg CUDA_VER=$CUDA_VER --build-arg IMAGE_TYPE=$IMAGE_TYPE --build-arg LINUX_VER=$LINUX_VER --build-arg BUILD_BRANCH=$BUILD_BRANCH"
+BUILD_ARGS="--squash \
+  --build-arg FROM_IMAGE=${FROM_IMAGE} \
+  --build-arg CUDA_VER=${CUDA_VER} \
+  --build-arg IMAGE_TYPE=${IMAGE_TYPE} \
+  --build-arg LINUX_VER=${LINUX_VER}"
+# Add BUILD_BRANCH arg for 'main' branch only
+if [ "${BUILD_BRANCH}" = "main" ]; then
+  BUILD_ARGS+=" --build-arg BUILD_BRANCH=${BUILD_BRANCH}"
+fi
 # Check if PYTHON_VER is set
 if [ -z "$PYTHON_VER" ] ; then
   echo "PYTHON_VER is not set, skipping..."
 else
   echo "PYTHON_VER is set to '$PYTHON_VER', adding to build args/tag..."
-  BUILD_ARGS="${BUILD_ARGS} --build-arg PYTHON_VER=${PYTHON_VER}"
+  BUILD_ARGS+=" --build-arg PYTHON_VER=${PYTHON_VER}"
   BUILD_TAG="${BUILD_TAG}-py${PYTHON_VER}"
 fi
 # Check if RAPIDS_VER is set
@@ -44,7 +52,7 @@ if [ -z "$RAPIDS_VER" ] ; then
   echo "RAPIDS_VER is not set, skipping..."
 else
   echo "RAPIDS_VER is set to '$RAPIDS_VER', adding to build args..."
-  BUILD_ARGS="${BUILD_ARGS} --build-arg RAPIDS_VER=${RAPIDS_VER}"
+  BUILD_ARGS+=" --build-arg RAPIDS_VER=${RAPIDS_VER}"
   BUILD_TAG="${RAPIDS_VER}-${BUILD_TAG}" #pre-prend version number
 fi
 
