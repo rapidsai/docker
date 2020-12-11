@@ -14,19 +14,17 @@ Unlike the Docker images in [rapidsai/rapidsai](https://hub.docker.com/r/rapidsa
 
 ### Current Version
 
+#### RAPIDS 0.17 - 10 Dec 2020
+
+Versions of libraries included in the `0.17` images:
+- `cuDF` [v0.17](https://github.com/rapidsai/cudf/tree/v0.17.0), `cuML` [v0.17](https://github.com/rapidsai/cuml/tree/v0.17.0), `cuGraph` [v0.17](https://github.com/rapidsai/cugraph/tree/v0.17.0), `RMM` [v0.17](https://github.com/rapidsai/RMM/tree/v0.17.0), `cuSpatial` [v0.17](https://github.com/rapidsai/cuspatial/tree/v0.17.0), `cuSignal` [v0.17](https://github.com/rapidsai/cusignal/tree/v0.17.0), `cuxfilter` [v0.17](https://github.com/rapidsai/cuxfilter/tree/v0.17.0), `blazingsql` [v0.17](https://github.com/rapidsai/blazingsql/tree/v0.17.0)
+
+### Former Version
+
 #### RAPIDS 0.16 - 21 Oct 2020
 
 Versions of libraries included in the `0.16` images:
 - `cuDF` [v0.16](https://github.com/rapidsai/cudf/tree/v0.16.0), `cuML` [v0.16](https://github.com/rapidsai/cuml/tree/v0.16.0), `cuGraph` [v0.16](https://github.com/rapidsai/cugraph/tree/v0.16.0), `RMM` [v0.16](https://github.com/rapidsai/RMM/tree/v0.16.0), `cuSpatial` [v0.16](https://github.com/rapidsai/cuspatial/tree/v0.16.0), `cuSignal` [v0.16](https://github.com/rapidsai/cusignal/tree/v0.16.0), `cuxfilter` [v0.16](https://github.com/rapidsai/cuxfilter/tree/v0.16.0)
-
-### Former Version
-
-#### RAPIDS 0.15 - 26 Aug 2020
-
-Versions of libraries included in the `0.15` images:
-- `cuDF` [v0.15](https://github.com/rapidsai/cudf/tree/v0.15.0), `cuML` [v0.15](https://github.com/rapidsai/cuml/tree/v0.15.0), `cuGraph` [v0.15](https://github.com/rapidsai/cugraph/tree/v0.15.0), `RMM` [v0.15](https://github.com/rapidsai/RMM/tree/v0.15.0), `cuSpatial` [v0.15](https://github.com/rapidsai/cuspatial/tree/v0.15.0), `cuSignal` [v0.15](https://github.com/rapidsai/cusignal/tree/v0.15.0), `cuxfilter` [v0.15](https://github.com/rapidsai/cuxfilter/tree/v0.15.0)
-  - **IMPORTANT:** CUDA 10.0 & Python 3.6 support ended in v0.14; v0.15 includes CUDA 11.0 & Python 3.8 support
-  - **NOTE:** See [RAPIDS Notices](https://docs.rapids.ai/notices) for release changes for `clx` as well as other recent changes
 
 ### Image Types
 
@@ -49,7 +47,7 @@ The [rapidsai/rapidsai-dev](https://hub.docker.com/r/rapidsai/rapidsai-dev/tags)
 
 The tag naming scheme for RAPIDS images incorporates key platform details into the tag as shown below:
 ```
-0.16-cuda10.1-devel-ubuntu18.04-py3.7
+0.17-cuda10.1-devel-ubuntu18.04-py3.7
  ^       ^    ^        ^         ^
  |       |    type     |         python version
  |       |             |
@@ -72,16 +70,16 @@ The tag naming scheme for RAPIDS images incorporates key platform details into t
 
 #### Preferred - Docker CE v19+ and `nvidia-container-toolkit`
 ```bash
-$ docker pull rapidsai/rapidsai-dev:0.16-cuda10.1-devel-ubuntu18.04-py3.7
+$ docker pull rapidsai/rapidsai-dev:0.17-cuda10.1-devel-ubuntu18.04-py3.7
 $ docker run --gpus all --rm -it -p 8888:8888 -p 8787:8787 -p 8786:8786 \
-         rapidsai/rapidsai-dev:0.16-cuda10.1-devel-ubuntu18.04-py3.7
+         rapidsai/rapidsai-dev:0.17-cuda10.1-devel-ubuntu18.04-py3.7
 ```
 
 #### Legacy - Docker CE v18 and `nvidia-docker2`
 ```bash
-$ docker pull rapidsai/rapidsai-dev:0.16-cuda10.1-devel-ubuntu18.04-py3.7
+$ docker pull rapidsai/rapidsai-dev:0.17-cuda10.1-devel-ubuntu18.04-py3.7
 $ docker run --runtime=nvidia --rm -it -p 8888:8888 -p 8787:8787 -p 8786:8786 \
-         rapidsai/rapidsai-dev:0.16-cuda10.1-devel-ubuntu18.04-py3.7
+         rapidsai/rapidsai-dev:0.17-cuda10.1-devel-ubuntu18.04-py3.7
 ```
 
 ### Container Ports
@@ -115,7 +113,7 @@ $ docker run \
     -p 8888:8888 \
     -p 8787:8787 \
     -p 8786:8786 \
-    rapidsai/rapidsai-dev:0.16-cuda10.1-devel-ubuntu18.04-py3.7
+    rapidsai/rapidsai-dev:0.17-cuda10.1-devel-ubuntu18.04-py3.7
 ```
 
 ### Bind Mounts
@@ -141,12 +139,12 @@ $ docker run \
     -p 8888:8888 \
     -p 8787:8787 \
     -p 8786:8786 \
-    rapidsai/rapidsai-dev:0.16-cuda10.1-devel-ubuntu18.04-py3.7
+    rapidsai/rapidsai-dev:0.17-cuda10.1-devel-ubuntu18.04-py3.7
 ```
 
 ### Use JupyterLab to Explore the Notebooks
 
-Notebooks can be found in the following directories within the 0.16 container:
+Notebooks can be found in the following directories within the 0.17 container:
 
 * `/rapids/notebooks/clx` - CLX demo notebooks
 * `/rapids/notebooks/cugraph` - cuGraph demo notebooks
@@ -155,7 +153,7 @@ Notebooks can be found in the following directories within the 0.16 container:
 * `/rapids/notebooks/cuxfilter` - cuXfilter demo notebooks
 * `/rapids/notebooks/xgboost` - XGBoost demo notebooks
 
-For a full description of each notebook, see the [README](https://github.com/rapidsai/notebooks/blob/branch-0.16/README.md) in the notebooks repository.
+For a full description of each notebook, see the [README](https://github.com/rapidsai/notebooks/blob/branch-0.17/README.md) in the notebooks repository.
 
 ### Custom Data and Advanced Usage
 
@@ -165,14 +163,14 @@ You are free to modify the above steps. For example, you can launch an interacti
 ```bash
 $ docker run --gpus all --rm -it -p 8888:8888 -p 8787:8787 -p 8786:8786 \
          -v /path/to/host/data:/rapids/my_data \
-                  rapidsai/rapidsai-dev:0.16-cuda10.1-devel-ubuntu18.04-py3.7
+                  rapidsai/rapidsai-dev:0.17-cuda10.1-devel-ubuntu18.04-py3.7
 ```
 
 #### Legacy - Docker CE v18 and `nvidia-docker2`
 ```bash
 $ docker run --runtime=nvidia --rm -it -p 8888:8888 -p 8787:8787 -p 8786:8786 \
          -v /path/to/host/data:/rapids/my_data \
-                  rapidsai/rapidsai-dev:0.16-cuda10.1-devel-ubuntu18.04-py3.7
+                  rapidsai/rapidsai-dev:0.17-cuda10.1-devel-ubuntu18.04-py3.7
 ```
 This will map data from your host operating system to the container OS in the `/rapids/my_data` directory. You may need to modify the provided notebooks for the new data paths.
 
