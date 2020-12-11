@@ -2,11 +2,15 @@
 
 ## What is RAPIDS?
 
-Visit [rapids.ai](http://rapids.ai) for more information.
+Visit [rapids.ai](https://rapids.ai) for more information.
 
 The RAPIDS suite of software libraries gives you the freedom to execute end-to-end data science and analytics pipelines entirely on GPUs. It relies on NVIDIA® CUDA® primitives for low-level compute optimization, but exposes that GPU parallelism and high-bandwidth memory speed through user-friendly Python interfaces.
 
 **NOTE:** Review our [prerequisites](#prerequisites) section to ensure your system meets the minimum requirements for RAPIDS.
+
+## What are RAPIDS "dev" images?
+
+Unlike the Docker images in [rapidsai/rapidsai-core](https://hub.docker.com/r/rapidsai/rapidsai-core), the devel images are intended to support a RAPIDS developer working on and running RAPIDS from source. The devel images contain the full source tree for each RAPIDS Github repo, the complete toolchain and dependencies needed to build and test each repo, pre-built unit tests, the build artifacts and git meta-data, the example notebooks and a Jupyter server to run them. A RAPIDS developer can simply pull a devel image and start experimenting or debugging in a matter of minutes.
 
 ### Current Version
 
@@ -27,40 +31,35 @@ Versions of libraries included in the `0.16` images:
 The RAPIDS images are based on [nvidia/cuda](https://hub.docker.com/r/nvidia/cuda), and are intended to be drop-in replacements for the corresponding CUDA
 images in order to make it easy to add RAPIDS libraries while maintaining support for existing CUDA applications.
 
-The RAPIDS images provided by NGC come in two types:
+RAPIDS images come in three types, distributed in two different repos:
 
+The [rapidsai/rapidsai-core](https://hub.docker.com/r/rapidsai/rapidsai-core/tags) repo contains the following:
 - `base` - contains a RAPIDS environment ready for use.
   - **TIP: Use this image if you want to use RAPIDS as a part of your pipeline.**
 - `runtime` - extends the `base` image by adding a notebook server and example notebooks.
   - **TIP: Use this image if you want to explore RAPIDS through notebooks and examples.**
 
-For `base` and `runtime` images with python 3.7 support, refer to [rapidsai/rapidsai](https://cloud.docker.com/u/rapidsai/repository/docker/rapidsai/rapidsai) on DockerHub.
-
-For `devel` images that contain: the full RAPIDS source tree, pre-built with all artifacts in place, the compiler toolchain, the debugging tools, the headers and the static libraries for RAPIDS development - as well as support for Python 3.7 - refer to the [rapidsai/rapidsai-dev](https://cloud.docker.com/u/rapidsai/repository/docker/rapidsai/rapidsai-dev) repo on DockerHub.
+The [rapidsai/rapidsai-core-dev](https://hub.docker.com/r/rapidsai/rapidsai-core-dev/tags) repo adds the following:
+- `devel` - contains the full RAPIDS source tree, pre-built with all artifacts in place, and the compiler toolchain, the debugging tools, the headers and the static libraries for RAPIDS development.
+  - **TIP: Use this image to develop RAPIDS from source.**
 
 ### Image Tag Naming Scheme
 
 The tag naming scheme for RAPIDS images incorporates key platform details into the tag as shown below:
 ```
-0.17-cuda10.2-runtime-ubuntu18.04
- ^       ^    ^        ^
- |       |    type     |
+0.17-cuda10.1-devel-ubuntu18.04-py3.7
+ ^       ^    ^        ^         ^
+ |       |    type     |         python version
  |       |             |
  |       cuda version  |
  |                     |
  RAPIDS version        linux version
 ```
 
-To get the latest RAPIDS version of a specific platform combination, simply exclude the RAPIDS version. For example, to pull the latest version of RAPIDS for the `runtime` image with support for CUDA 10.1, Python 3.7, and Ubuntu 18.04, use the following tag:
-```
-cuda10.1-runtime-ubuntu18.04
-```
-For most users the latest `runtime` image will be sufficient to get started with RAPIDS.
-
 ## Prerequisites
 
 * NVIDIA Pascal™ GPU architecture or better
-* [CUDA](https://developer.nvidia.com/cuda-downloads) 10.1, or 10.2 with compatible NVIDIA driver
+* CUDA [10.1/10.2/11.0](https://developer.nvidia.com/cuda-downloads) with a compatible NVIDIA driver
 * Ubuntu 16.04/18.04 or CentOS 7
 * Docker CE v18+
 * [nvidia-docker](https://github.com/nvidia/nvidia-docker/wiki/Installation-(version-2.0)) v2+
@@ -71,21 +70,21 @@ For most users the latest `runtime` image will be sufficient to get started with
 
 #### Preferred - Docker CE v19+ and `nvidia-container-toolkit`
 ```bash
-$ docker pull nvcr.io/nvidia/rapidsai/rapidsai:cuda10.2-runtime-ubuntu18.04
+$ docker pull rapidsai/rapidsai-core-dev:0.17-cuda10.1-devel-ubuntu18.04-py3.7
 $ docker run --gpus all --rm -it -p 8888:8888 -p 8787:8787 -p 8786:8786 \
-         nvcr.io/nvidia/rapidsai/rapidsai:cuda10.2-runtime-ubuntu18.04
+         rapidsai/rapidsai-core-dev:0.17-cuda10.1-devel-ubuntu18.04-py3.7
 ```
 
 #### Legacy - Docker CE v18 and `nvidia-docker2`
 ```bash
-$ docker pull nvcr.io/nvidia/rapidsai/rapidsai:cuda10.2-runtime-ubuntu18.04
+$ docker pull rapidsai/rapidsai-core-dev:0.17-cuda10.1-devel-ubuntu18.04-py3.7
 $ docker run --runtime=nvidia --rm -it -p 8888:8888 -p 8787:8787 -p 8786:8786 \
-         nvcr.io/nvidia/rapidsai/rapidsai:cuda10.2-runtime-ubuntu18.04
+         rapidsai/rapidsai-core-dev:0.17-cuda10.1-devel-ubuntu18.04-py3.7
 ```
 
 ### Container Ports
 
-The following ports are used by the `devel` and `runtime` containers (not `base` containers):
+The following ports are used by the `devel` containers:
 
 - `8888` - exposes a [JupyterLab](https://jupyterlab.readthedocs.io/en/stable/) notebook server
 - `8786` - exposes a [Dask](https://docs.dask.org/en/latest/) scheduler
@@ -114,7 +113,7 @@ $ docker run \
     -p 8888:8888 \
     -p 8787:8787 \
     -p 8786:8786 \
-    nvcr.io/nvidia/rapidsai/rapidsai:0.17-cuda10.1-devel-ubuntu18.04-py3.7
+    rapidsai/rapidsai-core-dev:0.17-cuda10.1-devel-ubuntu18.04-py3.7
 ```
 
 ### Bind Mounts
@@ -140,16 +139,19 @@ $ docker run \
     -p 8888:8888 \
     -p 8787:8787 \
     -p 8786:8786 \
-    nvcr.io/nvidia/rapidsai/rapidsai:0.17-cuda10.1-devel-ubuntu18.04-py3.7
+    rapidsai/rapidsai-core-dev:0.17-cuda10.1-devel-ubuntu18.04-py3.7
 ```
 
 ### Use JupyterLab to Explore the Notebooks
 
-Notebooks can be found in the following directories within the container:
+Notebooks can be found in the following directories within the 0.17 container:
 
-* `/rapids/notebooks/xgboost` - XGBoost demo notebooks
-* `/rapids/notebooks/cuml` - cuML demo notebooks
+* `/rapids/notebooks/clx` - CLX demo notebooks
 * `/rapids/notebooks/cugraph` - cuGraph demo notebooks
+* `/rapids/notebooks/cuml` - cuML demo notebooks
+* `/rapids/notebooks/cusignal` - cuSignal demo notebooks
+* `/rapids/notebooks/cuxfilter` - cuXfilter demo notebooks
+* `/rapids/notebooks/xgboost` - XGBoost demo notebooks
 
 For a full description of each notebook, see the [README](https://github.com/rapidsai/notebooks/blob/branch-0.17/README.md) in the notebooks repository.
 
@@ -161,14 +163,14 @@ You are free to modify the above steps. For example, you can launch an interacti
 ```bash
 $ docker run --gpus all --rm -it -p 8888:8888 -p 8787:8787 -p 8786:8786 \
          -v /path/to/host/data:/rapids/my_data \
-                  nvcr.io/nvidia/rapidsai/rapidsai:cuda9.2-runtime-ubuntu18.04
+                  rapidsai/rapidsai-core-dev:0.17-cuda10.1-devel-ubuntu18.04-py3.7
 ```
 
 #### Legacy - Docker CE v18 and `nvidia-docker2`
 ```bash
 $ docker run --runtime=nvidia --rm -it -p 8888:8888 -p 8787:8787 -p 8786:8786 \
          -v /path/to/host/data:/rapids/my_data \
-                  nvcr.io/nvidia/rapidsai/rapidsai:cuda10.2-runtime-ubuntu18.04
+                  rapidsai/rapidsai-core-dev:0.17-cuda10.1-devel-ubuntu18.04-py3.7
 ```
 This will map data from your host operating system to the container OS in the `/rapids/my_data` directory. You may need to modify the provided notebooks for the new data paths.
 
@@ -192,7 +194,7 @@ Learn how to setup a multi-node cuDF and XGBoost data preparation and distribute
 
 ## Where can I get help or file bugs/requests?
 
-For more information about the containers or to submit a container issue, visit: [https://github.com/rapidsai/build](https://github.com/rapidsai/build).
+Please submit issues with the container to this GitHub repository: [https://github.com/rapidsai/docker](https://github.com/rapidsai/docker/issues/new)
 
 For issues with RAPIDS libraries like cuDF, cuML, RMM, or others file an issue in the related GitHub project.
 
