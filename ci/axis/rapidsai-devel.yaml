@@ -28,8 +28,6 @@ PYTHON_VER:
   - 3.8
 
 exclude:
-  - RAPIDS_VER: 0.17
-    BUILD_IMAGE: rapidsai/rapidsai-dev
   - RAPIDS_VER: 0.18
     BUILD_IMAGE: rapidsai/rapidsai-dev
   - CUDA_VER: 10.1
