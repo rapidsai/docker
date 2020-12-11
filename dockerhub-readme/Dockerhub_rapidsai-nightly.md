@@ -14,11 +14,11 @@ The RAPIDS suite of software libraries gives you the freedom to execute end-to-e
 
 The `rapidsai/rapidsai-nightly` repo contains nightly docker builds of the latest WIP changes merged into Github repos throughout the day for the next RAPIDS release. These containers are generally considered unstable, and should only be used for development and testing. For our latest stable release, please use the [rapidsai/rapidsai](https://hub.docker.com/r/rapidsai/rapidsai) containers.
 
-#### RAPIDS NIGHTLY v0.17.0a
+#### RAPIDS NIGHTLY v0.18.0a
 
-Versions of libraries included in the `0.17` images:
-- `cuDF` [v0.17.0a](https://github.com/rapidsai/cudf), `cuML` [v0.17.0a](https://github.com/rapidsai/cuml), `cuGraph` [v0.17.0a](https://github.com/rapidsai/cugraph), `RMM` [v0.17.0a](https://github.com/rapidsai/RMM), `cuSpatial` [v0.17.0a](https://github.com/rapidsai/cuspatial), `cuSignal` [v0.17.0a](https://github.com/rapidsai/cusignal), `cuxfilter` [v0.17.0a](https://github.com/rapidsai/cuxfilter)
-- `xgboost` [branch](https://github.com/rapidsai/xgboost), `dask-cuda` [branch](https://github.com/rapidsai/dask-cuda)
+Versions of libraries included in the `0.18` images:
+- `cuDF` [v0.18.0a](https://github.com/rapidsai/cudf), `cuML` [v0.18.0a](https://github.com/rapidsai/cuml), `cuGraph` [v0.18.0a](https://github.com/rapidsai/cugraph), `RMM` [v0.18.0a](https://github.com/rapidsai/RMM), `cuSpatial` [v0.18.0a](https://github.com/rapidsai/cuspatial), `cuSignal` [v0.18.0a](https://github.com/rapidsai/cusignal), `cuxfilter` [v0.18.0a](https://github.com/rapidsai/cuxfilter)
+- `blazingsql` [v0.17](https://github.com/rapidsai/blazingsql/tree/v0.17.0), `xgboost` [branch](https://github.com/rapidsai/xgboost), `dask-cuda` [branch](https://github.com/rapidsai/dask-cuda)
 
 ### Image Types
 
@@ -41,7 +41,7 @@ The [rapidsai/rapidsai-dev-nightly](https://hub.docker.com/r/rapidsai/rapidsai-d
 
 The tag naming scheme for RAPIDS images incorporates key platform details into the tag as shown below:
 ```
-0.17-cuda10.1-runtime-ubuntu18.04-py3.7
+0.18-cuda10.1-runtime-ubuntu18.04-py3.7
  ^       ^    ^        ^         ^
  |       |    type     |         python version
  |       |             |
@@ -114,7 +114,7 @@ $ docker run \
     -p 8888:8888 \
     -p 8787:8787 \
     -p 8786:8786 \
-    rapidsai/rapidsai-nightly:0.17-cuda10.1-base-ubuntu18.04-py3.7
+    rapidsai/rapidsai-nightly:0.18-cuda10.1-base-ubuntu18.04-py3.7
 ```
 
 ### Bind Mounts
@@ -137,7 +137,7 @@ $ docker run \
     -it \
     --gpus all \
     -v $(pwd)/environment.yml:/opt/rapids/environment.yml \
-    rapidsai/rapidsai-nightly:0.17-cuda10.1-base-ubuntu18.04-py3.7
+    rapidsai/rapidsai-nightly:0.18-cuda10.1-base-ubuntu18.04-py3.7
 ```
 
 ## Where can I get help or file bugs/requests?
