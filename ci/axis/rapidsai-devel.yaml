@@ -9,7 +9,7 @@ IMAGE_TYPE:
   - devel
 
 RAPIDS_VER:
-  - 0.17
+  - 0.18
 
 CUDA_VER:
   - 11.0
