@@ -10,7 +10,7 @@ IMAGE_TYPE:
   - runtime
 
 RAPIDS_VER:
-  - 0.17
+  - 0.18
 
 CUDA_VER:
   - 11.0
@@ -29,8 +29,6 @@ PYTHON_VER:
   - 3.8
 
 exclude:
-  - RAPIDS_VER: 0.17
-    BUILD_IMAGE: rapidsai/rapidsai
   - RAPIDS_VER: 0.18
     BUILD_IMAGE: rapidsai/rapidsai
   - CUDA_VER: 10.1
