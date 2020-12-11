@@ -15,4 +15,6 @@ jobs:
           pip install -r requirements.txt
           ./generate_dockerfiles.py
       - name: Check diffs
-        run: git diff --exit-code --quiet
+        run: |
+          git diff
+          git diff --exit-code --quiet
