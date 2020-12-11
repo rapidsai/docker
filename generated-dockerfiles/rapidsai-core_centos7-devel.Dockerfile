@@ -10,12 +10,12 @@
 ARG CUDA_VER=10.1
 ARG LINUX_VER=centos7
 ARG PYTHON_VER=3.7
-ARG RAPIDS_VER=0.16
+ARG RAPIDS_VER=0.17
 ARG FROM_IMAGE=gpuci/rapidsai
 
 FROM ${FROM_IMAGE}:${RAPIDS_VER}-cuda${CUDA_VER}-devel-${LINUX_VER}-py${PYTHON_VER}
 
-RUN conda install -c gpuci gpuci-ccache
+RUN gpuci_conda_retry install -c gpuci gpuci-ccache
 ENV CCACHE_NOHASHDIR=
 ENV CCACHE_DIR="/ccache"
 ENV CCACHE_COMPILERCHECK="%compiler% --version"
@@ -25,6 +25,10 @@ ENV CXX="/usr/local/bin/g++"
 ENV NVCC="/usr/local/bin/nvcc"
 ENV CUDAHOSTCXX="/usr/local/bin/g++"
 ENV CUDAToolkit_ROOT="/usr/local/cuda"
+ENV CUDACXX="/usr/local/cuda/bin/nvcc"
+ENV CMAKE_CUDA_COMPILER_LAUNCHER="ccache"
+ENV CMAKE_CXX_COMPILER_LAUNCHER="ccache"
+ENV CMAKE_C_COMPILER_LAUNCHER="ccache"
 RUN ln -s "$(which ccache)" "/usr/local/bin/gcc" \
     && ln -s "$(which ccache)" "/usr/local/bin/g++" \
     && ln -s "$(which ccache)" "/usr/local/bin/nvcc"
@@ -79,7 +83,7 @@ RUN gpuci_conda_retry install -y -n rapids \
 RUN gpuci_conda_retry install -y -n rapids jupyterlab-nvdashboard
 
 RUN source activate rapids \
-  && jupyter labextension install dask-labextension jupyterlab-nvdashboard
+  && jupyter labextension install @jupyter-widgets/jupyterlab-manager dask-labextension jupyterlab-nvdashboard
 
 RUN cd ${RAPIDS_DIR} \
   && source activate rapids \
@@ -104,7 +108,7 @@ RUN cd ${RAPIDS_DIR} \
   && cd cuml \
   && git submodule update --init --recursive --no-single-branch --depth 1 \
   && cd ${RAPIDS_DIR} \
-  && git clone -b rapids-v0.16 --depth 1 --single-branch https://github.com/rapidsai/xgboost.git \
+  && git clone -b rapids-v0.17 --depth 1 --single-branch https://github.com/rapidsai/xgboost.git \
   && cd xgboost \
   && git submodule update --init --recursive --no-single-branch --depth 1 \
   && cd ${RAPIDS_DIR} \
@@ -136,8 +140,6 @@ RUN cd ${RAPIDS_DIR} \
 ENV LD_LIBRARY_PATH_PREBUILD=${LD_LIBRARY_PATH}
 ENV LD_LIBRARY_PATH=${LD_LIBRARY_PATH}:/usr/local/cuda/lib64:/usr/local/cuda/lib64/stubs
 
-RUN mv /opt/conda/envs/rapids/include/dmlc/ /opt/conda/envs/rapids/include/dmlc-OFF
-
 ENV NCCL_ROOT=/opt/conda/envs/rapids
 ENV PARALLEL_LEVEL=${PARALLEL_LEVEL}
 
@@ -168,17 +170,17 @@ RUN cd ${RAPIDS_DIR}/cuspatial && \
   ccache -s && \
   export CUSPATIAL_HOME="$PWD" && \
   export CUDF_HOME="$PWD/../cudf" && \
-  ./build.sh
+  ./build.sh libcuspatial cuspatial tests
 
 RUN cd ${RAPIDS_DIR}/cuml && \
   source activate rapids && \
   ccache -s && \
-  ./build.sh --allgpuarch libcuml cuml prims
+  ./build.sh --allgpuarch --buildgtest libcuml cuml prims
 
 RUN cd ${RAPIDS_DIR}/cugraph && \
   source activate rapids && \
   ccache -s && \
-  ./build.sh
+  ./build.sh --allgpuarch cugraph libcugraph
 
 RUN cd ${RAPIDS_DIR}/xgboost && \
   source activate rapids && \

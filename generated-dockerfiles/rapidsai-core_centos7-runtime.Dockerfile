@@ -1,4 +1,4 @@
-# RAPIDS Dockerfile for ubuntu18.04 "runtime" image
+# RAPIDS Dockerfile for centos7 "runtime" image
 #
 # runtime: RAPIDS is installed from published conda packages to the 'rapids'
 # conda environment. RAPIDS jupyter notebooks are also provided, as well as
@@ -7,9 +7,9 @@
 # Copyright (c) 2020, NVIDIA CORPORATION.
 
 ARG CUDA_VER=10.1
-ARG LINUX_VER=ubuntu18.04
+ARG LINUX_VER=centos7
 ARG PYTHON_VER=3.7
-ARG RAPIDS_VER=0.16
+ARG RAPIDS_VER=0.17
 ARG FROM_IMAGE=gpuci/rapidsai
 
 FROM ${FROM_IMAGE}:${RAPIDS_VER}-cuda${CUDA_VER}-runtime-${LINUX_VER}-py${PYTHON_VER}
@@ -19,11 +19,11 @@ ARG RAPIDS_VER
 ARG BUILD_BRANCH="branch-${RAPIDS_VER}"
 
 ENV RAPIDS_DIR=/rapids
-ENV LD_LIBRARY_PATH=/opt/conda/envs/rapids/lib:${LD_LIBRARY_PATH}
 
-RUN mkdir -p ${RAPIDS_DIR}/utils 
+RUN mkdir -p ${RAPIDS_DIR}/utils ${GCC7_DIR}/lib64
 COPY nbtest.sh nbtestlog2junitxml.py ${RAPIDS_DIR}/utils/
 
+COPY libm.so.6 ${GCC7_DIR}/lib64
 
 
 RUN source activate rapids \
@@ -46,7 +46,7 @@ RUN gpuci_conda_retry install -y -n rapids \
 RUN gpuci_conda_retry install -y -n rapids jupyterlab-nvdashboard
 
 RUN source activate rapids \
-  && jupyter labextension install dask-labextension jupyterlab-nvdashboard
+  && jupyter labextension install @jupyter-widgets/jupyterlab-manager dask-labextension jupyterlab-nvdashboard
 
 RUN cd ${RAPIDS_DIR} \
   && source activate rapids \
