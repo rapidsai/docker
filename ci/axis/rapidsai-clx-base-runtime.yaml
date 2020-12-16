@@ -30,7 +30,7 @@ PYTHON_VER:
 
 exclude:
   - RAPIDS_VER: 0.18
-    BUILD_IMAGE: rapidsai/rapidsai
+    BUILD_IMAGE: rapidsai/rapidsai-clx
   - CUDA_VER: 10.1
     LINUX_VER: centos8
   - CUDA_VER: 10.1
