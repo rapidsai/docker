@@ -108,7 +108,7 @@ RUN cd ${RAPIDS_DIR} \
   && cd cuml \
   && git submodule update --init --recursive --no-single-branch --depth 1 \
   && cd ${RAPIDS_DIR} \
-  && git clone -b rapids-v0.17 --depth 1 --single-branch https://github.com/rapidsai/xgboost.git \
+  && git clone -b rapids-v0.18 --depth 1 --single-branch https://github.com/rapidsai/xgboost.git \
   && cd xgboost \
   && git submodule update --init --recursive --no-single-branch --depth 1 \
   && cd ${RAPIDS_DIR} \
