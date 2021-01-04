@@ -3,7 +3,7 @@
 {# Install build prerequisites #}
 RUN source activate rapids && \
     gpuci_conda_retry install -y -n rapids -c pytorch \
-        "pytorch>=1.7" \
+        "pytorch=1.7.0" \
         torchvision \
         "cudf_kafka=${RAPIDS_VER}" \
         "custreamz=${RAPIDS_VER}" \
