@@ -185,6 +185,8 @@ RUN cd ${RAPIDS_DIR}/cugraph && \
 RUN cd ${RAPIDS_DIR}/xgboost && \
   source activate rapids && \
   ccache -s && \
+  TREELITE_VER=$(conda list -e treelite | grep -v "#") && \
+  conda remove -y --force-remove treelite && \
   if [[ "$CUDA_VER" == "11.0" ]]; then \
     mkdir -p build && cd build && \
     cmake -DCMAKE_INSTALL_PREFIX=$CONDA_PREFIX \
@@ -209,7 +211,8 @@ RUN cd ${RAPIDS_DIR}/xgboost && \
           -DCMAKE_BUILD_TYPE=release .. && \
     make -j && make -j install && \
     cd ../python-package && python setup.py install; \
-  fi
+  fi && \
+  conda install -y --no-deps "${TREELITE_VER}"
 
 RUN cd ${RAPIDS_DIR}/dask-cuda && \
   source activate rapids && \
