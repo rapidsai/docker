@@ -20,7 +20,9 @@ CUDA_VER:
 LINUX_VER:
   - ubuntu16.04
   - ubuntu18.04
+  - ubuntu20.04
   - centos7
+  - centos8
 
 PYTHON_VER:
   - 3.7
@@ -29,5 +31,11 @@ PYTHON_VER:
 exclude:
   - RAPIDS_VER: 0.17
     BUILD_IMAGE: rapidsai/rapidsai-core-nightly
-  - RAPIDS_VER: 0.18
-    BUILD_IMAGE: rapidsai/rapidsai-core-nightly
+  - CUDA_VER: 10.1
+    LINUX_VER: centos8
+  - CUDA_VER: 10.1
+    LINUX_VER: ubuntu20.04
+  - CUDA_VER: 10.2
+    LINUX_VER: centos8
+  - CUDA_VER: 10.2
+    LINUX_VER: ubuntu20.04
