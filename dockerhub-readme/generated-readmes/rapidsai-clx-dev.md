@@ -128,7 +128,7 @@ $ docker run \
     -it \
     --gpus all \
     -v $(pwd)/environment.yml:/opt/rapids/environment.yml \
-    rapidsai/rapidsai-clx-dev:0.17-cuda10.1-base-ubuntu18.04-py3.7
+    rapidsai/rapidsai-clx-dev:0.17-cuda10.1-devel-ubuntu18.04-py3.7
 ```
 
 ### Use JupyterLab to Explore the Notebooks

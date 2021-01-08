@@ -175,7 +175,7 @@ $ docker run \
     -it \
     --gpus all \
     -v $(pwd)/environment.yml:/opt/rapids/environment.yml \
-    {{ ngc_prefix if is_ngc }}rapidsai/{{ repo_name }}:{{ repo_rapids_version }}-cuda{{ DEFAULT_CUDA_VERSION }}-base-ubuntu18.04-py{{ DEFAULT_PYTHON_VERSION }}
+    {{ ngc_prefix if is_ngc }}rapidsai/{{ repo_name }}:{{ repo_rapids_version }}-cuda{{ DEFAULT_CUDA_VERSION }}-{{ repo_default_img_type }}-ubuntu18.04-py{{ DEFAULT_PYTHON_VERSION }}
 ```
 
 ### Use JupyterLab to Explore the Notebooks
