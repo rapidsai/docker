@@ -25,6 +25,7 @@ OUTPUT_READMES = [
     "rapidsai-clx-nightly",
     "rapidsai-clx-dev",
     "rapidsai-clx-dev-nightly",
+    "ngc",
 ]
 
 
@@ -62,11 +63,13 @@ def main():
     nightly_version_int = int(settings["DEFAULT_RAPIDS_VERSION"].split(".")[1])
     for output_file in OUTPUT_READMES:
         jinja_vars = {}
-        jinja_vars["repo_name"] = output_file
+        jinja_vars["repo_name"] = "rapidsai" if output_file == "ngc" else output_file
         jinja_vars["is_nightly"] = "nightly" in output_file
         jinja_vars["is_stable"] = not jinja_vars["is_nightly"]
         jinja_vars["is_devel"] = "dev" in output_file
-        jinja_vars["is_br"] = not jinja_vars["is_devel"]
+        jinja_vars["is_br"] = not jinja_vars["is_devel"]  # br = base_runtime
+        jinja_vars["is_ngc"] = "ngc" in output_file
+        jinja_vars["ngc_prefix"] = "nvcr.io/nvidia/"
         jinja_vars["is_rapids_core"] = "core" in output_file
         jinja_vars["is_rapids_clx"] = "clx" in output_file
         jinja_vars["is_rapids_proper"] = not (

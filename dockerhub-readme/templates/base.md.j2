@@ -40,25 +40,33 @@ Versions of libraries included in the `{{ nightly_version }}` images:
 The RAPIDS images are based on [nvidia/cuda](https://hub.docker.com/r/nvidia/cuda), and are intended to be drop-in replacements for the corresponding CUDA
 images in order to make it easy to add RAPIDS libraries while maintaining support for existing CUDA applications.
 
+{% if is_ngc %}
+The RAPIDS images provided by NGC come in two types:
+{% else %}
 RAPIDS images come in three types, distributed in two different repos:
 
-{% if is_br %}
+  {% if is_br %}
 This repo ({{ repo_name }}), contains the following:
-{% else %}
+  {% elif is_devel %}
 The [rapidsai/{{ repo_name | devel2br }}](https://hub.docker.com/r/rapidsai/{{ repo_name | devel2br }}/tags) repo contains the following:
+  {% endif %}
 {% endif %}
 - `base` - contains a RAPIDS environment ready for use.
   - **TIP: Use this image if you want to use RAPIDS as a part of your pipeline.**
 - `runtime` - extends the `base` image by adding a notebook server and example notebooks.
   - **TIP: Use this image if you want to explore RAPIDS through notebooks and examples.**
 
-{% if is_devel %}
-This repo (rapidsai/{{ repo_name }}), contains the following:
+{% if is_ngc %}
+For `devel` images that contain: the full RAPIDS source tree, pre-built with all artifacts in place, the compiler toolchain, the debugging tools, the headers and the static libraries for RAPIDS development refer to the [rapidsai/rapidsai-dev](https://hub.docker.com/repository/docker/rapidsai/rapidsai-dev) repo on DockerHub.
 {% else %}
+  {% if is_devel %}
+This repo (rapidsai/{{ repo_name }}), contains the following:
+  {% elif is_br %}
 The [rapidsai/{{ repo_name | br2devel }}](https://hub.docker.com/r/rapidsai/{{ repo_name | br2devel }}/tags) repo contains the following:
-{% endif %}
+  {% endif %}
 - `devel` - contains the full RAPIDS source tree, pre-built with all artifacts in place, and the compiler toolchain, the debugging tools, the headers and the static libraries for RAPIDS development.
   - **TIP: Use this image to develop RAPIDS from source.**
+{% endif %}
 
 ### Image Tag Naming Scheme
 
@@ -96,16 +104,16 @@ Many users do not need a specific platform combination but would like to ensure 
 
 #### Preferred - Docker CE v19+ and `nvidia-container-toolkit`
 ```bash
-$ docker pull rapidsai/{{ repo_name }}:{{ repo_rapids_version }}-cuda{{ DEFAULT_CUDA_VERSION }}-{{ repo_default_img_type }}-ubuntu18.04-py{{ DEFAULT_PYTHON_VERSION }}
+$ docker pull {{ ngc_prefix if is_ngc }}rapidsai/{{ repo_name }}:{{ repo_rapids_version }}-cuda{{ DEFAULT_CUDA_VERSION }}-{{ repo_default_img_type }}-ubuntu18.04-py{{ DEFAULT_PYTHON_VERSION }}
 $ docker run --gpus all --rm -it -p 8888:8888 -p 8787:8787 -p 8786:8786 \
-         rapidsai/{{ repo_name }}:{{ repo_rapids_version }}-cuda{{ DEFAULT_CUDA_VERSION }}-{{ repo_default_img_type }}-ubuntu18.04-py{{ DEFAULT_PYTHON_VERSION }}
+         {{ ngc_prefix if is_ngc }}rapidsai/{{ repo_name }}:{{ repo_rapids_version }}-cuda{{ DEFAULT_CUDA_VERSION }}-{{ repo_default_img_type }}-ubuntu18.04-py{{ DEFAULT_PYTHON_VERSION }}
 ```
 
 #### Legacy - Docker CE v18 and `nvidia-docker2`
 ```bash
-$ docker pull rapidsai/{{ repo_name }}:{{ repo_rapids_version }}-cuda{{ DEFAULT_CUDA_VERSION }}-{{ repo_default_img_type }}-ubuntu18.04-py{{ DEFAULT_PYTHON_VERSION }}
+$ docker pull {{ ngc_prefix if is_ngc }}rapidsai/{{ repo_name }}:{{ repo_rapids_version }}-cuda{{ DEFAULT_CUDA_VERSION }}-{{ repo_default_img_type }}-ubuntu18.04-py{{ DEFAULT_PYTHON_VERSION }}
 $ docker run --runtime=nvidia --rm -it -p 8888:8888 -p 8787:8787 -p 8786:8786 \
-         rapidsai/{{ repo_name }}:{{ repo_rapids_version }}-cuda{{ DEFAULT_CUDA_VERSION }}-{{ repo_default_img_type }}-ubuntu18.04-py{{ DEFAULT_PYTHON_VERSION }}
+         {{ ngc_prefix if is_ngc }}rapidsai/{{ repo_name }}:{{ repo_rapids_version }}-cuda{{ DEFAULT_CUDA_VERSION }}-{{ repo_default_img_type }}-ubuntu18.04-py{{ DEFAULT_PYTHON_VERSION }}
 ```
 
 ### Container Ports
@@ -144,7 +152,7 @@ $ docker run \
     -p 8888:8888 \
     -p 8787:8787 \
     -p 8786:8786 \
-    rapidsai/{{ repo_name }}:{{ repo_rapids_version }}-cuda{{ DEFAULT_CUDA_VERSION }}-{{ repo_default_img_type }}-ubuntu18.04-py{{ DEFAULT_PYTHON_VERSION }}
+    {{ ngc_prefix if is_ngc }}rapidsai/{{ repo_name }}:{{ repo_rapids_version }}-cuda{{ DEFAULT_CUDA_VERSION }}-{{ repo_default_img_type }}-ubuntu18.04-py{{ DEFAULT_PYTHON_VERSION }}
 ```
 
 ### Bind Mounts
@@ -167,7 +175,7 @@ $ docker run \
     -it \
     --gpus all \
     -v $(pwd)/environment.yml:/opt/rapids/environment.yml \
-    rapidsai/{{ repo_name }}:{{ repo_rapids_version }}-cuda{{ DEFAULT_CUDA_VERSION }}-base-ubuntu18.04-py{{ DEFAULT_PYTHON_VERSION }}
+    {{ ngc_prefix if is_ngc }}rapidsai/{{ repo_name }}:{{ repo_rapids_version }}-cuda{{ DEFAULT_CUDA_VERSION }}-base-ubuntu18.04-py{{ DEFAULT_PYTHON_VERSION }}
 ```
 
 ### Use JupyterLab to Explore the Notebooks
@@ -191,14 +199,14 @@ You are free to modify the above steps. For example, you can launch an interacti
 ```bash
 $ docker run --gpus all --rm -it -p 8888:8888 -p 8787:8787 -p 8786:8786 \
          -v /path/to/host/data:/rapids/my_data \
-                  rapidsai/{{ repo_name }}:{{ repo_rapids_version }}-cuda{{ DEFAULT_CUDA_VERSION }}-{{ repo_default_img_type }}-ubuntu18.04-py{{ DEFAULT_PYTHON_VERSION }}
+                  {{ ngc_prefix if is_ngc }}rapidsai/{{ repo_name }}:{{ repo_rapids_version }}-cuda{{ DEFAULT_CUDA_VERSION }}-{{ repo_default_img_type }}-ubuntu18.04-py{{ DEFAULT_PYTHON_VERSION }}
 ```
 
 #### Legacy - Docker CE v18 and `nvidia-docker2`
 ```bash
 $ docker run --runtime=nvidia --rm -it -p 8888:8888 -p 8787:8787 -p 8786:8786 \
          -v /path/to/host/data:/rapids/my_data \
-                  rapidsai/{{ repo_name }}:{{ repo_rapids_version }}-cuda{{ DEFAULT_CUDA_VERSION }}-{{ repo_default_img_type }}-ubuntu18.04-py{{ DEFAULT_PYTHON_VERSION }}
+                  {{ ngc_prefix if is_ngc }}rapidsai/{{ repo_name }}:{{ repo_rapids_version }}-cuda{{ DEFAULT_CUDA_VERSION }}-{{ repo_default_img_type }}-ubuntu18.04-py{{ DEFAULT_PYTHON_VERSION }}
 ```
 This will map data from your host operating system to the container OS in the `/rapids/my_data` directory. You may need to modify the provided notebooks for the new data paths.
 
