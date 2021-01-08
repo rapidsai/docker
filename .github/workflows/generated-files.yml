@@ -1,19 +1,23 @@
-name: Validate generated-dockerfiles
+# Description: Ensures the generated files (Dockerfiles, DockerHub READMEs)
+# are up to date in each PR.
+
+name: generated-files
 
 on: pull_request
 
 jobs:
-  update-dockerfiles:
-    name: Dockerfiles up-to-date
+  up-to-date:
+    name: up-to-date
     runs-on: ubuntu-latest
     container: python:3.8
     steps:
       - name: Checkout repo
         uses: actions/checkout@v2
-      - name: Generate new Dockerfiles
+      - name: Generate new Dockerfiles & READMEs
         run: |
           pip install -r requirements.txt
           ./generate_dockerfiles.py
+          ./dockerhub-readme/generate_readmes.py
       - name: Check diffs
         run: |
           git diff
