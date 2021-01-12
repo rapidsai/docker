@@ -26,7 +26,7 @@ RUN source activate rapids && \
         torchvision \
         "cudf_kafka=${RAPIDS_VER}" \
         "custreamz=${RAPIDS_VER}" \
-        "transformers=3.5.*" \
+        "transformers=4.*" \
         seqeval \
         python-whois \
         faker && \
