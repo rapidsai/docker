@@ -35,9 +35,6 @@ RUN gpuci_conda_retry install -y -n rapids \
   "rapids=${RAPIDS_VER}*"
 
 
-RUN source activate rapids \
-    && npm i -g npm@">=7"
-
 RUN gpuci_conda_retry install -y -n rapids \
         "rapids-notebook-env=${RAPIDS_VER}*" \
     && gpuci_conda_retry remove -y -n rapids --force-remove \
