@@ -42,11 +42,11 @@ def main(verbose=False):
     initialize_output_dir(OUTPUT_DIRNAME)
 
     settings = load_settings()
-    for image_name in ["rapidsai", "rapidsai-core"]:
+    for image_name in ["rapidsai", "rapidsai-core", "rapidsai-clx"]:
         templates_dir = os.path.join(TEMPLATES_DIRNAME, image_name)
         file_loader = FileSystemLoader(templates_dir)
         env = Environment(loader=file_loader, lstrip_blocks=True, trim_blocks=True)
-        for docker_os in ["centos7", "ubuntu18.04"]:
+        for docker_os in ["centos7", "centos8", "ubuntu16.04", "ubuntu18.04", "ubuntu20.04"]:
             for image_type in ["Base", "Devel", "Runtime"]:
                 dockerfile_name = f"{image_name}_{docker_os}-{image_type.lower()}.Dockerfile"
                 try:

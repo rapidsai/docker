@@ -8,3 +8,11 @@ repos:
         entry: generate_dockerfiles.py
         pass_filenames: no
         always_run: yes
+  - repo: local
+    hooks:
+      - id: generate-readmes
+        name: DockerHub READMEs updated?
+        language: script
+        entry: dockerhub-readme/generate_readmes.py
+        pass_filenames: no
+        always_run: yes

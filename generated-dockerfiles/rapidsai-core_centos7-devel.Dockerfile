@@ -5,12 +5,12 @@
 # jupyter notebooks are also provided, as well as jupyterlab and all the
 # dependencies required to run them.
 #
-# Copyright (c) 2020, NVIDIA CORPORATION.
+# Copyright (c) 2021, NVIDIA CORPORATION.
 
 ARG CUDA_VER=10.1
 ARG LINUX_VER=centos7
 ARG PYTHON_VER=3.7
-ARG RAPIDS_VER=0.17
+ARG RAPIDS_VER=0.18
 ARG FROM_IMAGE=gpuci/rapidsai
 
 FROM ${FROM_IMAGE}:${RAPIDS_VER}-cuda${CUDA_VER}-devel-${LINUX_VER}-py${PYTHON_VER}
@@ -67,9 +67,6 @@ RUN gpuci_conda_retry install -y -n rapids \
 
 
 RUN source activate rapids \
-    && npm i -g npm@">=7"
-
-RUN source activate rapids \
   && env \
   && conda info \
   && conda config --show-sources \
@@ -111,7 +108,7 @@ RUN cd ${RAPIDS_DIR} \
   && cd cuml \
   && git submodule update --init --recursive --no-single-branch --depth 1 \
   && cd ${RAPIDS_DIR} \
-  && git clone -b rapids-v0.17 --depth 1 --single-branch https://github.com/rapidsai/xgboost.git \
+  && git clone -b rapids-v0.18 --depth 1 --single-branch https://github.com/rapidsai/xgboost.git \
   && cd xgboost \
   && git submodule update --init --recursive --no-single-branch --depth 1 \
   && cd ${RAPIDS_DIR} \
@@ -188,6 +185,8 @@ RUN cd ${RAPIDS_DIR}/cugraph && \
 RUN cd ${RAPIDS_DIR}/xgboost && \
   source activate rapids && \
   ccache -s && \
+  TREELITE_VER=$(conda list -e treelite | grep -v "#") && \
+  conda remove -y --force-remove treelite && \
   if [[ "$CUDA_VER" == "11.0" ]]; then \
     mkdir -p build && cd build && \
     cmake -DCMAKE_INSTALL_PREFIX=$CONDA_PREFIX \
@@ -212,7 +211,8 @@ RUN cd ${RAPIDS_DIR}/xgboost && \
           -DCMAKE_BUILD_TYPE=release .. && \
     make -j && make -j install && \
     cd ../python-package && python setup.py install; \
-  fi
+  fi && \
+  conda install -y --no-deps "${TREELITE_VER}"
 
 RUN cd ${RAPIDS_DIR}/dask-cuda && \
   source activate rapids && \
