@@ -77,7 +77,7 @@ RUN gpuci_conda_retry install -y -n rapids \
     && gpuci_conda_retry remove -y -n rapids --force-remove \
         "rapids-notebook-env=${RAPIDS_VER}*"
 
-RUN gpuci_conda_retry install -y -n rapids jupyterlab-nvdashboard
+RUN gpuci_conda_retry install -y -n rapids jupyterlab-nvdashboard nb_conda_kernels nbgitpuller
 
 RUN source activate rapids \
   && jupyter labextension install @jupyter-widgets/jupyterlab-manager dask-labextension jupyterlab-nvdashboard
@@ -87,9 +87,7 @@ ENV DASK_LABEXTENSION__FACTORY__CLASS="LocalCUDACluster"
 
 RUN cd ${RAPIDS_DIR} \
   && source activate rapids \
-  && git clone -b ${BUILD_BRANCH} --depth 1 --single-branch https://github.com/rapidsai/notebooks.git \
-  && cd notebooks \
-  && git submodule update --init --remote --no-single-branch --depth 1
+  && gitpuller https://github.com/rapidsai/notebooks ${BUILD_BRANCH} notebooks
 
 COPY test.sh /
 
