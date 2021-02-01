@@ -69,9 +69,6 @@ RUN gpuci_conda_retry install -y -n rapids \
 
 
 RUN source activate rapids \
-    && npm i -g npm@">=7"
-
-RUN source activate rapids \
   && env \
   && conda info \
   && conda config --show-sources \
@@ -86,6 +83,9 @@ RUN gpuci_conda_retry install -y -n rapids jupyterlab-nvdashboard
 
 RUN source activate rapids \
   && jupyter labextension install @jupyter-widgets/jupyterlab-manager dask-labextension jupyterlab-nvdashboard
+
+ENV DASK_LABEXTENSION__FACTORY__MODULE="dask_cuda"
+ENV DASK_LABEXTENSION__FACTORY__CLASS="LocalCUDACluster"
 
 RUN cd ${RAPIDS_DIR} \
   && source activate rapids \

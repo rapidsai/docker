@@ -35,9 +35,6 @@ RUN gpuci_conda_retry install -y -n rapids \
   "rapids=${RAPIDS_VER}*"
 
 
-RUN source activate rapids \
-    && npm i -g npm@">=7"
-
 RUN gpuci_conda_retry install -y -n rapids \
         "rapids-notebook-env=${RAPIDS_VER}*" \
     && gpuci_conda_retry remove -y -n rapids --force-remove \
@@ -47,6 +44,9 @@ RUN gpuci_conda_retry install -y -n rapids jupyterlab-nvdashboard
 
 RUN source activate rapids \
   && jupyter labextension install @jupyter-widgets/jupyterlab-manager dask-labextension jupyterlab-nvdashboard
+
+ENV DASK_LABEXTENSION__FACTORY__MODULE="dask_cuda"
+ENV DASK_LABEXTENSION__FACTORY__CLASS="LocalCUDACluster"
 
 RUN cd ${RAPIDS_DIR} \
   && source activate rapids \
