@@ -146,39 +146,39 @@ ENV LD_LIBRARY_PATH=${LD_LIBRARY_PATH}:/opt/conda/envs/rapids/lib
 RUN cd ${RAPIDS_DIR}/rmm && \
   source activate rapids && \
   ccache -s && \
-  ./build.sh
+  ./build.sh -v
 
 RUN cd ${RAPIDS_DIR}/cudf && \
   source activate rapids && \
   ccache -s && \
-  ./build.sh libcudf cudf dask_cudf libcudf_kafka cudf_kafka tests
+  ./build.sh -v libcudf cudf dask_cudf libcudf_kafka cudf_kafka tests
 
 RUN cd ${RAPIDS_DIR}/cusignal && \
   source activate rapids && \
   ccache -s && \
-  ./build.sh
+  ./build.sh -v
 
 RUN cd ${RAPIDS_DIR}/cuxfilter && \
   source activate rapids && \
   ccache -s && \
-  ./build.sh
+  ./build.sh -v
 
 RUN cd ${RAPIDS_DIR}/cuspatial && \
   source activate rapids && \
   ccache -s && \
   export CUSPATIAL_HOME="$PWD" && \
   export CUDF_HOME="$PWD/../cudf" && \
-  ./build.sh libcuspatial cuspatial tests
+  ./build.sh -v libcuspatial cuspatial tests
 
 RUN cd ${RAPIDS_DIR}/cuml && \
   source activate rapids && \
   ccache -s && \
-  ./build.sh --allgpuarch --buildgtest libcuml cuml prims
+  ./build.sh -v --allgpuarch --buildgtest libcuml cuml prims
 
 RUN cd ${RAPIDS_DIR}/cugraph && \
   source activate rapids && \
   ccache -s && \
-  ./build.sh --allgpuarch cugraph libcugraph
+  ./build.sh -v --allgpuarch cugraph libcugraph
 
 RUN cd ${RAPIDS_DIR}/xgboost && \
   source activate rapids && \
