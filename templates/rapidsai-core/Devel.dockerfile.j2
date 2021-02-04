@@ -110,12 +110,12 @@ RUN cd ${RAPIDS_DIR}/{{ lib.name }} && \
   source activate rapids && \
   ccache -s && \
   {% if lib.name == "cudf" %}
-  ./build.sh libcudf cudf dask_cudf libcudf_kafka cudf_kafka tests
+  ./build.sh -v libcudf cudf dask_cudf libcudf_kafka cudf_kafka tests
 
   {% elif lib.name == "cuspatial" %}
   export CUSPATIAL_HOME="$PWD" && \
   export CUDF_HOME="$PWD/../cudf" && \
-  ./build.sh libcuspatial cuspatial tests
+  ./build.sh -v libcuspatial cuspatial tests
 
   {% elif lib.name == "xgboost" %}
   TREELITE_VER=$(conda list -e treelite | grep -v "#") && \
@@ -148,16 +148,16 @@ RUN cd ${RAPIDS_DIR}/{{ lib.name }} && \
   conda install -y --no-deps "${TREELITE_VER}"
 
   {% elif lib.name == "cugraph" %}
-  ./build.sh --allgpuarch cugraph libcugraph
+  ./build.sh -v --allgpuarch cugraph libcugraph
 
   {% elif lib.name == "cuml" %}
-  ./build.sh --allgpuarch --buildgtest libcuml cuml prims
+  ./build.sh -v --allgpuarch --buildgtest libcuml cuml prims
 
   {% elif lib.name == "dask-cuda"%}
   python setup.py install
 
   {% else %}
-  ./build.sh
+  ./build.sh -v
 
   {% endif %}
 {% endfor %}
