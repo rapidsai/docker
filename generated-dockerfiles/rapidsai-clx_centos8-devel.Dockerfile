@@ -22,7 +22,7 @@ ENV CLX_DIR=${RAPIDS_DIR}/clx
 
 RUN source activate rapids && \
     gpuci_conda_retry install -y -n rapids -c pytorch \
-        "pytorch=1.7.0" \
+        "pytorch=1.7.1" \
         torchvision \
         "cudf_kafka=${RAPIDS_VER}" \
         "custreamz=${RAPIDS_VER}" \
@@ -32,7 +32,8 @@ RUN source activate rapids && \
         faker && \
     pip install "git+https://github.com/rapidsai/cudatashader.git" && \
     pip install mockito && \
-    pip install wget
+    pip install wget && \
+    pip install "git+https://github.com/slashnext/SlashNext-URL-Analysis-and-Enrichment.git#egg=slashnext-phishing-ir&subdirectory=Python SDK/src"
 
 RUN ln -s "$(which ccache)" "/usr/local/bin/gcc" \
     && ln -s "$(which ccache)" "/usr/local/bin/g++" \
