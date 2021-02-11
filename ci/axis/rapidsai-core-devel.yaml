@@ -3,7 +3,7 @@ BUILD_IMAGE:
   - rapidsai/rapidsai-core-dev-nightly
 
 FROM_IMAGE:
-  - gpuci/rapidsai
+  - gpucitesting/rapidsai-pr159
 
 IMAGE_TYPE:
   - devel
