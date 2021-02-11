@@ -12,6 +12,10 @@ RUN gpuci_conda_retry install -y -n rapids -c blazingsql-nightly -c blazingsql \
 
 ENV CUDF_HOME=/rapids/cudf
 
+RUN ln -s "$(which ccache)" "/usr/local/bin/gcc" \
+    && ln -s "$(which ccache)" "/usr/local/bin/g++" \
+    && ln -s "$(which ccache)" "/usr/local/bin/nvcc"
+
 {# Clone, build, install #}
 RUN mkdir -p ${BLAZING_DIR} \
     && cd ${BLAZING_DIR} \

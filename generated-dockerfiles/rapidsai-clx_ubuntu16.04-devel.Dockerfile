@@ -34,6 +34,10 @@ RUN source activate rapids && \
     pip install mockito && \
     pip install wget
 
+RUN ln -s "$(which ccache)" "/usr/local/bin/gcc" \
+    && ln -s "$(which ccache)" "/usr/local/bin/g++" \
+    && ln -s "$(which ccache)" "/usr/local/bin/nvcc"
+
 RUN cd ${RAPIDS_DIR} \
     && git clone -b ${BUILD_BRANCH} https://github.com/rapidsai/clx.git
 
