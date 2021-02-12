@@ -162,6 +162,10 @@ RUN cd ${RAPIDS_DIR}/{{ lib.name }} && \
   {% endif %}
 {% endfor %}
 
+{# Link to default compiler executables #}
+ENV CC="/usr/bin/gcc"
+ENV CXX="/usr/bin/g++"
+ENV NVCC="/usr/local/cuda/bin/nvcc"
 
 {% if "centos" in os %}
 {# Change LD_LIBRARY_PATH to exclude /usr/local/cuda/* since

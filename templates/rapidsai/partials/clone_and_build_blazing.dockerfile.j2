@@ -12,9 +12,10 @@ RUN gpuci_conda_retry install -y -n rapids -c blazingsql-nightly -c blazingsql \
 
 ENV CUDF_HOME=/rapids/cudf
 
-RUN ln -s "$(which ccache)" "/usr/local/bin/gcc" \
-    && ln -s "$(which ccache)" "/usr/local/bin/g++" \
-    && ln -s "$(which ccache)" "/usr/local/bin/nvcc"
+{# Link to ccache compiler symlinks #}
+ENV CC="/usr/local/bin/gcc"
+ENV CXX="/usr/local/bin/g++"
+ENV NVCC="/usr/local/bin/nvcc"
 
 {# Clone, build, install #}
 RUN mkdir -p ${BLAZING_DIR} \
@@ -43,6 +44,11 @@ RUN source activate rapids \
     && ccache -s \
     && cd ${BLAZING_DIR}/blazingsql \
     && ./build.sh
+
+{# Link to default compiler executables #}
+ENV CC="/usr/bin/gcc"
+ENV CXX="/usr/bin/g++"
+ENV NVCC="/usr/local/cuda/bin/nvcc"
 
 ENV LD_LIBRARY_PATH=${LD_LIBRARY_PATH_ORIG}
 ENV LD_LIBRARY_PATH_ORIG=
