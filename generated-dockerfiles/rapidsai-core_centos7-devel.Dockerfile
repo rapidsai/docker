@@ -218,6 +218,9 @@ RUN cd ${RAPIDS_DIR}/dask-cuda && \
   python setup.py install
 
 
+ENV CC="/usr/bin/gcc"
+ENV CXX="/usr/bin/g++"
+ENV NVCC="/usr/local/cuda/bin/nvcc"
 
 ENV LD_LIBRARY_PATH=${LD_LIBRARY_PATH_PREBUILD}
 

@@ -35,9 +35,9 @@ RUN source activate rapids && \
     pip install wget && \
     pip install "git+https://github.com/slashnext/SlashNext-URL-Analysis-and-Enrichment.git#egg=slashnext-phishing-ir&subdirectory=Python SDK/src"
 
-RUN ln -s "$(which ccache)" "/usr/local/bin/gcc" \
-    && ln -s "$(which ccache)" "/usr/local/bin/g++" \
-    && ln -s "$(which ccache)" "/usr/local/bin/nvcc"
+ENV CC="/usr/local/bin/gcc"
+ENV CXX="/usr/local/bin/g++"
+ENV NVCC="/usr/local/bin/nvcc"
 
 RUN cd ${RAPIDS_DIR} \
     && git clone -b ${BUILD_BRANCH} https://github.com/rapidsai/clx.git
@@ -46,6 +46,10 @@ RUN cd ${RAPIDS_DIR} \
 RUN source activate rapids && \
     cd /rapids/clx/python && \
     python setup.py install
+
+ENV CC="/usr/bin/gcc"
+ENV CXX="/usr/bin/g++"
+ENV NVCC="/usr/local/cuda/bin/nvcc"
 WORKDIR ${RAPIDS_DIR}
 
 
