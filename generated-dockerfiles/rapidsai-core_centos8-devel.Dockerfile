@@ -15,27 +15,6 @@ ARG FROM_IMAGE=gpuci/rapidsai
 
 FROM ${FROM_IMAGE}:${RAPIDS_VER}-cuda${CUDA_VER}-devel-${LINUX_VER}-py${PYTHON_VER}
 
-RUN gpuci_conda_retry install -c gpuci gpuci-ccache
-ENV CCACHE_NOHASHDIR=
-ENV CCACHE_DIR="/ccache"
-ENV CCACHE_COMPILERCHECK="%compiler% --version"
-
-ENV CC="/usr/local/bin/gcc"
-ENV CXX="/usr/local/bin/g++"
-ENV NVCC="/usr/local/bin/nvcc"
-ENV CUDAHOSTCXX="/usr/local/bin/g++"
-ENV CUDAToolkit_ROOT="/usr/local/cuda"
-ENV CUDACXX="/usr/local/cuda/bin/nvcc"
-ENV CMAKE_CUDA_COMPILER_LAUNCHER="ccache"
-ENV CMAKE_CXX_COMPILER_LAUNCHER="ccache"
-ENV CMAKE_C_COMPILER_LAUNCHER="ccache"
-RUN ln -s "$(which ccache)" "/usr/local/bin/gcc" \
-    && ln -s "$(which ccache)" "/usr/local/bin/g++" \
-    && ln -s "$(which ccache)" "/usr/local/bin/nvcc"
-
-COPY ccache /ccache
-RUN ccache -s
-
 ARG PARALLEL_LEVEL=16
 ARG RAPIDS_VER
 ARG BUILD_BRANCH="branch-${RAPIDS_VER}"
@@ -97,6 +76,25 @@ WORKDIR ${RAPIDS_DIR}/notebooks
 EXPOSE 8888
 EXPOSE 8787
 EXPOSE 8786
+ENV CCACHE_NOHASHDIR=
+ENV CCACHE_DIR="/ccache"
+ENV CCACHE_COMPILERCHECK="%compiler% --version"
+
+ENV CC="/usr/local/bin/gcc"
+ENV CXX="/usr/local/bin/g++"
+ENV NVCC="/usr/local/bin/nvcc"
+ENV CUDAHOSTCXX="/usr/local/bin/g++"
+ENV CUDAToolkit_ROOT="/usr/local/cuda"
+ENV CUDACXX="/usr/local/cuda/bin/nvcc"
+ENV CMAKE_CUDA_COMPILER_LAUNCHER="ccache"
+ENV CMAKE_CXX_COMPILER_LAUNCHER="ccache"
+ENV CMAKE_C_COMPILER_LAUNCHER="ccache"
+RUN ln -s "$(which ccache)" "/usr/local/bin/gcc" \
+    && ln -s "$(which ccache)" "/usr/local/bin/g++" \
+    && ln -s "$(which ccache)" "/usr/local/bin/nvcc"
+
+COPY ccache /ccache
+RUN ccache -s
 
 RUN cd ${RAPIDS_DIR} \
   && source activate rapids \
