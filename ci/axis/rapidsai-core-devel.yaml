@@ -13,12 +13,19 @@ RAPIDS_VER:
 
 CUDA_VER:
   - 11.0
+  - 10.2
+  - 10.1
 
 LINUX_VER:
+  - ubuntu16.04
   - ubuntu18.04
+  - ubuntu20.04
+  - centos7
+  - centos8
 
 PYTHON_VER:
   - 3.8
+  - 3.7
 
 exclude:
   - RAPIDS_VER: 0.18
