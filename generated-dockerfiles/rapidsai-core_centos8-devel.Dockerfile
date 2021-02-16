@@ -89,9 +89,6 @@ ENV CUDACXX="/usr/local/cuda/bin/nvcc"
 ENV CMAKE_CUDA_COMPILER_LAUNCHER="ccache"
 ENV CMAKE_CXX_COMPILER_LAUNCHER="ccache"
 ENV CMAKE_C_COMPILER_LAUNCHER="ccache"
-RUN ln -s "$(which ccache)" "/usr/local/bin/gcc" \
-    && ln -s "$(which ccache)" "/usr/local/bin/g++" \
-    && ln -s "$(which ccache)" "/usr/local/bin/nvcc"
 
 COPY ccache /ccache
 RUN ccache -s
