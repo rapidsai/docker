@@ -207,7 +207,7 @@ RUN cd ${RAPIDS_DIR}/xgboost && \
     make -j && make -j install && \
     cd ../python-package && python setup.py install; \
   fi && \
-  conda install -y --no-deps "${TREELITE_VER}"
+  gpuci_conda_retry install -y --no-deps "${TREELITE_VER}"
 
 RUN cd ${RAPIDS_DIR}/dask-cuda && \
   source activate rapids && \
