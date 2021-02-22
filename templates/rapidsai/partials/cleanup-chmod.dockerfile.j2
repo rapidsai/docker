@@ -2,5 +2,5 @@
 
 {# Clean-up conda and update ACLs for all users #}
 RUN chmod -R ugo+w /opt/conda ${RAPIDS_DIR} ${BLAZING_DIR} \
-  && conda clean -tipsy \
+  && conda clean -tipy \
   && chmod -R ugo+w /opt/conda ${RAPIDS_DIR} ${BLAZING_DIR}

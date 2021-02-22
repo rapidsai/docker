@@ -57,7 +57,7 @@ WORKDIR ${RAPIDS_DIR}
 
 
 RUN chmod -R ugo+w /opt/conda ${RAPIDS_DIR} ${BLAZING_DIR} \
-  && conda clean -tipsy \
+  && conda clean -tipy \
   && chmod -R ugo+w /opt/conda ${RAPIDS_DIR} ${BLAZING_DIR}
 COPY entrypoint.sh /opt/docker/bin/entrypoint
 ENTRYPOINT [ "/usr/bin/tini", "--", "/opt/docker/bin/entrypoint" ]
