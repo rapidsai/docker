@@ -180,7 +180,7 @@ RUN cd ${RAPIDS_DIR}/cugraph && \
 RUN cd ${RAPIDS_DIR}/xgboost && \
   source activate rapids && \
   ccache -s && \
-  TREELITE_VER=$(conda list -e treelite | grep -v "#") && \
+  TREELITE_VER=$(conda list -e treelite | grep -v "#" | grep "treelite=") && \
   conda remove -y --force-remove treelite && \
   if [[ "$CUDA_VER" == "11.0" ]]; then \
     mkdir -p build && cd build && \
