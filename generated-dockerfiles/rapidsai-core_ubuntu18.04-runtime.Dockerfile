@@ -19,7 +19,6 @@ ARG RAPIDS_VER
 ARG BUILD_BRANCH="branch-${RAPIDS_VER}"
 
 ENV RAPIDS_DIR=/rapids
-ENV LD_LIBRARY_PATH=/opt/conda/envs/rapids/lib:${LD_LIBRARY_PATH}
 
 RUN mkdir -p ${RAPIDS_DIR}/utils 
 COPY nbtest.sh nbtestlog2junitxml.py ${RAPIDS_DIR}/utils/
