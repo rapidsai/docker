@@ -35,7 +35,8 @@ RUN gpuci_conda_retry install -y -n rapids \
 COPY packages.sh /opt/docker/bin/
 
 
-RUN conda clean -afy \
+RUN chmod -R ugo+w /opt/conda ${RAPIDS_DIR} \
+  && conda clean -tipy \
   && chmod -R ugo+w /opt/conda ${RAPIDS_DIR}
 WORKDIR ${RAPIDS_DIR}
 
