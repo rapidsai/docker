@@ -15,7 +15,7 @@ env
 
 # Login to docker
 gpuci_logger "Logging into Docker..."
-echo $DH_TOKEN | docker login --username $DH_USER --password-stdin
+echo $DH_TOKEN | docker login --username $DH_USER --password-stdin &> /dev/null
 
 # Select dockerfile based on matrix var
 DOCKERFILE="${DOCKER_PREFIX}_${LINUX_VER}-${IMAGE_TYPE}.Dockerfile"
