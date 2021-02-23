@@ -17,7 +17,6 @@ ARG DASK_XGBOOST_VER=0.2*
 ARG RAPIDS_VER
 
 ENV RAPIDS_DIR=/rapids
-ENV LD_LIBRARY_PATH=/opt/conda/envs/rapids/lib:${LD_LIBRARY_PATH}
 
 RUN mkdir -p ${RAPIDS_DIR}/utils 
 COPY nbtest.sh nbtestlog2junitxml.py ${RAPIDS_DIR}/utils/
@@ -35,7 +34,8 @@ RUN gpuci_conda_retry install -y -n rapids \
 COPY packages.sh /opt/docker/bin/
 
 
-RUN conda clean -afy \
+RUN chmod -R ugo+w /opt/conda ${RAPIDS_DIR} \
+  && conda clean -tipy \
   && chmod -R ugo+w /opt/conda ${RAPIDS_DIR}
 WORKDIR ${RAPIDS_DIR}
 

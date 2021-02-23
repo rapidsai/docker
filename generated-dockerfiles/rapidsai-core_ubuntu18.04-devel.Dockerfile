@@ -180,7 +180,7 @@ RUN cd ${RAPIDS_DIR}/cugraph && \
 RUN cd ${RAPIDS_DIR}/xgboost && \
   source activate rapids && \
   ccache -s && \
-  TREELITE_VER=$(conda list -e treelite | grep -v "#") && \
+  TREELITE_VER=$(conda list -e treelite | grep -v "#" | grep "treelite=") && \
   conda remove -y --force-remove treelite && \
   if [[ "$CUDA_VER" == "11.0" ]]; then \
     mkdir -p build && cd build && \
@@ -207,7 +207,7 @@ RUN cd ${RAPIDS_DIR}/xgboost && \
     make -j && make -j install && \
     cd ../python-package && python setup.py install; \
   fi && \
-  conda install -y --no-deps "${TREELITE_VER}"
+  gpuci_conda_retry install -y --no-deps "${TREELITE_VER}"
 
 RUN cd ${RAPIDS_DIR}/dask-cuda && \
   source activate rapids && \
@@ -225,7 +225,8 @@ RUN ccache -s \
 COPY packages.sh /opt/docker/bin/
 
 
-RUN conda clean -afy \
+RUN chmod -R ugo+w /opt/conda ${RAPIDS_DIR} \
+  && conda clean -tipy \
   && chmod -R ugo+w /opt/conda ${RAPIDS_DIR}
 COPY source_entrypoints/runtime_devel.sh /opt/docker/bin/entrypoint_source
 COPY entrypoint.sh /opt/docker/bin/entrypoint

@@ -15,11 +15,10 @@ env
 
 # Login to docker
 gpuci_logger "Logging into Docker..."
-echo $DH_TOKEN | docker login --username $DH_USER --password-stdin
+echo $DH_TOKEN | docker login --username $DH_USER --password-stdin &> /dev/null
 
 # Select dockerfile based on matrix var
 DOCKERFILE="${DOCKER_PREFIX}_${LINUX_VER}-${IMAGE_TYPE}.Dockerfile"
-
 gpuci_logger "Using Dockerfile: generated-dockerfiles/${DOCKERFILE}"
 
 # Debug output selected dockerfile
@@ -30,6 +29,21 @@ gpuci_logger ">>>> END Dockerfile <<<<"
 # Get build info ready
 gpuci_logger "Preparing build config..."
 BUILD_TAG="cuda${CUDA_VER}-${IMAGE_TYPE}-${LINUX_VER}"
+# Check if PR build and modify BUILD_IMAGE and BUILD_TAG
+if [ ! -z "$PR_ID" ] ; then
+  echo "PR_ID is set to '$PR_ID', updating BUILD_IMAGE..."
+  BUILD_REPO=`echo $BUILD_IMAGE | tr '/' ' ' | awk '{ print $2 }'`
+  BUILD_IMAGE="rapidsaitesting/${BUILD_REPO}-pr${PR_ID}"
+  # Check if FROM_IMAGE to see if it is a root build
+  if [[ "$FROM_IMAGE" == "gpuci/rapidsai" ]] ; then
+    echo ">> No need to update FROM_IMAGE, using external image..."
+  else
+    echo ">> Need to update FROM_IMAGE to use PR's version for testing..."
+    FROM_REPO=`echo $FROM_IMAGE | tr '/' ' ' | awk '{ print $2 }'`
+    FROM_IMAGE="rapidsaitesting/${FROM_REPO}-pr${PR_ID}"
+  fi
+fi
+# Setup initial BUILD_ARGS
 BUILD_ARGS="--squash \
   --build-arg FROM_IMAGE=${FROM_IMAGE} \
   --build-arg CUDA_VER=${CUDA_VER} \
