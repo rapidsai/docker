@@ -10,6 +10,7 @@ IMAGE_TYPE:
 
 RAPIDS_VER:
   - 0.18
+  - 0.19
 
 CUDA_VER:
   - 11.0
