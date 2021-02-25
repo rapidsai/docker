@@ -9,7 +9,7 @@ IMAGE_TYPE:
   - devel
 
 RAPIDS_VER:
-  - 0.17
+  - 0.18
 
 CUDA_VER:
   - 11.0
@@ -24,11 +24,11 @@ LINUX_VER:
   - centos8
 
 PYTHON_VER:
-  - 3.7
   - 3.8
+  - 3.7
 
 exclude:
-  - RAPIDS_VER: 0.17
+  - RAPIDS_VER: 0.18
     BUILD_IMAGE: rapidsai/rapidsai-core-dev-nightly
   - CUDA_VER: 10.1
     LINUX_VER: centos8

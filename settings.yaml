@@ -2,7 +2,7 @@
 # Default Docker build arguments
 DEFAULT_PYTHON_VERSION: "3.7"
 DEFAULT_CUDA_VERSION: "10.1"
-DEFAULT_RAPIDS_VERSION: "0.17"
+DEFAULT_RAPIDS_VERSION: "0.18"
 
 # Libraries included in RAPIDS core devel images
 RAPIDS_LIBS:
@@ -25,6 +25,6 @@ RAPIDS_LIBS:
   - name: xgboost
     update_submodules: no
     repo_url: https://github.com/rapidsai/xgboost.git
-    branch: rapids-v0.17
+    branch: rapids-v0.18
   - name: dask-cuda
     repo_url: https://github.com/rapidsai/dask-cuda.git

@@ -1,3 +1,7 @@
+# Updates nightly and stable DockerHub READMEs anytime
+# a push to `main` occurs. This ensures that stable READMEs only get
+# automatically updated when `main` is updated (i.e. during release).
+
 name: Update DockerHub READMEs
 
 on:
@@ -5,7 +9,7 @@ on:
     branches:
       - main
     paths:
-      - dockerhub-readme/
+      - dockerhub-readme/generated-readmes/**
       - .github/workflows/dockerhub-readme.yml
 
 jobs:
@@ -22,14 +26,18 @@ jobs:
           - rapidsai-core-dev
           - rapidsai-core-nightly
           - rapidsai-core-dev-nightly
+          - rapidsai-clx
+          - rapidsai-clx-dev
+          - rapidsai-clx-nightly
+          - rapidsai-clx-dev-nightly
     steps:
       - name: checkout code
         uses: actions/checkout@v2
 
-      - name: Docker Hub Description >>> ${{ matrix.repo_name }}
+      - name: DockerHub README >>> ${{ matrix.repo_name }}
         uses: peter-evans/dockerhub-description@v2
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_PASSWORD }}
           repository: rapidsai/${{ matrix.repo_name }}
-          readme-filepath: dockerhub-readme/Dockerhub_${{ matrix.repo_name }}.md
+          readme-filepath: dockerhub-readme/generated-readmes/${{ matrix.repo_name }}.md

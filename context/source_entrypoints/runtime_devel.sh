@@ -11,5 +11,5 @@ else
    echo "To access it, visit http://localhost:8888 on your host machine."
    echo 'Ensure the following arguments were added to "docker run" to expose the JupyterLab server to your host machine:
       -p 8888:8888 -p 8787:8787 -p 8786:8786'
-   echo "Make local folders visible by bind mounting to /rapids/notebooks/host"
+   [ ! -d "/rapids/notebooks/host/" ] && echo "Make local folders visible by bind mounting to /rapids/notebooks/host"
 fi

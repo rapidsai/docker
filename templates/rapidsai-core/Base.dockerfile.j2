@@ -18,9 +18,6 @@ ARG DASK_XGBOOST_VER=0.2*
 ARG RAPIDS_VER
 
 ENV RAPIDS_DIR=/rapids
-{% if "ubuntu" in os %}
-ENV LD_LIBRARY_PATH=/opt/conda/envs/rapids/lib:${LD_LIBRARY_PATH}
-{% endif %}
 
 {# Copy files needed by RAPIDS and 3rd parties for builds, test, and runtime. #}
 RUN mkdir -p ${RAPIDS_DIR}/utils {{ "${GCC7_DIR}/lib64" if "centos" in os }}
@@ -35,9 +32,6 @@ COPY libm.so.6 ${GCC7_DIR}/lib64
 
 RUN gpuci_conda_retry install -y -n rapids \
   "rapids=${RAPIDS_VER}*"
-
-{# Patch for CVEs #}
-{% include 'partials/patch.dockerfile.j2' %}
 
 {# Run common commands #}
 COPY packages.sh /opt/docker/bin/

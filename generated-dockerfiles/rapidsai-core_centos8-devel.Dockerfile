@@ -5,36 +5,15 @@
 # jupyter notebooks are also provided, as well as jupyterlab and all the
 # dependencies required to run them.
 #
-# Copyright (c) 2020, NVIDIA CORPORATION.
+# Copyright (c) 2021, NVIDIA CORPORATION.
 
 ARG CUDA_VER=10.1
 ARG LINUX_VER=centos8
 ARG PYTHON_VER=3.7
-ARG RAPIDS_VER=0.17
+ARG RAPIDS_VER=0.18
 ARG FROM_IMAGE=gpuci/rapidsai
 
 FROM ${FROM_IMAGE}:${RAPIDS_VER}-cuda${CUDA_VER}-devel-${LINUX_VER}-py${PYTHON_VER}
-
-RUN gpuci_conda_retry install -c gpuci gpuci-ccache
-ENV CCACHE_NOHASHDIR=
-ENV CCACHE_DIR="/ccache"
-ENV CCACHE_COMPILERCHECK="%compiler% --version"
-
-ENV CC="/usr/local/bin/gcc"
-ENV CXX="/usr/local/bin/g++"
-ENV NVCC="/usr/local/bin/nvcc"
-ENV CUDAHOSTCXX="/usr/local/bin/g++"
-ENV CUDAToolkit_ROOT="/usr/local/cuda"
-ENV CUDACXX="/usr/local/cuda/bin/nvcc"
-ENV CMAKE_CUDA_COMPILER_LAUNCHER="ccache"
-ENV CMAKE_CXX_COMPILER_LAUNCHER="ccache"
-ENV CMAKE_C_COMPILER_LAUNCHER="ccache"
-RUN ln -s "$(which ccache)" "/usr/local/bin/gcc" \
-    && ln -s "$(which ccache)" "/usr/local/bin/g++" \
-    && ln -s "$(which ccache)" "/usr/local/bin/nvcc"
-
-COPY ccache /ccache
-RUN ccache -s
 
 ARG PARALLEL_LEVEL=16
 ARG RAPIDS_VER
@@ -67,9 +46,6 @@ RUN gpuci_conda_retry install -y -n rapids \
 
 
 RUN source activate rapids \
-    && npm i -g npm@">=7"
-
-RUN source activate rapids \
   && env \
   && conda info \
   && conda config --show-sources \
@@ -85,6 +61,9 @@ RUN gpuci_conda_retry install -y -n rapids jupyterlab-nvdashboard
 RUN source activate rapids \
   && jupyter labextension install @jupyter-widgets/jupyterlab-manager dask-labextension jupyterlab-nvdashboard
 
+ENV DASK_LABEXTENSION__FACTORY__MODULE="dask_cuda"
+ENV DASK_LABEXTENSION__FACTORY__CLASS="LocalCUDACluster"
+
 RUN cd ${RAPIDS_DIR} \
   && source activate rapids \
   && git clone -b ${BUILD_BRANCH} --depth 1 --single-branch https://github.com/rapidsai/notebooks.git \
@@ -97,6 +76,22 @@ WORKDIR ${RAPIDS_DIR}/notebooks
 EXPOSE 8888
 EXPOSE 8787
 EXPOSE 8786
+ENV CCACHE_NOHASHDIR=
+ENV CCACHE_DIR="/ccache"
+ENV CCACHE_COMPILERCHECK="%compiler% --version"
+
+ENV CC="/usr/local/bin/gcc"
+ENV CXX="/usr/local/bin/g++"
+ENV NVCC="/usr/local/bin/nvcc"
+ENV CUDAHOSTCXX="/usr/local/bin/g++"
+ENV CUDAToolkit_ROOT="/usr/local/cuda"
+ENV CUDACXX="/usr/local/cuda/bin/nvcc"
+ENV CMAKE_CUDA_COMPILER_LAUNCHER="ccache"
+ENV CMAKE_CXX_COMPILER_LAUNCHER="ccache"
+ENV CMAKE_C_COMPILER_LAUNCHER="ccache"
+
+COPY ccache /ccache
+RUN ccache -s
 
 RUN cd ${RAPIDS_DIR} \
   && source activate rapids \
@@ -108,7 +103,7 @@ RUN cd ${RAPIDS_DIR} \
   && cd cuml \
   && git submodule update --init --recursive --no-single-branch --depth 1 \
   && cd ${RAPIDS_DIR} \
-  && git clone -b rapids-v0.17 --depth 1 --single-branch https://github.com/rapidsai/xgboost.git \
+  && git clone -b rapids-v0.18 --depth 1 --single-branch https://github.com/rapidsai/xgboost.git \
   && cd xgboost \
   && git submodule update --init --recursive --no-single-branch --depth 1 \
   && cd ${RAPIDS_DIR} \
@@ -185,6 +180,8 @@ RUN cd ${RAPIDS_DIR}/cugraph && \
 RUN cd ${RAPIDS_DIR}/xgboost && \
   source activate rapids && \
   ccache -s && \
+  TREELITE_VER=$(conda list -e treelite | grep -v "#" | grep "treelite=") && \
+  conda remove -y --force-remove treelite && \
   if [[ "$CUDA_VER" == "11.0" ]]; then \
     mkdir -p build && cd build && \
     cmake -DCMAKE_INSTALL_PREFIX=$CONDA_PREFIX \
@@ -209,7 +206,8 @@ RUN cd ${RAPIDS_DIR}/xgboost && \
           -DCMAKE_BUILD_TYPE=release .. && \
     make -j && make -j install && \
     cd ../python-package && python setup.py install; \
-  fi
+  fi && \
+  gpuci_conda_retry install -y --no-deps "${TREELITE_VER}"
 
 RUN cd ${RAPIDS_DIR}/dask-cuda && \
   source activate rapids && \
@@ -228,7 +226,8 @@ RUN ccache -s \
 COPY packages.sh /opt/docker/bin/
 
 
-RUN conda clean -afy \
+RUN chmod -R ugo+w /opt/conda ${RAPIDS_DIR} \
+  && conda clean -tipy \
   && chmod -R ugo+w /opt/conda ${RAPIDS_DIR}
 COPY source_entrypoints/runtime_devel.sh /opt/docker/bin/entrypoint_source
 COPY entrypoint.sh /opt/docker/bin/entrypoint

@@ -5,12 +5,12 @@
 # jupyter notebooks are also provided, as well as jupyterlab and all the
 # dependencies required to run them.
 #
-# Copyright (c) 2020, NVIDIA CORPORATION.
+# Copyright (c) 2021, NVIDIA CORPORATION.
 
 ARG CUDA_VER=10.1
 ARG LINUX_VER=centos7
 ARG PYTHON_VER=3.7
-ARG RAPIDS_VER=0.17
+ARG RAPIDS_VER=0.18
 ARG FROM_IMAGE=rapidsai/rapidsai-core-dev
 
 FROM ${FROM_IMAGE}:${RAPIDS_VER}-cuda${CUDA_VER}-devel-${LINUX_VER}-py${PYTHON_VER}
@@ -57,7 +57,8 @@ ENV LD_LIBRARY_PATH_ORIG=
 WORKDIR ${RAPIDS_DIR}
 
 
-RUN conda clean -afy \
+RUN chmod -R ugo+w /opt/conda ${RAPIDS_DIR} ${BLAZING_DIR} \
+  && conda clean -tipy \
   && chmod -R ugo+w /opt/conda ${RAPIDS_DIR} ${BLAZING_DIR}
 COPY entrypoint.sh /opt/docker/bin/entrypoint
 ENTRYPOINT [ "/usr/bin/tini", "--", "/opt/docker/bin/entrypoint" ]
