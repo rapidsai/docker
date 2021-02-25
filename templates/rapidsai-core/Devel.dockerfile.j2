@@ -107,7 +107,7 @@ RUN cd ${RAPIDS_DIR}/{{ lib.name }} && \
   source activate rapids && \
   ccache -s && \
   {% if lib.name == "cudf" %}
-  ./build.sh libcudf cudf dask_cudf libcudf_kafka cudf_kafka tests
+  ./build.sh --allgpuarch libcudf cudf dask_cudf libcudf_kafka cudf_kafka tests
 
   {% elif lib.name == "cuspatial" %}
   export CUSPATIAL_HOME="$PWD" && \
