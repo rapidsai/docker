@@ -15,9 +15,14 @@ jobs:
         uses: actions/checkout@v2
       - name: Generate new Dockerfiles & READMEs
         run: |
+          RAPIDS_NIGHTLY_VERSION=$(grep DEFAULT_RAPIDS_VERSION settings.yaml | sed 's/.*\.//' | sed 's/[" ]//g')
+          [ "${BASE_BRANCH_NAME}" = "main" ] && let RAPIDS_NIGHTLY_VERSION++
+
           pip install -r requirements.txt
           ./generate_dockerfiles.py
-          ./dockerhub-readme/generate_readmes.py
+          ./dockerhub-readme/generate_readmes.py -n ${RAPIDS_NIGHTLY_VERSION}
+        env:
+          BASE_BRANCH_NAME: ${{ github.base_ref }}
       - name: Check diffs
         run: |
           git diff
