@@ -39,8 +39,6 @@ COPY nbtest.sh nbtestlog2junitxml.py ${RAPIDS_DIR}/utils/
 COPY libm.so.6 ${GCC7_DIR}/lib64
 {% endif %}
 
-{% include 'partials/os_pkgs.dockerfile.j2' %}
-
 {# Install dependencies needed for devel: build deps + RAPIDS runtime deps +
 notebook deps. This is done as a single install to ensure compatibility
 between packages. #}
