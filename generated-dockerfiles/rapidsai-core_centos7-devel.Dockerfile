@@ -143,26 +143,41 @@ ENV LD_LIBRARY_PATH=${LD_LIBRARY_PATH}:/opt/conda/envs/rapids/lib
 RUN cd ${RAPIDS_DIR}/rmm && \
   source activate rapids && \
   ccache -s && \
+  ccache --set-config=base_dir="${RAPIDS_DIR}/rmm" && \
+  ccache --set-config=cache_dir="/ccache/rmm" && \
+  ccache -z && \
   ./build.sh
 
 RUN cd ${RAPIDS_DIR}/cudf && \
   source activate rapids && \
   ccache -s && \
+  ccache --set-config=base_dir="${RAPIDS_DIR}/cudf" && \
+  ccache --set-config=cache_dir="/ccache/cudf" && \
+  ccache -z && \
   ./build.sh --allgpuarch libcudf cudf dask_cudf libcudf_kafka cudf_kafka tests
 
 RUN cd ${RAPIDS_DIR}/cusignal && \
   source activate rapids && \
   ccache -s && \
+  ccache --set-config=base_dir="${RAPIDS_DIR}/cusignal" && \
+  ccache --set-config=cache_dir="/ccache/cusignal" && \
+  ccache -z && \
   ./build.sh
 
 RUN cd ${RAPIDS_DIR}/cuxfilter && \
   source activate rapids && \
   ccache -s && \
+  ccache --set-config=base_dir="${RAPIDS_DIR}/cuxfilter" && \
+  ccache --set-config=cache_dir="/ccache/cuxfilter" && \
+  ccache -z && \
   ./build.sh
 
 RUN cd ${RAPIDS_DIR}/cuspatial && \
   source activate rapids && \
   ccache -s && \
+  ccache --set-config=base_dir="${RAPIDS_DIR}/cuspatial" && \
+  ccache --set-config=cache_dir="/ccache/cuspatial" && \
+  ccache -z && \
   export CUSPATIAL_HOME="$PWD" && \
   export CUDF_HOME="$PWD/../cudf" && \
   ./build.sh libcuspatial cuspatial tests
@@ -170,16 +185,25 @@ RUN cd ${RAPIDS_DIR}/cuspatial && \
 RUN cd ${RAPIDS_DIR}/cuml && \
   source activate rapids && \
   ccache -s && \
+  ccache --set-config=base_dir="${RAPIDS_DIR}/cuml" && \
+  ccache --set-config=cache_dir="/ccache/cuml" && \
+  ccache -z && \
   ./build.sh --allgpuarch --buildgtest libcuml cuml prims
 
 RUN cd ${RAPIDS_DIR}/cugraph && \
   source activate rapids && \
   ccache -s && \
+  ccache --set-config=base_dir="${RAPIDS_DIR}/cugraph" && \
+  ccache --set-config=cache_dir="/ccache/cugraph" && \
+  ccache -z && \
   ./build.sh --allgpuarch cugraph libcugraph
 
 RUN cd ${RAPIDS_DIR}/xgboost && \
   source activate rapids && \
   ccache -s && \
+  ccache --set-config=base_dir="${RAPIDS_DIR}/xgboost" && \
+  ccache --set-config=cache_dir="/ccache/xgboost" && \
+  ccache -z && \
   TREELITE_VER=$(conda list -e treelite | grep -v "#" | grep "treelite=") && \
   gpuci_conda_retry remove -y --force-remove treelite && \
   if [[ "$CUDA_VER" == "11.0" ]]; then \
@@ -212,6 +236,9 @@ RUN cd ${RAPIDS_DIR}/xgboost && \
 RUN cd ${RAPIDS_DIR}/dask-cuda && \
   source activate rapids && \
   ccache -s && \
+  ccache --set-config=base_dir="${RAPIDS_DIR}/dask-cuda" && \
+  ccache --set-config=cache_dir="/ccache/dask-cuda" && \
+  ccache -z && \
   python setup.py install
 
 
