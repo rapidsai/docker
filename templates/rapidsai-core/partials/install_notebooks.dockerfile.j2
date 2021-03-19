@@ -26,6 +26,9 @@ RUN cd ${RAPIDS_DIR} \
 {# Add test file for testing notebooks from within the container #}
 COPY test.sh /
 
+{# Add jupyter start/stop scripts #}
+COPY start-jupyter.sh stop-jupyter.sh /rapids/utils/
+
 WORKDIR ${RAPIDS_DIR}/notebooks
 {# Jupyter notebook port #}
 EXPOSE 8888

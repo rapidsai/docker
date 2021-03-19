@@ -72,6 +72,8 @@ RUN cd ${RAPIDS_DIR} \
 
 COPY test.sh /
 
+COPY start-jupyter.sh stop-jupyter.sh /rapids/utils/
+
 WORKDIR ${RAPIDS_DIR}/notebooks
 EXPOSE 8888
 EXPOSE 8787

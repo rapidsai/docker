@@ -23,8 +23,7 @@ COPY nbtest.sh nbtestlog2junitxml.py ${RAPIDS_DIR}/utils/
 
 COPY libm.so.6 ${GCC7_DIR}/lib64
 
-RUN yum check-update \
-    && yum install -y \
+RUN yum install -y \
       openssh-clients
 
 

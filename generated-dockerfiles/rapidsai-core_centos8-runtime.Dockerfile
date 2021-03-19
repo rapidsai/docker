@@ -25,8 +25,7 @@ COPY nbtest.sh nbtestlog2junitxml.py ${RAPIDS_DIR}/utils/
 
 COPY libm.so.6 ${GCC7_DIR}/lib64
 
-RUN yum check-update \
-    && yum install -y \
+RUN yum install -y \
       openssh-clients
 
 
@@ -60,6 +59,8 @@ RUN cd ${RAPIDS_DIR} \
   && git submodule update --init --remote --no-single-branch --depth 1
 
 COPY test.sh /
+
+COPY start-jupyter.sh stop-jupyter.sh /rapids/utils/
 
 WORKDIR ${RAPIDS_DIR}/notebooks
 EXPOSE 8888
