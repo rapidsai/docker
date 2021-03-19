@@ -1,6 +1,5 @@
 {% if "centos" in os %}
-RUN yum check-update \
-    && yum install -y \
+RUN yum install -y \
       openssh-clients
 {% endif %}
 
