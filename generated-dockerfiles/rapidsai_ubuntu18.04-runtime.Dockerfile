@@ -16,7 +16,7 @@ FROM ${FROM_IMAGE}:${RAPIDS_VER}-cuda${CUDA_VER}-runtime-${LINUX_VER}-py${PYTHON
 
 RUN gpuci_conda_retry install -y -n rapids -c blazingsql-nightly -c blazingsql \
   "rapids-blazing=${RAPIDS_VER}*" \
-  "cudatoolkit=${RAPIDS_VER}*"
+  "cudatoolkit=${CUDA_VER}"
 
 ENV BLAZING_DIR=/blazing
 
