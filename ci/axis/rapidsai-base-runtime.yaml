@@ -13,6 +13,7 @@ RAPIDS_VER:
   - 0.19
 
 CUDA_VER:
+  - 11.2
   - 11.0
   - 10.2
   - 10.1
@@ -39,3 +40,5 @@ exclude:
     LINUX_VER: centos8
   - CUDA_VER: 10.2
     LINUX_VER: ubuntu20.04
+  - CUDA_VER: 11.2        # FIXME: waiting on nvidia/cuda to release 11.2 cos7
+    LINUX_VER: centos7
