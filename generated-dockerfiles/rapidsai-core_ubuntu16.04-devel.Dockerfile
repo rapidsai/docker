@@ -82,9 +82,9 @@ ENV CCACHE_NOHASHDIR=
 ENV CCACHE_DIR="/ccache"
 ENV CCACHE_COMPILERCHECK="%compiler% --version"
 
-ENV CC="/usr/local/bin/gcc"
-ENV CXX="/usr/local/bin/g++"
-ENV NVCC="/usr/local/bin/nvcc"
+ENV CC="/usr/bin/gcc"
+ENV CXX="/usr/bin/g++"
+ENV NVCC="/usr/bin/nvcc"
 ENV CUDAHOSTCXX="/usr/bin/g++"
 ENV CUDAToolkit_ROOT="/usr/local/cuda"
 ENV CUDACXX="/usr/local/cuda/bin/nvcc"
