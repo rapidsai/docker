@@ -82,6 +82,9 @@ ENV CCACHE_NOHASHDIR=
 ENV CCACHE_CONFIGPATH="/ccache/ccache.conf"
 ENV CCACHE_COMPILERCHECK="%compiler% --version"
 
+ENV CUDAHOSTCXX="/usr/bin/g++"
+ENV CUDAToolkit_ROOT="/usr/local/cuda"
+ENV CUDACXX="/usr/local/cuda/bin/nvcc"
 ENV CMAKE_CUDA_COMPILER_LAUNCHER="ccache"
 ENV CMAKE_CXX_COMPILER_LAUNCHER="ccache"
 ENV CMAKE_C_COMPILER_LAUNCHER="ccache"
