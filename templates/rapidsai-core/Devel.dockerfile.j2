@@ -104,9 +104,9 @@ ENV LD_LIBRARY_PATH=${LD_LIBRARY_PATH}:/opt/conda/envs/rapids/lib
 {% for lib in RAPIDS_LIBS %}
 RUN cd ${RAPIDS_DIR}/{{ lib.name }} && \
   source activate rapids && \
-  ccache -s && \
   ccache --set-config=base_dir="${RAPIDS_DIR}/{{ lib.name }}" && \
   ccache --set-config=cache_dir="/ccache/{{ lib.name }}" && \
+  ccache -s && \
   ccache -z && \
   {% if lib.name == "cudf" %}
   ./build.sh --allgpuarch libcudf cudf dask_cudf libcudf_kafka cudf_kafka tests
