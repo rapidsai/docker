@@ -1,0 +1,5 @@
+{# This partial is used to install patches to resolve known CVEs #}
+
+{# Patch for CVE-2020-8116 https://github.com/advisories/GHSA-ff7x-qrg7-qggm #}
+RUN source activate rapids \
+    && npm i -g npm@">=7"

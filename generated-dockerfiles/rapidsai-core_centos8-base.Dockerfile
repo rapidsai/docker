@@ -36,6 +36,9 @@ RUN source activate rapids \
 RUN gpuci_conda_retry install -y -n rapids \
   "rapids=${RAPIDS_VER}*"
 
+
+RUN source activate rapids \
+    && npm i -g npm@">=7"
 COPY packages.sh /opt/docker/bin/
 
 
