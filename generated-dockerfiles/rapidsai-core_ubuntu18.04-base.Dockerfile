@@ -35,7 +35,9 @@ RUN gpuci_conda_retry install -y -n rapids \
 RUN source activate rapids \
     && npm i -g npm@">=7"
 
-RUN apt-get update && apt-get -y upgrade
+RUN apt-get update \
+    && apt-get -y upgrade \
+    && rm -rf /var/lib/apt/lists/*
 
 COPY packages.sh /opt/docker/bin/
 

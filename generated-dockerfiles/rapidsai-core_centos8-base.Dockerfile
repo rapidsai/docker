@@ -36,7 +36,8 @@ RUN gpuci_conda_retry install -y -n rapids \
 RUN source activate rapids \
     && npm i -g npm@">=7"
 
-RUN yum -y upgrade
+RUN yum -y upgrade \
+    && yum clean all
 
 COPY packages.sh /opt/docker/bin/
 

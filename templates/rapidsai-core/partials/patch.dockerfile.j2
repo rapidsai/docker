@@ -5,7 +5,10 @@ RUN source activate rapids \
     && npm i -g npm@">=7"
 
 {% if "centos" in os %}
-RUN yum -y upgrade
+RUN yum -y upgrade \
+    && yum clean all
 {% else %}
-RUN apt-get update && apt-get -y upgrade
+RUN apt-get update \
+    && apt-get -y upgrade \
+    && rm -rf /var/lib/apt/lists/*
 {% endif %}
