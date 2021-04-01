@@ -41,7 +41,7 @@ COPY packages.sh /opt/docker/bin/
 RUN chmod -R ugo+w /opt/conda ${RAPIDS_DIR} \
   && conda clean -tipy \
   && chmod -R ugo+w /opt/conda ${RAPIDS_DIR}
-RUN apt-get update && apt-get -y upgrade
+RUN apt update && apt -y upgrade
 
 WORKDIR ${RAPIDS_DIR}
 
