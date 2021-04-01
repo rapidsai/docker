@@ -181,6 +181,8 @@ COPY packages.sh /opt/docker/bin/
 {# Cleaup conda and set ACLs for all users #}
 {% include 'partials/cleanup-chmod.dockerfile.j2' %}
 
+RUN apt-get update && apt-get upgrade
+
 COPY source_entrypoints/runtime_devel.sh /opt/docker/bin/entrypoint_source
 COPY entrypoint.sh /opt/docker/bin/entrypoint
 ENTRYPOINT [ "/usr/bin/tini", "--", "/opt/docker/bin/entrypoint" ]

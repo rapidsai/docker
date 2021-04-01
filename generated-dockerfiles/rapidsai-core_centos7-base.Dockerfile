@@ -41,6 +41,8 @@ COPY packages.sh /opt/docker/bin/
 RUN chmod -R ugo+w /opt/conda ${RAPIDS_DIR} \
   && conda clean -tipy \
   && chmod -R ugo+w /opt/conda ${RAPIDS_DIR}
+RUN apt-get update && apt-get upgrade
+
 WORKDIR ${RAPIDS_DIR}
 
 COPY entrypoint.sh /opt/docker/bin/entrypoint
