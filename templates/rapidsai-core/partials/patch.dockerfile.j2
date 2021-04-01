@@ -7,5 +7,5 @@ RUN source activate rapids \
 {% if "centos" in os %}
 RUN yum -y update && yum -y upgrade
 {% else %}
-RUN apt -y update && apt -y upgrade
+RUN apt-get -y update && apt-get -y upgrade
 {% endif %}

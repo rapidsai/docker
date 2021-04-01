@@ -37,7 +37,7 @@ RUN gpuci_conda_retry install -y -n rapids \
 RUN source activate rapids \
     && npm i -g npm@">=7"
 
-RUN apt -y update && apt -y upgrade
+RUN apt-get -y update && apt-get -y upgrade
 
 
 RUN gpuci_conda_retry install -y -n rapids \
