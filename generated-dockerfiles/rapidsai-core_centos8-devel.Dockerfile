@@ -48,6 +48,9 @@ RUN gpuci_conda_retry install -y -n rapids \
 RUN source activate rapids \
     && npm i -g npm@">=7"
 
+RUN yum -y update && yum -y upgrade
+
+
 RUN source activate rapids \
   && env \
   && conda info \
@@ -232,8 +235,6 @@ COPY packages.sh /opt/docker/bin/
 RUN chmod -R ugo+w /opt/conda ${RAPIDS_DIR} \
   && conda clean -tipy \
   && chmod -R ugo+w /opt/conda ${RAPIDS_DIR}
-RUN yum -y update && yum -y upgrade
-
 COPY source_entrypoints/runtime_devel.sh /opt/docker/bin/entrypoint_source
 COPY entrypoint.sh /opt/docker/bin/entrypoint
 ENTRYPOINT [ "/usr/bin/tini", "--", "/opt/docker/bin/entrypoint" ]
