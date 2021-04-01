@@ -60,13 +60,19 @@ RUN gpuci_conda_retry install -y -n rapids \
 
 {# Setup ccache from conda package #}
 ENV CCACHE_NOHASHDIR=
-ENV CCACHE_DIR="/ccache"
+ENV CCACHE_CONFIGPATH="/ccache/ccache.conf"
 ENV CCACHE_COMPILERCHECK="%compiler% --version"
 
-ENV CC="/usr/local/bin/gcc"
-ENV CXX="/usr/local/bin/g++"
-ENV NVCC="/usr/local/bin/nvcc"
-ENV CUDAHOSTCXX="/usr/local/bin/g++"
+{% if "centos" in os %}
+ENV GCC7_DIR="/usr/local/gcc7"
+ENV CC="${GCC7_DIR}/bin/gcc"
+ENV CXX="${GCC7_DIR}/bin/g++"
+ENV CUDAHOSTCXX="${GCC7_DIR}/bin/g++"
+{% else %}
+ENV CC="/usr/bin/gcc"
+ENV CXX="/usr/bin/g++"
+ENV CUDAHOSTCXX="/usr/bin/g++"
+{% endif %}
 ENV CUDAToolkit_ROOT="/usr/local/cuda"
 ENV CUDACXX="/usr/local/cuda/bin/nvcc"
 ENV CMAKE_CUDA_COMPILER_LAUNCHER="ccache"
@@ -105,7 +111,10 @@ ENV LD_LIBRARY_PATH=${LD_LIBRARY_PATH}:/opt/conda/envs/rapids/lib
 {% for lib in RAPIDS_LIBS %}
 RUN cd ${RAPIDS_DIR}/{{ lib.name }} && \
   source activate rapids && \
+  ccache --set-config=base_dir="${RAPIDS_DIR}/{{ lib.name }}" && \
+  ccache --set-config=cache_dir="/ccache/{{ lib.name }}" && \
   ccache -s && \
+  ccache -z && \
   {% if lib.name == "cudf" %}
   ./build.sh --allgpuarch libcudf cudf dask_cudf libcudf_kafka cudf_kafka tests
 
