@@ -43,6 +43,11 @@ RUN gpuci_conda_retry install -y -n rapids \
 RUN source activate rapids \
     && npm i -g npm@">=7"
 
+RUN apt-get update \
+    && apt-get -y upgrade \
+    && rm -rf /var/lib/apt/lists/*
+
+
 RUN gpuci_conda_retry install -y -n rapids \
         "rapids-notebook-env=${RAPIDS_VER}*" \
     && gpuci_conda_retry remove -y -n rapids --force-remove \
@@ -76,8 +81,6 @@ COPY packages.sh /opt/docker/bin/
 RUN chmod -R ugo+w /opt/conda ${RAPIDS_DIR} \
   && conda clean -tipy \
   && chmod -R ugo+w /opt/conda ${RAPIDS_DIR}
-RUN apt-get update && apt-get -y upgrade
-
 COPY source_entrypoints/runtime_devel.sh /opt/docker/bin/entrypoint_source
 COPY entrypoint.sh /opt/docker/bin/entrypoint
 ENTRYPOINT [ "/usr/bin/tini", "--", "/opt/docker/bin/entrypoint" ]
