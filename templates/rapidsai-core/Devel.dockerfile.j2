@@ -63,7 +63,16 @@ ENV CCACHE_NOHASHDIR=
 ENV CCACHE_CONFIGPATH="/ccache/ccache.conf"
 ENV CCACHE_COMPILERCHECK="%compiler% --version"
 
+{% if "centos" in os %}
+ENV GCC7_DIR="/usr/local/gcc7"
+ENV CC="${GCC7_DIR}/bin/gcc"
+ENV CXX="${GCC7_DIR}/bin/g++"
+ENV CUDAHOSTCXX="${GCC7_DIR}/bin/g++"
+{% else %}
+ENV CC="/usr/bin/gcc"
+ENV CXX="/usr/bin/g++"
 ENV CUDAHOSTCXX="/usr/bin/g++"
+{% endif %}
 ENV CUDAToolkit_ROOT="/usr/local/cuda"
 ENV CUDACXX="/usr/local/cuda/bin/nvcc"
 ENV CMAKE_CUDA_COMPILER_LAUNCHER="ccache"
