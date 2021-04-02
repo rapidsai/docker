@@ -19,6 +19,8 @@ ARG PARALLEL_LEVEL=16
 ARG RAPIDS_VER
 ARG BUILD_BRANCH="branch-${RAPIDS_VER}"
 
+RUN if [ "${BUILD_BRANCH}" = "main" ]; then sed -i '/nightly/d' /opt/conda/.condarc; fi
+
 ARG PYTHON_VER
 
 ENV RAPIDS_DIR=/rapids
