@@ -15,6 +15,9 @@ FROM ${FROM_IMAGE}:${RAPIDS_VER}-cuda${CUDA_VER}-base-${LINUX_VER}-py${PYTHON_VE
 
 ARG DASK_XGBOOST_VER=0.2*
 ARG RAPIDS_VER
+ARG BUILD_BRANCH="branch-${RAPIDS_VER}"
+
+RUN if [ "${BUILD_BRANCH}" = "main" ]; then sed -i '/nightly/d' /opt/conda/.condarc; fi
 
 ENV RAPIDS_DIR=/rapids
 
