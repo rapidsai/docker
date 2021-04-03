@@ -19,6 +19,8 @@ ARG PARALLEL_LEVEL=16
 ARG RAPIDS_VER
 ARG BUILD_BRANCH="branch-${RAPIDS_VER}"
 
+RUN if [ "${BUILD_BRANCH}" = "main" ]; then sed -i '/nightly/d' /opt/conda/.condarc; fi
+
 ARG PYTHON_VER
 
 ENV RAPIDS_DIR=/rapids
@@ -45,6 +47,14 @@ RUN gpuci_conda_retry install -y -n rapids \
     && gpuci_conda_retry remove -y -n rapids --force-remove \
       "rapids-build-env=${RAPIDS_VER}*" \
       "rapids-doc-env=${RAPIDS_VER}*"
+
+
+RUN source activate rapids \
+    && npm i -g npm@">=7"
+
+RUN apt-get update \
+    && apt-get -y upgrade \
+    && rm -rf /var/lib/apt/lists/*
 
 
 RUN source activate rapids \

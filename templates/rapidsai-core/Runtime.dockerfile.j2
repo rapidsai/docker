@@ -19,6 +19,8 @@ ARG DASK_XGBOOST_VER=0.2*
 ARG RAPIDS_VER
 ARG BUILD_BRANCH="branch-${RAPIDS_VER}"
 
+RUN if [ "${BUILD_BRANCH}" = "main" ]; then sed -i '/nightly/d' /opt/conda/.condarc; fi
+
 ENV RAPIDS_DIR=/rapids
 
 {# Copy files needed by RAPIDS and 3rd parties for builds, test, and runtime. #}
@@ -36,6 +38,9 @@ COPY libm.so.6 ${GCC7_DIR}/lib64
 
 RUN gpuci_conda_retry install -y -n rapids \
   "rapids=${RAPIDS_VER}*"
+
+{# Patch for CVEs #}
+{% include 'partials/patch.dockerfile.j2' %}
 
 {# Install the notebook dependencies and the notebook repo #}
 {% include 'partials/install_notebooks.dockerfile.j2' %}
