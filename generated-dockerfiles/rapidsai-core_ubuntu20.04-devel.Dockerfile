@@ -90,23 +90,6 @@ WORKDIR ${RAPIDS_DIR}/notebooks
 EXPOSE 8888
 EXPOSE 8787
 EXPOSE 8786
-ENV CCACHE_NOHASHDIR=
-ENV CCACHE_DIR="/ccache"
-ENV CCACHE_COMPILERCHECK="%compiler% --version"
-
-ENV CC="/usr/local/bin/gcc"
-ENV CXX="/usr/local/bin/g++"
-ENV NVCC="/usr/local/bin/nvcc"
-ENV CUDAHOSTCXX="/usr/local/bin/g++"
-ENV CUDAToolkit_ROOT="/usr/local/cuda"
-ENV CUDACXX="/usr/local/cuda/bin/nvcc"
-ENV CMAKE_CUDA_COMPILER_LAUNCHER="ccache"
-ENV CMAKE_CXX_COMPILER_LAUNCHER="ccache"
-ENV CMAKE_C_COMPILER_LAUNCHER="ccache"
-
-COPY ccache /ccache
-RUN ccache -s
-
 RUN cd ${RAPIDS_DIR} \
   && source activate rapids \
   && git clone -b ${BUILD_BRANCH} --depth 1 --single-branch https://github.com/rapidsai/cudf.git \
@@ -154,44 +137,36 @@ ENV LD_LIBRARY_PATH=${LD_LIBRARY_PATH}:/opt/conda/envs/rapids/lib
 
 RUN cd ${RAPIDS_DIR}/rmm && \
   source activate rapids && \
-  ccache -s && \
   ./build.sh
 
 RUN cd ${RAPIDS_DIR}/cudf && \
   source activate rapids && \
-  ccache -s && \
   ./build.sh --allgpuarch libcudf cudf dask_cudf libcudf_kafka cudf_kafka tests
 
 RUN cd ${RAPIDS_DIR}/cusignal && \
   source activate rapids && \
-  ccache -s && \
   ./build.sh
 
 RUN cd ${RAPIDS_DIR}/cuxfilter && \
   source activate rapids && \
-  ccache -s && \
   ./build.sh
 
 RUN cd ${RAPIDS_DIR}/cuspatial && \
   source activate rapids && \
-  ccache -s && \
   export CUSPATIAL_HOME="$PWD" && \
   export CUDF_HOME="$PWD/../cudf" && \
   ./build.sh libcuspatial cuspatial tests
 
 RUN cd ${RAPIDS_DIR}/cuml && \
   source activate rapids && \
-  ccache -s && \
   ./build.sh --allgpuarch --buildgtest libcuml cuml prims
 
 RUN cd ${RAPIDS_DIR}/cugraph && \
   source activate rapids && \
-  ccache -s && \
   ./build.sh --allgpuarch cugraph libcugraph
 
 RUN cd ${RAPIDS_DIR}/xgboost && \
   source activate rapids && \
-  ccache -s && \
   TREELITE_VER=$(conda list -e treelite | grep -v "#" | grep "treelite=") && \
   gpuci_conda_retry remove -y --force-remove treelite && \
   if [[ "$CUDA_VER" == "11.0" ]]; then \
@@ -223,7 +198,6 @@ RUN cd ${RAPIDS_DIR}/xgboost && \
 
 RUN cd ${RAPIDS_DIR}/dask-cuda && \
   source activate rapids && \
-  ccache -s && \
   python setup.py install
 
 
