@@ -203,11 +203,6 @@ RUN cd ${RAPIDS_DIR}/dask-cuda && \
 
 ENV LD_LIBRARY_PATH=${LD_LIBRARY_PATH_PREBUILD}
 
-RUN ccache -s \
-  && ccache -c \
-  && chmod -R ugo+w /ccache \
-  && ccache -s
-
 COPY packages.sh /opt/docker/bin/
 
 

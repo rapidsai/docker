@@ -48,7 +48,6 @@ ENV LD_LIBRARY_PATH=${LD_LIBRARY_PATH}:/usr/local/cuda/compat
 RUN rm -f ${GCC7_DIR}/lib64/libm.so.6
 
 RUN source activate rapids \
-    && ccache -s \
     && cd ${BLAZING_DIR}/blazingsql \
     && ./build.sh
 

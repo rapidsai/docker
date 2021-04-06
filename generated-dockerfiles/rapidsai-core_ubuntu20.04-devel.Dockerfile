@@ -203,11 +203,6 @@ RUN cd ${RAPIDS_DIR}/dask-cuda && \
 
 
 
-RUN ccache -s \
-  && ccache -c \
-  && chmod -R ugo+w /ccache \
-  && ccache -s
-
 COPY packages.sh /opt/docker/bin/
 
 
