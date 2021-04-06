@@ -63,25 +63,6 @@ RUN gpuci_conda_retry install -y -n rapids \
 
 {% include 'partials/install_notebooks.dockerfile.j2' %}
 
-{# Setup ccache from conda package #}
-ENV CCACHE_NOHASHDIR=
-ENV CCACHE_DIR="/ccache"
-ENV CCACHE_COMPILERCHECK="%compiler% --version"
-
-ENV CC="/usr/local/bin/gcc"
-ENV CXX="/usr/local/bin/g++"
-ENV NVCC="/usr/local/bin/nvcc"
-ENV CUDAHOSTCXX="/usr/local/bin/g++"
-ENV CUDAToolkit_ROOT="/usr/local/cuda"
-ENV CUDACXX="/usr/local/cuda/bin/nvcc"
-ENV CMAKE_CUDA_COMPILER_LAUNCHER="ccache"
-ENV CMAKE_CXX_COMPILER_LAUNCHER="ccache"
-ENV CMAKE_C_COMPILER_LAUNCHER="ccache"
-
-{# Add ccache folder and status check for ccache #}
-COPY ccache /ccache
-RUN ccache -s
-
 {# Clone RAPIDS libraries #}
 RUN cd ${RAPIDS_DIR} \
   && source activate rapids \
@@ -110,7 +91,6 @@ ENV LD_LIBRARY_PATH=${LD_LIBRARY_PATH}:/opt/conda/envs/rapids/lib
 {% for lib in RAPIDS_LIBS %}
 RUN cd ${RAPIDS_DIR}/{{ lib.name }} && \
   source activate rapids && \
-  ccache -s && \
   {% if lib.name == "cudf" %}
   ./build.sh --allgpuarch libcudf cudf dask_cudf libcudf_kafka cudf_kafka tests
 
@@ -171,12 +151,6 @@ numba.cuda cannot load that, and instead have it load
 /lib64/libcuda.so instead #}
 ENV LD_LIBRARY_PATH=${LD_LIBRARY_PATH_PREBUILD}
 {% endif %}
-
-{# Report ccache stats and cleanup; also fix  #}
-RUN ccache -s \
-  && ccache -c \
-  && chmod -R ugo+w /ccache \
-  && ccache -s
 
 COPY packages.sh /opt/docker/bin/
 
