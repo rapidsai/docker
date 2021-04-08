@@ -190,3 +190,7 @@ Please submit issues with the container to this GitHub repository: [https://gith
 For issues with RAPIDS libraries like cuDF, cuML, RMM, or others file an issue in the related GitHub project.
 
 Additional help can be found on [Stack Overflow](https://stackoverflow.com/tags/rapids) or [Google Groups](https://groups.google.com/forum/#!forum/rapidsai).
+
+# License
+
+By pulling and using the container, you accept the terms and conditions of this [End User License Agreement](https://developer.download.nvidia.com/licenses/NVIDIA_Deep_Learning_Container_License.pdf).
