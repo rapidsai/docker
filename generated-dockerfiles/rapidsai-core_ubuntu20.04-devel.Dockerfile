@@ -135,6 +135,10 @@ ENV PARALLEL_LEVEL=${PARALLEL_LEVEL}
 
 ENV LD_LIBRARY_PATH=${LD_LIBRARY_PATH}:/opt/conda/envs/rapids/lib
 
+ENV CC="/usr/local/bin/gcc"
+ENV CXX="/usr/local/bin/g++"
+ENV NVCC="/usr/local/bin/nvcc"
+
 RUN cd ${RAPIDS_DIR}/rmm && \
   source activate rapids && \
   ./build.sh
