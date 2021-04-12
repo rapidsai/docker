@@ -11,6 +11,7 @@ IMAGE_TYPE:
 
 RAPIDS_VER:
   - 0.19
+  - '0.20'
 
 CUDA_VER:
   - 11.2
@@ -30,6 +31,8 @@ PYTHON_VER:
   - 3.8
 
 exclude:
+  - RAPIDS_VER: '0.20'
+    BUILD_IMAGE: rapidsai/rapidsai-clx
   - RAPIDS_VER: 0.19
     BUILD_IMAGE: rapidsai/rapidsai-clx
   - CUDA_VER: 10.1
