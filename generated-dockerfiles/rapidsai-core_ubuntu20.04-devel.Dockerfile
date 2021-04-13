@@ -135,9 +135,6 @@ ENV PARALLEL_LEVEL=${PARALLEL_LEVEL}
 
 ENV LD_LIBRARY_PATH=${LD_LIBRARY_PATH}:/opt/conda/envs/rapids/lib
 
-ENV CC="/usr/bin/gcc"
-ENV CXX="/usr/bin/g++"
-ENV CUDAHOSTCXX="/usr/bin/g++"
 ENV CUDAToolkit_ROOT="/usr/local/cuda"
 ENV CUDACXX="/usr/local/cuda/bin/nvcc"
 
