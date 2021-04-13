@@ -14,8 +14,8 @@ jobs:
       - name: Checkout repo
         uses: actions/checkout@v2
       - name: Generate new Dockerfiles & READMEs
+        shell: bash
         run: |
-          #!/bin/bash
           RAPIDS_NIGHTLY_VERSION=$(grep DEFAULT_RAPIDS_VERSION settings.yaml | sed 's/.*\.//' | sed 's/[" ]//g')
           # PRs to 'main' are release PRs and therefore should consider the DEFAULT_RAPIDS_VERSION to be
           # the stable version instead of the nightly version. So the DEFAULT_RAPIDS_VERSION gets incremented here.
