@@ -134,6 +134,9 @@ ENV PARALLEL_LEVEL=${PARALLEL_LEVEL}
 
 ENV LD_LIBRARY_PATH=${LD_LIBRARY_PATH}:/opt/conda/envs/rapids/lib
 
+ENV CUDAToolkit_ROOT="/usr/local/cuda"
+ENV CUDACXX="/usr/local/cuda/bin/nvcc"
+
 RUN cd ${RAPIDS_DIR}/rmm && \
   source activate rapids && \
   ./build.sh
