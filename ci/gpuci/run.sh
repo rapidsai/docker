@@ -2,7 +2,7 @@
 set -e
 
 # Overwrite HOME to WORKSPACE
-export HOME=$WORKSPACE
+export HOME="$WORKSPACE"
 
 # Install gpuCI tools
 curl -s https://raw.githubusercontent.com/rapidsai/gpuci-tools/main/install.sh | bash
