@@ -2,7 +2,8 @@
 
 {# Patch for CVE-2020-8116 https://github.com/advisories/GHSA-ff7x-qrg7-qggm #}
 RUN source activate rapids \
-    && npm i -g npm@">=7"
+    && npm i -g npm@">=7" \
+    && rm -rf /tmp/yarn* # Removes cached yarn directories from tmp that have outdated ssri/y18n packages
 
 {% if "centos" in os %}
 RUN yum -y upgrade \
