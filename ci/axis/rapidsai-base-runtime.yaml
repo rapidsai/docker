@@ -3,7 +3,7 @@ BUILD_IMAGE:
   - rapidsai/rapidsai-nightly
 
 FROM_IMAGE:
-  - rapidsai/rapidsai-core-nightly
+  - rapidsai/rapidsai-core
 
 IMAGE_TYPE:
   - base
@@ -11,7 +11,6 @@ IMAGE_TYPE:
 
 RAPIDS_VER:
   - 0.19
-  - '0.20'
 
 CUDA_VER:
   - 11.2
@@ -38,7 +37,7 @@ exclude:
   - RAPIDS_VER: '0.20'
     BUILD_IMAGE: rapidsai/rapidsai
   - RAPIDS_VER: 0.19
-    BUILD_IMAGE: rapidsai/rapidsai
+    BUILD_IMAGE: rapidsai/rapidsai-nightly
   - CUDA_VER: 10.1
     LINUX_VER: centos8
   - CUDA_VER: 10.1
