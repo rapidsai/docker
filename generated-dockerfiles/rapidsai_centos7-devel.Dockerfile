@@ -10,12 +10,13 @@
 ARG CUDA_VER=10.1
 ARG LINUX_VER=centos7
 ARG PYTHON_VER=3.7
-ARG RAPIDS_VER=0.18
+ARG RAPIDS_VER=0.19
 ARG FROM_IMAGE=rapidsai/rapidsai-core-dev
 
 FROM ${FROM_IMAGE}:${RAPIDS_VER}-cuda${CUDA_VER}-devel-${LINUX_VER}-py${PYTHON_VER}
 
 ARG RAPIDS_VER
+ARG CUDA_VER
 ARG BUILD_BRANCH="branch-${RAPIDS_VER}"
 
 ENV BLAZING_DIR=/blazing
@@ -48,7 +49,6 @@ ENV LD_LIBRARY_PATH=${LD_LIBRARY_PATH}:/usr/local/cuda/compat
 RUN rm -f ${GCC7_DIR}/lib64/libm.so.6
 
 RUN source activate rapids \
-    && ccache -s \
     && cd ${BLAZING_DIR}/blazingsql \
     && ./build.sh
 

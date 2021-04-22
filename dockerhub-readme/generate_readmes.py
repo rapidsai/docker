@@ -6,6 +6,7 @@ Python script to generate DockerHub READMEs
 import os
 from jinja2 import Environment, FileSystemLoader
 import yaml
+import argparse
 
 TEMPLATES_DIRNAME = "templates"
 OUTPUT_DIRNAME = "generated-readmes"
@@ -44,12 +45,11 @@ def initialize_output_dir(output_dir):
     return
 
 
-def main():
+def main(nightly_version_int, settings):
     """Generates DockerHub READMEs using Jinja2"""
 
     initialize_output_dir(OUTPUT_PATH)
 
-    settings = load_settings()
     file_loader = FileSystemLoader(TEMPLATES_DIR)
     env = Environment(loader=file_loader, lstrip_blocks=True, trim_blocks=True)
     env.filters["nightly2stable"] = lambda x: x.replace("-nightly", "")
@@ -60,7 +60,6 @@ def main():
     )
     env.filters["devel2br"] = lambda x: x.replace("-dev", "")
     template = env.get_template("base.md.j2")
-    nightly_version_int = int(settings["DEFAULT_RAPIDS_VERSION"].split(".")[1])
     for output_file in OUTPUT_READMES:
         jinja_vars = {}
         jinja_vars["repo_name"] = "rapidsai" if output_file == "ngc" else output_file
@@ -99,4 +98,18 @@ def main():
 
 
 if __name__ == "__main__":
-    main()
+    settings = load_settings()
+    nightly_version_int = int(settings["DEFAULT_RAPIDS_VERSION"].split(".")[1])
+    parser = argparse.ArgumentParser(
+        description="Arguments for generating DockerHub READMEs."
+    )
+    parser.add_argument(
+        "-n",
+        type=int,
+        metavar="nightly_version",
+        dest="nightly_version",
+        help="RAPIDS nightly version as int (i.e. 18)",
+        default=nightly_version_int,
+    )
+    args = parser.parse_args()
+    main(args.nightly_version, settings)

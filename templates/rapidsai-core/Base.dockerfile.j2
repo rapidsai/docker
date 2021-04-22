@@ -31,6 +31,8 @@ COPY nbtest.sh nbtestlog2junitxml.py ${RAPIDS_DIR}/utils/
 COPY libm.so.6 ${GCC7_DIR}/lib64
 {% endif %}
 
+{% include 'partials/os_pkgs.dockerfile.j2' %}
+
 {% include 'partials/env_debug.dockerfile.j2' %}
 
 RUN gpuci_conda_retry install -y -n rapids \
@@ -47,8 +49,4 @@ COPY packages.sh /opt/docker/bin/
 
 WORKDIR ${RAPIDS_DIR}
 
-COPY entrypoint.sh /opt/docker/bin/entrypoint
-ENTRYPOINT [ "/usr/bin/tini", "--", "/opt/docker/bin/entrypoint" ]
-
-{# Set the default command to pass to the ENTRYPOINT if no command was given #}
-CMD [ "/bin/bash" ]
+{% include 'partials/entrypoint.dockerfile.j2' %}

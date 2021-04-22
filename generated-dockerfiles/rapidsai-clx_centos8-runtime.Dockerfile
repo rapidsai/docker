@@ -9,11 +9,13 @@
 ARG CUDA_VER=10.1
 ARG LINUX_VER=centos8
 ARG PYTHON_VER=3.7
-ARG RAPIDS_VER=0.18
+ARG RAPIDS_VER=0.19
 ARG FROM_IMAGE=rapidsai/rapidsai
 
 FROM ${FROM_IMAGE}:${RAPIDS_VER}-cuda${CUDA_VER}-runtime-${LINUX_VER}-py${PYTHON_VER}
 
+ARG RAPIDS_VER
+ARG CUDA_VER
 RUN source activate rapids && \
     gpuci_conda_retry install -y -n rapids -c pytorch \
     "clx=${RAPIDS_VER}" \

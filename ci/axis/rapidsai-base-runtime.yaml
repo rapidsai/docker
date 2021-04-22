@@ -3,16 +3,18 @@ BUILD_IMAGE:
   - rapidsai/rapidsai-nightly
 
 FROM_IMAGE:
-  - rapidsai/rapidsai-core
+  - rapidsai/rapidsai-core-nightly
 
 IMAGE_TYPE:
   - base
   - runtime
 
 RAPIDS_VER:
-  - 0.18
+  - 0.19
+  - '0.20'
 
 CUDA_VER:
+  - 11.2
   - 11.0
   - 10.2
   - 10.1
@@ -29,8 +31,14 @@ PYTHON_VER:
   - 3.8
 
 exclude:
-  - RAPIDS_VER: 0.18
-    BUILD_IMAGE: rapidsai/rapidsai-nightly
+  - RAPIDS_VER: '0.20'
+    CUDA_VER: 10.2
+  - RAPIDS_VER: '0.20'
+    CUDA_VER: 10.1
+  - RAPIDS_VER: '0.20'
+    BUILD_IMAGE: rapidsai/rapidsai
+  - RAPIDS_VER: 0.19
+    BUILD_IMAGE: rapidsai/rapidsai
   - CUDA_VER: 10.1
     LINUX_VER: centos8
   - CUDA_VER: 10.1

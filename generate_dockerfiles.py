@@ -57,7 +57,7 @@ def main(verbose=False):
                               "found, skipping for {docker_os}.")
                     continue
                 output = template.render(
-                    os=docker_os, image_type=image_type, now=datetime.utcnow(), **settings,
+                    os=docker_os, image_type=image_type.lower(), now=datetime.utcnow(), **settings,
                 )
                 output_dockerfile_path = f"{OUTPUT_DIRNAME}/{dockerfile_name}"
                 if not(os.path.exists(output_dockerfile_path)) \

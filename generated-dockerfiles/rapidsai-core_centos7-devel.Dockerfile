@@ -10,13 +10,14 @@
 ARG CUDA_VER=10.1
 ARG LINUX_VER=centos7
 ARG PYTHON_VER=3.7
-ARG RAPIDS_VER=0.18
+ARG RAPIDS_VER=0.19
 ARG FROM_IMAGE=gpuci/rapidsai
 
 FROM ${FROM_IMAGE}:${RAPIDS_VER}-cuda${CUDA_VER}-devel-${LINUX_VER}-py${PYTHON_VER}
 
 ARG PARALLEL_LEVEL=16
 ARG RAPIDS_VER
+ARG CUDA_VER
 ARG BUILD_BRANCH="branch-${RAPIDS_VER}"
 
 RUN if [ "${BUILD_BRANCH}" = "main" ]; then sed -i '/nightly/d' /opt/conda/.condarc; fi
@@ -81,27 +82,12 @@ RUN cd ${RAPIDS_DIR} \
 
 COPY test.sh /
 
+COPY start-jupyter.sh stop-jupyter.sh /rapids/utils/
+
 WORKDIR ${RAPIDS_DIR}/notebooks
 EXPOSE 8888
 EXPOSE 8787
 EXPOSE 8786
-ENV CCACHE_NOHASHDIR=
-ENV CCACHE_DIR="/ccache"
-ENV CCACHE_COMPILERCHECK="%compiler% --version"
-
-ENV CC="/usr/local/bin/gcc"
-ENV CXX="/usr/local/bin/g++"
-ENV NVCC="/usr/local/bin/nvcc"
-ENV CUDAHOSTCXX="/usr/local/bin/g++"
-ENV CUDAToolkit_ROOT="/usr/local/cuda"
-ENV CUDACXX="/usr/local/cuda/bin/nvcc"
-ENV CMAKE_CUDA_COMPILER_LAUNCHER="ccache"
-ENV CMAKE_CXX_COMPILER_LAUNCHER="ccache"
-ENV CMAKE_C_COMPILER_LAUNCHER="ccache"
-
-COPY ccache /ccache
-RUN ccache -s
-
 RUN cd ${RAPIDS_DIR} \
   && source activate rapids \
   && git clone -b ${BUILD_BRANCH} --depth 1 --single-branch https://github.com/rapidsai/cudf.git \
@@ -149,48 +135,43 @@ ENV PARALLEL_LEVEL=${PARALLEL_LEVEL}
 
 ENV LD_LIBRARY_PATH=${LD_LIBRARY_PATH}:/opt/conda/envs/rapids/lib
 
+ENV CUDAToolkit_ROOT="/usr/local/cuda"
+ENV CUDACXX="/usr/local/cuda/bin/nvcc"
+
 RUN cd ${RAPIDS_DIR}/rmm && \
   source activate rapids && \
-  ccache -s && \
   ./build.sh
 
 RUN cd ${RAPIDS_DIR}/cudf && \
   source activate rapids && \
-  ccache -s && \
-  ./build.sh libcudf cudf dask_cudf libcudf_kafka cudf_kafka tests
+  ./build.sh --allgpuarch libcudf cudf dask_cudf libcudf_kafka cudf_kafka tests
 
 RUN cd ${RAPIDS_DIR}/cusignal && \
   source activate rapids && \
-  ccache -s && \
   ./build.sh
 
 RUN cd ${RAPIDS_DIR}/cuxfilter && \
   source activate rapids && \
-  ccache -s && \
   ./build.sh
 
 RUN cd ${RAPIDS_DIR}/cuspatial && \
   source activate rapids && \
-  ccache -s && \
   export CUSPATIAL_HOME="$PWD" && \
   export CUDF_HOME="$PWD/../cudf" && \
   ./build.sh libcuspatial cuspatial tests
 
 RUN cd ${RAPIDS_DIR}/cuml && \
   source activate rapids && \
-  ccache -s && \
   ./build.sh --allgpuarch --buildgtest libcuml cuml prims
 
 RUN cd ${RAPIDS_DIR}/cugraph && \
   source activate rapids && \
-  ccache -s && \
   ./build.sh --allgpuarch cugraph libcugraph
 
 RUN cd ${RAPIDS_DIR}/xgboost && \
   source activate rapids && \
-  ccache -s && \
   TREELITE_VER=$(conda list -e treelite | grep -v "#" | grep "treelite=") && \
-  conda remove -y --force-remove treelite && \
+  gpuci_conda_retry remove -y --force-remove treelite && \
   if [[ "$CUDA_VER" == "11.0" ]]; then \
     mkdir -p build && cd build && \
     cmake -DCMAKE_INSTALL_PREFIX=$CONDA_PREFIX \
@@ -220,17 +201,11 @@ RUN cd ${RAPIDS_DIR}/xgboost && \
 
 RUN cd ${RAPIDS_DIR}/dask-cuda && \
   source activate rapids && \
-  ccache -s && \
   python setup.py install
 
 
 
 ENV LD_LIBRARY_PATH=${LD_LIBRARY_PATH_PREBUILD}
-
-RUN ccache -s \
-  && ccache -c \
-  && chmod -R ugo+w /ccache \
-  && ccache -s
 
 COPY packages.sh /opt/docker/bin/
 
@@ -238,6 +213,7 @@ COPY packages.sh /opt/docker/bin/
 RUN chmod -R ugo+w /opt/conda ${RAPIDS_DIR} \
   && conda clean -tipy \
   && chmod -R ugo+w /opt/conda ${RAPIDS_DIR}
+COPY NVIDIA_Deep_Learning_Container_License.pdf . 
 COPY source_entrypoints/runtime_devel.sh /opt/docker/bin/entrypoint_source
 COPY entrypoint.sh /opt/docker/bin/entrypoint
 ENTRYPOINT [ "/usr/bin/tini", "--", "/opt/docker/bin/entrypoint" ]

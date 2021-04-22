@@ -44,7 +44,8 @@ if [ ! -z "$PR_ID" ] ; then
   fi
 fi
 # Setup initial BUILD_ARGS
-BUILD_ARGS="--squash \
+BUILD_ARGS="--no-cache \
+  --squash \
   --build-arg FROM_IMAGE=${FROM_IMAGE} \
   --build-arg CUDA_VER=${CUDA_VER} \
   --build-arg IMAGE_TYPE=${IMAGE_TYPE} \

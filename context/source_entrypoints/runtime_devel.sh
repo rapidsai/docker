@@ -5,7 +5,7 @@ if [[ "${JUPYTER_FG}" == "true" ]]; then
    jupyter-lab --allow-root --ip=0.0.0.0 --no-browser --NotebookApp.token=''
    exit 0
 else
-   nohup jupyter-lab --allow-root --ip=0.0.0.0 --no-browser --NotebookApp.token='' > /dev/null 2>&1 &
+   source /rapids/utils/start-jupyter.sh > /dev/null
 
    echo "A JupyterLab server has been started!"
    echo "To access it, visit http://localhost:8888 on your host machine."

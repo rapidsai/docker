@@ -16,6 +16,7 @@ ARG FROM_IMAGE=rapidsai/rapidsai-core-dev
 FROM ${FROM_IMAGE}:${RAPIDS_VER}-cuda${CUDA_VER}-devel-${LINUX_VER}-py${PYTHON_VER}
 
 ARG RAPIDS_VER
+ARG CUDA_VER
 ARG BUILD_BRANCH="branch-${RAPIDS_VER}"
 
 ENV BLAZING_DIR=/blazing

@@ -32,7 +32,8 @@ COPY nbtest.sh nbtestlog2junitxml.py ${RAPIDS_DIR}/utils/
 COPY libm.so.6 ${GCC7_DIR}/lib64
 {% endif %}
 
-{# Install the notebook dependencies and the notebook repo #}
+{% include 'partials/os_pkgs.dockerfile.j2' %}
+
 {% include 'partials/env_debug.dockerfile.j2' %}
 
 RUN gpuci_conda_retry install -y -n rapids \
@@ -41,6 +42,7 @@ RUN gpuci_conda_retry install -y -n rapids \
 {# Patch for CVEs #}
 {% include 'partials/patch.dockerfile.j2' %}
 
+{# Install the notebook dependencies and the notebook repo #}
 {% include 'partials/install_notebooks.dockerfile.j2' %}
 
 COPY packages.sh /opt/docker/bin/
@@ -48,9 +50,4 @@ COPY packages.sh /opt/docker/bin/
 {# Cleaup conda and set ACLs for all users #}
 {% include 'partials/cleanup-chmod.dockerfile.j2' %}
 
-COPY source_entrypoints/runtime_devel.sh /opt/docker/bin/entrypoint_source
-COPY entrypoint.sh /opt/docker/bin/entrypoint
-ENTRYPOINT [ "/usr/bin/tini", "--", "/opt/docker/bin/entrypoint" ]
-
-{# Set the default command to pass to the ENTRYPOINT if no command was given #}
-CMD [ "/bin/bash" ]
+{% include 'partials/entrypoint.dockerfile.j2' %}
