@@ -42,7 +42,8 @@ RUN gpuci_conda_retry install -y -n rapids \
 
 
 RUN source activate rapids \
-    && npm i -g npm@">=7"
+    && npm i -g npm@">=7" \
+    && rm -rf /tmp/yarn* # Removes cached yarn directories from tmp that have outdated ssri/y18n packages
 
 RUN apt-get update \
     && apt-get -y upgrade \
