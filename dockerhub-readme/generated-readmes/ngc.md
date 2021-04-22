@@ -28,6 +28,8 @@ The RAPIDS images provided by NGC come in two types:
 - `runtime` - extends the `base` image by adding a notebook server and example notebooks.
   - **TIP: Use this image if you want to explore RAPIDS through notebooks and examples.**
 
+For `base` and `runtime` images with Python 3.8 support or additional OS support (Ubuntu 16.04/20.04 & CentOS 8), refer to our [rapidsai/rapidsai-core](https://hub.docker.com/r/rapidsai/rapidsai-core) repo on DockerHub.
+
 For `devel` images that contain: the full RAPIDS source tree, pre-built with all artifacts in place, the compiler toolchain, the debugging tools, the headers and the static libraries for RAPIDS development refer to the [rapidsai/rapidsai-dev](https://hub.docker.com/repository/docker/rapidsai/rapidsai-dev) repo on DockerHub.
 
 ### Image Tag Naming Scheme
@@ -53,8 +55,8 @@ Many users do not need a specific platform combination but would like to ensure 
 ## Prerequisites
 
 - NVIDIA Pascal™ GPU architecture or better
-- CUDA [10.1/10.2/11.0](https://developer.nvidia.com/cuda-downloads) with a compatible NVIDIA driver
-- Ubuntu 16.04/18.04 or CentOS 7
+- CUDA [10.1/10.2/11.0/11.2](https://developer.nvidia.com/cuda-downloads) with a compatible NVIDIA driver
+- Ubuntu 18.04/20.04 or CentOS 7/8
 - Docker CE v18+
 - [nvidia-container-toolkit](https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/install-guide.html#docker)
 
