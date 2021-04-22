@@ -3,14 +3,13 @@ BUILD_IMAGE:
   - rapidsai/rapidsai-clx-dev-nightly
 
 FROM_IMAGE:
-  - rapidsai/rapidsai-dev-nightly
+  - rapidsai/rapidsai-dev
 
 IMAGE_TYPE:
   - devel
 
 RAPIDS_VER:
   - 0.19
-  - '0.20'
 
 CUDA_VER:
   - 11.2
@@ -37,7 +36,7 @@ exclude:
   - RAPIDS_VER: '0.20'
     BUILD_IMAGE: rapidsai/rapidsai-clx-dev
   - RAPIDS_VER: 0.19
-    BUILD_IMAGE: rapidsai/rapidsai-clx-dev
+    BUILD_IMAGE: rapidsai/rapidsai-clx-dev-nightly
   - CUDA_VER: 10.1
     LINUX_VER: centos8
   - CUDA_VER: 10.1
