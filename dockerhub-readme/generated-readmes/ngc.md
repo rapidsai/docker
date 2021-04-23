@@ -14,7 +14,7 @@ The RAPIDS suite of software libraries gives you the freedom to execute end-to-e
 ### Current Version - RAPIDS v0.19
 
 Versions of libraries included in the `0.19` images:
-- `cuDF` [v0.19](https://github.com/rapidsai/cudf/tree/v0.19.0), `cuML` [v0.19](https://github.com/rapidsai/cuml/tree/v0.19.0), `cuGraph` [v0.19](https://github.com/rapidsai/cugraph/tree/v0.19.0), `RMM` [v0.19](https://github.com/rapidsai/RMM/tree/v0.19.0), `cuSpatial` [v0.19](https://github.com/rapidsai/cuspatial/tree/v0.19.0), `cuSignal` [v0.19](https://github.com/rapidsai/cusignal/tree/v0.19.0), `cuxfilter` [v0.19](https://github.com/rapidsai/cuxfilter/tree/v0.19.0), `blazingsql` [v0.19](https://github.com/BlazingDB/blazingsql/tree/v0.19.0)
+- `cuDF` [v0.19](https://github.com/rapidsai/cudf/tree/v0.19.0), `cuML` [v0.19](https://github.com/rapidsai/cuml/tree/v0.19.0), `cuGraph` [v0.19](https://github.com/rapidsai/cugraph/tree/v0.19.0), `RMM` [v0.19](https://github.com/rapidsai/RMM/tree/v0.19.0), `cuSpatial` [v0.19](https://github.com/rapidsai/cuspatial/tree/v0.19.0), `cuSignal` [v0.19](https://github.com/rapidsai/cusignal/tree/v0.19.0), `cuxfilter` [v0.19](https://github.com/rapidsai/cuxfilter/tree/v0.19.0)
 
 
 ### Image Types
@@ -27,8 +27,6 @@ The RAPIDS images provided by NGC come in two types:
   - **TIP: Use this image if you want to use RAPIDS as a part of your pipeline.**
 - `runtime` - extends the `base` image by adding a notebook server and example notebooks.
   - **TIP: Use this image if you want to explore RAPIDS through notebooks and examples.**
-
-For `base` and `runtime` images with Python 3.8 support or additional OS support (Ubuntu 16.04/20.04 & CentOS 8), refer to our [rapidsai/rapidsai-core](https://hub.docker.com/r/rapidsai/rapidsai-core) repo on DockerHub.
 
 For `devel` images that contain: the full RAPIDS source tree, pre-built with all artifacts in place, the compiler toolchain, the debugging tools, the headers and the static libraries for RAPIDS development refer to the [rapidsai/rapidsai-dev](https://hub.docker.com/repository/docker/rapidsai/rapidsai-dev) repo on DockerHub.
 
