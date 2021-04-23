@@ -44,7 +44,7 @@ The [rapidsai/rapidsai-core-dev-nightly](https://hub.docker.com/r/rapidsai/rapid
 
 The tag naming scheme for RAPIDS images incorporates key platform details into the tag as shown below:
 ```
-0.20-cuda10.1-runtime-ubuntu18.04-py3.7
+0.20-cuda11.0-runtime-ubuntu18.04-py3.7
  ^       ^    ^        ^         ^
  |       |    type     |         python version
  |       |             |
@@ -55,10 +55,10 @@ The tag naming scheme for RAPIDS images incorporates key platform details into t
 
 To get the latest RAPIDS version of a specific platform combination, simply exclude the RAPIDS version. For example, to pull the latest version of RAPIDS for the `runtime` image with support for CUDA 10.1, Python 3.7, and Ubuntu 18.04, use the following tag:
 ```
-cuda10.1-runtime-ubuntu18.04-py3.7
+cuda11.0-runtime-ubuntu18.04-py3.7
 ```
 
-Many users do not need a specific platform combination but would like to ensure they're getting the latest version of RAPIDS, so as an additional convenience, a tag named simply `latest` is also provided which is equivalent to `cuda10.1-runtime-ubuntu16.04-py3.7`.
+Many users do not need a specific platform combination but would like to ensure they're getting the latest version of RAPIDS, so as an additional convenience, a tag named simply `latest` is also provided which is equivalent to `cuda11.0-runtime-ubuntu16.04-py3.7`.
 
 ## Prerequisites
 
@@ -74,16 +74,16 @@ Many users do not need a specific platform combination but would like to ensure 
 
 #### Preferred - Docker CE v19+ and `nvidia-container-toolkit`
 ```bash
-$ docker pull rapidsai/rapidsai-core-nightly:0.20-cuda10.1-runtime-ubuntu18.04-py3.7
+$ docker pull rapidsai/rapidsai-core-nightly:0.20-cuda11.0-runtime-ubuntu18.04-py3.7
 $ docker run --gpus all --rm -it -p 8888:8888 -p 8787:8787 -p 8786:8786 \
-         rapidsai/rapidsai-core-nightly:0.20-cuda10.1-runtime-ubuntu18.04-py3.7
+         rapidsai/rapidsai-core-nightly:0.20-cuda11.0-runtime-ubuntu18.04-py3.7
 ```
 
 #### Legacy - Docker CE v18 and `nvidia-docker2`
 ```bash
-$ docker pull rapidsai/rapidsai-core-nightly:0.20-cuda10.1-runtime-ubuntu18.04-py3.7
+$ docker pull rapidsai/rapidsai-core-nightly:0.20-cuda11.0-runtime-ubuntu18.04-py3.7
 $ docker run --runtime=nvidia --rm -it -p 8888:8888 -p 8787:8787 -p 8786:8786 \
-         rapidsai/rapidsai-core-nightly:0.20-cuda10.1-runtime-ubuntu18.04-py3.7
+         rapidsai/rapidsai-core-nightly:0.20-cuda11.0-runtime-ubuntu18.04-py3.7
 ```
 
 ### Container Ports
@@ -117,7 +117,7 @@ $ docker run \
     -p 8888:8888 \
     -p 8787:8787 \
     -p 8786:8786 \
-    rapidsai/rapidsai-core-nightly:0.20-cuda10.1-runtime-ubuntu18.04-py3.7
+    rapidsai/rapidsai-core-nightly:0.20-cuda11.0-runtime-ubuntu18.04-py3.7
 ```
 
 ### Bind Mounts
@@ -140,7 +140,7 @@ $ docker run \
     -it \
     --gpus all \
     -v $(pwd)/environment.yml:/opt/rapids/environment.yml \
-    rapidsai/rapidsai-core-nightly:0.20-cuda10.1-runtime-ubuntu18.04-py3.7
+    rapidsai/rapidsai-core-nightly:0.20-cuda11.0-runtime-ubuntu18.04-py3.7
 ```
 
 ### Use JupyterLab to Explore the Notebooks
@@ -164,14 +164,14 @@ You are free to modify the above steps. For example, you can launch an interacti
 ```bash
 $ docker run --gpus all --rm -it -p 8888:8888 -p 8787:8787 -p 8786:8786 \
          -v /path/to/host/data:/rapids/my_data \
-                  rapidsai/rapidsai-core-nightly:0.20-cuda10.1-runtime-ubuntu18.04-py3.7
+                  rapidsai/rapidsai-core-nightly:0.20-cuda11.0-runtime-ubuntu18.04-py3.7
 ```
 
 #### Legacy - Docker CE v18 and `nvidia-docker2`
 ```bash
 $ docker run --runtime=nvidia --rm -it -p 8888:8888 -p 8787:8787 -p 8786:8786 \
          -v /path/to/host/data:/rapids/my_data \
-                  rapidsai/rapidsai-core-nightly:0.20-cuda10.1-runtime-ubuntu18.04-py3.7
+                  rapidsai/rapidsai-core-nightly:0.20-cuda11.0-runtime-ubuntu18.04-py3.7
 ```
 This will map data from your host operating system to the container OS in the `/rapids/my_data` directory. You may need to modify the provided notebooks for the new data paths.
 
