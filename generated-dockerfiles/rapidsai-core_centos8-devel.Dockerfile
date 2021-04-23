@@ -49,7 +49,7 @@ RUN gpuci_conda_retry install -y -n rapids \
 
 
 RUN source activate rapids \
-    && npm i -g npm@">=7"
+    && npm i -g npm@">=7.0 <7.11"
 
 RUN yum -y upgrade \
     && yum clean all
@@ -69,7 +69,9 @@ RUN gpuci_conda_retry install -y -n rapids \
 RUN gpuci_conda_retry install -y -n rapids jupyterlab-nvdashboard
 
 RUN source activate rapids \
-  && jupyter labextension install @jupyter-widgets/jupyterlab-manager dask-labextension jupyterlab-nvdashboard
+  && jupyter labextension install @jupyter-widgets/jupyterlab-manager dask-labextension jupyterlab-nvdashboard \
+  && jupyter lab clean \
+  && jlpm cache clean
 
 ENV DASK_LABEXTENSION__FACTORY__MODULE="dask_cuda"
 ENV DASK_LABEXTENSION__FACTORY__CLASS="LocalCUDACluster"
