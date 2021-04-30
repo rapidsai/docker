@@ -1,11 +1,13 @@
 {% if "centos" in os %}
 RUN yum install -y \
-      openssh-clients
+      openssh-clients \
+      openmpi-devel
 {% endif %}
 
 {% if "ubuntu" in os %}
 RUN apt-get update \
     && apt-get install --no-install-recommends -y \
       openssh-client \
+      libopenmpi-dev \
     && rm -rf /var/lib/apt/lists/*
 {% endif %}
