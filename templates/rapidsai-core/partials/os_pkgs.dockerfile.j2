@@ -1,7 +1,8 @@
 {% if "centos" in os %}
 RUN yum install -y \
       openssh-clients \
-      openmpi-devel
+      openmpi-devel \
+      && yum clean all
 {% endif %}
 
 {% if "ubuntu" in os %}
