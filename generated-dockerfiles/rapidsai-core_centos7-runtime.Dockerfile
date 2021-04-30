@@ -29,7 +29,8 @@ COPY libm.so.6 ${GCC7_DIR}/lib64
 
 RUN yum install -y \
       openssh-clients \
-      openmpi-devel
+      openmpi-devel \
+      && yum clean all
 
 
 
