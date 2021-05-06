@@ -66,13 +66,6 @@ RUN gpuci_conda_retry install -y -n rapids \
     && gpuci_conda_retry remove -y -n rapids --force-remove \
         "rapids-notebook-env=${RAPIDS_VER}*"
 
-RUN gpuci_conda_retry install -y -n rapids jupyterlab-nvdashboard
-
-RUN source activate rapids \
-  && jupyter labextension install @jupyter-widgets/jupyterlab-manager dask-labextension jupyterlab-nvdashboard \
-  && jupyter lab clean \
-  && jlpm cache clean
-
 ENV DASK_LABEXTENSION__FACTORY__MODULE="dask_cuda"
 ENV DASK_LABEXTENSION__FACTORY__CLASS="LocalCUDACluster"
 
