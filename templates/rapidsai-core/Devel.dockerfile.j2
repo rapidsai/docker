@@ -34,12 +34,12 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     && rm -rf /var/lib/apt/lists/*
 {% endif %}
 
-RUN mkdir -p ${RAPIDS_DIR}/utils {{ "${GCC7_DIR}/lib64" if "centos" in os }}
+RUN mkdir -p ${RAPIDS_DIR}/utils {{ "${GCC9_DIR}/lib64" if "centos" in os }}
 COPY nbtest.sh nbtestlog2junitxml.py ${RAPIDS_DIR}/utils/
 
 {% if "centos" in os %}
 {# Add compatible libm #}
-COPY libm.so.6 ${GCC7_DIR}/lib64
+COPY libm.so.6 ${GCC9_DIR}/lib64
 {% endif %}
 
 {# Install dependencies needed for devel: build deps + RAPIDS runtime deps +
