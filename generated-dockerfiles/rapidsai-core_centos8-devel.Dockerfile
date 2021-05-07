@@ -27,10 +27,10 @@ ARG PYTHON_VER
 ENV RAPIDS_DIR=/rapids
 
 
-RUN mkdir -p ${RAPIDS_DIR}/utils ${GCC7_DIR}/lib64
+RUN mkdir -p ${RAPIDS_DIR}/utils ${GCC9_DIR}/lib64
 COPY nbtest.sh nbtestlog2junitxml.py ${RAPIDS_DIR}/utils/
 
-COPY libm.so.6 ${GCC7_DIR}/lib64
+COPY libm.so.6 ${GCC9_DIR}/lib64
 
 
 RUN source activate rapids \

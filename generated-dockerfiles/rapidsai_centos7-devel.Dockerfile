@@ -46,7 +46,7 @@ RUN mkdir -p ${BLAZING_DIR} \
 ENV LD_LIBRARY_PATH_ORIG=${LD_LIBRARY_PATH}
 ENV LD_LIBRARY_PATH=${LD_LIBRARY_PATH}:/usr/local/cuda/compat
 
-RUN rm -f ${GCC7_DIR}/lib64/libm.so.6
+RUN rm -f ${GCC9_DIR}/lib64/libm.so.6
 
 RUN source activate rapids \
     && cd ${BLAZING_DIR}/blazingsql \
