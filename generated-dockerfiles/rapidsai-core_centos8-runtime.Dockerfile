@@ -44,7 +44,7 @@ RUN gpuci_conda_retry install -y -n rapids \
 
 
 RUN source activate rapids \
-    && npm i -g npm@">=7.0 <7.11"
+    && npm i -g npm@">=7.0"
 
 RUN yum -y upgrade \
     && yum clean all
