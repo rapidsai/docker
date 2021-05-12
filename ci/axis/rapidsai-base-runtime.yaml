@@ -17,7 +17,6 @@ CUDA_VER:
   - 11.0
 
 LINUX_VER:
-  - ubuntu16.04
   - ubuntu18.04
   - ubuntu20.04
   - centos7
