@@ -16,10 +16,10 @@ jobs:
       - name: Generate new Dockerfiles & READMEs
         shell: bash
         run: |
-          RAPIDS_NIGHTLY_VERSION=$(grep DEFAULT_RAPIDS_VERSION settings.yaml | sed 's/.*\.//' | sed 's/[" ]//g')
-          # PRs to 'main' are release PRs and therefore should consider the DEFAULT_RAPIDS_VERSION to be
-          # the stable version instead of the nightly version. So the DEFAULT_RAPIDS_VERSION gets incremented here.
-          [ "${BASE_BRANCH_NAME}" = "main" ] && let RAPIDS_NIGHTLY_VERSION++
+          RAPIDS_NIGHTLY_VERSION=$(grep DEFAULT_NIGHTLY_RAPIDS_VERSION settings.yaml | cut -d ":" -f 2 | sed 's/[" ]//g')
+          # PRs to 'main' are release PRs and therefore should consider the DEFAULT_NIGHTLY_RAPIDS_VERSION to be
+          # the stable version instead of the nightly version. So we use the DEFAULT_STABLE_RAPIDS_VERSION
+          [ "${BASE_BRANCH_NAME}" = "main" ] && RAPIDS_NIGHTLY_VERSION=$(grep DEFAULT_STABLE_RAPIDS_VERSION settings.yaml | cut -d ":" -f 2 | sed 's/[" ]//g')
 
           pip install -r requirements.txt
           ./generate_dockerfiles.py
