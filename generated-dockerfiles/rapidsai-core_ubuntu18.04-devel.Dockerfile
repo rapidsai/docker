@@ -35,6 +35,13 @@ COPY nbtest.sh nbtestlog2junitxml.py ${RAPIDS_DIR}/utils/
 
 
 
+RUN apt-get update \
+    && apt-get install --no-install-recommends -y \
+      openssh-client \
+      libopenmpi-dev \
+    && rm -rf /var/lib/apt/lists/*
+
+
 RUN source activate rapids \
   && env \
   && conda info \
