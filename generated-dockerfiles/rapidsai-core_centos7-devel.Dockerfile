@@ -32,6 +32,13 @@ COPY nbtest.sh nbtestlog2junitxml.py ${RAPIDS_DIR}/utils/
 
 COPY libm.so.6 ${GCC9_DIR}/lib64
 
+RUN yum install -y \
+      openssh-clients \
+      openmpi-devel \
+      libnsl \
+      && yum clean all
+
+
 
 RUN source activate rapids \
   && env \
