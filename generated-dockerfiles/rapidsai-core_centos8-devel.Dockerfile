@@ -18,6 +18,7 @@ FROM ${FROM_IMAGE}:${RAPIDS_VER}-cuda${CUDA_VER}-devel-${LINUX_VER}-py${PYTHON_V
 ARG PARALLEL_LEVEL=16
 ARG RAPIDS_VER
 ARG CUDA_VER
+ARG UCX_PY_VER
 ARG BUILD_BRANCH="branch-${RAPIDS_VER}"
 
 RUN if [ "${BUILD_BRANCH}" = "main" ]; then sed -i '/nightly/d' /opt/conda/.condarc; fi
@@ -49,7 +50,7 @@ RUN gpuci_conda_retry install -y -n rapids \
       "rapids-build-env=${RAPIDS_VER}*" \
       "rapids-doc-env=${RAPIDS_VER}*" \
       "libcumlprims=${RAPIDS_VER}*" \
-      "ucx-py=${UCX_PY_VER}*" \
+      "ucx-py=${UCX_PY_VER}.*" \
     && gpuci_conda_retry remove -y -n rapids --force-remove \
       "rapids-build-env=${RAPIDS_VER}*" \
       "rapids-doc-env=${RAPIDS_VER}*"
