@@ -166,7 +166,7 @@ RUN cd ${RAPIDS_DIR}/cuspatial && \
 
 RUN cd ${RAPIDS_DIR}/cuml && \
   source activate rapids && \
-  ./build.sh --allgpuarch --buildgtest libcuml cuml prims
+  ./build.sh --allgpuarch libcuml cuml prims
 
 RUN cd ${RAPIDS_DIR}/cugraph && \
   source activate rapids && \
