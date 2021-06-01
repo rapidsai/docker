@@ -140,7 +140,7 @@ RUN cd ${RAPIDS_DIR}/{{ lib.name }} && \
   ./build.sh --allgpuarch cugraph libcugraph
 
   {% elif lib.name == "cuml" %}
-  ./build.sh --allgpuarch --buildgtest libcuml cuml prims
+  ./build.sh --allgpuarch libcuml cuml prims
 
   {% elif lib.name == "dask-cuda"%}
   python setup.py install
