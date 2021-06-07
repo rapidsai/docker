@@ -10,6 +10,7 @@ IMAGE_TYPE:
   - runtime
 
 RAPIDS_VER:
+  - '21.08'
   - '21.06'
 
 CUDA_VER:
