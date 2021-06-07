@@ -29,6 +29,6 @@ PYTHON_VER:
 
 exclude:
   - RAPIDS_VER: '21.08'
-    BUILD_IMAGE: rapidsai/rapidsai-dev
+    BUILD_IMAGE: rapidsai/rapidsai-clx-dev
   - RAPIDS_VER: '21.06'
     BUILD_IMAGE: rapidsai/rapidsai-clx-dev
