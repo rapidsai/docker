@@ -154,6 +154,7 @@ RUN cd ${RAPIDS_DIR}/{{ lib.name }} && \
   {% endif %}
 {% endfor %}
 
+{% include 'ensure-no-defaults.dockerfile.j2' %}
 
 {% if "centos" in os %}
 {# Change LD_LIBRARY_PATH to exclude /usr/local/cuda/* since

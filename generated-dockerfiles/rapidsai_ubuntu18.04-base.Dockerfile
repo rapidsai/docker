@@ -20,6 +20,9 @@ RUN gpuci_conda_retry install -y -n rapids -c blazingsql-nightly -c blazingsql\
   "rapids-blazing=${RAPIDS_VER}*" \
   "cudatoolkit=${CUDA_VER}"
 
+
+ENV CONDA_DEFAULT_PKG_NUM=`conda list | awk '{ print $4}' | grep defaults | wc -l`
+RUN if [[ ${CONDA_DEFAULT_PKG_NUM} -eq 0 ]]; then echo "ERROR: Packages from the default conda channel detected"; exit 1; fi
 WORKDIR ${RAPIDS_DIR}
 
 

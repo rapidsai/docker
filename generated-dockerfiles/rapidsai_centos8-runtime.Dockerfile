@@ -28,6 +28,9 @@ RUN mkdir -p ${BLAZING_DIR} \
     && git clone https://github.com/BlazingDB/Welcome_to_BlazingSQL_Notebooks.git
 
 COPY test.sh /
+
+ENV CONDA_DEFAULT_PKG_NUM=`conda list | awk '{ print $4}' | grep defaults | wc -l`
+RUN if [[ ${CONDA_DEFAULT_PKG_NUM} -eq 0 ]]; then echo "ERROR: Packages from the default conda channel detected"; exit 1; fi
 WORKDIR ${RAPIDS_DIR}
 
 

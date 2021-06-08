@@ -24,6 +24,8 @@ ENV BLAZING_DIR=/blazing
 
 {% include 'partials/clone_and_build_blazing.dockerfile.j2' %}
 
+{% include 'ensure-no-defaults.dockerfile.j2' %}
+
 WORKDIR ${RAPIDS_DIR}
 
 {# Cleanup conda and set ACLs for all users #}
