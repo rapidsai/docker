@@ -20,12 +20,12 @@ RUN gpuci_conda_retry install -y -n rapids -c blazingsql-nightly -c blazingsql\
   "rapids-blazing=${RAPIDS_VER}*" \
   "cudatoolkit=${CUDA_VER}"
 
-{% include 'ensure-no-defaults.dockerfile.j2' %}
-
 WORKDIR ${RAPIDS_DIR}
 
 {# Cleanup conda and set ACLs for all users #}
 {% include 'partials/cleanup-chmod.dockerfile.j2' %}
+
+{% include 'ensure-no-defaults.dockerfile.j2' %}
 
 COPY entrypoint.sh /opt/docker/bin/entrypoint
 ENTRYPOINT [ "/usr/bin/tini", "--", "/opt/docker/bin/entrypoint" ]

@@ -25,12 +25,12 @@ ENV BLAZING_DIR=/blazing
 {# Copy Blazing notebooks #}
 {%include 'partials/clone_blazing_notebooks.dockerfile.j2' %}
 
-{% include 'ensure-no-defaults.dockerfile.j2' %}
-
 WORKDIR ${RAPIDS_DIR}
 
 {# Cleanup conda and set ACLs for all users #}
 {% include 'partials/cleanup-chmod.dockerfile.j2' %}
+
+{% include 'ensure-no-defaults.dockerfile.j2' %}
 
 ENTRYPOINT [ "/usr/bin/tini", "--", "/opt/docker/bin/entrypoint" ]
 

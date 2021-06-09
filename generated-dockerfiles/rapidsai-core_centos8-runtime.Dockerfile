@@ -44,9 +44,6 @@ RUN gpuci_conda_retry install -y -n rapids \
   "rapids=${RAPIDS_VER}*"
 
 
-ENV CONDA_DEFAULT_PKG_NUM=`conda list | awk '{ print $4}' | grep defaults | wc -l`
-RUN if [[ ${CONDA_DEFAULT_PKG_NUM} -eq 0 ]]; then echo "ERROR: Packages from the default conda channel detected"; exit 1; fi
-
 RUN source activate rapids \
     && npm i -g npm@">=7.0"
 
@@ -82,6 +79,10 @@ COPY packages.sh /opt/docker/bin/
 RUN chmod -R ugo+w /opt/conda ${RAPIDS_DIR} \
   && conda clean -tipy \
   && chmod -R ugo+w /opt/conda ${RAPIDS_DIR}
+
+RUN source activate rapids \
+    && CONDA_DEFAULT_PKG_NUM=`conda list | awk '{ print $4 }' | grep defaults | wc -l` \
+    && if [[ ${CONDA_DEFAULT_PKG_NUM} -ne 0 ]]; then echo "ERROR: Packages from the default conda channel detected"; exit 1; fi
 COPY NVIDIA_Deep_Learning_Container_License.pdf . 
 COPY source_entrypoints/runtime_devel.sh /opt/docker/bin/entrypoint_source
 COPY entrypoint.sh /opt/docker/bin/entrypoint

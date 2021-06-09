@@ -21,12 +21,12 @@ ARG BUILD_BRANCH="branch-${RAPIDS_VER}"
 ENV CLX_DIR=${RAPIDS_DIR}/clx
 {% include 'partials/clone_and_build_clx.dockerfile.j2' %}
 
-{% include 'ensure-no-defaults.dockerfile.j2' %}
-
 WORKDIR ${RAPIDS_DIR}
 
 {# Cleanup conda and set ACLs for all users #}
 {% include 'partials/cleanup-chmod.dockerfile.j2' %}
+
+{% include 'ensure-no-defaults.dockerfile.j2' %}
 
 COPY entrypoint.sh /opt/docker/bin/entrypoint
 ENTRYPOINT [ "/usr/bin/tini", "--", "/opt/docker/bin/entrypoint" ]

@@ -154,8 +154,6 @@ RUN cd ${RAPIDS_DIR}/{{ lib.name }} && \
   {% endif %}
 {% endfor %}
 
-{% include 'ensure-no-defaults.dockerfile.j2' %}
-
 {% if "centos" in os %}
 {# Change LD_LIBRARY_PATH to exclude /usr/local/cuda/* since
 numba.cuda cannot load that, and instead have it load
@@ -167,5 +165,7 @@ COPY packages.sh /opt/docker/bin/
 
 {# Cleaup conda and set ACLs for all users #}
 {% include 'partials/cleanup-chmod.dockerfile.j2' %}
+
+{% include 'ensure-no-defaults.dockerfile.j2' %}
 
 {% include 'partials/entrypoint.dockerfile.j2' %}

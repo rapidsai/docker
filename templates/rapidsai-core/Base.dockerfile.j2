@@ -38,8 +38,6 @@ COPY libm.so.6 ${GCC9_DIR}/lib64
 RUN gpuci_conda_retry install -y -n rapids \
   "rapids=${RAPIDS_VER}*"
 
-{% include 'ensure-no-defaults.dockerfile.j2' %}
-
 {# Patch for CVEs #}
 {% include 'partials/patch.dockerfile.j2' %}
 
@@ -50,5 +48,7 @@ COPY packages.sh /opt/docker/bin/
 {% include 'partials/cleanup-chmod.dockerfile.j2' %}
 
 WORKDIR ${RAPIDS_DIR}
+
+{% include 'ensure-no-defaults.dockerfile.j2' %}
 
 {% include 'partials/entrypoint.dockerfile.j2' %}
