@@ -85,11 +85,12 @@ docker build --pull -t ${BUILD_IMAGE}:${BUILD_TAG} ${BUILD_ARGS} -f generated-do
 
 # List image info
 gpuci_logger "Displaying image info..."
+docker images ${BUILD_IMAGE}:${BUILD_TAG}
 
 # Check image for default conda packages
-docker images ${BUILD_IMAGE}:${BUILD_TAG} /bin/bash -c "conda list && if [[ $(conda list | awk '{ print $4 }' | grep conda-forge | wc -l) -ne 0 ]]; then echo 'ERROR: Packages from the default conda channel detected'; exit 1; fi"
+gpuci_logger "Checking conda environment for defaults pkgs..."
+docker run ${BUILD_IMAGE}:${BUILD_TAG} /bin/bash -c "conda list && if [[ $(conda list | awk '{ print $4 }' | grep conda-forge | wc -l) -ne 0 ]]; then echo 'ERROR: Packages from the default conda channel detected'; exit 1; fi"
 
-docker run ${BUILD_IMAGE}:${BUILD_TAG} 
 # Upload image
 gpuci_logger "Starting upload..."
 GPUCI_RETRY_MAX=5
