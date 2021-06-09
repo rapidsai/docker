@@ -24,7 +24,6 @@ WORKDIR ${RAPIDS_DIR}
 
 RUN conda clean -afy
 
-
 COPY entrypoint.sh /opt/docker/bin/entrypoint
 ENTRYPOINT [ "/usr/bin/tini", "--", "/opt/docker/bin/entrypoint" ]
 
