@@ -51,12 +51,9 @@ RUN gpuci_conda_retry install -y -n rapids \
       "rapids-doc-env=${RAPIDS_VER}*" \
       "libcumlprims=${RAPIDS_VER}*" \
       "ucx-py=${UCX_PY_VER}.*" \
-      "rapids-pytest-benchmark" \
     && gpuci_conda_retry remove -y -n rapids --force-remove \
       "rapids-build-env=${RAPIDS_VER}*" \
-      "rapids-doc-env=${RAPIDS_VER}*" \
-      "rmm=${RAPIDS_VER}*" \
-      "librmm=${RAPIDS_VER}*"
+      "rapids-doc-env=${RAPIDS_VER}*"
 
 
 RUN source activate rapids \
