@@ -166,6 +166,5 @@ COPY packages.sh /opt/docker/bin/
 {# Cleaup conda and set ACLs for all users #}
 {% include 'partials/cleanup-chmod.dockerfile.j2' %}
 
-{% include 'ensure-no-defaults.dockerfile.j2' %}
 
 {% include 'partials/entrypoint.dockerfile.j2' %}

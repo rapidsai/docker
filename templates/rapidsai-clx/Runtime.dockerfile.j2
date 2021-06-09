@@ -33,7 +33,6 @@ WORKDIR ${RAPIDS_DIR}
 {# Cleanup conda #}
 RUN conda clean -afy
 
-{% include 'ensure-no-defaults.dockerfile.j2' %}
 
 ENTRYPOINT [ "/usr/bin/tini", "--", "/opt/docker/bin/entrypoint" ]
 

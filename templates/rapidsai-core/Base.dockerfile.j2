@@ -49,6 +49,5 @@ COPY packages.sh /opt/docker/bin/
 
 WORKDIR ${RAPIDS_DIR}
 
-{% include 'ensure-no-defaults.dockerfile.j2' %}
 
 {% include 'partials/entrypoint.dockerfile.j2' %}
