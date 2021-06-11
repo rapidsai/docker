@@ -98,7 +98,11 @@ ENV CUDACXX="/usr/local/cuda/bin/nvcc"
 {% for lib in RAPIDS_LIBS %}
 RUN cd ${RAPIDS_DIR}/{{ lib.name }} && \
   source activate rapids && \
-  {% if lib.name == "cudf" %}
+  {% if lib.name == "benchmark" %}
+  cd rapids_pytest_benchmark && \
+  python setup.py install
+
+  {% elif lib.name == "cudf" %}
   ./build.sh --allgpuarch libcudf cudf dask_cudf libcudf_kafka cudf_kafka tests
 
   {% elif lib.name == "cuspatial" %}

@@ -10,6 +10,9 @@ DEFAULT_NEXT_RAPIDS_VERSION: "21.08"
 RAPIDS_LIBS:
   - name: rmm
     repo_url: https://github.com/rapidsai/rmm.git
+  - name: benchmark
+    repo_url: https://github.com/rapidsai/benchmark.git
+    branch: main
   - name: cudf
     repo_url: https://github.com/rapidsai/cudf.git
     update_submodules: no
