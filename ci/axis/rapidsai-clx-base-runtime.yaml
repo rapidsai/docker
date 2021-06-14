@@ -3,14 +3,13 @@ BUILD_IMAGE:
   - rapidsai/rapidsai-clx-nightly
 
 FROM_IMAGE:
-  - rapidsai/rapidsai-nightly
+  - rapidsai/rapidsai
 
 IMAGE_TYPE:
   - base
   - runtime
 
 RAPIDS_VER:
-  - '21.08'
   - '21.06'
 
 CUDA_VER:
@@ -29,7 +28,5 @@ PYTHON_VER:
   - 3.8
 
 exclude:
-  - RAPIDS_VER: '21.08'
-    BUILD_IMAGE: rapidsai/rapidsai-clx
   - RAPIDS_VER: '21.06'
-    BUILD_IMAGE: rapidsai/rapidsai-clx
+    BUILD_IMAGE: rapidsai/rapidsai-clx-nightly
