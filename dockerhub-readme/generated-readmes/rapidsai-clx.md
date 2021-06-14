@@ -14,7 +14,7 @@ The RAPIDS suite of software libraries gives you the freedom to execute end-to-e
 ### Current Version - RAPIDS v21.06
 
 Versions of libraries included in the `21.06` images:
-- `cuDF` [v21.06](https://github.com/rapidsai/cudf/tree/v21.06.0), `cuML` [v21.06](https://github.com/rapidsai/cuml/tree/v21.06.0), `cuGraph` [v21.06](https://github.com/rapidsai/cugraph/tree/v21.06.0), `RMM` [v21.06](https://github.com/rapidsai/RMM/tree/v21.06.0), `cuSpatial` [v21.06](https://github.com/rapidsai/cuspatial/tree/v21.06.0), `cuSignal` [v21.06](https://github.com/rapidsai/cusignal/tree/v21.06.0), `cuxfilter` [v21.06](https://github.com/rapidsai/cuxfilter/tree/v21.06.0), `clx` [v21.06](https://github.com/rapidsai/clx/tree/v21.06.0)
+- `cuDF` [v21.06](https://github.com/rapidsai/cudf/tree/v21.06.00), `cuML` [v21.06](https://github.com/rapidsai/cuml/tree/v21.06.00), `cuGraph` [v21.06](https://github.com/rapidsai/cugraph/tree/v21.06.00), `RMM` [v21.06](https://github.com/rapidsai/RMM/tree/v21.06.00), `cuSpatial` [v21.06](https://github.com/rapidsai/cuspatial/tree/v21.06.00), `cuSignal` [v21.06](https://github.com/rapidsai/cusignal/tree/v21.06.00), `cuxfilter` [v21.06](https://github.com/rapidsai/cuxfilter/tree/v21.06.00), `clx` [v21.06](https://github.com/rapidsai/clx/tree/v21.06.00)
 
 
 ### Image Types
