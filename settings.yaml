@@ -1,13 +1,18 @@
 ---
 # Default Docker build arguments
 DEFAULT_PYTHON_VERSION: "3.7"
-DEFAULT_CUDA_VERSION: "10.1"
-DEFAULT_RAPIDS_VERSION: "0.19"
+DEFAULT_CUDA_VERSION: "11.0"
+DEFAULT_NIGHTLY_RAPIDS_VERSION: "21.06"
+DEFAULT_STABLE_RAPIDS_VERSION: "0.19"
+DEFAULT_NEXT_RAPIDS_VERSION: "21.08"
 
 # Libraries included in RAPIDS core devel images
 RAPIDS_LIBS:
   - name: rmm
     repo_url: https://github.com/rapidsai/rmm.git
+  - name: benchmark
+    repo_url: https://github.com/rapidsai/benchmark.git
+    branch: main
   - name: cudf
     repo_url: https://github.com/rapidsai/cudf.git
     update_submodules: no
@@ -25,6 +30,6 @@ RAPIDS_LIBS:
   - name: xgboost
     update_submodules: no
     repo_url: https://github.com/rapidsai/xgboost.git
-    branch: rapids-v0.18
+    branch: rapids-v21.06
   - name: dask-cuda
     repo_url: https://github.com/rapidsai/dask-cuda.git

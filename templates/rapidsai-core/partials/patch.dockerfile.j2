@@ -2,7 +2,7 @@
 
 {# Patch for CVE-2020-8116 https://github.com/advisories/GHSA-ff7x-qrg7-qggm #}
 RUN source activate rapids \
-    && npm i -g npm@">=7.0 <7.11"
+    && npm i -g npm@">=7.0"
 
 {% if "centos" in os %}
 RUN yum -y upgrade \

@@ -2,7 +2,7 @@
 
 # Run Jupyter in foreground if $JUPYTER_FG is set
 if [[ "${JUPYTER_FG}" == "true" ]]; then
-   jupyter-lab --allow-root --ip=0.0.0.0 --no-browser --NotebookApp.token=''
+   jupyter-lab --allow-root --ip=0.0.0.0 --no-browser --NotebookApp.token='' --NotebookApp.allow_origin="*"
    exit 0
 else
    source /rapids/utils/start-jupyter.sh > /dev/null

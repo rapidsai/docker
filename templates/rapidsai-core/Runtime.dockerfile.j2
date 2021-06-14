@@ -9,7 +9,7 @@
 ARG CUDA_VER={{ DEFAULT_CUDA_VERSION }}
 ARG LINUX_VER={{ os }}
 ARG PYTHON_VER={{ DEFAULT_PYTHON_VERSION }}
-ARG RAPIDS_VER={{ DEFAULT_RAPIDS_VERSION }}
+ARG RAPIDS_VER={{ DEFAULT_NIGHTLY_RAPIDS_VERSION }}
 ARG FROM_IMAGE=gpuci/rapidsai
 
 FROM ${FROM_IMAGE}:${RAPIDS_VER}-cuda${CUDA_VER}-runtime-${LINUX_VER}-py${PYTHON_VER}
@@ -24,12 +24,12 @@ RUN if [ "${BUILD_BRANCH}" = "main" ]; then sed -i '/nightly/d' /opt/conda/.cond
 ENV RAPIDS_DIR=/rapids
 
 {# Copy files needed by RAPIDS and 3rd parties for builds, test, and runtime. #}
-RUN mkdir -p ${RAPIDS_DIR}/utils {{ "${GCC7_DIR}/lib64" if "centos" in os }}
+RUN mkdir -p ${RAPIDS_DIR}/utils {{ "${GCC9_DIR}/lib64" if "centos" in os }}
 COPY nbtest.sh nbtestlog2junitxml.py ${RAPIDS_DIR}/utils/
 
 {% if "centos" in os %}
 {# Add compatible libm #}
-COPY libm.so.6 ${GCC7_DIR}/lib64
+COPY libm.so.6 ${GCC9_DIR}/lib64
 {% endif %}
 
 {% include 'partials/os_pkgs.dockerfile.j2' %}

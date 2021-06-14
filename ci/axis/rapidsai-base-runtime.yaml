@@ -10,13 +10,11 @@ IMAGE_TYPE:
   - runtime
 
 RAPIDS_VER:
-  - 0.19
+  - '21.06'
 
 CUDA_VER:
   - 11.2
   - 11.0
-  - 10.2
-  - 10.1
 
 LINUX_VER:
   - ubuntu16.04
@@ -30,19 +28,5 @@ PYTHON_VER:
   - 3.8
 
 exclude:
-  - RAPIDS_VER: '0.20'
-    CUDA_VER: 10.2
-  - RAPIDS_VER: '0.20'
-    CUDA_VER: 10.1
-  - RAPIDS_VER: '0.20'
-    BUILD_IMAGE: rapidsai/rapidsai
-  - RAPIDS_VER: 0.19
+  - RAPIDS_VER: '21.06'
     BUILD_IMAGE: rapidsai/rapidsai-nightly
-  - CUDA_VER: 10.1
-    LINUX_VER: centos8
-  - CUDA_VER: 10.1
-    LINUX_VER: ubuntu20.04
-  - CUDA_VER: 10.2
-    LINUX_VER: centos8
-  - CUDA_VER: 10.2
-    LINUX_VER: ubuntu20.04

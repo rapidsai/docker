@@ -6,10 +6,10 @@
 #
 # Copyright (c) 2021, NVIDIA CORPORATION.
 
-ARG CUDA_VER=10.1
+ARG CUDA_VER=11.0
 ARG LINUX_VER=ubuntu20.04
 ARG PYTHON_VER=3.7
-ARG RAPIDS_VER=0.19
+ARG RAPIDS_VER=21.06
 ARG FROM_IMAGE=gpuci/rapidsai
 
 FROM ${FROM_IMAGE}:${RAPIDS_VER}-cuda${CUDA_VER}-runtime-${LINUX_VER}-py${PYTHON_VER}
@@ -30,6 +30,7 @@ COPY nbtest.sh nbtestlog2junitxml.py ${RAPIDS_DIR}/utils/
 RUN apt-get update \
     && apt-get install --no-install-recommends -y \
       openssh-client \
+      libopenmpi-dev \
     && rm -rf /var/lib/apt/lists/*
 
 
@@ -43,7 +44,7 @@ RUN gpuci_conda_retry install -y -n rapids \
 
 
 RUN source activate rapids \
-    && npm i -g npm@">=7.0 <7.11"
+    && npm i -g npm@">=7.0"
 
 RUN apt-get update \
     && apt-get -y upgrade \
@@ -54,13 +55,6 @@ RUN gpuci_conda_retry install -y -n rapids \
         "rapids-notebook-env=${RAPIDS_VER}*" \
     && gpuci_conda_retry remove -y -n rapids --force-remove \
         "rapids-notebook-env=${RAPIDS_VER}*"
-
-RUN gpuci_conda_retry install -y -n rapids jupyterlab-nvdashboard
-
-RUN source activate rapids \
-  && jupyter labextension install @jupyter-widgets/jupyterlab-manager dask-labextension jupyterlab-nvdashboard \
-  && jupyter lab clean \
-  && jlpm cache clean
 
 ENV DASK_LABEXTENSION__FACTORY__MODULE="dask_cuda"
 ENV DASK_LABEXTENSION__FACTORY__CLASS="LocalCUDACluster"

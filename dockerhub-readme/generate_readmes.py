@@ -45,7 +45,7 @@ def initialize_output_dir(output_dir):
     return
 
 
-def main(nightly_version_int, settings):
+def main(nightly_version, stable_version, settings):
     """Generates DockerHub READMEs using Jinja2"""
 
     initialize_output_dir(OUTPUT_PATH)
@@ -74,8 +74,8 @@ def main(nightly_version_int, settings):
         jinja_vars["is_rapids_proper"] = not (
             jinja_vars["is_rapids_core"] or jinja_vars["is_rapids_clx"]
         )
-        jinja_vars["stable_version"] = f"0.{nightly_version_int - 1}"
-        jinja_vars["nightly_version"] = f"0.{nightly_version_int}"
+        jinja_vars["stable_version"] = stable_version
+        jinja_vars["nightly_version"] = nightly_version
         if jinja_vars["is_nightly"]:
             jinja_vars["repo_rapids_version"] = jinja_vars["nightly_version"]
         if jinja_vars["is_stable"]:
@@ -99,17 +99,24 @@ def main(nightly_version_int, settings):
 
 if __name__ == "__main__":
     settings = load_settings()
-    nightly_version_int = int(settings["DEFAULT_RAPIDS_VERSION"].split(".")[1])
+    nightly_version = settings["DEFAULT_NIGHTLY_RAPIDS_VERSION"]
+    stable_version = settings["DEFAULT_STABLE_RAPIDS_VERSION"]
     parser = argparse.ArgumentParser(
         description="Arguments for generating DockerHub READMEs."
     )
     parser.add_argument(
         "-n",
-        type=int,
         metavar="nightly_version",
         dest="nightly_version",
-        help="RAPIDS nightly version as int (i.e. 18)",
-        default=nightly_version_int,
+        help="RAPIDS nightly version (i.e. 21.06)",
+        default=nightly_version,
+    )
+    parser.add_argument(
+        "-s",
+        metavar="stable_version",
+        dest="stable_version",
+        help="RAPIDS stable version (i.e. 0.19)",
+        default=stable_version,
     )
     args = parser.parse_args()
-    main(args.nightly_version, settings)
+    main(args.nightly_version, args.stable_version, settings)

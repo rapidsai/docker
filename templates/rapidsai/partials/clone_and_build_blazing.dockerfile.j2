@@ -32,7 +32,7 @@ ENV LD_LIBRARY_PATH=${LD_LIBRARY_PATH}:/usr/local/cuda/compat
 with libjvm needed by BlazingSQL
 FIXME: this libm should no longer be needed anywhere, so consider removing it
 in the RAPIDS images #}
-RUN rm -f ${GCC7_DIR}/lib64/libm.so.6
+RUN rm -f ${GCC9_DIR}/lib64/libm.so.6
 {% endif %}
 
 RUN source activate rapids \

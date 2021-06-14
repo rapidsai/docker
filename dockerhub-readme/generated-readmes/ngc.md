@@ -11,10 +11,10 @@ The RAPIDS suite of software libraries gives you the freedom to execute end-to-e
 **NOTE:** Review our [prerequisites](#prerequisites) section to ensure your system meets the minimum requirements for RAPIDS.
 
 
-### Current Version - RAPIDS v0.19
+### Current Version - RAPIDS v21.06
 
-Versions of libraries included in the `0.19` images:
-- `cuDF` [v0.19](https://github.com/rapidsai/cudf/tree/v0.19.0), `cuML` [v0.19](https://github.com/rapidsai/cuml/tree/v0.19.0), `cuGraph` [v0.19](https://github.com/rapidsai/cugraph/tree/v0.19.0), `RMM` [v0.19](https://github.com/rapidsai/RMM/tree/v0.19.0), `cuSpatial` [v0.19](https://github.com/rapidsai/cuspatial/tree/v0.19.0), `cuSignal` [v0.19](https://github.com/rapidsai/cusignal/tree/v0.19.0), `cuxfilter` [v0.19](https://github.com/rapidsai/cuxfilter/tree/v0.19.0), `blazingsql` [v0.19](https://github.com/BlazingDB/blazingsql/tree/v0.19.0)
+Versions of libraries included in the `21.06` images:
+- `cuDF` [v21.06](https://github.com/rapidsai/cudf/tree/v21.06.00), `cuML` [v21.06](https://github.com/rapidsai/cuml/tree/v21.06.00), `cuGraph` [v21.06](https://github.com/rapidsai/cugraph/tree/v21.06.00), `RMM` [v21.06](https://github.com/rapidsai/RMM/tree/v21.06.00), `cuSpatial` [v21.06](https://github.com/rapidsai/cuspatial/tree/v21.06.00), `cuSignal` [v21.06](https://github.com/rapidsai/cusignal/tree/v21.06.00), `cuxfilter` [v21.06](https://github.com/rapidsai/cuxfilter/tree/v21.06.00)
 
 
 ### Image Types
@@ -28,29 +28,27 @@ The RAPIDS images provided by NGC come in two types:
 - `runtime` - extends the `base` image by adding a notebook server and example notebooks.
   - **TIP: Use this image if you want to explore RAPIDS through notebooks and examples.**
 
-For `base` and `runtime` images with Python 3.8 support or additional OS support (Ubuntu 16.04/20.04 & CentOS 8), refer to our [rapidsai/rapidsai-core](https://hub.docker.com/r/rapidsai/rapidsai-core) repo on DockerHub.
-
 For `devel` images that contain: the full RAPIDS source tree, pre-built with all artifacts in place, the compiler toolchain, the debugging tools, the headers and the static libraries for RAPIDS development refer to the [rapidsai/rapidsai-dev](https://hub.docker.com/repository/docker/rapidsai/rapidsai-dev) repo on DockerHub.
 
 ### Image Tag Naming Scheme
 
 The tag naming scheme for RAPIDS images incorporates key platform details into the tag as shown below:
 ```
-0.19-cuda10.1-runtime-ubuntu18.04-py3.7
- ^       ^    ^        ^         ^
- |       |    type     |         python version
+21.06-cuda11.0-runtime-ubuntu18.04
+ ^       ^    ^        ^         
+ |       |    type     |         
  |       |             |
  |       cuda version  |
  |                     |
  RAPIDS version        linux version
 ```
 
-To get the latest RAPIDS version of a specific platform combination, simply exclude the RAPIDS version. For example, to pull the latest version of RAPIDS for the `runtime` image with support for CUDA 10.1, Python 3.7, and Ubuntu 18.04, use the following tag:
+To get the latest RAPIDS version of a specific platform combination, simply exclude the RAPIDS version. For example, to pull the latest version of RAPIDS for the `runtime` image with support for CUDA 11.0, Python 3.7, and Ubuntu 18.04, use the following tag:
 ```
-cuda10.1-runtime-ubuntu18.04-py3.7
+cuda11.0-runtime-ubuntu18.04
 ```
 
-Many users do not need a specific platform combination but would like to ensure they're getting the latest version of RAPIDS, so as an additional convenience, a tag named simply `latest` is also provided which is equivalent to `cuda10.1-runtime-ubuntu16.04-py3.7`.
+Many users do not need a specific platform combination but would like to ensure they're getting the latest version of RAPIDS, so as an additional convenience, a tag named simply `latest` is also provided which is equivalent to `cuda11.0-runtime-ubuntu16.04-py3.7`.
 
 ## Prerequisites
 
@@ -66,16 +64,16 @@ Many users do not need a specific platform combination but would like to ensure 
 
 #### Preferred - Docker CE v19+ and `nvidia-container-toolkit`
 ```bash
-$ docker pull nvcr.io/nvidia/rapidsai/rapidsai:0.19-cuda10.1-runtime-ubuntu18.04-py3.7
+$ docker pull nvcr.io/nvidia/rapidsai/rapidsai:21.06-cuda11.0-runtime-ubuntu18.04
 $ docker run --gpus all --rm -it -p 8888:8888 -p 8787:8787 -p 8786:8786 \
-         nvcr.io/nvidia/rapidsai/rapidsai:0.19-cuda10.1-runtime-ubuntu18.04-py3.7
+         nvcr.io/nvidia/rapidsai/rapidsai:21.06-cuda11.0-runtime-ubuntu18.04
 ```
 
 #### Legacy - Docker CE v18 and `nvidia-docker2`
 ```bash
-$ docker pull nvcr.io/nvidia/rapidsai/rapidsai:0.19-cuda10.1-runtime-ubuntu18.04-py3.7
+$ docker pull nvcr.io/nvidia/rapidsai/rapidsai:21.06-cuda11.0-runtime-ubuntu18.04
 $ docker run --runtime=nvidia --rm -it -p 8888:8888 -p 8787:8787 -p 8786:8786 \
-         nvcr.io/nvidia/rapidsai/rapidsai:0.19-cuda10.1-runtime-ubuntu18.04-py3.7
+         nvcr.io/nvidia/rapidsai/rapidsai:21.06-cuda11.0-runtime-ubuntu18.04
 ```
 
 ### Container Ports
@@ -109,7 +107,7 @@ $ docker run \
     -p 8888:8888 \
     -p 8787:8787 \
     -p 8786:8786 \
-    nvcr.io/nvidia/rapidsai/rapidsai:0.19-cuda10.1-runtime-ubuntu18.04-py3.7
+    nvcr.io/nvidia/rapidsai/rapidsai:21.06-cuda11.0-runtime-ubuntu18.04
 ```
 
 ### Bind Mounts
@@ -132,12 +130,12 @@ $ docker run \
     -it \
     --gpus all \
     -v $(pwd)/environment.yml:/opt/rapids/environment.yml \
-    nvcr.io/nvidia/rapidsai/rapidsai:0.19-cuda10.1-runtime-ubuntu18.04-py3.7
+    nvcr.io/nvidia/rapidsai/rapidsai:21.06-cuda11.0-runtime-ubuntu18.04
 ```
 
 ### Use JupyterLab to Explore the Notebooks
 
-Notebooks can be found in the following directories within the 0.19 container (not applicable for `base` images):
+Notebooks can be found in the following directories within the 21.06 container (not applicable for `base` images):
 
 * `/rapids/notebooks/clx` - CLX demo notebooks
 * `/rapids/notebooks/cugraph` - cuGraph demo notebooks
@@ -146,7 +144,7 @@ Notebooks can be found in the following directories within the 0.19 container (n
 * `/rapids/notebooks/cuxfilter` - cuXfilter demo notebooks
 * `/rapids/notebooks/xgboost` - XGBoost demo notebooks
 
-For a full description of each notebook, see the [README](https://github.com/rapidsai/notebooks/blob/branch-0.19/README.md) in the notebooks repository.
+For a full description of each notebook, see the [README](https://github.com/rapidsai/notebooks/blob/branch-21.06/README.md) in the notebooks repository.
 
 ### Custom Data and Advanced Usage
 
@@ -156,14 +154,14 @@ You are free to modify the above steps. For example, you can launch an interacti
 ```bash
 $ docker run --gpus all --rm -it -p 8888:8888 -p 8787:8787 -p 8786:8786 \
          -v /path/to/host/data:/rapids/my_data \
-                  nvcr.io/nvidia/rapidsai/rapidsai:0.19-cuda10.1-runtime-ubuntu18.04-py3.7
+                  nvcr.io/nvidia/rapidsai/rapidsai:21.06-cuda11.0-runtime-ubuntu18.04
 ```
 
 #### Legacy - Docker CE v18 and `nvidia-docker2`
 ```bash
 $ docker run --runtime=nvidia --rm -it -p 8888:8888 -p 8787:8787 -p 8786:8786 \
          -v /path/to/host/data:/rapids/my_data \
-                  nvcr.io/nvidia/rapidsai/rapidsai:0.19-cuda10.1-runtime-ubuntu18.04-py3.7
+                  nvcr.io/nvidia/rapidsai/rapidsai:21.06-cuda11.0-runtime-ubuntu18.04
 ```
 This will map data from your host operating system to the container OS in the `/rapids/my_data` directory. You may need to modify the provided notebooks for the new data paths.
 

@@ -7,10 +7,10 @@
 #
 # Copyright (c) 2021, NVIDIA CORPORATION.
 
-ARG CUDA_VER=10.1
+ARG CUDA_VER=11.0
 ARG LINUX_VER=ubuntu18.04
 ARG PYTHON_VER=3.7
-ARG RAPIDS_VER=0.19
+ARG RAPIDS_VER=21.06
 ARG FROM_IMAGE=gpuci/rapidsai
 
 FROM ${FROM_IMAGE}:${RAPIDS_VER}-cuda${CUDA_VER}-devel-${LINUX_VER}-py${PYTHON_VER}
@@ -18,6 +18,7 @@ FROM ${FROM_IMAGE}:${RAPIDS_VER}-cuda${CUDA_VER}-devel-${LINUX_VER}-py${PYTHON_V
 ARG PARALLEL_LEVEL=16
 ARG RAPIDS_VER
 ARG CUDA_VER
+ARG UCX_PY_VER
 ARG BUILD_BRANCH="branch-${RAPIDS_VER}"
 
 RUN if [ "${BUILD_BRANCH}" = "main" ]; then sed -i '/nightly/d' /opt/conda/.condarc; fi
@@ -35,6 +36,13 @@ COPY nbtest.sh nbtestlog2junitxml.py ${RAPIDS_DIR}/utils/
 
 
 
+RUN apt-get update \
+    && apt-get install --no-install-recommends -y \
+      openssh-client \
+      libopenmpi-dev \
+    && rm -rf /var/lib/apt/lists/*
+
+
 RUN source activate rapids \
   && env \
   && conda info \
@@ -44,14 +52,14 @@ RUN gpuci_conda_retry install -y -n rapids \
       "rapids-build-env=${RAPIDS_VER}*" \
       "rapids-doc-env=${RAPIDS_VER}*" \
       "libcumlprims=${RAPIDS_VER}*" \
-      "ucx-py=${RAPIDS_VER}*" \
+      "ucx-py=${UCX_PY_VER}.*" \
     && gpuci_conda_retry remove -y -n rapids --force-remove \
       "rapids-build-env=${RAPIDS_VER}*" \
       "rapids-doc-env=${RAPIDS_VER}*"
 
 
 RUN source activate rapids \
-    && npm i -g npm@">=7.0 <7.11"
+    && npm i -g npm@">=7.0"
 
 RUN apt-get update \
     && apt-get -y upgrade \
@@ -68,13 +76,6 @@ RUN gpuci_conda_retry install -y -n rapids \
         "rapids-notebook-env=${RAPIDS_VER}*" \
     && gpuci_conda_retry remove -y -n rapids --force-remove \
         "rapids-notebook-env=${RAPIDS_VER}*"
-
-RUN gpuci_conda_retry install -y -n rapids jupyterlab-nvdashboard
-
-RUN source activate rapids \
-  && jupyter labextension install @jupyter-widgets/jupyterlab-manager dask-labextension jupyterlab-nvdashboard \
-  && jupyter lab clean \
-  && jlpm cache clean
 
 ENV DASK_LABEXTENSION__FACTORY__MODULE="dask_cuda"
 ENV DASK_LABEXTENSION__FACTORY__CLASS="LocalCUDACluster"
@@ -103,12 +104,16 @@ RUN cd ${RAPIDS_DIR} \
   && cd cuml \
   && git submodule update --init --recursive --no-single-branch --depth 1 \
   && cd ${RAPIDS_DIR} \
-  && git clone -b rapids-v0.18 --depth 1 --single-branch https://github.com/rapidsai/xgboost.git \
+  && git clone -b rapids-v21.06 --depth 1 --single-branch https://github.com/rapidsai/xgboost.git \
   && cd xgboost \
   && git submodule update --init --recursive --no-single-branch --depth 1 \
   && cd ${RAPIDS_DIR} \
   && git clone -b ${BUILD_BRANCH} --depth 1 --single-branch https://github.com/rapidsai/rmm.git \
   && cd rmm \
+  && git submodule update --init --remote --recursive --no-single-branch --depth 1 \
+  && cd ${RAPIDS_DIR} \
+  && git clone -b main --depth 1 --single-branch https://github.com/rapidsai/benchmark.git \
+  && cd benchmark \
   && git submodule update --init --remote --recursive --no-single-branch --depth 1 \
   && cd ${RAPIDS_DIR} \
   && git clone -b ${BUILD_BRANCH} --depth 1 --single-branch https://github.com/rapidsai/cusignal.git \
@@ -145,6 +150,11 @@ RUN cd ${RAPIDS_DIR}/rmm && \
   source activate rapids && \
   ./build.sh
 
+RUN cd ${RAPIDS_DIR}/benchmark && \
+  source activate rapids && \
+  cd rapids_pytest_benchmark && \
+  python setup.py install
+
 RUN cd ${RAPIDS_DIR}/cudf && \
   source activate rapids && \
   ./build.sh --allgpuarch libcudf cudf dask_cudf libcudf_kafka cudf_kafka tests
@@ -165,7 +175,7 @@ RUN cd ${RAPIDS_DIR}/cuspatial && \
 
 RUN cd ${RAPIDS_DIR}/cuml && \
   source activate rapids && \
-  ./build.sh --allgpuarch --buildgtest libcuml cuml prims
+  ./build.sh --allgpuarch libcuml cuml prims
 
 RUN cd ${RAPIDS_DIR}/cugraph && \
   source activate rapids && \

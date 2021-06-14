@@ -2,7 +2,7 @@
 set -e
 
 # Overwrite HOME to WORKSPACE
-export HOME=$WORKSPACE
+export HOME="$WORKSPACE"
 
 # Install gpuCI tools
 curl -s https://raw.githubusercontent.com/rapidsai/gpuci-tools/main/install.sh | bash
@@ -49,7 +49,8 @@ BUILD_ARGS="--no-cache \
   --build-arg FROM_IMAGE=${FROM_IMAGE} \
   --build-arg CUDA_VER=${CUDA_VER} \
   --build-arg IMAGE_TYPE=${IMAGE_TYPE} \
-  --build-arg LINUX_VER=${LINUX_VER}"
+  --build-arg LINUX_VER=${LINUX_VER} \
+  --build-arg UCX_PY_VER=${UCX_PY_VER}"
 # Add BUILD_BRANCH arg for 'main' branch only
 if [ "${BUILD_BRANCH}" = "main" ]; then
   BUILD_ARGS+=" --build-arg BUILD_BRANCH=${BUILD_BRANCH}"
