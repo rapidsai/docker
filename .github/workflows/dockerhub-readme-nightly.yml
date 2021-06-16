@@ -9,7 +9,7 @@ on:
       - branch-**
     paths:
       - dockerhub-readme/generated-readmes/*nightly*.md
-      - .github/workflows/dockerhub-readme.yml
+      - .github/workflows/dockerhub-readme-nightly.yml
 
 jobs:
   readme:
