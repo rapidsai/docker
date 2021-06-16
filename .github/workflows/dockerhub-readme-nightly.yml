@@ -1,15 +1,15 @@
 # Updates nightly (but not stable) DockerHub READMEs anytime
-# a push to `branch-0.**` occurs.
+# a push to `branch-**` occurs.
 
 name: Update DockerHub READMEs
 
 on:
   push:
     branches:
-      - branch-0.**
+      - branch-**
     paths:
       - dockerhub-readme/generated-readmes/*nightly*.md
-      - .github/workflows/dockerhub-readme.yml
+      - .github/workflows/dockerhub-readme-nightly.yml
 
 jobs:
   readme:
