@@ -218,7 +218,6 @@ RUN cd ${RAPIDS_DIR}/dask-cuda && \
 
 
 
-
 COPY packages.sh /opt/docker/bin/
 
 

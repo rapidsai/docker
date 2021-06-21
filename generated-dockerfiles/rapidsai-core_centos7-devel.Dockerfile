@@ -216,7 +216,6 @@ RUN cd ${RAPIDS_DIR}/dask-cuda && \
   python setup.py install
 
 
-
 ENV LD_LIBRARY_PATH=${LD_LIBRARY_PATH_PREBUILD}
 
 COPY packages.sh /opt/docker/bin/

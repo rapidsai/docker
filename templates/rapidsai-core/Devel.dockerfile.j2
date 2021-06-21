@@ -155,7 +155,6 @@ RUN cd ${RAPIDS_DIR}/{{ lib.name }} && \
   {% endif %}
 {% endfor %}
 
-
 {% if "centos" in os %}
 {# Change LD_LIBRARY_PATH to exclude /usr/local/cuda/* since
 numba.cuda cannot load that, and instead have it load

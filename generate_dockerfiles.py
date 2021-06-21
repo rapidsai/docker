@@ -11,6 +11,7 @@ from jinja2 import Environment, FileSystemLoader
 import yaml
 
 TEMPLATES_DIRNAME = "templates"
+SHARED_PARTIALS_DIRNAME="partials"
 OUTPUT_DIRNAME = "generated-dockerfiles"
 DEFAULT_PROJECT_DIR = os.path.dirname(os.path.abspath(__file__))
 DEFAULT_OUTPUT_DIR = os.path.join(DEFAULT_PROJECT_DIR, OUTPUT_DIRNAME)
@@ -44,7 +45,8 @@ def main(verbose=False):
     settings = load_settings()
     for image_name in ["rapidsai", "rapidsai-core", "rapidsai-clx"]:
         templates_dir = os.path.join(TEMPLATES_DIRNAME, image_name)
-        file_loader = FileSystemLoader(templates_dir)
+        shared_partials_dir = os.path.join(TEMPLATES_DIRNAME, SHARED_PARTIALS_DIRNAME)
+        file_loader = FileSystemLoader([templates_dir, shared_partials_dir])
         env = Environment(loader=file_loader, lstrip_blocks=True, trim_blocks=True)
         for docker_os in ["centos7", "centos8", "ubuntu16.04", "ubuntu18.04", "ubuntu20.04"]:
             for image_type in ["Base", "Devel", "Runtime"]:
