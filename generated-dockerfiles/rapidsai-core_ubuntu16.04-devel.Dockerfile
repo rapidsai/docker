@@ -40,6 +40,7 @@ RUN apt-get update \
     && apt-get install --no-install-recommends -y \
       openssh-client \
       libopenmpi-dev \
+      openmpi-bin \
     && rm -rf /var/lib/apt/lists/*
 
 
