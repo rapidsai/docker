@@ -146,6 +146,10 @@ Notebooks can be found in the following directories within the 21.06 container (
 
 For a full description of each notebook, see the [README](https://github.com/rapidsai/notebooks/blob/branch-21.06/README.md) in the notebooks repository.
 
+### Extending RAPIDS Images
+
+All RAPIDS images use `conda` as their package manager, and all RAPIDS packages (including source-built) are available in the `rapids` conda environment. If you want to extend RAPIDS images (such as using `FROM`), then it is important to include `source activate rapids` at the start of all `RUN` commands in your `Dockerfile`. Without this, the docker build context will not have access to the RAPIDS libraries, as it uses the `base` environment by default. Examples of this can be found in our own Dockerfiles, which can be found in the [RAPIDS Docker Repository](https://github.com/rapidsai/docker) on GitHub.
+
 ### Custom Data and Advanced Usage
 
 You are free to modify the above steps. For example, you can launch an interactive session with your own data:
