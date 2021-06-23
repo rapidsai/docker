@@ -8,7 +8,7 @@
 ARG CUDA_VER=11.0
 ARG LINUX_VER=ubuntu18.04
 ARG PYTHON_VER=3.7
-ARG RAPIDS_VER=0.20
+ARG RAPIDS_VER=21.08
 ARG FROM_IMAGE=gpuci/rapidsai
 
 FROM ${FROM_IMAGE}:${RAPIDS_VER}-cuda${CUDA_VER}-base-${LINUX_VER}-py${PYTHON_VER}
@@ -30,6 +30,7 @@ RUN apt-get update \
     && apt-get install --no-install-recommends -y \
       openssh-client \
       libopenmpi-dev \
+      openmpi-bin \
     && rm -rf /var/lib/apt/lists/*
 
 

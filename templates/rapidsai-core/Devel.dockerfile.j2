@@ -10,7 +10,7 @@
 ARG CUDA_VER={{ DEFAULT_CUDA_VERSION }}
 ARG LINUX_VER={{ os }}
 ARG PYTHON_VER={{ DEFAULT_PYTHON_VERSION }}
-ARG RAPIDS_VER={{ DEFAULT_RAPIDS_VERSION }}
+ARG RAPIDS_VER={{ DEFAULT_NIGHTLY_RAPIDS_VERSION }}
 ARG FROM_IMAGE=gpuci/rapidsai
 
 FROM ${FROM_IMAGE}:${RAPIDS_VER}-cuda${CUDA_VER}-devel-${LINUX_VER}-py${PYTHON_VER}
@@ -19,6 +19,7 @@ FROM ${FROM_IMAGE}:${RAPIDS_VER}-cuda${CUDA_VER}-devel-${LINUX_VER}-py${PYTHON_V
 ARG PARALLEL_LEVEL=16
 ARG RAPIDS_VER
 ARG CUDA_VER
+ARG UCX_PY_VER
 ARG BUILD_BRANCH="branch-${RAPIDS_VER}"
 
 RUN if [ "${BUILD_BRANCH}" = "main" ]; then sed -i '/nightly/d' /opt/conda/.condarc; fi
@@ -42,6 +43,8 @@ COPY nbtest.sh nbtestlog2junitxml.py ${RAPIDS_DIR}/utils/
 COPY libm.so.6 ${GCC9_DIR}/lib64
 {% endif %}
 
+{% include 'partials/os_pkgs.dockerfile.j2' %}
+
 {# Install dependencies needed for devel: build deps + RAPIDS runtime deps +
 notebook deps. This is done as a single install to ensure compatibility
 between packages. #}
@@ -52,7 +55,7 @@ RUN gpuci_conda_retry install -y -n rapids \
       "rapids-build-env=${RAPIDS_VER}*" \
       "rapids-doc-env=${RAPIDS_VER}*" \
       "libcumlprims=${RAPIDS_VER}*" \
-      "ucx-py=${RAPIDS_VER}*" \
+      "ucx-py=${UCX_PY_VER}.*" \
     && gpuci_conda_retry remove -y -n rapids --force-remove \
       "rapids-build-env=${RAPIDS_VER}*" \
       "rapids-doc-env=${RAPIDS_VER}*"
@@ -95,7 +98,11 @@ ENV CUDACXX="/usr/local/cuda/bin/nvcc"
 {% for lib in RAPIDS_LIBS %}
 RUN cd ${RAPIDS_DIR}/{{ lib.name }} && \
   source activate rapids && \
-  {% if lib.name == "cudf" %}
+  {% if lib.name == "benchmark" %}
+  cd rapids_pytest_benchmark && \
+  python setup.py install
+
+  {% elif lib.name == "cudf" %}
   ./build.sh --allgpuarch libcudf cudf dask_cudf libcudf_kafka cudf_kafka tests
 
   {% elif lib.name == "cuspatial" %}
@@ -137,7 +144,7 @@ RUN cd ${RAPIDS_DIR}/{{ lib.name }} && \
   ./build.sh --allgpuarch cugraph libcugraph
 
   {% elif lib.name == "cuml" %}
-  ./build.sh --allgpuarch --buildgtest libcuml cuml prims
+  ./build.sh --allgpuarch libcuml cuml prims
 
   {% elif lib.name == "dask-cuda"%}
   python setup.py install

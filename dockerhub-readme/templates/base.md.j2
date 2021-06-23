@@ -11,14 +11,14 @@ Visit [rapids.ai](https://rapids.ai) for more information.
 
 The RAPIDS suite of software libraries gives you the freedom to execute end-to-end data science and analytics pipelines entirely on GPUs. It relies on NVIDIA® CUDA® primitives for low-level compute optimization, but exposes GPU parallelism and high-bandwidth memory speed through user-friendly Python interfaces.
 
-**NOTE:** Review our [prerequisites](#prerequisites) section to ensure your system meets the minimum requirements for RAPIDS.
+**NOTE:** Review our prerequisites section below to ensure your system meets the minimum requirements for RAPIDS.
 
 
 {% if is_stable %}
 ### Current Version - RAPIDS v{{ stable_version }}
 
 Versions of libraries included in the `{{ stable_version }}` images:
-- `cuDF` [v{{ stable_version }}](https://github.com/rapidsai/cudf/tree/v{{ stable_version }}.0), `cuML` [v{{ stable_version }}](https://github.com/rapidsai/cuml/tree/v{{ stable_version }}.0), `cuGraph` [v{{ stable_version }}](https://github.com/rapidsai/cugraph/tree/v{{ stable_version }}.0), `RMM` [v{{ stable_version }}](https://github.com/rapidsai/RMM/tree/v{{ stable_version }}.0), `cuSpatial` [v{{ stable_version }}](https://github.com/rapidsai/cuspatial/tree/v{{ stable_version }}.0), `cuSignal` [v{{ stable_version }}](https://github.com/rapidsai/cusignal/tree/v{{ stable_version }}.0), `cuxfilter` [v{{ stable_version }}](https://github.com/rapidsai/cuxfilter/tree/v{{ stable_version }}.0){% if is_rapids_proper and not is_ngc %}, `blazingsql` [v{{ stable_version }}](https://github.com/BlazingDB/blazingsql/tree/v{{ stable_version }}.0){% endif %}{% if is_rapids_clx %}, `clx` [v{{ stable_version }}](https://github.com/rapidsai/clx/tree/v{{ stable_version }}.0){% endif %}
+- `cuDF` [v{{ stable_version }}](https://github.com/rapidsai/cudf/tree/v{{ stable_version }}.00), `cuML` [v{{ stable_version }}](https://github.com/rapidsai/cuml/tree/v{{ stable_version }}.00), `cuGraph` [v{{ stable_version }}](https://github.com/rapidsai/cugraph/tree/v{{ stable_version }}.00), `RMM` [v{{ stable_version }}](https://github.com/rapidsai/RMM/tree/v{{ stable_version }}.00), `cuSpatial` [v{{ stable_version }}](https://github.com/rapidsai/cuspatial/tree/v{{ stable_version }}.00), `cuSignal` [v{{ stable_version }}](https://github.com/rapidsai/cusignal/tree/v{{ stable_version }}.00), `cuxfilter` [v{{ stable_version }}](https://github.com/rapidsai/cuxfilter/tree/v{{ stable_version }}.00){% if is_rapids_proper and not is_ngc %}, `blazingsql` [v{{ stable_version }}](https://github.com/BlazingDB/blazingsql/tree/v{{ stable_version }}.00){% endif %}{% if is_rapids_clx %}, `clx` [v{{ stable_version }}](https://github.com/rapidsai/clx/tree/v{{ stable_version }}.00){% endif %}
 
 {% endif %}
 
@@ -30,7 +30,7 @@ The `rapidsai/{{ repo_name }}` repo contains nightly docker builds of the latest
 ### RAPIDS NIGHTLY v{{ nightly_version }}a
 
 Versions of libraries included in the `{{ nightly_version }}` images:
-- `cuDF` [v{{ nightly_version }}.0a](https://github.com/rapidsai/cudf), `cuML` [v{{ nightly_version }}.0a](https://github.com/rapidsai/cuml), `cuGraph` [v{{ nightly_version }}.0a](https://github.com/rapidsai/cugraph), `RMM` [v{{ nightly_version }}.0a](https://github.com/rapidsai/RMM), `cuSpatial` [v{{ nightly_version }}.0a](https://github.com/rapidsai/cuspatial), `cuSignal` [v{{ nightly_version }}.0a](https://github.com/rapidsai/cusignal), `cuxfilter` [v{{ nightly_version }}.0a](https://github.com/rapidsai/cuxfilter){% if is_rapids_clx %}, `clx` [v{{ nightly_version }}](https://github.com/rapidsai/clx){% endif %}
+- `cuDF` [v{{ nightly_version }}.00a](https://github.com/rapidsai/cudf), `cuML` [v{{ nightly_version }}.00a](https://github.com/rapidsai/cuml), `cuGraph` [v{{ nightly_version }}.00a](https://github.com/rapidsai/cugraph), `RMM` [v{{ nightly_version }}.00a](https://github.com/rapidsai/RMM), `cuSpatial` [v{{ nightly_version }}.00a](https://github.com/rapidsai/cuspatial), `cuSignal` [v{{ nightly_version }}.00a](https://github.com/rapidsai/cusignal), `cuxfilter` [v{{ nightly_version }}.00a](https://github.com/rapidsai/cuxfilter){% if is_rapids_clx %}, `clx` [v{{ nightly_version }}](https://github.com/rapidsai/clx){% endif %}
 
 - {% if is_rapids_proper %}`blazingsql` [v{{ nightly_version }}](https://github.com/BlazingDB/blazingsql), {% endif %}`xgboost` [branch](https://github.com/rapidsai/xgboost), `dask-cuda` [branch](https://github.com/rapidsai/dask-cuda)
 {% endif %}
@@ -72,9 +72,9 @@ The [rapidsai/{{ repo_name | br2devel }}](https://hub.docker.com/r/rapidsai/{{ r
 
 The tag naming scheme for RAPIDS images incorporates key platform details into the tag as shown below:
 ```
-{{ repo_rapids_version }}-cuda{{ DEFAULT_CUDA_VERSION }}-{{ repo_default_img_type }}-ubuntu18.04-py{{ DEFAULT_PYTHON_VERSION }}
- ^       ^    ^        ^         ^
- |       |    type     |         python version
+{{ repo_rapids_version }}-cuda{{ DEFAULT_CUDA_VERSION }}-{{ repo_default_img_type }}-ubuntu18.04{{ "-py"+DEFAULT_PYTHON_VERSION if not is_ngc }}
+ ^       ^    ^        ^         {{ "^" if not is_ngc }}
+ |       |    type     |         {{ "python version" if not is_ngc }}
  |       |             |
  |       cuda version  |
  |                     |
@@ -82,9 +82,9 @@ The tag naming scheme for RAPIDS images incorporates key platform details into t
 ```
 
 {% if is_br %}
-To get the latest RAPIDS version of a specific platform combination, simply exclude the RAPIDS version. For example, to pull the latest version of RAPIDS for the `runtime` image with support for CUDA 10.1, Python {{ DEFAULT_PYTHON_VERSION }}, and Ubuntu 18.04, use the following tag:
+To get the latest RAPIDS version of a specific platform combination, simply exclude the RAPIDS version. For example, to pull the latest version of RAPIDS for the `runtime` image with support for CUDA {{ DEFAULT_CUDA_VERSION }}, Python {{ DEFAULT_PYTHON_VERSION }}, and Ubuntu 18.04, use the following tag:
 ```
-cuda{{ DEFAULT_CUDA_VERSION }}-runtime-ubuntu18.04-py{{ DEFAULT_PYTHON_VERSION }}
+cuda{{ DEFAULT_CUDA_VERSION }}-runtime-ubuntu18.04{{ "-py"+DEFAULT_PYTHON_VERSION if not is_ngc }}
 ```
 
 Many users do not need a specific platform combination but would like to ensure they're getting the latest version of RAPIDS, so as an additional convenience, a tag named simply `latest` is also provided which is equivalent to `cuda{{ DEFAULT_CUDA_VERSION }}-runtime-ubuntu18.04-py{{ DEFAULT_PYTHON_VERSION }}`.
@@ -104,16 +104,16 @@ Many users do not need a specific platform combination but would like to ensure 
 
 #### Preferred - Docker CE v19+ and `nvidia-container-toolkit`
 ```bash
-$ docker pull {{ ngc_prefix if is_ngc }}rapidsai/{{ repo_name }}:{{ repo_rapids_version }}-cuda{{ DEFAULT_CUDA_VERSION }}-{{ repo_default_img_type }}-ubuntu18.04-py{{ DEFAULT_PYTHON_VERSION }}
+$ docker pull {{ ngc_prefix if is_ngc }}rapidsai/{{ repo_name }}:{{ repo_rapids_version }}-cuda{{ DEFAULT_CUDA_VERSION }}-{{ repo_default_img_type }}-ubuntu18.04{{ "-py"+DEFAULT_PYTHON_VERSION if not is_ngc }}
 $ docker run --gpus all --rm -it -p 8888:8888 -p 8787:8787 -p 8786:8786 \
-         {{ ngc_prefix if is_ngc }}rapidsai/{{ repo_name }}:{{ repo_rapids_version }}-cuda{{ DEFAULT_CUDA_VERSION }}-{{ repo_default_img_type }}-ubuntu18.04-py{{ DEFAULT_PYTHON_VERSION }}
+         {{ ngc_prefix if is_ngc }}rapidsai/{{ repo_name }}:{{ repo_rapids_version }}-cuda{{ DEFAULT_CUDA_VERSION }}-{{ repo_default_img_type }}-ubuntu18.04{{ "-py"+DEFAULT_PYTHON_VERSION if not is_ngc }}
 ```
 
 #### Legacy - Docker CE v18 and `nvidia-docker2`
 ```bash
-$ docker pull {{ ngc_prefix if is_ngc }}rapidsai/{{ repo_name }}:{{ repo_rapids_version }}-cuda{{ DEFAULT_CUDA_VERSION }}-{{ repo_default_img_type }}-ubuntu18.04-py{{ DEFAULT_PYTHON_VERSION }}
+$ docker pull {{ ngc_prefix if is_ngc }}rapidsai/{{ repo_name }}:{{ repo_rapids_version }}-cuda{{ DEFAULT_CUDA_VERSION }}-{{ repo_default_img_type }}-ubuntu18.04{{ "-py"+DEFAULT_PYTHON_VERSION if not is_ngc }}
 $ docker run --runtime=nvidia --rm -it -p 8888:8888 -p 8787:8787 -p 8786:8786 \
-         {{ ngc_prefix if is_ngc }}rapidsai/{{ repo_name }}:{{ repo_rapids_version }}-cuda{{ DEFAULT_CUDA_VERSION }}-{{ repo_default_img_type }}-ubuntu18.04-py{{ DEFAULT_PYTHON_VERSION }}
+         {{ ngc_prefix if is_ngc }}rapidsai/{{ repo_name }}:{{ repo_rapids_version }}-cuda{{ DEFAULT_CUDA_VERSION }}-{{ repo_default_img_type }}-ubuntu18.04{{ "-py"+DEFAULT_PYTHON_VERSION if not is_ngc }}
 ```
 
 ### Container Ports
@@ -152,7 +152,7 @@ $ docker run \
     -p 8888:8888 \
     -p 8787:8787 \
     -p 8786:8786 \
-    {{ ngc_prefix if is_ngc }}rapidsai/{{ repo_name }}:{{ repo_rapids_version }}-cuda{{ DEFAULT_CUDA_VERSION }}-{{ repo_default_img_type }}-ubuntu18.04-py{{ DEFAULT_PYTHON_VERSION }}
+    {{ ngc_prefix if is_ngc }}rapidsai/{{ repo_name }}:{{ repo_rapids_version }}-cuda{{ DEFAULT_CUDA_VERSION }}-{{ repo_default_img_type }}-ubuntu18.04{{ "-py"+DEFAULT_PYTHON_VERSION if not is_ngc }}
 ```
 
 ### Bind Mounts
@@ -175,7 +175,7 @@ $ docker run \
     -it \
     --gpus all \
     -v $(pwd)/environment.yml:/opt/rapids/environment.yml \
-    {{ ngc_prefix if is_ngc }}rapidsai/{{ repo_name }}:{{ repo_rapids_version }}-cuda{{ DEFAULT_CUDA_VERSION }}-{{ repo_default_img_type }}-ubuntu18.04-py{{ DEFAULT_PYTHON_VERSION }}
+    {{ ngc_prefix if is_ngc }}rapidsai/{{ repo_name }}:{{ repo_rapids_version }}-cuda{{ DEFAULT_CUDA_VERSION }}-{{ repo_default_img_type }}-ubuntu18.04{{ "-py"+DEFAULT_PYTHON_VERSION if not is_ngc }}
 ```
 
 ### Use JupyterLab to Explore the Notebooks
@@ -191,6 +191,10 @@ Notebooks can be found in the following directories within the {{ repo_rapids_ve
 
 For a full description of each notebook, see the [README](https://github.com/rapidsai/notebooks/blob/branch-{{ repo_rapids_version }}/README.md) in the notebooks repository.
 
+### Extending RAPIDS Images
+
+All RAPIDS images use `conda` as their package manager, and all RAPIDS packages (including source-built) are available in the `rapids` conda environment. If you want to extend RAPIDS images (such as using `FROM`), then it is important to include `source activate rapids` at the start of all `RUN` commands in your `Dockerfile`. Without this, the docker build context will not have access to the RAPIDS libraries, as it uses the `base` environment by default. Examples of this can be found in our own Dockerfiles, which can be found in the [RAPIDS Docker Repository](https://github.com/rapidsai/docker) on GitHub.
+
 ### Custom Data and Advanced Usage
 
 You are free to modify the above steps. For example, you can launch an interactive session with your own data:
@@ -199,14 +203,14 @@ You are free to modify the above steps. For example, you can launch an interacti
 ```bash
 $ docker run --gpus all --rm -it -p 8888:8888 -p 8787:8787 -p 8786:8786 \
          -v /path/to/host/data:/rapids/my_data \
-                  {{ ngc_prefix if is_ngc }}rapidsai/{{ repo_name }}:{{ repo_rapids_version }}-cuda{{ DEFAULT_CUDA_VERSION }}-{{ repo_default_img_type }}-ubuntu18.04-py{{ DEFAULT_PYTHON_VERSION }}
+                  {{ ngc_prefix if is_ngc }}rapidsai/{{ repo_name }}:{{ repo_rapids_version }}-cuda{{ DEFAULT_CUDA_VERSION }}-{{ repo_default_img_type }}-ubuntu18.04{{ "-py"+DEFAULT_PYTHON_VERSION if not is_ngc }}
 ```
 
 #### Legacy - Docker CE v18 and `nvidia-docker2`
 ```bash
 $ docker run --runtime=nvidia --rm -it -p 8888:8888 -p 8787:8787 -p 8786:8786 \
          -v /path/to/host/data:/rapids/my_data \
-                  {{ ngc_prefix if is_ngc }}rapidsai/{{ repo_name }}:{{ repo_rapids_version }}-cuda{{ DEFAULT_CUDA_VERSION }}-{{ repo_default_img_type }}-ubuntu18.04-py{{ DEFAULT_PYTHON_VERSION }}
+                  {{ ngc_prefix if is_ngc }}rapidsai/{{ repo_name }}:{{ repo_rapids_version }}-cuda{{ DEFAULT_CUDA_VERSION }}-{{ repo_default_img_type }}-ubuntu18.04{{ "-py"+DEFAULT_PYTHON_VERSION if not is_ngc }}
 ```
 This will map data from your host operating system to the container OS in the `/rapids/my_data` directory. You may need to modify the provided notebooks for the new data paths.
 

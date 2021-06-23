@@ -9,7 +9,7 @@
 ARG CUDA_VER=11.0
 ARG LINUX_VER=centos8
 ARG PYTHON_VER=3.7
-ARG RAPIDS_VER=0.20
+ARG RAPIDS_VER=21.08
 ARG FROM_IMAGE=gpuci/rapidsai
 
 FROM ${FROM_IMAGE}:${RAPIDS_VER}-cuda${CUDA_VER}-runtime-${LINUX_VER}-py${PYTHON_VER}
@@ -30,6 +30,7 @@ COPY libm.so.6 ${GCC9_DIR}/lib64
 RUN yum install -y \
       openssh-clients \
       openmpi-devel \
+      libnsl \
       && yum clean all
 
 
