@@ -58,13 +58,13 @@ To get the latest RAPIDS version of a specific platform combination, simply excl
 cuda11.0-runtime-ubuntu18.04-py3.7
 ```
 
-Many users do not need a specific platform combination but would like to ensure they're getting the latest version of RAPIDS, so as an additional convenience, a tag named simply `latest` is also provided which is equivalent to `cuda11.0-runtime-ubuntu16.04-py3.7`.
+Many users do not need a specific platform combination but would like to ensure they're getting the latest version of RAPIDS, so as an additional convenience, a tag named simply `latest` is also provided which is equivalent to `cuda11.0-runtime-ubuntu18.04-py3.7`.
 
 ## Prerequisites
 
 - NVIDIA Pascal™ GPU architecture or better
 - CUDA [10.1/10.2/11.0/11.2](https://developer.nvidia.com/cuda-downloads) with a compatible NVIDIA driver
-- Ubuntu 16.04/18.04/20.04 or CentOS 7/8
+- Ubuntu 18.04/20.04 or CentOS 7/8
 - Docker CE v18+
 - [nvidia-container-toolkit](https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/install-guide.html#docker)
 

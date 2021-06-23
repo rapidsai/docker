@@ -48,7 +48,7 @@ To get the latest RAPIDS version of a specific platform combination, simply excl
 cuda11.0-runtime-ubuntu18.04
 ```
 
-Many users do not need a specific platform combination but would like to ensure they're getting the latest version of RAPIDS, so as an additional convenience, a tag named simply `latest` is also provided which is equivalent to `cuda11.0-runtime-ubuntu16.04-py3.7`.
+Many users do not need a specific platform combination but would like to ensure they're getting the latest version of RAPIDS, so as an additional convenience, a tag named simply `latest` is also provided which is equivalent to `cuda11.0-runtime-ubuntu18.04-py3.7`.
 
 ## Prerequisites
 
