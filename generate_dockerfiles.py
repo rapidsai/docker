@@ -3,7 +3,6 @@
 Python script to generate Dockerfiles
 """
 
-import argparse
 import os
 from datetime import datetime
 import jinja2
@@ -36,44 +35,36 @@ def initialize_output_dir(output_dir):
     return
 
 
-def main(verbose=False):
+def main():
     """Generates Dockerfiles using Jinja2"""
 
     initialize_output_dir(OUTPUT_DIRNAME)
 
     settings = load_settings()
-    for image_name in ["rapidsai", "rapidsai-core", "rapidsai-clx"]:
-        templates_dir = os.path.join(TEMPLATES_DIRNAME, image_name)
-        file_loader = FileSystemLoader(templates_dir)
-        env = Environment(loader=file_loader, lstrip_blocks=True, trim_blocks=True)
-        for docker_os in ["centos7", "centos8", "ubuntu18.04", "ubuntu20.04"]:
-            for image_type in ["Base", "Devel", "Runtime"]:
-                dockerfile_name = f"{image_name}_{docker_os}-{image_type.lower()}.Dockerfile"
-                try:
-                    template = env.get_template(f"{image_type}.dockerfile.j2")
-                except jinja2.exceptions.TemplateNotFound:
-                    if verbose:
-                        print(f"Warning: template for image type {image_type} not "
-                              "found, skipping for {docker_os}.")
-                    continue
-                output = template.render(
-                    os=docker_os, image_type=image_type.lower(), now=datetime.utcnow(), **settings,
-                )
-                output_dockerfile_path = f"{OUTPUT_DIRNAME}/{dockerfile_name}"
-                if not(os.path.exists(output_dockerfile_path)) \
-                   or (open(output_dockerfile_path).read() != output):
+    file_loader = FileSystemLoader(TEMPLATES_DIRNAME)
+    env = Environment(loader=file_loader, lstrip_blocks=True, trim_blocks=True)
+    for docker_os in ["centos7", "centos8", "ubuntu18.04", "ubuntu20.04"]:
+        for image_type in ["Base", "Devel", "Runtime"]:
+            dockerfile_name = f"{docker_os}-{image_type.lower()}.Dockerfile"
+            try:
+                template = env.get_template(f"{image_type}.dockerfile.j2")
+            except jinja2.exceptions.TemplateNotFound:
+                print(f"Warning: template for image type {image_type} not "
+                        "found, skipping for {docker_os}.")
+                continue
+            output = template.render(
+                os=docker_os, image_type=image_type.lower(), now=datetime.utcnow(), **settings,
+            )
+            output_dockerfile_path = f"{OUTPUT_DIRNAME}/{dockerfile_name}"
+            if not(os.path.exists(output_dockerfile_path)) \
+                or (open(output_dockerfile_path).read() != output):
 
-                    with open(output_dockerfile_path, "w") as dockerfile:
-                        dockerfile.write(output)
-                    if verbose:
-                        print(f"Updated: {output_dockerfile_path}")
+                with open(output_dockerfile_path, "w") as dockerfile:
+                    dockerfile.write(output)
+                    print(f"Updated: {output_dockerfile_path}")
 
     print(f"Dockerfiles successfully written to the '{OUTPUT_DIRNAME}' directory.")
 
 
 if __name__ == "__main__":
-    arg_parser = argparse.ArgumentParser()
-    arg_parser.add_argument("-v", action="store_true",
-                            help="Print extra details about the run")
-    args = arg_parser.parse_args()
-    main(verbose=args.v)
+    main()

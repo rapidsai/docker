@@ -1,3 +1,4 @@
+{% from 'partials/cleanup-chmod.dockerfile.j2' import cleanChmod %}
 # RAPIDS Dockerfile for {{ os }} "devel" image
 #
 # RAPIDS is built from-source and installed in the base conda environment. The
@@ -13,7 +14,7 @@ ARG PYTHON_VER={{ DEFAULT_PYTHON_VERSION }}
 ARG RAPIDS_VER={{ DEFAULT_NIGHTLY_RAPIDS_VERSION }}
 ARG FROM_IMAGE=gpuci/rapidsai
 
-FROM ${FROM_IMAGE}:${RAPIDS_VER}-cuda${CUDA_VER}-devel-${LINUX_VER}-py${PYTHON_VER}
+FROM ${FROM_IMAGE}:${RAPIDS_VER}-cuda${CUDA_VER}-devel-${LINUX_VER}-py${PYTHON_VER} AS rapids-core
 
 {# devel environment config args #}
 ARG PARALLEL_LEVEL=16
@@ -149,6 +150,46 @@ ENV LD_LIBRARY_PATH=${LD_LIBRARY_PATH_PREBUILD}
 COPY packages.sh /opt/docker/bin/
 
 {# Cleaup conda and set ACLs for all users #}
-{% include 'partials/cleanup-chmod.dockerfile.j2' %}
+{{ cleanChmod(["${RAPIDS_DIR}"]) }}
 
 {% include 'partials/entrypoint.dockerfile.j2' %}
+
+FROM rapids-core AS rapids-std
+
+ARG RAPIDS_VER
+ARG CUDA_VER
+ARG BUILD_BRANCH="branch-${RAPIDS_VER}"
+
+ENV BLAZING_DIR=/blazing
+{% include 'partials/clone_blazing_notebooks.dockerfile.j2' %}
+
+{% include 'partials/clone_and_build_blazing.dockerfile.j2' %}
+
+WORKDIR ${RAPIDS_DIR}
+
+{# Cleanup conda and set ACLs for all users #}
+{{ cleanChmod(["${RAPIDS_DIR}", "${BLAZING_DIR}"]) }}
+
+COPY entrypoint.sh /opt/docker/bin/entrypoint
+ENTRYPOINT [ "/usr/bin/tini", "--", "/opt/docker/bin/entrypoint" ]
+
+{# Set the default command to pass to the ENTRYPOINT if no command was given #}
+CMD [ "/bin/bash" ]
+
+FROM rapids-std
+
+ARG RAPIDS_VER
+ARG BUILD_BRANCH="branch-${RAPIDS_VER}"
+
+{% include 'partials/clone_and_build_clx.dockerfile.j2' %}
+
+WORKDIR ${RAPIDS_DIR}
+
+{# Cleanup conda and set ACLs for all users #}
+{{ cleanChmod(["${RAPIDS_DIR}", "${BLAZING_DIR}"]) }}
+
+COPY entrypoint.sh /opt/docker/bin/entrypoint
+ENTRYPOINT [ "/usr/bin/tini", "--", "/opt/docker/bin/entrypoint" ]
+
+{# Set the default command to pass to the ENTRYPOINT if no command was given #}
+CMD [ "/bin/bash" ]
