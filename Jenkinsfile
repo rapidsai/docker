@@ -42,13 +42,13 @@ for(int i = 0; i < axes.size(); i++) {
     tasks[axisEnv.join(', ')] = { ->
         node {
             withEnv(axisEnv) {
-                stage("Build") {
+                stage("Build ${PLATFORM} - ${BROWSER}") {
                     echo nodeLabel
                     sh 'echo Do Build for ${PLATFORM} - ${BROWSER}'
                 }
-                stage("Test") {
+                stage("Test ${PLATFORM} - ${BROWSER}") {
                     echo nodeLabel
-                    sh 'echo Do Build for ${PLATFORM} - ${BROWSER}'
+                    sh 'echo Do Test for ${PLATFORM} - ${BROWSER}'
                 }
             }
         }
