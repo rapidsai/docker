@@ -1,4 +1,4 @@
-# RAPIDS Dockerfile for centos7 "devel" image
+# RAPIDS Dockerfile for ubuntu18.04 "devel" image
 #
 # RAPIDS is built from-source and installed in the base conda environment. The
 # sources and toolchains to build RAPIDS are included in this image. RAPIDS
@@ -8,12 +8,12 @@
 # Copyright (c) 2021, NVIDIA CORPORATION.
 
 ARG CUDA_VER=11.0
-ARG LINUX_VER=centos7
+ARG LINUX_VER=ubuntu18.04
 ARG PYTHON_VER=3.7
 ARG RAPIDS_VER=21.08
 ARG FROM_IMAGE=gpuci/rapidsai
 
-FROM ${FROM_IMAGE}:${RAPIDS_VER}-cuda${CUDA_VER}-devel-${LINUX_VER}-py${PYTHON_VER}
+FROM ${FROM_IMAGE}:${RAPIDS_VER}-cuda${CUDA_VER}-devel-${LINUX_VER}-py${PYTHON_VER} AS rapids-core
 
 ARG PARALLEL_LEVEL=16
 ARG RAPIDS_VER
@@ -27,18 +27,21 @@ ARG PYTHON_VER
 
 ENV RAPIDS_DIR=/rapids
 
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    gsfonts \
+    && rm -rf /var/lib/apt/lists/*
 
-RUN mkdir -p ${RAPIDS_DIR}/utils ${GCC9_DIR}/lib64
+RUN mkdir -p ${RAPIDS_DIR}/utils 
 COPY nbtest.sh nbtestlog2junitxml.py ${RAPIDS_DIR}/utils/
 
-COPY libm.so.6 ${GCC9_DIR}/lib64
 
-RUN yum install -y \
-      openssh-clients \
-      openmpi-devel \
-      libnsl \
-      && yum clean all
 
+RUN apt-get update \
+    && apt-get install --no-install-recommends -y \
+      openssh-client \
+      libopenmpi-dev \
+      openmpi-bin \
+    && rm -rf /var/lib/apt/lists/*
 
 
 RUN source activate rapids \
@@ -59,8 +62,9 @@ RUN gpuci_conda_retry install -y -n rapids \
 RUN source activate rapids \
     && npm i -g npm@">=7.0"
 
-RUN yum -y upgrade \
-    && yum clean all
+RUN apt-get update \
+    && apt-get -y upgrade \
+    && rm -rf /var/lib/apt/lists/*
 
 
 RUN source activate rapids \
@@ -134,8 +138,6 @@ RUN cd ${RAPIDS_DIR} \
   && git submodule update --init --remote --recursive --no-single-branch --depth 1 
   
 
-ENV LD_LIBRARY_PATH_PREBUILD=${LD_LIBRARY_PATH}
-ENV LD_LIBRARY_PATH=${LD_LIBRARY_PATH}:/usr/local/cuda/lib64:/usr/local/cuda/lib64/stubs
 
 ENV NCCL_ROOT=/opt/conda/envs/rapids
 ENV PARALLEL_LEVEL=${PARALLEL_LEVEL}
@@ -217,16 +219,103 @@ RUN cd ${RAPIDS_DIR}/dask-cuda && \
 
 
 
-ENV LD_LIBRARY_PATH=${LD_LIBRARY_PATH_PREBUILD}
 
 COPY packages.sh /opt/docker/bin/
-
 
 RUN chmod -R ugo+w /opt/conda ${RAPIDS_DIR} \
   && conda clean -tipy \
   && chmod -R ugo+w /opt/conda ${RAPIDS_DIR}
+
 COPY NVIDIA_Deep_Learning_Container_License.pdf . 
 COPY source_entrypoints/runtime_devel.sh /opt/docker/bin/entrypoint_source
+COPY entrypoint.sh /opt/docker/bin/entrypoint
+ENTRYPOINT [ "/usr/bin/tini", "--", "/opt/docker/bin/entrypoint" ]
+
+CMD [ "/bin/bash" ]
+FROM rapids-core AS rapids-std
+
+ARG RAPIDS_VER
+ARG CUDA_VER
+ARG BUILD_BRANCH="branch-${RAPIDS_VER}"
+
+ENV BLAZING_DIR=/blazing
+
+RUN mkdir -p ${BLAZING_DIR} \
+    && cd ${BLAZING_DIR} \
+    && git clone https://github.com/BlazingDB/Welcome_to_BlazingSQL_Notebooks.git
+
+
+RUN gpuci_conda_retry install -y -n rapids -c blazingsql-nightly -c blazingsql \
+      "blazingsql-build-env=${RAPIDS_VER}*" \
+      "rapids-build-env=${RAPIDS_VER}*" \
+      "cudatoolkit=${CUDA_VER}*" \
+    && gpuci_conda_retry remove -y -n rapids --force-remove \
+      "blazingsql-build-env=${RAPIDS_VER}*" \
+      "rapids-build-env=${RAPIDS_VER}*"
+
+
+ENV CUDF_HOME=/rapids/cudf
+
+RUN mkdir -p ${BLAZING_DIR} \
+    && cd ${BLAZING_DIR} \
+    && git clone -b ${BUILD_BRANCH} https://github.com/BlazingDB/blazingsql.git
+
+
+ENV LD_LIBRARY_PATH_ORIG=${LD_LIBRARY_PATH}
+ENV LD_LIBRARY_PATH=${LD_LIBRARY_PATH}:/usr/local/cuda/compat
+
+
+RUN source activate rapids \
+    && cd ${BLAZING_DIR}/blazingsql \
+    && ./build.sh
+
+ENV LD_LIBRARY_PATH=${LD_LIBRARY_PATH_ORIG}
+ENV LD_LIBRARY_PATH_ORIG=
+WORKDIR ${RAPIDS_DIR}
+
+RUN chmod -R ugo+w /opt/conda ${RAPIDS_DIR} ${BLAZING_DIR} \
+  && conda clean -tipy \
+  && chmod -R ugo+w /opt/conda ${RAPIDS_DIR} ${BLAZING_DIR}
+
+COPY entrypoint.sh /opt/docker/bin/entrypoint
+ENTRYPOINT [ "/usr/bin/tini", "--", "/opt/docker/bin/entrypoint" ]
+
+CMD [ "/bin/bash" ]
+
+FROM rapids-std
+
+ARG RAPIDS_VER
+ARG BUILD_BRANCH="branch-${RAPIDS_VER}"
+
+
+RUN source activate rapids && \
+    gpuci_conda_retry install -y -n rapids -c pytorch \
+        "pytorch=1.7.1" \
+        torchvision \
+        "cudf_kafka=${RAPIDS_VER}" \
+        "custreamz=${RAPIDS_VER}" \
+        "transformers=4.*" \
+        seqeval \
+        python-whois \
+        faker && \
+    pip install "git+https://github.com/rapidsai/cudatashader.git" && \
+    pip install mockito && \
+    pip install wget && \
+    pip install "git+https://github.com/slashnext/SlashNext-URL-Analysis-and-Enrichment.git#egg=slashnext-phishing-ir&subdirectory=Python SDK/src"
+
+RUN cd ${RAPIDS_DIR} \
+    && git clone -b ${BUILD_BRANCH} https://github.com/rapidsai/clx.git
+
+# clx build/install
+RUN source activate rapids && \
+    cd /rapids/clx/python && \
+    python setup.py install
+WORKDIR ${RAPIDS_DIR}
+
+RUN chmod -R ugo+w /opt/conda ${RAPIDS_DIR} ${BLAZING_DIR} \
+  && conda clean -tipy \
+  && chmod -R ugo+w /opt/conda ${RAPIDS_DIR} ${BLAZING_DIR}
+
 COPY entrypoint.sh /opt/docker/bin/entrypoint
 ENTRYPOINT [ "/usr/bin/tini", "--", "/opt/docker/bin/entrypoint" ]
 
