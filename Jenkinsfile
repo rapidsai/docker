@@ -1,7 +1,16 @@
 // you can add more axes and this will still work
+// Map matrix_axes = [
+//     CUDA_VER: ['11.0', '11.2'],
+//     LINUX_VER: ['ubuntu18.04', 'ubuntu20.04', 'centos7', 'centos8'],
+//     PYTHON_VER: ['3.7', '3.8'],
+//     IMAGE_TYPE: ['base', 'runtime'],
+// ]
 Map matrix_axes = [
-    PLATFORM: ['linux', 'windows', 'mac'],
-    BROWSER: ['firefox', 'chrome', 'safari', 'edge']
+    CUDA_VER: ['11.0', '11.2'],
+    LINUX_VER: ['ubuntu18.04'],
+    PYTHON_VER: ['3.7'],
+    IMAGE_TYPE: ['base'],
+    RAPIDS_VER: ['21.08'],
 ]
 
 @NonCPS
@@ -18,13 +27,7 @@ List getMatrixAxes(Map matrix_axes) {
     axes.combinations()*.sum()
 }
 
-// filter the matrix axes since
-// Safari is not available on Linux and
-// Edge is only available on Windows
-List axes = getMatrixAxes(matrix_axes).findAll { axis ->
-    !(axis['BROWSER'] == 'safari' && axis['PLATFORM'] == 'linux') &&
-    !(axis['BROWSER'] == 'edge' && axis['PLATFORM'] != 'windows')
-}
+List axes = getMatrixAxes(matrix_axes)
 
 // parallel task map
 Map tasks = [failFast: false]
@@ -35,20 +38,28 @@ for(int i = 0; i < axes.size(); i++) {
     List axisEnv = axis.collect { k, v ->
         "${k}=${v}"
     }
-    // let's say you have diverse agents among Windows, Mac and Linux all of
-    // which have proper labels for their platform and what browsers are
-    // available on those agents.
-    String nodeLabel = "os:${axis['PLATFORM']} && browser:${axis['BROWSER']}"
+
+
+    String nodeLabel = "CUDA_VER:${axis['CUDA_VER']} && LINUX_VER:${axis['LINUX_VER']} && PYTHON_VER:${axis['PYTHON_VER']} && IMAGE_TYPE:${axis['IMAGE_TYPE']}"
     tasks[axisEnv.join(', ')] = { ->
         node {
+            checkout scm
             withEnv(axisEnv) {
-                stage("Build ${PLATFORM} - ${BROWSER}") {
+                stage("CORE Build ${IMAGE_TYPE} - ${CUDA_VER} - ${LINUX_VER} - ${PYTHON_VER}") {
                     echo nodeLabel
-                    sh 'echo Do Build for ${PLATFORM} - ${BROWSER}'
+                    sh 'bash ci/build.sh core'
                 }
-                stage("Test ${PLATFORM} - ${BROWSER}") {
+                stage("CORE Test ${IMAGE_TYPE} - ${CUDA_VER} - ${LINUX_VER} - ${PYTHON_VER}") {
                     echo nodeLabel
-                    sh 'echo Do Test for ${PLATFORM} - ${BROWSER}'
+                    sh 'echo Do Test for ${IMAGE_TYPE} - ${CUDA_VER} - ${LINUX_VER} - ${PYTHON_VER}'
+                }
+                stage("STD Build ${IMAGE_TYPE} - ${CUDA_VER} - ${LINUX_VER} - ${PYTHON_VER}") {
+                    echo nodeLabel
+                    sh 'bash ci/build.sh std'
+                }
+                stage("CLX Build ${IMAGE_TYPE} - ${CUDA_VER} - ${LINUX_VER} - ${PYTHON_VER}") {
+                    echo nodeLabel
+                    sh 'bash ci/build.sh clx'
                 }
             }
         }
