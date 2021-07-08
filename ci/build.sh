@@ -1,7 +1,7 @@
 #!/bin/bash
 
 echo "start script: $1"
-# env
+env
 echo "end script"
 
 # Handle $1 var input (i.e core, std, clx)
@@ -9,20 +9,23 @@ case $1 in
   core)
     echo "Building core image"
     BUILD_IMAGE="rapidsai/rapidsai-core"
+    TARGET_STAGE="rapids-core"
     ;;
 
   std)
     echo "Building std image"
     BUILD_IMAGE="rapidsai/rapidsai"
+    TARGET_STAGE="rapids-std"
     ;;
 
   clx)
     echo "Building clx image"
     BUILD_IMAGE="rapidsai/rapidsai-clx"
+    TARGET_STAGE="rapids-clx"
     ;;
 
   *)
-    echo "wrong input"
+    echo "Use one of: core, std, clx. (i.e. build.sh core)"
     exit
     ;;
 esac
@@ -55,9 +58,13 @@ BUILD_TAG="${RAPIDS_VER}-cuda${CUDA_VER}-${IMAGE_TYPE}-${LINUX_VER}-py${PYTHON_V
 echo "BUILD_IMAGE: $BUILD_IMAGE"
 echo "BUILD_TAG: $BUILD_TAG"
 echo "DOCKERFILE: $DOCKERFILE"
+echo "TARGET_STAGE: $TARGET_STAGE"
+echo "BUILD_ARGS: $BUILD_ARGS"
+
 # docker build \
 #   --pull \
 #   -t ${BUILD_IMAGE}:${BUILD_TAG} \
+#   --target ${TARGET_STAGE}
 #   ${BUILD_ARGS} \
 #   -f generated-dockerfiles/${DOCKERFILE} \
 #   context/
