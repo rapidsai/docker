@@ -77,7 +77,7 @@ ENTRYPOINT [ "/usr/bin/tini", "--", "/opt/docker/bin/entrypoint" ]
 {# Set the default command to pass to the ENTRYPOINT if no command was given #}
 CMD [ "/bin/bash" ]
 
-FROM rapids-std
+FROM rapids-std AS rapids-clx
 
 ARG RAPIDS_VER
 ARG CUDA_VER
