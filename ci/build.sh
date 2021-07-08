@@ -30,27 +30,25 @@ case $1 in
     ;;
 esac
 
-# Add BUILD_BRANCH arg for 'main' branch only
-if [ "${IMAGE_TYPE}" = "devel" ]; then
-  BUILD_IMAGE+="-dev"
-fi
-
-
 BUILD_ARGS="--no-cache \
   --squash \
   --build-arg CUDA_VER=${CUDA_VER} \
   --build-arg LINUX_VER=${LINUX_VER} \
   --build-arg PYTHON_VER=${PYTHON_VER} \
-  --build-arg RAPIDS_VER=${RAPIDS_VER} \
-  --build-arg UCX_PY_VER=${UCX_PY_VER}"
+  --build-arg RAPIDS_VER=${RAPIDS_VER}"
 
-# Add BUILD_BRANCH arg for 'main' branch only
+# Handle devel images args/suffixes
+if [ "${IMAGE_TYPE}" = "devel" ]; then
+  BUILD_IMAGE+="-dev"
+  BUILD_ARGS+=" --build-arg UCX_PY_VER=${UCX_PY_VER}"
+fi
+
+# Handle nightly vs. stable builds
 if [ "${CHANGE_TARGET}" = "main" ]; then
-  BUILD_ARGS+=" --build-arg BUILD_BRANCH=${BUILD_BRANCH}"
+  BUILD_ARGS+=" --build-arg BUILD_BRANCH=main"
 else
   BUILD_IMAGE+="-nightly"
 fi
-
 
 DOCKERFILE="${LINUX_VER}-${IMAGE_TYPE}.Dockerfile"
 BUILD_TAG="${RAPIDS_VER}-cuda${CUDA_VER}-${IMAGE_TYPE}-${LINUX_VER}-py${PYTHON_VER}"
