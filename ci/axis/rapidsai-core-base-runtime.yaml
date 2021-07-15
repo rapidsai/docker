@@ -11,6 +11,7 @@ IMAGE_TYPE:
 
 RAPIDS_VER:
   - '21.08'
+  - '21.10'
 
 CUDA_VER:
   - 11.2
