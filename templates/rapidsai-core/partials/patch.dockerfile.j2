@@ -1,7 +1,14 @@
 {# This partial is used to install patches to resolve known CVEs #}
 
-{# Patch for CVE-2020-8116 https://github.com/advisories/GHSA-ff7x-qrg7-qggm #}
-RUN source activate rapids \
+RUN \
+{# CVE-2020-36242 https://github.com/advisories/GHSA-rhm9-p9w5-fwm7 #}
+{# Affects OS Python library, not conda environment #}
+    pip install --upgrade "cryptography>=3.3.2" \
+{# CVE-2021-33503 https://github.com/advisories/GHSA-q2q7-5pp4-w6pg #}
+{# Affects OS Python library, not conda environment #}
+    && pip install --upgrade "urllib3>=1.26.5" \
+{# CVE-2020-8116 https://github.com/advisories/GHSA-ff7x-qrg7-qggm #}
+    && source activate rapids \
     && npm i -g npm@">=7.0"
 
 {% if "centos" in os %}
