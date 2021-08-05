@@ -30,4 +30,4 @@ UCX_PY_VER:
 
 exclude:
   - RAPIDS_VER: '21.08'
-    BUILD_IMAGE: rapidsai/rapidsai-core-dev
+    BUILD_IMAGE: rapidsai/rapidsai-core-dev-nightly
