@@ -10,7 +10,7 @@
 ARG CUDA_VER=11.0
 ARG LINUX_VER=centos8
 ARG PYTHON_VER=3.7
-ARG RAPIDS_VER=21.06
+ARG RAPIDS_VER=21.08
 ARG FROM_IMAGE=gpuci/rapidsai
 
 FROM ${FROM_IMAGE}:${RAPIDS_VER}-cuda${CUDA_VER}-devel-${LINUX_VER}-py${PYTHON_VER}
@@ -104,7 +104,7 @@ RUN cd ${RAPIDS_DIR} \
   && cd cuml \
   && git submodule update --init --recursive --no-single-branch --depth 1 \
   && cd ${RAPIDS_DIR} \
-  && git clone -b rapids-v21.06 --depth 1 --single-branch https://github.com/rapidsai/xgboost.git \
+  && git clone -b branch-${RAPIDS_VER} --depth 1 --single-branch https://github.com/rapidsai/xgboost.git \
   && cd xgboost \
   && git submodule update --init --recursive --no-single-branch --depth 1 \
   && cd ${RAPIDS_DIR} \
@@ -185,34 +185,17 @@ RUN cd ${RAPIDS_DIR}/cugraph && \
 
 RUN cd ${RAPIDS_DIR}/xgboost && \
   source activate rapids && \
-  TREELITE_VER=$(conda list -e treelite | grep -v "#" | grep "treelite=") && \
-  gpuci_conda_retry remove -y --force-remove treelite && \
-  if [[ "$CUDA_VER" == "11.0" ]]; then \
-    mkdir -p build && cd build && \
-    cmake -DCMAKE_INSTALL_PREFIX=$CONDA_PREFIX \
-          -DUSE_NCCL=ON -DUSE_CUDA=ON -DUSE_CUDF=ON \
-          -DBUILD_WITH_SHARED_NCCL=ON \
-          -DGDF_INCLUDE_DIR=$CONDA_PREFIX/include \
-          -DCMAKE_CXX_STANDARD:STRING="14" \
-          -DPLUGIN_RMM=ON \
-          -DRMM_ROOT=${RAPIDS_DIR}/rmm \
-          -DCMAKE_BUILD_TYPE=release .. && \
-    make -j && make -j install && \
-    cd ../python-package && python setup.py install; \
-  else \
-    mkdir -p build && cd build && \
-    cmake -DCMAKE_INSTALL_PREFIX=$CONDA_PREFIX \
-          -DUSE_NCCL=ON -DUSE_CUDA=ON -DUSE_CUDF=ON \
-          -DBUILD_WITH_SHARED_NCCL=ON \
-          -DGDF_INCLUDE_DIR=$CONDA_PREFIX/include \
-          -DCMAKE_CXX11_ABI=ON \
-          -DPLUGIN_RMM=ON \
-          -DRMM_ROOT=${RAPIDS_DIR}/rmm \
-          -DCMAKE_BUILD_TYPE=release .. && \
-    make -j && make -j install && \
-    cd ../python-package && python setup.py install; \
-  fi && \
-  gpuci_conda_retry install -y --no-deps "${TREELITE_VER}"
+  mkdir -p build && cd build && \
+  cmake -DCMAKE_INSTALL_PREFIX=$CONDA_PREFIX \
+        -DUSE_NCCL=ON -DUSE_CUDA=ON -DUSE_CUDF=ON \
+        -DBUILD_WITH_SHARED_NCCL=ON \
+        -DGDF_INCLUDE_DIR=$CONDA_PREFIX/include \
+        -DCMAKE_CXX_STANDARD:STRING="14" \
+        -DPLUGIN_RMM=ON \
+        -DRMM_ROOT=${RAPIDS_DIR}/rmm \
+        -DCMAKE_BUILD_TYPE=release .. && \
+  make -j && make -j install && \
+  cd ../python-package && python setup.py install;
 
 RUN cd ${RAPIDS_DIR}/dask-cuda && \
   source activate rapids && \

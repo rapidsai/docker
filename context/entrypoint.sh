@@ -17,5 +17,18 @@ source /opt/docker/bin/packages.sh
 SRC_FILE="/opt/docker/bin/entrypoint_source"
 [ -f "${SRC_FILE}" ] && source "${SRC_FILE}"
 
+# Check if we should quote the exec params
+UNQUOTE=false
+if [ "$1" = "--unquote-exec" ]; then
+  UNQUOTE=true
+  shift
+elif [ -n "${UNQUOTE_EXEC}" ] && [[ "${UNQUOTE_EXEC}" =~ ^(true|yes|y)$ ]]; then
+  UNQUOTE=true
+fi
+
 # Run whatever the user wants.
-exec "$@"
+if [ "${UNQUOTE}" = "true" ]; then
+  exec $@
+else
+  exec "$@"
+fi

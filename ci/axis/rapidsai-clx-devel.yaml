@@ -9,14 +9,13 @@ IMAGE_TYPE:
   - devel
 
 RAPIDS_VER:
-  - '21.06'
+  - '21.08'
 
 CUDA_VER:
   - 11.2
   - 11.0
 
 LINUX_VER:
-  - ubuntu16.04
   - ubuntu18.04
   - ubuntu20.04
   - centos7
@@ -27,5 +26,5 @@ PYTHON_VER:
   - 3.8
 
 exclude:
-  - RAPIDS_VER: '21.06'
+  - RAPIDS_VER: '21.08'
     BUILD_IMAGE: rapidsai/rapidsai-clx-dev-nightly
