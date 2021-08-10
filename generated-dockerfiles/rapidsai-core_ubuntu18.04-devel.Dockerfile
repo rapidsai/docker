@@ -59,10 +59,7 @@ RUN gpuci_conda_retry install -y -n rapids \
       "rapids-doc-env=${RAPIDS_VER}*"
 
 
-RUN \
-    pip install --upgrade "cryptography>=3.3.2" \
-    && pip install --upgrade "urllib3>=1.26.5" \
-    && source activate rapids \
+RUN source activate rapids \
     && npm i -g npm@">=7.0"
 
 RUN apt-get update \
