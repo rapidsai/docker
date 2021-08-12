@@ -92,7 +92,8 @@ The following ports are used by the **`runtime` containers only** (not `base` co
 
 The following environment variables can be passed to the `docker run` commands:
 
-- `JUPYTER_FG` - set to `true` to start jupyter server in foreground instead of background (not applicable for `base` images)
+- `DISABLE_JUPYTER` - set to `true` to disable the default Jupyter server from starting (not applicable for `base` images)
+- `JUPYTER_FG` - set to `true` to start Jupyter server in foreground instead of background (not applicable for `base` images)
 - `EXTRA_APT_PACKAGES` - (**Ubuntu images only**) used to install additional `apt` packages in the container. Use a space separated list of values
 - `EXTRA_YUM_PACKAGES` - (**CentOS images only**) used to install additional `yum` packages in the container. Use a space separated list of values
 - `EXTRA_CONDA_PACKAGES` - used to install additional `conda` packages in the container. Use a space separated list of values
