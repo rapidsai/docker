@@ -1,7 +1,12 @@
 #!/bin/bash
 
+
+# Disable automatic Jupyter launch if $DISABLE_JUPYTER is set
+if [[ "${DISABLE_JUPYTER}" =~ ^(true|yes|y)$ ]]; then
+   return 0
+
 # Run Jupyter in foreground if $JUPYTER_FG is set
-if [[ "${JUPYTER_FG}" == "true" ]]; then
+elif [[ "${JUPYTER_FG}" =~ ^(true|yes|y)$ ]]; then
    jupyter-lab --allow-root --ip=0.0.0.0 --no-browser --NotebookApp.token='' --NotebookApp.allow_origin="*"
    exit 0
 else
