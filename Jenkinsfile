@@ -45,7 +45,7 @@ for(int i = 0; i < axes.size(); i++) {
 
     String nodeLabel = "CUDA_VER:${axis['CUDA_VER']} && LINUX_VER:${axis['LINUX_VER']} && PYTHON_VER:${axis['PYTHON_VER']} && IMAGE_TYPE:${axis['IMAGE_TYPE']}"
     tasks[axisEnv.join(', ')] = { ->
-        node {
+        node (label: "cpu") {
             checkout scm
             withEnv(axisEnv) {
                 stage("Build Images ${IMAGE_TYPE} - ${CUDA_VER} - ${LINUX_VER} - ${PYTHON_VER}") {
