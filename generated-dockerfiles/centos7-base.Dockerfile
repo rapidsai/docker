@@ -11,7 +11,7 @@ ARG PYTHON_VER=3.7
 ARG RAPIDS_VER=21.10
 ARG FROM_IMAGE=gpuci/rapidsai
 
-FROM ${FROM_IMAGE}:${RAPIDS_VER}-cuda${CUDA_VER}-base-${LINUX_VER}-py${PYTHON_VER} AS rapids-core
+FROM ${FROM_IMAGE}:${RAPIDS_VER}-cuda${CUDA_VER}-base-${LINUX_VER}-py${PYTHON_VER} AS rapidsai-core
 
 ARG DASK_XGBOOST_VER=0.2*
 ARG RAPIDS_VER
@@ -62,7 +62,7 @@ COPY entrypoint.sh /opt/docker/bin/entrypoint
 ENTRYPOINT [ "/usr/bin/tini", "--", "/opt/docker/bin/entrypoint" ]
 
 CMD [ "/bin/bash" ]
-FROM rapids-core AS rapids-std
+FROM rapids-core AS rapidsai
 
 ARG RAPIDS_VER
 ARG CUDA_VER
@@ -83,7 +83,7 @@ ENTRYPOINT [ "/usr/bin/tini", "--", "/opt/docker/bin/entrypoint" ]
 
 CMD [ "/bin/bash" ]
 
-FROM rapids-std
+FROM rapids-std AS rapidsai-clx
 
 ARG RAPIDS_VER
 ARG CUDA_VER
