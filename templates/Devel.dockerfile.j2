@@ -14,7 +14,7 @@ ARG PYTHON_VER={{ DEFAULT_PYTHON_VERSION }}
 ARG RAPIDS_VER={{ DEFAULT_NIGHTLY_RAPIDS_VERSION }}
 ARG FROM_IMAGE=gpuci/rapidsai
 
-FROM ${FROM_IMAGE}:${RAPIDS_VER}-cuda${CUDA_VER}-devel-${LINUX_VER}-py${PYTHON_VER} AS rapids-core
+FROM ${FROM_IMAGE}:${RAPIDS_VER}-cuda${CUDA_VER}-devel-${LINUX_VER}-py${PYTHON_VER} AS rapidsai-core
 
 {# devel environment config args #}
 ARG PARALLEL_LEVEL=16
@@ -154,7 +154,7 @@ COPY packages.sh /opt/docker/bin/
 
 {% include 'partials/entrypoint.dockerfile.j2' %}
 
-FROM rapids-core AS rapids-std
+FROM rapids-core AS rapidsai
 
 ARG RAPIDS_VER
 ARG CUDA_VER
@@ -176,7 +176,7 @@ ENTRYPOINT [ "/usr/bin/tini", "--", "/opt/docker/bin/entrypoint" ]
 {# Set the default command to pass to the ENTRYPOINT if no command was given #}
 CMD [ "/bin/bash" ]
 
-FROM rapids-std AS rapids-clx
+FROM rapids-std AS rapidsai-clx
 
 ARG RAPIDS_VER
 ARG BUILD_BRANCH="branch-${RAPIDS_VER}"
