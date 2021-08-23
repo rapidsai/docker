@@ -2,7 +2,6 @@
 set -e
 
 env
-echo "end env"
 echo ""
 
 IMAGE_STAGES='[
@@ -10,7 +9,7 @@ IMAGE_STAGES='[
   "rapidsai",
   "rapidsai-clx"
 ]'
-FINAL_IMAGE_STAGE=$(echo "$IMAGE_STAGES"| jq '.[-1]')
+FINAL_IMAGE_STAGE=$(echo "$IMAGE_STAGES"| jq -r '.[-1]')
 
 ALL_BUILD_ARGS=$(
   jq -n \
@@ -47,34 +46,32 @@ function get_img_name() {
   echo "rapidsai/${STAGE_NAME}"
 }
 
-
 DOCKERFILE="${LINUX_VER}-${IMAGE_TYPE}.Dockerfile"
 BUILD_TAG="${RAPIDS_VER}-cuda${CUDA_VER}-${IMAGE_TYPE}-${LINUX_VER}-py${PYTHON_VER}"
 
-echo "BUILD_TAG: $BUILD_TAG"
-echo "DOCKERFILE: $DOCKERFILE"
+# Build Entire Dockerfile (i.e. all stages)
+echo ""
+echo "Build Dockerfile stage: $FINAL_IMAGE_STAGE"
+echo ""
 
-
-# Build entire Dockerfile (i.e. all stages)
 BUILD_ARGS=$(echo $ALL_BUILD_ARGS | jq -r 'join(" ")')
-set -x
 echo "docker build \
   --pull \
   -t "$(get_img_name $FINAL_IMAGE_STAGE):${BUILD_TAG}" \
   ${BUILD_ARGS} \
   -f generated-dockerfiles/${DOCKERFILE} \
   context/"
-set +x
 
 
-# Build/Tag intermediate stages
+# Build & Tag Intermediate Stages
+# Remove "--no-cache" build argument since all stages were built without cache immediately prior
+BUILD_ARGS=$(echo $ALL_BUILD_ARGS | jq -r '.[1:] | join(" ")')
 
 for STAGE in $(echo "$IMAGE_STAGES" | jq -r '.[0:-1][]'); do
-  echo "$(get_img_name $STAGE)"
+  echo ""
+  echo "Build Dockerfile stage: $STAGE"
+  echo ""
 
-  # Remove "--no-cache" build argument since all stages were built without cache immediately prior
-  BUILD_ARGS=$(echo $ALL_BUILD_ARGS | jq -r '.[1:] | join(" ")')
-  set -x
   echo "docker build \
     --pull \
     -t "$(get_img_name $STAGE):${BUILD_TAG}" \
@@ -82,9 +79,15 @@ for STAGE in $(echo "$IMAGE_STAGES" | jq -r '.[0:-1][]'); do
     ${BUILD_ARGS} \
     -f generated-dockerfiles/${DOCKERFILE} \
     context/"
-  set +x
+done
+
+# Show all Docker Image Information
+echo ""
+echo "Show Docker info"
+echo ""
+for STAGE in $(echo "$IMAGE_STAGES" | jq -r '.[]'); do
+  echo docker images "$(get_img_name $STAGE):${BUILD_TAG}"
 done
 
 
 
-# docker images ${BUILD_IMAGE}:${BUILD_TAG}
