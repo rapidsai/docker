@@ -9,9 +9,11 @@ Map matrix_axes = [
     CUDA_VER: ['11.0', '11.2'],
     LINUX_VER: ['ubuntu18.04'],
     PYTHON_VER: ['3.7'],
-    IMAGE_TYPE: ['base'],
+    IMAGE_TYPE: ['base', 'devel'],
     RAPIDS_VER: ['21.08'],
 ]
+
+String UCX_PY_VER = '0.21'
 
 @NonCPS
 List getMatrixAxes(Map matrix_axes) {
@@ -38,7 +40,7 @@ for(int i = 0; i < axes.size(); i++) {
     List axisEnv = axis.collect { k, v ->
         "${k}=${v}"
     }
-    // add ucx-py version to axisEnv
+    axisEnv.add("UCX_PY_VER=${UCX_PY_VER}")
 
 
     String nodeLabel = "CUDA_VER:${axis['CUDA_VER']} && LINUX_VER:${axis['LINUX_VER']} && PYTHON_VER:${axis['PYTHON_VER']} && IMAGE_TYPE:${axis['IMAGE_TYPE']}"
