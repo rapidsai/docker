@@ -38,6 +38,7 @@ for(int i = 0; i < axes.size(); i++) {
     List axisEnv = axis.collect { k, v ->
         "${k}=${v}"
     }
+    // add ucx-py version to axisEnv
 
 
     String nodeLabel = "CUDA_VER:${axis['CUDA_VER']} && LINUX_VER:${axis['LINUX_VER']} && PYTHON_VER:${axis['PYTHON_VER']} && IMAGE_TYPE:${axis['IMAGE_TYPE']}"
@@ -45,21 +46,13 @@ for(int i = 0; i < axes.size(); i++) {
         node {
             checkout scm
             withEnv(axisEnv) {
-                stage("CORE Build ${IMAGE_TYPE} - ${CUDA_VER} - ${LINUX_VER} - ${PYTHON_VER}") {
+                stage("Build Images ${IMAGE_TYPE} - ${CUDA_VER} - ${LINUX_VER} - ${PYTHON_VER}") {
                     echo nodeLabel
-                    sh 'bash ci/build.sh core'
+                    sh 'bash ci/build.sh'
                 }
-                stage("CORE Test ${IMAGE_TYPE} - ${CUDA_VER} - ${LINUX_VER} - ${PYTHON_VER}") {
+                stage("Test Images ${IMAGE_TYPE} - ${CUDA_VER} - ${LINUX_VER} - ${PYTHON_VER}") {
                     echo nodeLabel
                     sh 'echo Do Test for ${IMAGE_TYPE} - ${CUDA_VER} - ${LINUX_VER} - ${PYTHON_VER}'
-                }
-                stage("STD Build ${IMAGE_TYPE} - ${CUDA_VER} - ${LINUX_VER} - ${PYTHON_VER}") {
-                    echo nodeLabel
-                    sh 'bash ci/build.sh std'
-                }
-                stage("CLX Build ${IMAGE_TYPE} - ${CUDA_VER} - ${LINUX_VER} - ${PYTHON_VER}") {
-                    echo nodeLabel
-                    sh 'bash ci/build.sh clx'
                 }
             }
         }
