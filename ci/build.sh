@@ -66,8 +66,8 @@ set +x
 
 
 # Tag Intermediate Stages
-# Remove "--no-cache" & "--squash" build arguments to use cache from full build above
-BUILD_ARGS=$(echo $ALL_BUILD_ARGS | jq -r '.[2:] | join(" ")')
+# Remove "--no-cache" build argument since all stages were built without cache immediately prior
+BUILD_ARGS=$(echo $ALL_BUILD_ARGS | jq -r '.[1:] | join(" ")')
 
 for STAGE in $(echo "$IMAGE_STAGES" | jq -r '.[0:-1][]'); do
   echo ""
