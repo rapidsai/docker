@@ -74,7 +74,7 @@ for STAGE in $(echo "$IMAGE_STAGES" | jq -r '.[0:-1][]'); do
 
   docker build \
     -t "$(get_img_name $STAGE):${BUILD_TAG}" \
-    --target ${STAGE}
+    --target ${STAGE} \
     ${BUILD_ARGS} \
     -f generated-dockerfiles/${DOCKERFILE} \
     context/
