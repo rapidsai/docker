@@ -87,7 +87,7 @@ ENTRYPOINT [ "/usr/bin/tini", "--", "/opt/docker/bin/entrypoint" ]
 
 CMD [ "/bin/bash" ]
 
-FROM rapids-core AS rapidsai
+FROM rapidsai-core AS rapidsai
 
 ARG RAPIDS_VER
 ARG CUDA_VER
@@ -112,7 +112,7 @@ ENTRYPOINT [ "/usr/bin/tini", "--", "/opt/docker/bin/entrypoint" ]
 
 CMD [ "/bin/bash" ]
 
-FROM rapids-std AS rapidsai-clx
+FROM rapidsai AS rapidsai-clx
 
 ARG RAPIDS_VER
 ARG CUDA_VER
