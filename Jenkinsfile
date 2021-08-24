@@ -9,7 +9,7 @@ Map matrix_axes = [
     CUDA_VER: ['11.0', '11.2'],
     LINUX_VER: ['ubuntu18.04'],
     PYTHON_VER: ['3.7'],
-    IMAGE_TYPE: ['base', 'devel'],
+    IMAGE_TYPE: ['base'],
     RAPIDS_VER: ['21.08'],
 ]
 
