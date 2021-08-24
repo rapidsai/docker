@@ -55,29 +55,33 @@ echo "Build Dockerfile stage: $FINAL_IMAGE_STAGE"
 echo ""
 
 BUILD_ARGS=$(echo $ALL_BUILD_ARGS | jq -r 'join(" ")')
+set -x
 docker build \
   --pull \
   -t "$(get_img_name $FINAL_IMAGE_STAGE):${BUILD_TAG}" \
   ${BUILD_ARGS} \
   -f generated-dockerfiles/${DOCKERFILE} \
   context/
+set +x
 
 
 # Tag Intermediate Stages
-# Remove "--no-cache" build argument since all stages were built without cache immediately prior
-BUILD_ARGS=$(echo $ALL_BUILD_ARGS | jq -r '.[1:] | join(" ")')
+# Remove "--no-cache" & "--squash" build arguments to use cache from full build above
+BUILD_ARGS=$(echo $ALL_BUILD_ARGS | jq -r '.[2:] | join(" ")')
 
 for STAGE in $(echo "$IMAGE_STAGES" | jq -r '.[0:-1][]'); do
   echo ""
   echo "Build Dockerfile stage: $STAGE"
   echo ""
 
+  set -x
   docker build \
     -t "$(get_img_name $STAGE):${BUILD_TAG}" \
     --target ${STAGE} \
     ${BUILD_ARGS} \
     -f generated-dockerfiles/${DOCKERFILE} \
     context/
+  set +x
 done
 
 # Show all Docker Image Information
@@ -86,6 +90,7 @@ echo "Show Docker info"
 echo ""
 for STAGE in $(echo "$IMAGE_STAGES" | jq -r '.[]'); do
   docker images "$(get_img_name $STAGE):${BUILD_TAG}"
+  echo ""
 done
 
 
