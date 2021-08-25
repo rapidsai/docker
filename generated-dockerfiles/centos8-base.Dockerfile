@@ -51,7 +51,9 @@ RUN yum -y upgrade \
 
 COPY packages.sh /opt/docker/bin/
 
-RUN conda clean -tipy
+RUN chmod -R ugo+w /opt/conda ${RAPIDS_DIR} \
+  && conda clean -tipy \
+  && chmod -R ugo+w /opt/conda ${RAPIDS_DIR}
 
 WORKDIR ${RAPIDS_DIR}
 
@@ -72,7 +74,9 @@ RUN gpuci_conda_retry install -y -n rapids -c blazingsql-nightly -c blazingsql\
 
 WORKDIR ${RAPIDS_DIR}
 
-RUN conda clean -tipy
+RUN chmod -R ugo+w /opt/conda ${RAPIDS_DIR} \
+  && conda clean -tipy \
+  && chmod -R ugo+w /opt/conda ${RAPIDS_DIR}
 
 COPY entrypoint.sh /opt/docker/bin/entrypoint
 ENTRYPOINT [ "/usr/bin/tini", "--", "/opt/docker/bin/entrypoint" ]
@@ -90,7 +94,9 @@ RUN gpuci_conda_retry install -y -n rapids -c pytorch \
 
 WORKDIR ${RAPIDS_DIR}
 
-RUN conda clean -tipy
+RUN chmod -R ugo+w /opt/conda ${RAPIDS_DIR} \
+  && conda clean -tipy \
+  && chmod -R ugo+w /opt/conda ${RAPIDS_DIR}
 
 COPY entrypoint.sh /opt/docker/bin/entrypoint
 ENTRYPOINT [ "/usr/bin/tini", "--", "/opt/docker/bin/entrypoint" ]

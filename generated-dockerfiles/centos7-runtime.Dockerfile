@@ -75,7 +75,9 @@ EXPOSE 8787
 EXPOSE 8786
 COPY packages.sh /opt/docker/bin/
 
-RUN conda clean -tipy
+RUN chmod -R ugo+w /opt/conda ${RAPIDS_DIR} \
+  && conda clean -tipy \
+  && chmod -R ugo+w /opt/conda ${RAPIDS_DIR}
 
 COPY NVIDIA_Deep_Learning_Container_License.pdf . 
 COPY source_entrypoints/runtime_devel.sh /opt/docker/bin/entrypoint_source
@@ -101,7 +103,9 @@ RUN mkdir -p ${BLAZING_DIR} \
 
 WORKDIR ${RAPIDS_DIR}
 
-RUN conda clean -tipy
+RUN chmod -R ugo+w /opt/conda ${RAPIDS_DIR} ${BLAZING_DIR} \
+  && conda clean -tipy \
+  && chmod -R ugo+w /opt/conda ${RAPIDS_DIR} ${BLAZING_DIR}
 
 ENTRYPOINT [ "/usr/bin/tini", "--", "/opt/docker/bin/entrypoint" ]
 
@@ -125,7 +129,9 @@ RUN source activate rapids && \
 
 WORKDIR ${RAPIDS_DIR}
 
-RUN conda clean -tipy
+RUN chmod -R ugo+w /opt/conda ${RAPIDS_DIR} ${BLAZING_DIR} \
+  && conda clean -tipy \
+  && chmod -R ugo+w /opt/conda ${RAPIDS_DIR} ${BLAZING_DIR}
 
 ENTRYPOINT [ "/usr/bin/tini", "--", "/opt/docker/bin/entrypoint" ]
 
