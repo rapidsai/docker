@@ -2,7 +2,5 @@
 
 {# Clean-up conda and update ACLs for all users #}
 {%- macro cleanChmod(dirs) -%}
-RUN chmod -R ugo+w /opt/conda {{ " ".join(dirs) }} \
-  && conda clean -tipy \
-  && chmod -R ugo+w /opt/conda {{ " ".join(dirs) }}
+RUN conda clean -tipy
 {%- endmacro %}

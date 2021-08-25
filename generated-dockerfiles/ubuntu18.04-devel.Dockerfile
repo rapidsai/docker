@@ -205,9 +205,7 @@ RUN cd ${RAPIDS_DIR}/dask-cuda && \
 
 COPY packages.sh /opt/docker/bin/
 
-RUN chmod -R ugo+w /opt/conda ${RAPIDS_DIR} \
-  && conda clean -tipy \
-  && chmod -R ugo+w /opt/conda ${RAPIDS_DIR}
+RUN conda clean -tipy
 
 COPY NVIDIA_Deep_Learning_Container_License.pdf . 
 COPY source_entrypoints/runtime_devel.sh /opt/docker/bin/entrypoint_source
@@ -256,9 +254,7 @@ ENV LD_LIBRARY_PATH=${LD_LIBRARY_PATH_ORIG}
 ENV LD_LIBRARY_PATH_ORIG=
 WORKDIR ${RAPIDS_DIR}
 
-RUN chmod -R ugo+w /opt/conda ${RAPIDS_DIR} ${BLAZING_DIR} \
-  && conda clean -tipy \
-  && chmod -R ugo+w /opt/conda ${RAPIDS_DIR} ${BLAZING_DIR}
+RUN conda clean -tipy
 
 COPY entrypoint.sh /opt/docker/bin/entrypoint
 ENTRYPOINT [ "/usr/bin/tini", "--", "/opt/docker/bin/entrypoint" ]
@@ -295,9 +291,7 @@ RUN source activate rapids && \
     python setup.py install
 WORKDIR ${RAPIDS_DIR}
 
-RUN chmod -R ugo+w /opt/conda ${RAPIDS_DIR} ${BLAZING_DIR} \
-  && conda clean -tipy \
-  && chmod -R ugo+w /opt/conda ${RAPIDS_DIR} ${BLAZING_DIR}
+RUN conda clean -tipy
 
 COPY entrypoint.sh /opt/docker/bin/entrypoint
 ENTRYPOINT [ "/usr/bin/tini", "--", "/opt/docker/bin/entrypoint" ]
