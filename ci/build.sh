@@ -15,6 +15,7 @@ ALL_BUILD_ARGS=$(
   jq -n \
     '[
       "--no-cache",
+      "--squash",
       "--build-arg CUDA_VER=" + $ENV.CUDA_VER,
       "--build-arg LINUX_VER=" + $ENV.LINUX_VER,
       "--build-arg PYTHON_VER=" + $ENV.PYTHON_VER,
