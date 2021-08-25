@@ -63,6 +63,8 @@ docker build \
   -f generated-dockerfiles/${DOCKERFILE} \
   context/
 set +x
+docker history --no-trunc "$(get_img_name $FINAL_IMAGE_STAGE):${BUILD_TAG}"
+echo ""
 
 
 # Tag Intermediate Stages
@@ -90,6 +92,8 @@ echo "Show Docker info"
 echo ""
 for STAGE in $(echo "$IMAGE_STAGES" | jq -r '.[]'); do
   docker images "$(get_img_name $STAGE):${BUILD_TAG}"
+  echo ""
+  docker history --no-trunc "$(get_img_name $STAGE):${BUILD_TAG}"
   echo ""
 done
 
