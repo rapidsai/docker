@@ -36,7 +36,6 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 {% endif %}
 
 RUN mkdir -p ${RAPIDS_DIR}/utils {{ "${GCC9_DIR}/lib64" if "centos" in os }}
-COPY nbtest.sh nbtestlog2junitxml.py ${RAPIDS_DIR}/utils/
 
 {% if "centos" in os %}
 {# Add compatible libm #}
