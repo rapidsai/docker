@@ -22,7 +22,6 @@ RUN if [ "${BUILD_BRANCH}" = "main" ]; then sed -i '/nightly/d' /opt/conda/.cond
 ENV RAPIDS_DIR=/rapids
 
 RUN mkdir -p ${RAPIDS_DIR}/utils ${GCC9_DIR}/lib64
-COPY nbtest.sh nbtestlog2junitxml.py ${RAPIDS_DIR}/utils/
 
 COPY libm.so.6 ${GCC9_DIR}/lib64
 

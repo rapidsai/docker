@@ -25,7 +25,6 @@ ENV RAPIDS_DIR=/rapids
 
 {# Copy files needed by RAPIDS and 3rd parties for builds, test, and runtime. #}
 RUN mkdir -p ${RAPIDS_DIR}/utils {{ "${GCC9_DIR}/lib64" if "centos" in os }}
-COPY nbtest.sh nbtestlog2junitxml.py ${RAPIDS_DIR}/utils/
 
 {% if "centos" in os %}
 {# Add compatible libm #}
