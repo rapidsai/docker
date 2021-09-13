@@ -23,7 +23,6 @@ RUN if [ "${BUILD_BRANCH}" = "main" ]; then sed -i '/nightly/d' /opt/conda/.cond
 ENV RAPIDS_DIR=/rapids
 
 RUN mkdir -p ${RAPIDS_DIR}/utils 
-COPY nbtest.sh nbtestlog2junitxml.py ${RAPIDS_DIR}/utils/
 
 
 
@@ -66,10 +65,9 @@ ENV DASK_LABEXTENSION__FACTORY__CLASS="LocalCUDACluster"
 RUN cd ${RAPIDS_DIR} \
   && source activate rapids \
   && git clone -b ${BUILD_BRANCH} --depth 1 --single-branch https://github.com/rapidsai/notebooks.git \
+  && ln -s $(realpath notebooks/test/test.sh) /test.sh \
   && cd notebooks \
   && git submodule update --init --remote --no-single-branch --depth 1
-
-COPY test.sh /
 
 COPY start-jupyter.sh stop-jupyter.sh /rapids/utils/
 

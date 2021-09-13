@@ -29,7 +29,6 @@ ENV RAPIDS_DIR=/rapids
 
 
 RUN mkdir -p ${RAPIDS_DIR}/utils ${GCC9_DIR}/lib64
-COPY nbtest.sh nbtestlog2junitxml.py ${RAPIDS_DIR}/utils/
 
 COPY libm.so.6 ${GCC9_DIR}/lib64
 
@@ -83,10 +82,9 @@ ENV DASK_LABEXTENSION__FACTORY__CLASS="LocalCUDACluster"
 RUN cd ${RAPIDS_DIR} \
   && source activate rapids \
   && git clone -b ${BUILD_BRANCH} --depth 1 --single-branch https://github.com/rapidsai/notebooks.git \
+  && ln -s $(realpath notebooks/test/test.sh) /test.sh \
   && cd notebooks \
   && git submodule update --init --remote --no-single-branch --depth 1
-
-COPY test.sh /
 
 COPY start-jupyter.sh stop-jupyter.sh /rapids/utils/
 
