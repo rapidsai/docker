@@ -14,11 +14,9 @@ ENV DASK_LABEXTENSION__FACTORY__CLASS="LocalCUDACluster"
 RUN cd ${RAPIDS_DIR} \
   && source activate rapids \
   && git clone -b ${BUILD_BRANCH} --depth 1 --single-branch https://github.com/rapidsai/notebooks.git \
+  && ln -s $(realpath notebooks/test/test.sh) /test.sh \
   && cd notebooks \
   && git submodule update --init --remote --no-single-branch --depth 1
-
-{# Add test file for testing notebooks from within the container #}
-COPY test.sh /
 
 {# Add jupyter start/stop scripts #}
 COPY start-jupyter.sh stop-jupyter.sh /rapids/utils/
