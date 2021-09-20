@@ -1,5 +1,7 @@
 #!/bin/bash
 
+set -e
+
 # Activate the `rapids` conda environment.
 . /opt/conda/etc/profile.d/conda.sh
 conda activate rapids
