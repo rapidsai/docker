@@ -8,7 +8,7 @@ if [ "$EXTRA_APT_PACKAGES" ]; then
     fi
     echo "EXTRA_APT_PACKAGES environment variable found. Installing packages."
     apt update -y
-    apt install -y --no-install-recommends $EXTRA_APT_PACKAGES
+    timeout ${APT_TIMEOUT:-600} apt install -y --no-install-recommends $EXTRA_APT_PACKAGES
 fi
 
 if [ "$EXTRA_YUM_PACKAGES" ]; then
