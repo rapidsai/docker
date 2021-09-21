@@ -95,9 +95,13 @@ The following environment variables can be passed to the `docker run` commands:
 - `DISABLE_JUPYTER` - set to `true` to disable the default Jupyter server from starting 
 - `JUPYTER_FG` - set to `true` to start Jupyter server in foreground instead of background 
 - `EXTRA_APT_PACKAGES` - (**Ubuntu images only**) used to install additional `apt` packages in the container. Use a space separated list of values
+- `APT_TIMEOUT` - (**Ubuntu images only**) how long (in seconds) the `apt` command should wait before exiting
 - `EXTRA_YUM_PACKAGES` - (**CentOS images only**) used to install additional `yum` packages in the container. Use a space separated list of values
+- `YUM_TIMEOUT` - (**CentOS images only**) how long (in seconds) the `yum` command should wait before exiting
 - `EXTRA_CONDA_PACKAGES` - used to install additional `conda` packages in the container. Use a space separated list of values
+- `CONDA_TIMEOUT` - how long (in seconds) the `conda` command should wait before exiting
 - `EXTRA_PIP_PACKAGES` - used to install additional `pip` packages in the container. Use a space separated list of values
+- `PIP_TIMEOUT` - how long (in seconds) the `pip` command should wait before exiting
 
 Example:
 
