@@ -38,7 +38,7 @@ ENV CUDF_HOME=/rapids/cudf
 
 RUN mkdir -p ${BLAZING_DIR} \
     && cd ${BLAZING_DIR} \
-    && git clone -b ${BUILD_BRANCH} https://github.com/rapidsai/blazingsql-release-staging/.git
+    && git clone -b ${BUILD_BRANCH} https://github.com/rapidsai/blazingsql-release-staging.git
 
 
 ENV LD_LIBRARY_PATH_ORIG=${LD_LIBRARY_PATH}
