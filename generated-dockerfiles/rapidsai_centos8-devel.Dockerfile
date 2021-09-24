@@ -25,8 +25,6 @@ RUN mkdir -p ${BLAZING_DIR} \
     && cd ${BLAZING_DIR} \
     && git clone https://github.com/BlazingDB/Welcome_to_BlazingSQL_Notebooks.git
 
-COPY test.sh /
-
 RUN gpuci_conda_retry install -y -n rapids -c blazingsql-nightly -c blazingsql \
       "blazingsql-build-env=${RAPIDS_VER}*" \
       "rapids-build-env=${RAPIDS_VER}*" \
