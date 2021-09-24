@@ -26,8 +26,6 @@ ENV BLAZING_DIR=/blazing
 RUN mkdir -p ${BLAZING_DIR} \
     && cd ${BLAZING_DIR} \
     && git clone https://github.com/BlazingDB/Welcome_to_BlazingSQL_Notebooks.git
-
-COPY test.sh /
 WORKDIR ${RAPIDS_DIR}
 
 
