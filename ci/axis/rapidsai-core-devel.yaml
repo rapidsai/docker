@@ -9,6 +9,7 @@ IMAGE_TYPE:
   - devel
 
 RAPIDS_VER:
+  - '21.12'
   - '21.10'
 
 CUDA_VER:
@@ -31,4 +32,6 @@ UCX_PY_VER:
 
 exclude:
   - RAPIDS_VER: '21.10'
+    BUILD_IMAGE: rapidsai/rapidsai-core-dev
+  - RAPIDS_VER: '21.12'
     BUILD_IMAGE: rapidsai/rapidsai-core-dev
