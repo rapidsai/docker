@@ -43,7 +43,7 @@ RUN source activate rapids \
   && conda info \
   && conda config --show-sources \
   && conda list --show-channel-urls
-RUN gpuci_conda_retry install -y -n rapids \
+RUN gpuci_mamba_retry install -y -n rapids \
       "rapids-build-env=${RAPIDS_VER}*" \
       "rapids-doc-env=${RAPIDS_VER}*" \
       "libcumlprims=${RAPIDS_VER}*" \
@@ -66,7 +66,7 @@ RUN source activate rapids \
   && conda config --show-sources \
   && conda list --show-channel-urls
 
-RUN gpuci_conda_retry install -y -n rapids \
+RUN gpuci_mamba_retry install -y -n rapids \
         "rapids-notebook-env=${RAPIDS_VER}*" \
     && gpuci_conda_retry remove -y -n rapids --force-remove \
         "rapids-notebook-env=${RAPIDS_VER}*"

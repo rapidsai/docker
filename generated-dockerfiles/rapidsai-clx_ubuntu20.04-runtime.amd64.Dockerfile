@@ -17,7 +17,7 @@ FROM ${FROM_IMAGE}:${RAPIDS_VER}-cuda${CUDA_VER}-runtime-${LINUX_VER}-py${PYTHON
 ARG RAPIDS_VER
 ARG CUDA_VER
 RUN source activate rapids && \
-    gpuci_conda_retry install -y -n rapids -c pytorch \
+    gpuci_mamba_retry install -y -n rapids -c pytorch \
     "clx=${RAPIDS_VER}" \
     "cudf_kafka=${RAPIDS_VER}" \
     "custreamz=${RAPIDS_VER}" \

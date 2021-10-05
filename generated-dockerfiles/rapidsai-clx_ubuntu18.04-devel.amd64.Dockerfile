@@ -21,7 +21,7 @@ ARG BUILD_BRANCH="branch-${RAPIDS_VER}"
 ENV CLX_DIR=${RAPIDS_DIR}/clx
 
 RUN source activate rapids && \
-    gpuci_conda_retry install -y -n rapids -c pytorch \
+    gpuci_mamba_retry install -y -n rapids -c pytorch \
         "pytorch=1.7.1" \
         torchvision \
         "cudf_kafka=${RAPIDS_VER}" \

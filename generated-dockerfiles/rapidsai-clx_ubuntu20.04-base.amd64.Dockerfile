@@ -16,7 +16,7 @@ FROM ${FROM_IMAGE}:${RAPIDS_VER}-cuda${CUDA_VER}-base-${LINUX_VER}-py${PYTHON_VE
 ARG RAPIDS_VER
 ARG CUDA_VER
 
-RUN gpuci_conda_retry install -y -n rapids -c pytorch \
+RUN gpuci_mamba_retry install -y -n rapids -c pytorch \
     "clx=${RAPIDS_VER}" \
     "cudatoolkit=${CUDA_VER}"
 
