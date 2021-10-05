@@ -30,7 +30,7 @@ RUN mkdir -p ${RAPIDS_DIR}/utils {{ "${GCC9_DIR}/lib64" if "centos" in os }}
 
 {% include 'partials/env_debug.dockerfile.j2' %}
 
-RUN gpuci_conda_retry install -y -n rapids \
+RUN gpuci_mamba_retry install -y -n rapids \
   "rapids=${RAPIDS_VER}*"
 
 {# Patch for CVEs #}

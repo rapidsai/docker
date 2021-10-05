@@ -1,7 +1,7 @@
 {# This partial clones the BlazingSQL repo and build and installs it into the rapids conda env. #}
 
 {# Install build prerequisites #}
-RUN gpuci_conda_retry install -y -n rapids -c blazingsql-nightly -c blazingsql \
+RUN gpuci_mamba_retry install -y -n rapids -c blazingsql-nightly -c blazingsql \
       "blazingsql-build-env=${RAPIDS_VER}*" \
       "rapids-build-env=${RAPIDS_VER}*" \
       "cudatoolkit=${CUDA_VER}*" \
