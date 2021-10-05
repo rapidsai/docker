@@ -13,12 +13,23 @@ cd ~
 gpuci_logger "Exposing current environment..."
 env
 
+# Get arch
+ARCH=$(arch)
+if [ "${ARCH}" = "x86_64" ]; then
+  ARCH_SUFFIX="amd64"
+elif [ "${ARCH}" = "aarch64" ]; then
+  ARCh_SUFFIX="arm64"
+else
+  echo "Unsupported arch ${ARCH}"
+  return 1
+fi
+
 # Login to docker
 gpuci_logger "Logging into Docker..."
 echo $DH_TOKEN | docker login --username $DH_USER --password-stdin &> /dev/null
 
 # Select dockerfile based on matrix var
-DOCKERFILE="${DOCKER_PREFIX}_${LINUX_VER}-${IMAGE_TYPE}.Dockerfile"
+DOCKERFILE="${DOCKER_PREFIX}_${LINUX_VER}-${IMAGE_TYPE}.${ARCH_SUFFIX}.Dockerfile"
 gpuci_logger "Using Dockerfile: generated-dockerfiles/${DOCKERFILE}"
 
 # Debug output selected dockerfile
