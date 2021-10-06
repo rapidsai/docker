@@ -29,4 +29,4 @@ PYTHON_VER:
 
 exclude:
   - RAPIDS_VER: '21.10'
-    BUILD_IMAGE: rapidsai/rapidsai
+    BUILD_IMAGE: rapidsai/rapidsai-nightly
