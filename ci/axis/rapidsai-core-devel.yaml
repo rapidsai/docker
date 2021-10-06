@@ -27,7 +27,7 @@ PYTHON_VER:
   - 3.7
 
 UCX_PY_VER:
-  - '0.22'
+  - '0.23'
 
 exclude:
   - RAPIDS_VER: '21.12'
