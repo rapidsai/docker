@@ -37,9 +37,9 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 
 RUN mkdir -p ${RAPIDS_DIR}/utils {{ "${GCC9_DIR}/lib64" if "centos" in os }}
 
-{% if "centos" in os %}
+{% if "centos" in os and "amd64" in arch %}
 {# Add compatible libm #}
-COPY libm.so.6 ${GCC9_DIR}/lib64
+COPY libm.so.6.amd64 ${GCC9_DIR}/lib64/libm.so.6
 {% endif %}
 
 {% include 'partials/os_pkgs.dockerfile.j2' %}
