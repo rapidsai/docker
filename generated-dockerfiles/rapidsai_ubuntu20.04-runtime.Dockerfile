@@ -9,7 +9,7 @@
 ARG CUDA_VER=11.0
 ARG LINUX_VER=ubuntu20.04
 ARG PYTHON_VER=3.7
-ARG RAPIDS_VER=21.08
+ARG RAPIDS_VER=21.10
 ARG FROM_IMAGE=rapidsai/rapidsai-core
 
 FROM ${FROM_IMAGE}:${RAPIDS_VER}-cuda${CUDA_VER}-runtime-${LINUX_VER}-py${PYTHON_VER}
@@ -26,8 +26,6 @@ ENV BLAZING_DIR=/blazing
 RUN mkdir -p ${BLAZING_DIR} \
     && cd ${BLAZING_DIR} \
     && git clone https://github.com/BlazingDB/Welcome_to_BlazingSQL_Notebooks.git
-
-COPY test.sh /
 WORKDIR ${RAPIDS_DIR}
 
 

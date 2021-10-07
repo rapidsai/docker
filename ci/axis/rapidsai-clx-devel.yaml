@@ -9,9 +9,10 @@ IMAGE_TYPE:
   - devel
 
 RAPIDS_VER:
-  - '21.08'
+  - '21.10'
 
 CUDA_VER:
+  - 11.4
   - 11.2
   - 11.0
 
@@ -26,5 +27,5 @@ PYTHON_VER:
   - 3.8
 
 exclude:
-  - RAPIDS_VER: '21.08'
+  - RAPIDS_VER: '21.10'
     BUILD_IMAGE: rapidsai/rapidsai-clx-dev-nightly

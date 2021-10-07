@@ -9,7 +9,7 @@
 ARG CUDA_VER=11.0
 ARG LINUX_VER=centos7
 ARG PYTHON_VER=3.7
-ARG RAPIDS_VER=21.08
+ARG RAPIDS_VER=21.10
 ARG FROM_IMAGE=gpuci/rapidsai
 
 FROM ${FROM_IMAGE}:${RAPIDS_VER}-cuda${CUDA_VER}-runtime-${LINUX_VER}-py${PYTHON_VER}
@@ -43,10 +43,7 @@ RUN gpuci_conda_retry install -y -n rapids \
   "rapids=${RAPIDS_VER}*"
 
 
-RUN \
-    pip install --upgrade "cryptography>=3.3.2" \
-    && pip install --upgrade "urllib3>=1.26.5" \
-    && source activate rapids \
+RUN source activate rapids \
     && npm i -g npm@">=7.0"
 
 RUN yum -y upgrade \

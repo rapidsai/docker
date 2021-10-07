@@ -10,7 +10,7 @@
 ARG CUDA_VER=11.0
 ARG LINUX_VER=centos7
 ARG PYTHON_VER=3.7
-ARG RAPIDS_VER=21.08
+ARG RAPIDS_VER=21.10
 ARG FROM_IMAGE=rapidsai/rapidsai-core-dev
 
 FROM ${FROM_IMAGE}:${RAPIDS_VER}-cuda${CUDA_VER}-devel-${LINUX_VER}-py${PYTHON_VER}
@@ -25,8 +25,6 @@ RUN mkdir -p ${BLAZING_DIR} \
     && cd ${BLAZING_DIR} \
     && git clone https://github.com/BlazingDB/Welcome_to_BlazingSQL_Notebooks.git
 
-COPY test.sh /
-
 RUN gpuci_conda_retry install -y -n rapids -c blazingsql-nightly -c blazingsql \
       "blazingsql-build-env=${RAPIDS_VER}*" \
       "rapids-build-env=${RAPIDS_VER}*" \
@@ -40,7 +38,7 @@ ENV CUDF_HOME=/rapids/cudf
 
 RUN mkdir -p ${BLAZING_DIR} \
     && cd ${BLAZING_DIR} \
-    && git clone -b ${BUILD_BRANCH} https://github.com/BlazingDB/blazingsql.git
+    && git clone -b ${BUILD_BRANCH} https://github.com/rapidsai/blazingsql-release-staging.git blazingsql
 
 
 ENV LD_LIBRARY_PATH_ORIG=${LD_LIBRARY_PATH}
