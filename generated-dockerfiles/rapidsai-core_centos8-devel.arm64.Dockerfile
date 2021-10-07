@@ -30,7 +30,6 @@ ENV RAPIDS_DIR=/rapids
 
 RUN mkdir -p ${RAPIDS_DIR}/utils ${GCC9_DIR}/lib64
 
-COPY libm.so.6 ${GCC9_DIR}/lib64
 
 RUN yum install -y \
       openssh-clients \
