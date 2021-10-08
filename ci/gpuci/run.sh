@@ -18,7 +18,7 @@ ARCH=$(arch)
 if [ "${ARCH}" = "x86_64" ]; then
   ARCH_SUFFIX="amd64"
 elif [ "${ARCH}" = "aarch64" ]; then
-  ARCh_SUFFIX="arm64"
+  ARCH_SUFFIX="arm64"
 else
   echo "Unsupported arch ${ARCH}"
   return 1
