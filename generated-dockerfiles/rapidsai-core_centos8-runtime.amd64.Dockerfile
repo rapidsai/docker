@@ -24,8 +24,6 @@ ENV RAPIDS_DIR=/rapids
 
 RUN mkdir -p ${RAPIDS_DIR}/utils ${GCC9_DIR}/lib64
 
-COPY libm.so.6.amd64 ${GCC9_DIR}/lib64/libm.so.6
-
 RUN yum install -y \
       openssh-clients \
       openmpi-devel \
