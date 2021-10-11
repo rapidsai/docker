@@ -6,6 +6,25 @@ DEFAULT_NIGHTLY_RAPIDS_VERSION: "21.12"
 DEFAULT_STABLE_RAPIDS_VERSION: "21.10"
 DEFAULT_NEXT_RAPIDS_VERSION: "22.02"
 
+ARCHS:
+  - name: amd64
+    os_list:
+      - centos7
+      - centos8
+      - ubuntu18.04
+      - ubuntu20.04
+    images:
+      - rapidsai-core
+      - rapidsai
+      - rapidsai-clx
+  - name: arm64
+    os_list:
+      - centos8
+      - ubuntu18.04
+      - ubuntu20.04
+    images:
+      - rapidsai-core
+
 # Libraries included in RAPIDS core devel images
 RAPIDS_LIBS:
   - name: rmm

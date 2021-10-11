@@ -1,4 +1,4 @@
-# RAPIDS Dockerfile for centos8 "devel" image
+# RAPIDS Dockerfile for centos7 "devel" image
 #
 # RAPIDS is built from-source and installed in the base conda environment. The
 # sources and toolchains to build RAPIDS are included in this image. RAPIDS
@@ -8,7 +8,7 @@
 # Copyright (c) 2021, NVIDIA CORPORATION.
 
 ARG CUDA_VER=11.0
-ARG LINUX_VER=centos8
+ARG LINUX_VER=centos7
 ARG PYTHON_VER=3.7
 ARG RAPIDS_VER=21.12
 ARG FROM_IMAGE=gpuci/rapidsai
@@ -30,7 +30,7 @@ ENV RAPIDS_DIR=/rapids
 
 RUN mkdir -p ${RAPIDS_DIR}/utils ${GCC9_DIR}/lib64
 
-COPY libm.so.6 ${GCC9_DIR}/lib64
+COPY libm.so.6.amd64 ${GCC9_DIR}/lib64/libm.so.6
 
 RUN yum install -y \
       openssh-clients \

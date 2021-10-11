@@ -1,4 +1,4 @@
-# RAPIDS Dockerfile for centos8 "runtime" image
+# RAPIDS Dockerfile for ubuntu18.04 "runtime" image
 #
 # runtime: RAPIDS is installed from published conda packages to the 'rapids'
 # conda environment. RAPIDS jupyter notebooks are also provided, as well as
@@ -7,7 +7,7 @@
 # Copyright (c) 2021, NVIDIA CORPORATION.
 
 ARG CUDA_VER=11.0
-ARG LINUX_VER=centos8
+ARG LINUX_VER=ubuntu18.04
 ARG PYTHON_VER=3.7
 ARG RAPIDS_VER=21.12
 ARG FROM_IMAGE=gpuci/rapidsai
@@ -22,16 +22,16 @@ RUN if [ "${BUILD_BRANCH}" = "main" ]; then sed -i '/nightly/d' /opt/conda/.cond
 
 ENV RAPIDS_DIR=/rapids
 
-RUN mkdir -p ${RAPIDS_DIR}/utils ${GCC9_DIR}/lib64
+RUN mkdir -p ${RAPIDS_DIR}/utils 
 
-COPY libm.so.6 ${GCC9_DIR}/lib64
 
-RUN yum install -y \
-      openssh-clients \
-      openmpi-devel \
-      libnsl \
-      && yum clean all
 
+RUN apt-get update \
+    && apt-get install --no-install-recommends -y \
+      openssh-client \
+      libopenmpi-dev \
+      openmpi-bin \
+    && rm -rf /var/lib/apt/lists/*
 
 
 RUN source activate rapids \
@@ -46,8 +46,9 @@ RUN gpuci_conda_retry install -y -n rapids \
 RUN source activate rapids \
     && npm i -g npm@">=7.0"
 
-RUN yum -y upgrade \
-    && yum clean all
+RUN apt-get update \
+    && apt-get -y upgrade \
+    && rm -rf /var/lib/apt/lists/*
 
 
 RUN gpuci_conda_retry install -y -n rapids \

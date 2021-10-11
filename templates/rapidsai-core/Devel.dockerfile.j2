@@ -37,9 +37,9 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 
 RUN mkdir -p ${RAPIDS_DIR}/utils {{ "${GCC9_DIR}/lib64" if "centos" in os }}
 
-{% if "centos" in os %}
+{% if "centos" in os and "amd64" in arch %}
 {# Add compatible libm #}
-COPY libm.so.6 ${GCC9_DIR}/lib64
+COPY libm.so.6.amd64 ${GCC9_DIR}/lib64/libm.so.6
 {% endif %}
 
 {% include 'partials/os_pkgs.dockerfile.j2' %}
@@ -49,7 +49,8 @@ notebook deps. This is done as a single install to ensure compatibility
 between packages. #}
 {% include 'partials/env_debug.dockerfile.j2' %}
 
-{# Install rapids-build-env and rapids-doc-env from conda meta-pkg #}
+{# Install rapids env pkg #}
+{% if "amd64" in arch %}
 RUN gpuci_conda_retry install -y -n rapids \
       "rapids-build-env=${RAPIDS_VER}*" \
       "rapids-doc-env=${RAPIDS_VER}*" \
@@ -58,6 +59,14 @@ RUN gpuci_conda_retry install -y -n rapids \
     && gpuci_conda_retry remove -y -n rapids --force-remove \
       "rapids-build-env=${RAPIDS_VER}*" \
       "rapids-doc-env=${RAPIDS_VER}*"
+{% elif "arm64" in arch %}
+RUN gpuci_conda_retry install -y -n rapids \
+      "rapids-build-env=${RAPIDS_VER}*" \
+      "libcumlprims=${RAPIDS_VER}*" \
+      "ucx-py=${UCX_PY_VER}.*" \
+    && gpuci_conda_retry remove -y -n rapids --force-remove \
+      "rapids-build-env=${RAPIDS_VER}*"
+{% endif %}
 
 {# Patch for CVEs #}
 {% include 'partials/patch.dockerfile.j2' %}
