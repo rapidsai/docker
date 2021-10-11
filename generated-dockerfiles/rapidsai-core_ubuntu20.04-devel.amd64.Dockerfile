@@ -34,7 +34,6 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 RUN mkdir -p ${RAPIDS_DIR}/utils 
 
 
-
 RUN apt-get update \
     && apt-get install --no-install-recommends -y \
       openssh-client \
