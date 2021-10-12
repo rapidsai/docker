@@ -39,7 +39,7 @@ RUN source activate rapids \
   && conda config --show-sources \
   && conda list --show-channel-urls
 RUN gpuci_mamba_retry install -y -n rapids \
-  "rapids=${RAPIDS_VER}*"
+  "rapids=${RAPIDS_VER}*=cuda${CUDA_VER}*"
 
 
 RUN source activate rapids \
@@ -51,7 +51,7 @@ RUN apt-get update \
 
 
 RUN gpuci_mamba_retry install -y -n rapids \
-        "rapids-notebook-env=${RAPIDS_VER}*" \
+        "rapids-notebook-env=${RAPIDS_VER}*=cuda${CUDA_VER}*" \
     && gpuci_conda_retry remove -y -n rapids --force-remove \
         "rapids-notebook-env=${RAPIDS_VER}*"
 
