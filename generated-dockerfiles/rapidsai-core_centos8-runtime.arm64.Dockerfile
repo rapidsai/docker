@@ -1,4 +1,4 @@
-# RAPIDS Dockerfile for centos7 "runtime" image
+# RAPIDS Dockerfile for centos8 "runtime" image
 #
 # runtime: RAPIDS is installed from published conda packages to the 'rapids'
 # conda environment. RAPIDS jupyter notebooks are also provided, as well as
@@ -7,7 +7,7 @@
 # Copyright (c) 2021, NVIDIA CORPORATION.
 
 ARG CUDA_VER=11.0
-ARG LINUX_VER=centos7
+ARG LINUX_VER=centos8
 ARG PYTHON_VER=3.7
 ARG RAPIDS_VER=21.10
 ARG FROM_IMAGE=gpuci/rapidsai
@@ -24,7 +24,6 @@ ENV RAPIDS_DIR=/rapids
 
 RUN mkdir -p ${RAPIDS_DIR}/utils ${GCC9_DIR}/lib64
 
-COPY libm.so.6 ${GCC9_DIR}/lib64
 
 RUN yum install -y \
       openssh-clients \

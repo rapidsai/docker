@@ -1,0 +1,30 @@
+BUILD_IMAGE:
+  - rapidsai/rapidsai-core-nightly-arm64
+  - rapidsai/rapidsai-core-arm64
+
+FROM_IMAGE:
+  - gpuci/rapidsai-arm64
+
+IMAGE_TYPE:
+  - base
+  - runtime
+
+RAPIDS_VER:
+  - '21.10'
+
+CUDA_VER:
+  - 11.4
+  - 11.2
+
+LINUX_VER:
+  - ubuntu18.04
+  - ubuntu20.04
+  - centos8
+
+PYTHON_VER:
+  - 3.7
+  - 3.8
+
+exclude:
+  - RAPIDS_VER: '21.10'
+    BUILD_IMAGE: rapidsai/rapidsai-core-nightly-arm64
