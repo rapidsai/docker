@@ -4,7 +4,7 @@ COPY NVIDIA_Deep_Learning_Container_License.pdf . {# Copy EULA license to workin
 COPY source_entrypoints/runtime_devel.sh /opt/docker/bin/entrypoint_source
 {% endif %}
 COPY entrypoint.sh /opt/docker/bin/entrypoint
-ENTRYPOINT [ "/usr/bin/tini", "--", "/opt/docker/bin/entrypoint" ]
+ENTRYPOINT [ "/opt/conda/bin/tini", "--", "/opt/docker/bin/entrypoint" ]
 
 {# Set the default command to pass to the ENTRYPOINT if no command was given #}
 CMD [ "/bin/bash" ]
