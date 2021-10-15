@@ -33,7 +33,7 @@ WORKDIR ${RAPIDS_DIR}
 {# Cleanup conda #}
 RUN conda clean -afy
 
-ENTRYPOINT [ "/usr/bin/tini", "--", "/opt/docker/bin/entrypoint" ]
+ENTRYPOINT [ "/opt/conda/bin/tini", "--", "/opt/docker/bin/entrypoint" ]
 
 {# Set the default command to pass to the ENTRYPOINT if no command was given #}
 CMD [ "/bin/bash" ]
