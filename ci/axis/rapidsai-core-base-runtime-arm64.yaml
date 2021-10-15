@@ -26,5 +26,5 @@ PYTHON_VER:
   - 3.8
 
 exclude:
-  - RAPIDS_VER: '21.10'
-    BUILD_IMAGE: rapidsai/rapidsai-core-nightly-arm64
+  - RAPIDS_VER: '21.12'
+    BUILD_IMAGE: rapidsai/rapidsai-core-arm64
