@@ -1,5 +1,6 @@
 BUILD_IMAGE:
   - rapidsai/rapidsai-core-dev-nightly-arm64
+  - rapidsai/rapidsai-core-dev-arm64
 
 FROM_IMAGE:
   - gpuci/rapidsai-arm64
@@ -27,3 +28,5 @@ UCX_PY_VER:
   - '0.23'
 
 exclude:
+  - RAPIDS_VER: '21.10'
+    BUILD_IMAGE: rapidsai/rapidsai-core-dev-nightly-arm64
