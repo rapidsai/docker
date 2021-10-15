@@ -30,7 +30,7 @@ WORKDIR ${RAPIDS_DIR}
 {% include 'partials/cleanup-chmod.dockerfile.j2' %}
 
 COPY entrypoint.sh /opt/docker/bin/entrypoint
-ENTRYPOINT [ "/usr/bin/tini", "--", "/opt/docker/bin/entrypoint" ]
+ENTRYPOINT [ "/opt/conda/bin/tini", "--", "/opt/docker/bin/entrypoint" ]
 
 {# Set the default command to pass to the ENTRYPOINT if no command was given #}
 CMD [ "/bin/bash" ]
