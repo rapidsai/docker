@@ -25,7 +25,7 @@ RUN mkdir -p ${BLAZING_DIR} \
     && cd ${BLAZING_DIR} \
     && git clone https://github.com/BlazingDB/Welcome_to_BlazingSQL_Notebooks.git
 
-RUN gpuci_conda_retry install -y -n rapids -c blazingsql-nightly -c blazingsql \
+RUN gpuci_mamba_retry install -y -n rapids -c blazingsql-nightly -c blazingsql \
       "blazingsql-build-env=${RAPIDS_VER}*" \
       "rapids-build-env=${RAPIDS_VER}*" \
       "cudatoolkit=${CUDA_VER}*" \

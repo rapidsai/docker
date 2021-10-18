@@ -37,8 +37,8 @@ RUN source activate rapids \
   && conda info \
   && conda config --show-sources \
   && conda list --show-channel-urls
-RUN gpuci_conda_retry install -y -n rapids \
-  "rapids=${RAPIDS_VER}*"
+RUN gpuci_mamba_retry install -y -n rapids \
+  "rapids=${RAPIDS_VER}*=cuda${CUDA_VER}*"
 
 
 RUN source activate rapids \
