@@ -3,7 +3,7 @@ BUILD_IMAGE:
   - rapidsai/rapidsai-clx-nightly
 
 FROM_IMAGE:
-  - rapidsai/rapidsai-nightly
+  - rapidsai/rapidsai-core-nightly
 
 IMAGE_TYPE:
   - base
