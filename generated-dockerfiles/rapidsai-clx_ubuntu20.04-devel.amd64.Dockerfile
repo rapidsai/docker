@@ -11,7 +11,7 @@ ARG CUDA_VER=11.0
 ARG LINUX_VER=ubuntu20.04
 ARG PYTHON_VER=3.7
 ARG RAPIDS_VER=21.12
-ARG FROM_IMAGE=rapidsai/rapidsai-dev
+ARG FROM_IMAGE=rapidsai/rapidsai-core-dev
 
 FROM ${FROM_IMAGE}:${RAPIDS_VER}-cuda${CUDA_VER}-devel-${LINUX_VER}-py${PYTHON_VER}
 
