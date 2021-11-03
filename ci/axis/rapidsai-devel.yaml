@@ -11,6 +11,9 @@ IMAGE_TYPE:
 RAPIDS_VER:
   - '21.12'
 
+DASK_SQL_VER:
+  - '0.4.0'
+
 CUDA_VER:
   - 11.4
   - 11.2
