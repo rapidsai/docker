@@ -21,7 +21,7 @@ The `rapidsai/rapidsai-dev-nightly` repo contains nightly docker builds of the l
 
 Versions of libraries included in the `21.12` images:
 - `cuDF` [v21.12.00a](https://github.com/rapidsai/cudf), `cuML` [v21.12.00a](https://github.com/rapidsai/cuml), `cuGraph` [v21.12.00a](https://github.com/rapidsai/cugraph), `RMM` [v21.12.00a](https://github.com/rapidsai/RMM), `cuSpatial` [v21.12.00a](https://github.com/rapidsai/cuspatial), `cuSignal` [v21.12.00a](https://github.com/rapidsai/cusignal), `cuxfilter` [v21.12.00a](https://github.com/rapidsai/cuxfilter)
-- `blazingsql` [v21.12](https://github.com/BlazingDB/blazingsql), `xgboost` [branch](https://github.com/rapidsai/xgboost), `dask-cuda` [branch](https://github.com/rapidsai/dask-cuda)
+- `dask-sql` [0.4.0](https://github.com/dask-contrib/dask-sql), `xgboost` [branch](https://github.com/rapidsai/xgboost), `dask-cuda` [branch](https://github.com/rapidsai/dask-cuda)
 
 ### Image Types
 

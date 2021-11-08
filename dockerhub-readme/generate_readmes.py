@@ -76,6 +76,7 @@ def main(nightly_version, stable_version, settings):
         )
         jinja_vars["stable_version"] = stable_version
         jinja_vars["nightly_version"] = nightly_version
+        jinja_vars["dask_sql_version"] = dask_sql_version
         if jinja_vars["is_nightly"]:
             jinja_vars["repo_rapids_version"] = jinja_vars["nightly_version"]
         if jinja_vars["is_stable"]:
@@ -101,6 +102,7 @@ if __name__ == "__main__":
     settings = load_settings()
     nightly_version = settings["DEFAULT_NIGHTLY_RAPIDS_VERSION"]
     stable_version = settings["DEFAULT_STABLE_RAPIDS_VERSION"]
+    dask_sql_version = settings["STABLE_DASK_SQL_VERSION"]
     parser = argparse.ArgumentParser(
         description="Arguments for generating DockerHub READMEs."
     )

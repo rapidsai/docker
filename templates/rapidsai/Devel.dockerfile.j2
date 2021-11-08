@@ -15,14 +15,11 @@ ARG FROM_IMAGE=rapidsai/rapidsai-core-dev
 
 FROM ${FROM_IMAGE}:${RAPIDS_VER}-cuda${CUDA_VER}-devel-${LINUX_VER}-py${PYTHON_VER}
 
-ARG RAPIDS_VER
-ARG CUDA_VER
-ARG BUILD_BRANCH="branch-${RAPIDS_VER}"
+ARG DASK_SQL_VER
 
-ENV BLAZING_DIR=/blazing
-{% include 'partials/clone_blazing_notebooks.dockerfile.j2' %}
+ENV DASK_SQL_DIR=/dask-sql
 
-{% include 'partials/clone_and_build_blazing.dockerfile.j2' %}
+{% include 'partials/clone_and_build_dask-sql.dockerfile.j2' %}
 
 WORKDIR ${RAPIDS_DIR}
 
