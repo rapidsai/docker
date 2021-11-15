@@ -188,6 +188,7 @@ RUN cd ${RAPIDS_DIR}/xgboost && \
         -DGDF_INCLUDE_DIR=$CONDA_PREFIX/include \
         -DCMAKE_CXX_STANDARD:STRING="14" \
         -DPLUGIN_RMM=ON \
+        -DBUILD_WITH_CUDA_CUB=ON \
         -DRMM_ROOT=${RAPIDS_DIR}/rmm \
         -DCMAKE_BUILD_TYPE=release .. && \
   make -j && make -j install && \
