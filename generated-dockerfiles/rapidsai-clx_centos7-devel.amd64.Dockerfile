@@ -30,6 +30,7 @@ RUN source activate rapids && \
         seqeval \
         python-whois \
         faker && \
+    pip install -U torch==1.10.0+cu113 -f https://download.pytorch.org/whl/cu113/torch_stable.html && \
     pip install "git+https://github.com/rapidsai/cudatashader.git" && \
     pip install mockito && \
     pip install wget && \
