@@ -16,9 +16,6 @@ DASK_SQL_VER:
 
 CUDA_VER:
   - 11.5
-  - 11.4
-  - 11.2
-  - 11.0
 
 LINUX_VER:
   - ubuntu18.04
