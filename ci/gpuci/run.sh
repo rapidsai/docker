@@ -61,6 +61,7 @@ BUILD_ARGS="--no-cache \
   --build-arg CUDA_VER=${CUDA_VER} \
   --build-arg IMAGE_TYPE=${IMAGE_TYPE} \
   --build-arg LINUX_VER=${LINUX_VER} \
+  --build-arg DASK_SQL_VER=${DASK_SQL_VER} \
   --build-arg UCX_PY_VER=${UCX_PY_VER}"
 # Add BUILD_BRANCH arg for 'main' branch only
 if [ "${BUILD_BRANCH}" = "main" ]; then
