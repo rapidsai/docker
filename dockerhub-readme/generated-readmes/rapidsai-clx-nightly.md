@@ -157,6 +157,7 @@ Notebooks can be found in the following directories within the 21.12 container (
 * `/rapids/notebooks/cuml` - cuML demo notebooks
 * `/rapids/notebooks/cusignal` - cuSignal demo notebooks
 * `/rapids/notebooks/cuxfilter` - cuXfilter demo notebooks
+* `/rapids/notebooks/cuspatial` - cuSpatial demo notebooks
 * `/rapids/notebooks/xgboost` - XGBoost demo notebooks
 
 For a full description of each notebook, see the [README](https://github.com/rapidsai/notebooks/blob/branch-21.12/README.md) in the notebooks repository.
