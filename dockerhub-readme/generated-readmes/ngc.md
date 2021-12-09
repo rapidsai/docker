@@ -43,12 +43,12 @@ The tag naming scheme for RAPIDS images incorporates key platform details into t
  RAPIDS version        linux version
 ```
 
-To get the latest RAPIDS version of a specific platform combination, simply exclude the RAPIDS version. For example, to pull the latest version of RAPIDS for the `runtime` image with support for CUDA 11.0, Python 3.7, and Ubuntu 18.04, use the following tag:
+To get the latest RAPIDS version of a specific platform combination, simply exclude the RAPIDS version. For example, to pull the latest version of RAPIDS for the `runtime` image with support for CUDA 11.0, Python 3.8, and Ubuntu 18.04, use the following tag:
 ```
 cuda11.0-runtime-ubuntu18.04
 ```
 
-Many users do not need a specific platform combination but would like to ensure they're getting the latest version of RAPIDS, so as an additional convenience, a tag named simply `latest` is also provided which is equivalent to `cuda11.0-runtime-ubuntu18.04-py3.7`.
+Many users do not need a specific platform combination but would like to ensure they're getting the latest version of RAPIDS, so as an additional convenience, a tag named simply `latest` is also provided which is equivalent to `cuda11.0-runtime-ubuntu18.04-py3.8`.
 
 ## Prerequisites
 
