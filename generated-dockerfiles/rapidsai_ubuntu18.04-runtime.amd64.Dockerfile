@@ -9,29 +9,22 @@
 ARG CUDA_VER=11.0
 ARG LINUX_VER=ubuntu18.04
 ARG PYTHON_VER=3.7
-ARG RAPIDS_VER=21.10
+ARG RAPIDS_VER=21.12
 ARG FROM_IMAGE=rapidsai/rapidsai-core
 
 FROM ${FROM_IMAGE}:${RAPIDS_VER}-cuda${CUDA_VER}-runtime-${LINUX_VER}-py${PYTHON_VER}
 
-ARG RAPIDS_VER
-ARG CUDA_VER
-RUN gpuci_conda_retry install -y -n rapids -c blazingsql-nightly -c blazingsql \
-  "rapids-blazing=${RAPIDS_VER}*" \
-  "cudatoolkit=${CUDA_VER}"
+ARG DASK_SQL_VER
 
-ENV BLAZING_DIR=/blazing
+RUN gpuci_mamba_retry install -y -n rapids -c dask/label/dev \
+  "dask-sql=${DASK_SQL_VER}"
 
-
-RUN mkdir -p ${BLAZING_DIR} \
-    && cd ${BLAZING_DIR} \
-    && git clone https://github.com/BlazingDB/Welcome_to_BlazingSQL_Notebooks.git
 WORKDIR ${RAPIDS_DIR}
 
 
-RUN chmod -R ugo+w /opt/conda ${RAPIDS_DIR} ${BLAZING_DIR} \
+RUN chmod -R ugo+w /opt/conda ${RAPIDS_DIR} ${DASK_SQL_DIR} \
   && conda clean -tipy \
-  && chmod -R ugo+w /opt/conda ${RAPIDS_DIR} ${BLAZING_DIR}
+  && chmod -R ugo+w /opt/conda ${RAPIDS_DIR} ${DASK_SQL_DIR}
 ENTRYPOINT [ "/opt/conda/bin/tini", "--", "/opt/docker/bin/entrypoint" ]
 
 CMD [ "/bin/bash" ]

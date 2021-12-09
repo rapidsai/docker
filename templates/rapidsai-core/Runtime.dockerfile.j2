@@ -15,6 +15,7 @@ ARG FROM_IMAGE=gpuci/rapidsai
 FROM ${FROM_IMAGE}:${RAPIDS_VER}-cuda${CUDA_VER}-runtime-${LINUX_VER}-py${PYTHON_VER}
 
 {# base/runtime install specs #}
+ARG CUDA_VER
 ARG DASK_XGBOOST_VER=0.2*
 ARG RAPIDS_VER
 ARG BUILD_BRANCH="branch-${RAPIDS_VER}"
@@ -26,17 +27,12 @@ ENV RAPIDS_DIR=/rapids
 {# Copy files needed by RAPIDS and 3rd parties for builds, test, and runtime. #}
 RUN mkdir -p ${RAPIDS_DIR}/utils {{ "${GCC9_DIR}/lib64" if "centos" in os }}
 
-{% if "centos" in os and "amd64" in arch %}
-{# Add compatible libm #}
-COPY libm.so.6.amd64 ${GCC9_DIR}/lib64/libm.so.6
-{% endif %}
-
 {% include 'partials/os_pkgs.dockerfile.j2' %}
 
 {% include 'partials/env_debug.dockerfile.j2' %}
 
-RUN gpuci_conda_retry install -y -n rapids \
-  "rapids=${RAPIDS_VER}*"
+RUN gpuci_mamba_retry install -y -n rapids \
+  "rapids=${RAPIDS_VER}*=cuda${CUDA_VER}*"
 
 {# Patch for CVEs #}
 {% include 'partials/patch.dockerfile.j2' %}

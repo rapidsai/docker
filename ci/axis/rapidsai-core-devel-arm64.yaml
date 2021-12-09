@@ -9,11 +9,10 @@ IMAGE_TYPE:
   - devel
 
 RAPIDS_VER:
-  - '21.10'
+  - '21.12'
 
 CUDA_VER:
-  - 11.4
-  - 11.2
+  - 11.5
 
 LINUX_VER:
   - ubuntu18.04
@@ -25,8 +24,8 @@ PYTHON_VER:
   - 3.7
 
 UCX_PY_VER:
-  - '0.22'
+  - '0.23'
 
 exclude:
-  - RAPIDS_VER: '21.10'
+  - RAPIDS_VER: '21.12'
     BUILD_IMAGE: rapidsai/rapidsai-core-dev-nightly-arm64

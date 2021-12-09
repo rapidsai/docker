@@ -3,16 +3,20 @@ BUILD_IMAGE:
   - rapidsai/rapidsai-nightly
 
 FROM_IMAGE:
-  - rapidsai/rapidsai-core
+  - rapidsai/rapidsai-core-nightly
 
 IMAGE_TYPE:
   - base
   - runtime
 
 RAPIDS_VER:
-  - '21.10'
+  - '21.12'
+
+DASK_SQL_VER:
+  - '0.4.0'
 
 CUDA_VER:
+  - 11.5
   - 11.4
   - 11.2
   - 11.0
@@ -28,5 +32,5 @@ PYTHON_VER:
   - 3.8
 
 exclude:
-  - RAPIDS_VER: '21.10'
+  - RAPIDS_VER: '21.12'
     BUILD_IMAGE: rapidsai/rapidsai-nightly

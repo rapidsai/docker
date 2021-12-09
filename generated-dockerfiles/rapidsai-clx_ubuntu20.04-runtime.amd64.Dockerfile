@@ -9,21 +9,22 @@
 ARG CUDA_VER=11.0
 ARG LINUX_VER=ubuntu20.04
 ARG PYTHON_VER=3.7
-ARG RAPIDS_VER=21.10
-ARG FROM_IMAGE=rapidsai/rapidsai
+ARG RAPIDS_VER=21.12
+ARG FROM_IMAGE=rapidsai/rapidsai-core
 
 FROM ${FROM_IMAGE}:${RAPIDS_VER}-cuda${CUDA_VER}-runtime-${LINUX_VER}-py${PYTHON_VER}
 
 ARG RAPIDS_VER
 ARG CUDA_VER
 RUN source activate rapids && \
-    gpuci_conda_retry install -y -n rapids -c pytorch \
+    gpuci_mamba_retry install -y -n rapids -c pytorch \
     "clx=${RAPIDS_VER}" \
     "cudf_kafka=${RAPIDS_VER}" \
     "custreamz=${RAPIDS_VER}" \
     seqeval \
     python-whois \
     "cudatoolkit=${CUDA_VER}" && \
+    pip install -U torch==1.10.0+cu113 -f https://download.pytorch.org/whl/cu113/torch_stable.html && \
     pip install "git+https://github.com/rapidsai/cudatashader.git" && \
     pip install wget && \
     pip install "git+https://github.com/slashnext/SlashNext-URL-Analysis-and-Enrichment.git#egg=slashnext-phishing-ir&subdirectory=Python SDK/src"

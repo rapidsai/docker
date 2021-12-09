@@ -10,8 +10,8 @@
 ARG CUDA_VER=11.0
 ARG LINUX_VER=centos7
 ARG PYTHON_VER=3.7
-ARG RAPIDS_VER=21.10
-ARG FROM_IMAGE=rapidsai/rapidsai-dev
+ARG RAPIDS_VER=21.12
+ARG FROM_IMAGE=rapidsai/rapidsai-core-dev
 
 FROM ${FROM_IMAGE}:${RAPIDS_VER}-cuda${CUDA_VER}-devel-${LINUX_VER}-py${PYTHON_VER}
 
@@ -21,7 +21,7 @@ ARG BUILD_BRANCH="branch-${RAPIDS_VER}"
 ENV CLX_DIR=${RAPIDS_DIR}/clx
 
 RUN source activate rapids && \
-    gpuci_conda_retry install -y -n rapids -c pytorch \
+    gpuci_mamba_retry install -y -n rapids -c pytorch \
         "pytorch=1.7.1" \
         torchvision \
         "cudf_kafka=${RAPIDS_VER}" \
@@ -30,6 +30,7 @@ RUN source activate rapids && \
         seqeval \
         python-whois \
         faker && \
+    pip install -U torch==1.10.0+cu113 -f https://download.pytorch.org/whl/cu113/torch_stable.html && \
     pip install "git+https://github.com/rapidsai/cudatashader.git" && \
     pip install mockito && \
     pip install wget && \

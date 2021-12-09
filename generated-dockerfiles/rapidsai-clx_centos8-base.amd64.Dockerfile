@@ -8,15 +8,15 @@
 ARG CUDA_VER=11.0
 ARG LINUX_VER=centos8
 ARG PYTHON_VER=3.7
-ARG RAPIDS_VER=21.10
-ARG FROM_IMAGE=rapidsai/rapidsai
+ARG RAPIDS_VER=21.12
+ARG FROM_IMAGE=rapidsai/rapidsai-core
 
 FROM ${FROM_IMAGE}:${RAPIDS_VER}-cuda${CUDA_VER}-base-${LINUX_VER}-py${PYTHON_VER}
 
 ARG RAPIDS_VER
 ARG CUDA_VER
 
-RUN gpuci_conda_retry install -y -n rapids -c pytorch \
+RUN gpuci_mamba_retry install -y -n rapids -c pytorch \
     "clx=${RAPIDS_VER}" \
     "cudatoolkit=${CUDA_VER}"
 

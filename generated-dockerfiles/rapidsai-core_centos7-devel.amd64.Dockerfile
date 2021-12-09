@@ -10,7 +10,7 @@
 ARG CUDA_VER=11.0
 ARG LINUX_VER=centos7
 ARG PYTHON_VER=3.7
-ARG RAPIDS_VER=21.10
+ARG RAPIDS_VER=21.12
 ARG FROM_IMAGE=gpuci/rapidsai
 
 FROM ${FROM_IMAGE}:${RAPIDS_VER}-cuda${CUDA_VER}-devel-${LINUX_VER}-py${PYTHON_VER}
@@ -30,8 +30,6 @@ ENV RAPIDS_DIR=/rapids
 
 RUN mkdir -p ${RAPIDS_DIR}/utils ${GCC9_DIR}/lib64
 
-COPY libm.so.6.amd64 ${GCC9_DIR}/lib64/libm.so.6
-
 RUN yum install -y \
       openssh-clients \
       openmpi-devel \
@@ -45,8 +43,8 @@ RUN source activate rapids \
   && conda info \
   && conda config --show-sources \
   && conda list --show-channel-urls
-RUN gpuci_conda_retry install -y -n rapids \
-      "rapids-build-env=${RAPIDS_VER}*" \
+RUN gpuci_mamba_retry install -y -n rapids \
+      "rapids-build-env=${RAPIDS_VER}*=cuda${CUDA_VER}*" \
       "rapids-doc-env=${RAPIDS_VER}*" \
       "libcumlprims=${RAPIDS_VER}*" \
       "ucx-py=${UCX_PY_VER}.*" \
@@ -68,8 +66,8 @@ RUN source activate rapids \
   && conda config --show-sources \
   && conda list --show-channel-urls
 
-RUN gpuci_conda_retry install -y -n rapids \
-        "rapids-notebook-env=${RAPIDS_VER}*" \
+RUN gpuci_mamba_retry install -y -n rapids \
+        "rapids-notebook-env=${RAPIDS_VER}*=cuda${CUDA_VER}*" \
     && gpuci_conda_retry remove -y -n rapids --force-remove \
         "rapids-notebook-env=${RAPIDS_VER}*"
 
@@ -187,6 +185,7 @@ RUN cd ${RAPIDS_DIR}/xgboost && \
         -DGDF_INCLUDE_DIR=$CONDA_PREFIX/include \
         -DCMAKE_CXX_STANDARD:STRING="14" \
         -DPLUGIN_RMM=ON \
+        -DBUILD_WITH_CUDA_CUB=ON \
         -DRMM_ROOT=${RAPIDS_DIR}/rmm \
         -DCMAKE_BUILD_TYPE=release .. && \
   make -j && make -j install && \

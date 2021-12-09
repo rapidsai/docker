@@ -37,11 +37,6 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 
 RUN mkdir -p ${RAPIDS_DIR}/utils {{ "${GCC9_DIR}/lib64" if "centos" in os }}
 
-{% if "centos" in os and "amd64" in arch %}
-{# Add compatible libm #}
-COPY libm.so.6.amd64 ${GCC9_DIR}/lib64/libm.so.6
-{% endif %}
-
 {% include 'partials/os_pkgs.dockerfile.j2' %}
 
 {# Install dependencies needed for devel: build deps + RAPIDS runtime deps +
@@ -51,8 +46,8 @@ between packages. #}
 
 {# Install rapids env pkg #}
 {% if "amd64" in arch %}
-RUN gpuci_conda_retry install -y -n rapids \
-      "rapids-build-env=${RAPIDS_VER}*" \
+RUN gpuci_mamba_retry install -y -n rapids \
+      "rapids-build-env=${RAPIDS_VER}*=cuda${CUDA_VER}*" \
       "rapids-doc-env=${RAPIDS_VER}*" \
       "libcumlprims=${RAPIDS_VER}*" \
       "ucx-py=${UCX_PY_VER}.*" \
@@ -60,8 +55,8 @@ RUN gpuci_conda_retry install -y -n rapids \
       "rapids-build-env=${RAPIDS_VER}*" \
       "rapids-doc-env=${RAPIDS_VER}*"
 {% elif "arm64" in arch %}
-RUN gpuci_conda_retry install -y -n rapids \
-      "rapids-build-env=${RAPIDS_VER}*" \
+RUN gpuci_mamba_retry install -y -n rapids \
+      "rapids-build-env=${RAPIDS_VER}*=cuda${CUDA_VER}*" \
       "libcumlprims=${RAPIDS_VER}*" \
       "ucx-py=${UCX_PY_VER}.*" \
     && gpuci_conda_retry remove -y -n rapids --force-remove \
@@ -126,6 +121,7 @@ RUN cd ${RAPIDS_DIR}/{{ lib.name }} && \
         -DGDF_INCLUDE_DIR=$CONDA_PREFIX/include \
         -DCMAKE_CXX_STANDARD:STRING="14" \
         -DPLUGIN_RMM=ON \
+        -DBUILD_WITH_CUDA_CUB=ON \
         -DRMM_ROOT=${RAPIDS_DIR}/rmm \
         -DCMAKE_BUILD_TYPE=release .. && \
   make -j && make -j install && \

@@ -10,54 +10,34 @@
 ARG CUDA_VER=11.0
 ARG LINUX_VER=centos7
 ARG PYTHON_VER=3.7
-ARG RAPIDS_VER=21.10
+ARG RAPIDS_VER=21.12
 ARG FROM_IMAGE=rapidsai/rapidsai-core-dev
 
 FROM ${FROM_IMAGE}:${RAPIDS_VER}-cuda${CUDA_VER}-devel-${LINUX_VER}-py${PYTHON_VER}
 
-ARG RAPIDS_VER
-ARG CUDA_VER
-ARG BUILD_BRANCH="branch-${RAPIDS_VER}"
+ARG DASK_SQL_VER
 
-ENV BLAZING_DIR=/blazing
-
-RUN mkdir -p ${BLAZING_DIR} \
-    && cd ${BLAZING_DIR} \
-    && git clone https://github.com/BlazingDB/Welcome_to_BlazingSQL_Notebooks.git
-
-RUN gpuci_conda_retry install -y -n rapids -c blazingsql-nightly -c blazingsql \
-      "blazingsql-build-env=${RAPIDS_VER}*" \
-      "rapids-build-env=${RAPIDS_VER}*" \
-      "cudatoolkit=${CUDA_VER}*" \
-    && gpuci_conda_retry remove -y -n rapids --force-remove \
-      "blazingsql-build-env=${RAPIDS_VER}*" \
-      "rapids-build-env=${RAPIDS_VER}*"
+ENV DASK_SQL_DIR=/dask-sql
 
 
-ENV CUDF_HOME=/rapids/cudf
+RUN gpuci_mamba_retry install -y -n rapids -c conda-forge \
+      "maven>=3.6.0" \
+      "pip" \
+      "setuptools_scm"
 
-RUN mkdir -p ${BLAZING_DIR} \
-    && cd ${BLAZING_DIR} \
-    && git clone -b ${BUILD_BRANCH} https://github.com/rapidsai/blazingsql-release-staging.git blazingsql
-
-
-ENV LD_LIBRARY_PATH_ORIG=${LD_LIBRARY_PATH}
-ENV LD_LIBRARY_PATH=${LD_LIBRARY_PATH}:/usr/local/cuda/compat
-
-RUN rm -f ${GCC9_DIR}/lib64/libm.so.6
+RUN mkdir -p ${DASK_SQL_DIR} \
+    && cd ${DASK_SQL_DIR} \
+    && git clone -b ${DASK_SQL_VER} https://github.com/dask-contrib/dask-sql dask-sql
 
 RUN source activate rapids \
-    && cd ${BLAZING_DIR}/blazingsql \
-    && ./build.sh
-
-ENV LD_LIBRARY_PATH=${LD_LIBRARY_PATH_ORIG}
-ENV LD_LIBRARY_PATH_ORIG=
+    && cd ${DASK_SQL_DIR}/dask-sql \
+    && python -m pip install . --no-deps -vv
 WORKDIR ${RAPIDS_DIR}
 
 
-RUN chmod -R ugo+w /opt/conda ${RAPIDS_DIR} ${BLAZING_DIR} \
+RUN chmod -R ugo+w /opt/conda ${RAPIDS_DIR} ${DASK_SQL_DIR} \
   && conda clean -tipy \
-  && chmod -R ugo+w /opt/conda ${RAPIDS_DIR} ${BLAZING_DIR}
+  && chmod -R ugo+w /opt/conda ${RAPIDS_DIR} ${DASK_SQL_DIR}
 COPY entrypoint.sh /opt/docker/bin/entrypoint
 ENTRYPOINT [ "/opt/conda/bin/tini", "--", "/opt/docker/bin/entrypoint" ]
 

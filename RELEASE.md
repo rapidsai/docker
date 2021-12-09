@@ -11,6 +11,7 @@ This article outlines the release process for the `rapidsai/docker` repo.
   - Re-add `-nightly` suffix to `FROM_IMAGE` fields in the axis files in [ci/axis](/ci/axis)
   - Update `excludes` fields in the axis files in [ci/axis](/ci/axis)
   - Update `RAPIDS_VER` fields in the axis files in [ci/axis](/ci/axis)
+  - Update `UCX_PY_VER` fields in the axis files in [ci/axis](/ci/axis)
   - Update `settings.yaml`
   - Regenerate Dockerfiles with `generate_dockerfiles.py`
   - Regenerate DockerHub READMEs with `dockerhub-readme/generate_readmes.py`

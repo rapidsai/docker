@@ -9,11 +9,12 @@
 ARG CUDA_VER=11.0
 ARG LINUX_VER=centos8
 ARG PYTHON_VER=3.7
-ARG RAPIDS_VER=21.10
+ARG RAPIDS_VER=21.12
 ARG FROM_IMAGE=gpuci/rapidsai
 
 FROM ${FROM_IMAGE}:${RAPIDS_VER}-cuda${CUDA_VER}-runtime-${LINUX_VER}-py${PYTHON_VER}
 
+ARG CUDA_VER
 ARG DASK_XGBOOST_VER=0.2*
 ARG RAPIDS_VER
 ARG BUILD_BRANCH="branch-${RAPIDS_VER}"
@@ -23,7 +24,6 @@ RUN if [ "${BUILD_BRANCH}" = "main" ]; then sed -i '/nightly/d' /opt/conda/.cond
 ENV RAPIDS_DIR=/rapids
 
 RUN mkdir -p ${RAPIDS_DIR}/utils ${GCC9_DIR}/lib64
-
 
 RUN yum install -y \
       openssh-clients \
@@ -38,8 +38,8 @@ RUN source activate rapids \
   && conda info \
   && conda config --show-sources \
   && conda list --show-channel-urls
-RUN gpuci_conda_retry install -y -n rapids \
-  "rapids=${RAPIDS_VER}*"
+RUN gpuci_mamba_retry install -y -n rapids \
+  "rapids=${RAPIDS_VER}*=cuda${CUDA_VER}*"
 
 
 RUN source activate rapids \
@@ -49,8 +49,8 @@ RUN yum -y upgrade \
     && yum clean all
 
 
-RUN gpuci_conda_retry install -y -n rapids \
-        "rapids-notebook-env=${RAPIDS_VER}*" \
+RUN gpuci_mamba_retry install -y -n rapids \
+        "rapids-notebook-env=${RAPIDS_VER}*=cuda${CUDA_VER}*" \
     && gpuci_conda_retry remove -y -n rapids --force-remove \
         "rapids-notebook-env=${RAPIDS_VER}*"
 
