@@ -3,7 +3,7 @@ BUILD_IMAGE:
   - rapidsai/rapidsai-clx-dev-nightly
 
 FROM_IMAGE:
-  - rapidsai/rapidsai-core-dev-nightly
+  - rapidsai/rapidsai-core-dev
 
 IMAGE_TYPE:
   - devel
