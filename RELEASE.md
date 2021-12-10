@@ -4,6 +4,7 @@ This article outlines the release process for the `rapidsai/docker` repo.
 
 - Development occurs on versioned branches (i.e. `branch-21.08`)
 - A few days prior to a release, `gpuci-scripts` will open a release PR that merges the versioned branch that is to be released into the `main` branch
+  - Ensure the [rapidsai/notebooks](https://github.com/rapidsai/notebooks) repo release PR has been merged
   - Make sure the [ci/axis](/ci/axis) files get updated prior to merging to `main`
     - Update `FROM_IMAGE` to remove `-nightly` suffix
     - Add `-nightly` suffix to excludes
