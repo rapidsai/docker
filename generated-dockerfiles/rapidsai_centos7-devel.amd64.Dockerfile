@@ -23,7 +23,12 @@ ENV DASK_SQL_DIR=/dask-sql
 RUN gpuci_mamba_retry install -y -n rapids -c conda-forge \
       "maven>=3.6.0" \
       "pip" \
-      "setuptools_scm"
+      "setuptools_scm" \
+      "jpype1>=1.0.2" \
+      "uvicorn>=0.11.3" \
+      "fastapi>=0.61.1" \
+      "tzlocal>=2.1" \
+      "tabulate"
 
 RUN mkdir -p ${DASK_SQL_DIR} \
     && cd ${DASK_SQL_DIR} \
@@ -32,8 +37,6 @@ RUN mkdir -p ${DASK_SQL_DIR} \
 RUN source activate rapids \
     && cd ${DASK_SQL_DIR}/dask-sql \
     && python -m pip install . --no-deps -vv
-WORKDIR ${RAPIDS_DIR}
-
 
 RUN chmod -R ugo+w /opt/conda ${RAPIDS_DIR} ${DASK_SQL_DIR} \
   && conda clean -tipy \
