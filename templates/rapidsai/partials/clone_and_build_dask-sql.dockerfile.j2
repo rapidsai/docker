@@ -4,7 +4,12 @@
 RUN gpuci_mamba_retry install -y -n rapids -c conda-forge \
       "maven>=3.6.0" \
       "pip" \
-      "setuptools_scm"
+      "setuptools_scm" \
+      "jpype1>=1.0.2" \
+      "uvicorn>=0.11.3" \
+      "fastapi>=0.61.1" \
+      "tzlocal>=2.1" \
+      "tabulate"
 
 {# Clone, build, install #}
 RUN mkdir -p ${DASK_SQL_DIR} \
