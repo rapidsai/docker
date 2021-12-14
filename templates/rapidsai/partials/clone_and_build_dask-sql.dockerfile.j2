@@ -1,10 +1,11 @@
 {# This partial clones the dask-sql repo and build and installs it into the rapids conda env. #}
 
-{# Install build prerequisites #}
-RUN gpuci_mamba_retry install -y -n rapids -c conda-forge \
+{# Install build prerequisites & runtime dependencies #}
+RUN gpuci_mamba_retry install -y -n rapids \
       "maven>=3.6.0" \
-      "pip" \
-      "setuptools_scm"
+      "setuptools_scm" \
+      && gpuci_mamba_retry install -y -n rapids \
+      --only-deps dask-sql=${DASK_SQL_VER}
 
 {# Clone, build, install #}
 RUN mkdir -p ${DASK_SQL_DIR} \
