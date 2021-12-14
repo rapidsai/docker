@@ -24,9 +24,6 @@ PYTHON_VER:
   - 3.8
   - 3.7
 
-UCX_PY_VER:
-  - '0.24'
-
 exclude:
   - RAPIDS_VER: '22.02'
     BUILD_IMAGE: rapidsai/rapidsai-core-dev
