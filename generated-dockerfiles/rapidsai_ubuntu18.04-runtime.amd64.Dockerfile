@@ -19,8 +19,6 @@ ARG DASK_SQL_VER
 RUN gpuci_mamba_retry install -y -n rapids -c dask/label/dev \
   "dask-sql=${DASK_SQL_VER}"
 
-WORKDIR ${RAPIDS_DIR}
-
 
 RUN chmod -R ugo+w /opt/conda ${RAPIDS_DIR} ${DASK_SQL_DIR} \
   && conda clean -tipy \

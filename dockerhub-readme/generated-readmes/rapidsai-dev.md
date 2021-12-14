@@ -14,7 +14,7 @@ The RAPIDS suite of software libraries gives you the freedom to execute end-to-e
 ### Current Version - RAPIDS v21.12
 
 Versions of libraries included in the `21.12` images:
-- `cuDF` [v21.12](https://github.com/rapidsai/cudf/tree/v21.12.00), `cuML` [v21.12](https://github.com/rapidsai/cuml/tree/v21.12.00), `cuGraph` [v21.12](https://github.com/rapidsai/cugraph/tree/v21.12.00), `RMM` [v21.12](https://github.com/rapidsai/RMM/tree/v21.12.00), `cuSpatial` [v21.12](https://github.com/rapidsai/cuspatial/tree/v21.12.00), `cuSignal` [v21.12](https://github.com/rapidsai/cusignal/tree/v21.12.00), `cuxfilter` [v21.12](https://github.com/rapidsai/cuxfilter/tree/v21.12.00), `dask-sql` [0.4.0](https://github.com/dask-contrib/dask-sql/tree/0.4.0)
+- `cuDF` [v21.12](https://github.com/rapidsai/cudf/tree/v21.12.00), `cuML` [v21.12](https://github.com/rapidsai/cuml/tree/v21.12.00), `cuGraph` [v21.12](https://github.com/rapidsai/cugraph/tree/v21.12.00), `RMM` [v21.12](https://github.com/rapidsai/RMM/tree/v21.12.00), `cuSpatial` [v21.12](https://github.com/rapidsai/cuspatial/tree/v21.12.00), `cuSignal` [v21.12](https://github.com/rapidsai/cusignal/tree/v21.12.00), `cuxfilter` [v21.12](https://github.com/rapidsai/cuxfilter/tree/v21.12.00), `dask-sql` [2021.12.0](https://github.com/dask-contrib/dask-sql/tree/2021.12.0)
 
 
 ### Image Types
