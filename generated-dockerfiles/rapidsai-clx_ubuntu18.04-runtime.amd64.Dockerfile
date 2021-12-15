@@ -29,10 +29,11 @@ RUN source activate rapids && \
     pip install wget && \
     pip install "git+https://github.com/slashnext/SlashNext-URL-Analysis-and-Enrichment.git#egg=slashnext-phishing-ir&subdirectory=Python SDK/src"
 
-WORKDIR ${RAPIDS_DIR}
+RUN ln -sr /rapids/notebooks/repos/clx/notebooks/ /rapids/notebooks/clx
 
-RUN conda clean -afy
-
+RUN chmod -R ugo+w /opt/conda ${CLX_DIR} \
+  && conda clean -tipy \
+  && chmod -R ugo+w /opt/conda ${CLX_DIR}
 ENTRYPOINT [ "/opt/conda/bin/tini", "--", "/opt/docker/bin/entrypoint" ]
 
 CMD [ "/bin/bash" ]

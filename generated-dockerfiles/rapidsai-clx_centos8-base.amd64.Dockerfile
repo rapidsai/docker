@@ -20,10 +20,10 @@ RUN gpuci_mamba_retry install -y -n rapids -c pytorch \
     "clx=${RAPIDS_VER}" \
     "cudatoolkit=${CUDA_VER}"
 
-WORKDIR ${RAPIDS_DIR}
 
-RUN conda clean -afy
-
+RUN chmod -R ugo+w /opt/conda ${CLX_DIR} \
+  && conda clean -tipy \
+  && chmod -R ugo+w /opt/conda ${CLX_DIR}
 COPY entrypoint.sh /opt/docker/bin/entrypoint
 ENTRYPOINT [ "/opt/conda/bin/tini", "--", "/opt/docker/bin/entrypoint" ]
 
