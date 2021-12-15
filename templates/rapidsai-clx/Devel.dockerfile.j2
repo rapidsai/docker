@@ -21,7 +21,6 @@ ARG BUILD_BRANCH="branch-${RAPIDS_VER}"
 ENV CLX_DIR=${RAPIDS_DIR}/clx
 {% include 'partials/clone_and_build_clx.dockerfile.j2' %}
 
-WORKDIR ${RAPIDS_DIR}
 
 {# Cleanup conda and set ACLs for all users #}
 {% include 'partials/cleanup-chmod.dockerfile.j2' %}

@@ -20,7 +20,6 @@ RUN gpuci_mamba_retry install -y -n rapids -c pytorch \
     "clx=${RAPIDS_VER}" \
     "cudatoolkit=${CUDA_VER}"
 
-WORKDIR ${RAPIDS_DIR}
 
 {# Cleanup conda #}
 RUN conda clean -afy
