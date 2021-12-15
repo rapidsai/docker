@@ -61,8 +61,7 @@ BUILD_ARGS="--no-cache \
   --build-arg CUDA_VER=${CUDA_VER} \
   --build-arg IMAGE_TYPE=${IMAGE_TYPE} \
   --build-arg LINUX_VER=${LINUX_VER} \
-  --build-arg DASK_SQL_VER=${DASK_SQL_VER} \
-  --build-arg UCX_PY_VER=${UCX_PY_VER}"
+  --build-arg DASK_SQL_VER=${DASK_SQL_VER}"
 # Add BUILD_BRANCH arg for 'main' branch only
 if [ "${BUILD_BRANCH}" = "main" ]; then
   BUILD_ARGS+=" --build-arg BUILD_BRANCH=${BUILD_BRANCH}"
@@ -82,6 +81,10 @@ else
   echo "RAPIDS_VER is set to '$RAPIDS_VER', adding to build args..."
   BUILD_ARGS+=" --build-arg RAPIDS_VER=${RAPIDS_VER}"
   BUILD_TAG="${RAPIDS_VER}-${BUILD_TAG}" #pre-prend version number
+  echo "Fetch ucx-py version from rvc"
+  UCX_PY_VER="$(curl -sL https://version.gpuci.io/rapids/${RAPIDS_VER})"
+  echo "UCX_PY_VER is set to '${UCX_PY_VER}', adding to build args..."
+  BUILD_ARGS+=" --build-arg UCX_PY_VER=${UCX_PY_VER}"
 fi
 
 # Ouput build config
