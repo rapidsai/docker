@@ -22,6 +22,8 @@ ENV CLX_DIR=${RAPIDS_DIR}/clx
 {% include 'partials/clone_and_build_clx.dockerfile.j2' %}
 
 
+{% include 'partials/add_notebooks_symlink.dockerfile.j2' %}
+
 {# Cleanup conda and set ACLs for all users #}
 {% include 'partials/cleanup-chmod.dockerfile.j2' %}
 
