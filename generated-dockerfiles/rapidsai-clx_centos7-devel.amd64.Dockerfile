@@ -36,15 +36,14 @@ RUN source activate rapids && \
     pip install wget && \
     pip install "git+https://github.com/slashnext/SlashNext-URL-Analysis-and-Enrichment.git#egg=slashnext-phishing-ir&subdirectory=Python SDK/src"
 
-RUN cd ${RAPIDS_DIR} \
-    && git clone -b ${BUILD_BRANCH} https://github.com/rapidsai/clx.git
-
-# clx build/install
-RUN source activate rapids && \
+RUN cd ${RAPIDS_DIR} && \
+    git clone -b ${BUILD_BRANCH} https://github.com/rapidsai/clx.git && \
+    source activate rapids && \
     cd /rapids/clx/python && \
     python setup.py install
-WORKDIR ${RAPIDS_DIR}
 
+
+RUN ln -sr /rapids/notebooks/repos/clx/notebooks/ /rapids/notebooks/clx
 
 RUN chmod -R ugo+w /opt/conda ${CLX_DIR} \
   && conda clean -tipy \

@@ -64,6 +64,7 @@ RUN cd ${RAPIDS_DIR} \
   && git clone -b ${BUILD_BRANCH} --depth 1 --single-branch https://github.com/rapidsai/notebooks.git \
   && ln -s $(realpath notebooks/test/test.sh) /test.sh \
   && cd notebooks \
+  && rm -rf ci clx \
   && git submodule update --init --remote --no-single-branch --depth 1
 
 COPY start-jupyter.sh stop-jupyter.sh /rapids/utils/
