@@ -19,9 +19,33 @@ ARG RAPIDS_VER
 ARG BUILD_BRANCH="branch-${RAPIDS_VER}"
 
 ENV CLX_DIR=${RAPIDS_DIR}/clx
-{% include 'partials/clone_and_build_clx.dockerfile.j2' %}
 
-WORKDIR ${RAPIDS_DIR}
+{# Install build prerequisites #}
+RUN source activate rapids && \
+    gpuci_mamba_retry install -y -n rapids -c pytorch \
+        "pytorch=1.7.1" \
+        torchvision \
+        "cudf_kafka=${RAPIDS_VER}" \
+        "custreamz=${RAPIDS_VER}" \
+        "transformers=4.*" \
+        seqeval \
+        python-whois \
+        faker && \
+    pip install -U torch==1.10.0+cu113 -f https://download.pytorch.org/whl/cu113/torch_stable.html && \
+    pip install "git+https://github.com/rapidsai/cudatashader.git" && \
+    pip install mockito && \
+    pip install wget && \
+    pip install "git+https://github.com/slashnext/SlashNext-URL-Analysis-and-Enrichment.git#egg=slashnext-phishing-ir&subdirectory=Python SDK/src"
+
+{# Clone, build, install #}
+RUN cd ${RAPIDS_DIR} && \
+    git clone -b ${BUILD_BRANCH} https://github.com/rapidsai/clx.git && \
+    source activate rapids && \
+    cd /rapids/clx/python && \
+    python setup.py install
+
+
+{% include 'partials/add_notebooks_symlink.dockerfile.j2' %}
 
 {# Cleanup conda and set ACLs for all users #}
 {% include 'partials/cleanup-chmod.dockerfile.j2' %}
