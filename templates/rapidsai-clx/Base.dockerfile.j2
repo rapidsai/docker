@@ -20,10 +20,8 @@ RUN gpuci_mamba_retry install -y -n rapids -c pytorch \
     "clx=${RAPIDS_VER}" \
     "cudatoolkit=${CUDA_VER}"
 
-WORKDIR ${RAPIDS_DIR}
-
-{# Cleanup conda #}
-RUN conda clean -afy
+{# Cleanup conda and set ACLs for all users #}
+{% include 'partials/cleanup-chmod.dockerfile.j2' %}
 
 COPY entrypoint.sh /opt/docker/bin/entrypoint
 ENTRYPOINT [ "/opt/conda/bin/tini", "--", "/opt/docker/bin/entrypoint" ]
