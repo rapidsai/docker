@@ -5,7 +5,7 @@
 # jupyter notebooks are also provided, as well as jupyterlab and all the
 # dependencies required to run them.
 #
-# Copyright (c) 2021, NVIDIA CORPORATION.
+# Copyright (c) 2022, NVIDIA CORPORATION.
 
 ARG CUDA_VER=11.0
 ARG LINUX_VER=ubuntu20.04

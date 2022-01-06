@@ -4,7 +4,7 @@
 # conda environment. RAPIDS jupyter notebooks are also provided, as well as
 # jupyterlab and all the dependencies required to run them.
 #
-# Copyright (c) 2021, NVIDIA CORPORATION.
+# Copyright (c) 2022, NVIDIA CORPORATION.
 
 ARG CUDA_VER=11.0
 ARG LINUX_VER=ubuntu18.04
@@ -58,6 +58,8 @@ RUN gpuci_mamba_retry install -y -n rapids \
 
 ENV DASK_LABEXTENSION__FACTORY__MODULE="dask_cuda"
 ENV DASK_LABEXTENSION__FACTORY__CLASS="LocalCUDACluster"
+
+RUN gpuci_conda_retry install -y -n rapids jupyterlab-nvdashboard
 
 RUN cd ${RAPIDS_DIR} \
   && source activate rapids \
