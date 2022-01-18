@@ -21,12 +21,9 @@ ARG BUILD_BRANCH="branch-${RAPIDS_VER}"
 ENV CLX_DIR=${RAPIDS_DIR}/clx
 
 RUN source activate rapids && \
-    gpuci_mamba_retry install -y -n rapids -c pytorch \
-        "pytorch=1.7.1" \
-        torchvision \
+    gpuci_mamba_retry install -y -n rapids \
         "cudf_kafka=${RAPIDS_VER}" \
         "custreamz=${RAPIDS_VER}" \
-        "transformers=4.*" \
         seqeval \
         python-whois \
         faker && \
