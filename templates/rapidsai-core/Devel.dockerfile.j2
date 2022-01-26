@@ -47,7 +47,7 @@ between packages. #}
 {# Install rapids env pkg #}
 {% if "amd64" in arch %}
 RUN gpuci_mamba_retry install -y -n rapids \
-      "rapids-build-env=${RAPIDS_VER}*=cuda${CUDA_VER}*" \
+      "rapids-build-env=${RAPIDS_VER}*" \
       "rapids-doc-env=${RAPIDS_VER}*" \
       "libcumlprims=${RAPIDS_VER}*" \
       "ucx-py=${UCX_PY_VER}.*" \
@@ -56,7 +56,7 @@ RUN gpuci_mamba_retry install -y -n rapids \
       "rapids-doc-env=${RAPIDS_VER}*"
 {% elif "arm64" in arch %}
 RUN gpuci_mamba_retry install -y -n rapids \
-      "rapids-build-env=${RAPIDS_VER}*=cuda${CUDA_VER}*" \
+      "rapids-build-env=${RAPIDS_VER}*" \
       "libcumlprims=${RAPIDS_VER}*" \
       "ucx-py=${UCX_PY_VER}.*" \
     && gpuci_conda_retry remove -y -n rapids --force-remove \
