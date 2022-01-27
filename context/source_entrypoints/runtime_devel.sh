@@ -5,8 +5,8 @@
 if [[ "${DISABLE_JUPYTER}" =~ ^(true|yes|y)$ ]]; then
    return 0
 
-# Run Jupyter in foreground if $JUPYTER_FG is set
-elif [[ "${JUPYTER_FG}" =~ ^(true|yes|y)$ ]]; then
+# Run Jupyter in foreground if $JUPYTER_FG is set or container is running non-interactively
+elif [[ "${JUPYTER_FG}" =~ ^(true|yes|y)$ ]] || ! [ -t 0 ]; then
    jupyter-lab --allow-root --ip=0.0.0.0 --no-browser --NotebookApp.token='' --NotebookApp.allow_origin="*" --NotebookApp.base_url="${NB_PREFIX:-/}"
    exit 0
 else
@@ -20,3 +20,4 @@ else
        echo "Make local folders visible by bind mounting to /rapids/notebooks/host"
    fi
 fi
+
