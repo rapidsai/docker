@@ -4,12 +4,12 @@
 # conda environment. RAPIDS jupyter notebooks are also provided, as well as
 # jupyterlab and all the dependencies required to run them.
 #
-# Copyright (c) 2021, NVIDIA CORPORATION.
+# Copyright (c) 2022, NVIDIA CORPORATION.
 
 ARG CUDA_VER=11.0
 ARG LINUX_VER=centos7
-ARG PYTHON_VER=3.7
-ARG RAPIDS_VER=21.12
+ARG PYTHON_VER=3.8
+ARG RAPIDS_VER=22.02
 ARG FROM_IMAGE=gpuci/rapidsai
 
 FROM ${FROM_IMAGE}:${RAPIDS_VER}-cuda${CUDA_VER}-runtime-${LINUX_VER}-py${PYTHON_VER}
@@ -39,7 +39,7 @@ RUN source activate rapids \
   && conda config --show-sources \
   && conda list --show-channel-urls
 RUN gpuci_mamba_retry install -y -n rapids \
-  "rapids=${RAPIDS_VER}*=cuda${CUDA_VER}*"
+  "rapids=${RAPIDS_VER}*"
 
 
 RUN source activate rapids \
@@ -50,12 +50,14 @@ RUN yum -y upgrade \
 
 
 RUN gpuci_mamba_retry install -y -n rapids \
-        "rapids-notebook-env=${RAPIDS_VER}*=cuda${CUDA_VER}*" \
+        "rapids-notebook-env=${RAPIDS_VER}*" \
     && gpuci_conda_retry remove -y -n rapids --force-remove \
         "rapids-notebook-env=${RAPIDS_VER}*"
 
 ENV DASK_LABEXTENSION__FACTORY__MODULE="dask_cuda"
 ENV DASK_LABEXTENSION__FACTORY__CLASS="LocalCUDACluster"
+
+RUN gpuci_conda_retry install -y -n rapids jupyterlab-nvdashboard
 
 RUN cd ${RAPIDS_DIR} \
   && source activate rapids \

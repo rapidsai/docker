@@ -10,7 +10,7 @@ IMAGE_TYPE:
   - runtime
 
 RAPIDS_VER:
-  - '21.12'
+  - '22.02'
 
 DASK_SQL_VER:
   - '2021.12.0'
@@ -28,9 +28,9 @@ LINUX_VER:
   - centos8
 
 PYTHON_VER:
-  - 3.7
   - 3.8
+  - 3.9
 
 exclude:
-  - RAPIDS_VER: '21.12'
+  - RAPIDS_VER: '22.02'
     BUILD_IMAGE: rapidsai/rapidsai-nightly

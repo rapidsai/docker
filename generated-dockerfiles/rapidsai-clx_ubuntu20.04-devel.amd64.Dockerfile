@@ -5,12 +5,12 @@
 # jupyter notebooks are also provided, as well as jupyterlab and all the
 # dependencies required to run them.
 #
-# Copyright (c) 2021, NVIDIA CORPORATION.
+# Copyright (c) 2022, NVIDIA CORPORATION.
 
 ARG CUDA_VER=11.0
 ARG LINUX_VER=ubuntu20.04
-ARG PYTHON_VER=3.7
-ARG RAPIDS_VER=21.12
+ARG PYTHON_VER=3.8
+ARG RAPIDS_VER=22.02
 ARG FROM_IMAGE=rapidsai/rapidsai-core-dev
 
 FROM ${FROM_IMAGE}:${RAPIDS_VER}-cuda${CUDA_VER}-devel-${LINUX_VER}-py${PYTHON_VER}
@@ -21,12 +21,9 @@ ARG BUILD_BRANCH="branch-${RAPIDS_VER}"
 ENV CLX_DIR=${RAPIDS_DIR}/clx
 
 RUN source activate rapids && \
-    gpuci_mamba_retry install -y -n rapids -c pytorch \
-        "pytorch=1.7.1" \
-        torchvision \
+    gpuci_mamba_retry install -y -n rapids \
         "cudf_kafka=${RAPIDS_VER}" \
         "custreamz=${RAPIDS_VER}" \
-        "transformers=4.*" \
         seqeval \
         python-whois \
         faker && \

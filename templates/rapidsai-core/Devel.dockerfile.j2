@@ -47,17 +47,16 @@ between packages. #}
 {# Install rapids env pkg #}
 {% if "amd64" in arch %}
 RUN gpuci_mamba_retry install -y -n rapids \
-      "rapids-build-env=${RAPIDS_VER}*=cuda${CUDA_VER}*" \
+      "rapids-build-env=${RAPIDS_VER}*" \
       "rapids-doc-env=${RAPIDS_VER}*" \
       "libcumlprims=${RAPIDS_VER}*" \
       "ucx-py=${UCX_PY_VER}.*" \
-      "ptxcompiler" \
     && gpuci_conda_retry remove -y -n rapids --force-remove \
       "rapids-build-env=${RAPIDS_VER}*" \
       "rapids-doc-env=${RAPIDS_VER}*"
 {% elif "arm64" in arch %}
 RUN gpuci_mamba_retry install -y -n rapids \
-      "rapids-build-env=${RAPIDS_VER}*=cuda${CUDA_VER}*" \
+      "rapids-build-env=${RAPIDS_VER}*" \
       "libcumlprims=${RAPIDS_VER}*" \
       "ucx-py=${UCX_PY_VER}.*" \
     && gpuci_conda_retry remove -y -n rapids --force-remove \
@@ -120,7 +119,7 @@ RUN cd ${RAPIDS_DIR}/{{ lib.name }} && \
         -DUSE_NCCL=ON -DUSE_CUDA=ON -DUSE_CUDF=ON \
         -DBUILD_WITH_SHARED_NCCL=ON \
         -DGDF_INCLUDE_DIR=$CONDA_PREFIX/include \
-        -DCMAKE_CXX_STANDARD:STRING="14" \
+        -DCMAKE_CXX_STANDARD:STRING="17" \
         -DPLUGIN_RMM=ON \
         -DBUILD_WITH_CUDA_CUB=ON \
         -DRMM_ROOT=${RAPIDS_DIR}/rmm \
