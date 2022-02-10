@@ -16,7 +16,7 @@ FROM ${FROM_IMAGE}:${RAPIDS_VER}-cuda${CUDA_VER}-runtime-${LINUX_VER}-py${PYTHON
 
 ARG DASK_SQL_VER
 
-RUN gpuci_mamba_retry install -y -n rapids -c dask/label/dev \
+RUN gpuci_mamba_retry install -y -n rapids -c conda-forge \
   "dask-sql=${DASK_SQL_VER}"
 
 {# Cleanup conda and set ACLs for all users #}
