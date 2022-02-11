@@ -15,8 +15,7 @@ FROM ${FROM_IMAGE}:${RAPIDS_VER}-cuda${CUDA_VER}-base-${LINUX_VER}-py${PYTHON_VE
 
 ARG DASK_SQL_VER
 
-RUN gpuci_mamba_retry install -y -n rapids -c dask/label/dev \
-  "dask-sql=${DASK_SQL_VER}"
+RUN gpuci_mamba_retry install -y -n rapids "dask-sql=${DASK_SQL_VER}"
 
 {# Cleanup conda and set ACLs for all users #}
 {% include 'partials/cleanup-chmod.dockerfile.j2' %}
