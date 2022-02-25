@@ -110,6 +110,10 @@ RUN cd ${RAPIDS_DIR} \
   && cd benchmark \
   && git submodule update --init --remote --recursive --no-single-branch --depth 1 \
   && cd ${RAPIDS_DIR} \
+  && git clone -b ${BUILD_BRANCH} --depth 1 --single-branch https://github.com/rapidsai/raft.git \
+  && cd raft \
+  && git submodule update --init --remote --recursive --no-single-branch --depth 1 \
+  && cd ${RAPIDS_DIR} \
   && git clone -b ${BUILD_BRANCH} --depth 1 --single-branch https://github.com/rapidsai/cusignal.git \
   && cd cusignal \
   && git submodule update --init --remote --recursive --no-single-branch --depth 1 \
@@ -150,6 +154,10 @@ RUN cd ${RAPIDS_DIR}/benchmark && \
   source activate rapids && \
   cd rapids_pytest_benchmark && \
   python setup.py install
+
+RUN cd ${RAPIDS_DIR}/raft && \
+  source activate rapids && \
+  ./build.sh --allgpuarch --compile-libs libraft pyraft
 
 RUN cd ${RAPIDS_DIR}/cudf && \
   source activate rapids && \
