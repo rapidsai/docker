@@ -20,7 +20,7 @@ The `rapidsai/rapidsai-clx-nightly` repo contains nightly docker builds of the l
 ### RAPIDS NIGHTLY v22.04a
 
 Versions of libraries included in the `22.04` images:
-- `cuDF` [v22.04.00a](https://github.com/rapidsai/cudf), `cuML` [v22.04.00a](https://github.com/rapidsai/cuml), `cuGraph` [v22.04.00a](https://github.com/rapidsai/cugraph), `RMM` [v22.04.00a](https://github.com/rapidsai/RMM), `cuSpatial` [v22.04.00a](https://github.com/rapidsai/cuspatial), `cuSignal` [v22.04.00a](https://github.com/rapidsai/cusignal), `cuxfilter` [v22.04.00a](https://github.com/rapidsai/cuxfilter), `clx` [v22.04](https://github.com/rapidsai/clx)
+- `cuDF` [v22.04.00a](https://github.com/rapidsai/cudf), `cuML` [v22.04.00a](https://github.com/rapidsai/cuml), `cuGraph` [v22.04.00a](https://github.com/rapidsai/cugraph), `RMM` [v22.04.00a](https://github.com/rapidsai/RMM), `RAFT` [v22.04.00a](https://github.com/rapidsai/raft), `cuSpatial` [v22.04.00a](https://github.com/rapidsai/cuspatial), `cuSignal` [v22.04.00a](https://github.com/rapidsai/cusignal), `cuxfilter` [v22.04.00a](https://github.com/rapidsai/cuxfilter), `clx` [v22.04](https://github.com/rapidsai/clx)
 - `xgboost` [branch](https://github.com/rapidsai/xgboost), `dask-cuda` [branch](https://github.com/rapidsai/dask-cuda)
 
 ### Image Types
