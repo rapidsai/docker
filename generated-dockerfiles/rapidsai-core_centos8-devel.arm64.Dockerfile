@@ -46,6 +46,7 @@ RUN source activate rapids \
 RUN gpuci_mamba_retry install -y -n rapids \
       "rapids-build-env=${RAPIDS_VER}*" \
       "libcumlprims=${RAPIDS_VER}*" \
+      "libcugraphops=${RAPIDS_VER}*" \
       "ucx-py=${UCX_PY_VER}.*" \
     && gpuci_conda_retry remove -y -n rapids --force-remove \
       "rapids-build-env=${RAPIDS_VER}*"
