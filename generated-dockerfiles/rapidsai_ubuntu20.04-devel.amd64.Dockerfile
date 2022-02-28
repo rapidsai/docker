@@ -32,7 +32,6 @@ RUN mkdir -p ${DASK_SQL_DIR} \
 
 RUN source activate rapids \
     && cd ${DASK_SQL_DIR}/dask-sql \
-    && python setup.py java \
     && python -m pip install . --no-deps -vv
 
 RUN chmod -R ugo+w /opt/conda ${RAPIDS_DIR} ${DASK_SQL_DIR} \
