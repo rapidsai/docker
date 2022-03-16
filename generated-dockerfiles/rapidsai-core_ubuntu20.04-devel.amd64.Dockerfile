@@ -80,7 +80,7 @@ RUN gpuci_mamba_retry install -y -n rapids \
 ENV DASK_LABEXTENSION__FACTORY__MODULE="dask_cuda"
 ENV DASK_LABEXTENSION__FACTORY__CLASS="LocalCUDACluster"
 
-RUN gpuci_conda_retry install -y -n rapids jupyterlab-nvdashboard
+RUN gpuci_mamba_retry install -y -n rapids jupyterlab-nvdashboard
 
 RUN cd ${RAPIDS_DIR} \
   && source activate rapids \
