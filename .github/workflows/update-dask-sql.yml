@@ -1,0 +1,53 @@
+# Updates stable dask-sql version to use in images.
+# Runs once daily.
+
+name: Check for new dask-sql version
+
+on:
+  schedule:
+    - cron: "0 0 * * *" # Daily “At 00:00” UTC
+  workflow_dispatch:
+
+jobs:
+  update-dask-sql:
+    runs-on: ubuntu-latest
+    if: github.repository == 'rapidsai/docker'
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Get old dask-sql version
+        id: old_version
+        uses: the-coding-turtle/ga-yaml-parser@v0.1.1
+        with:
+          file: settings.yaml
+          key: STABLE_DASK_SQL_VERSION
+
+      - name: Get new dask-sql version
+        id: new_version
+        uses: jacobtomlinson/gha-anaconda-package-version@0.1.3
+        with:
+          org: "conda-forge"
+          package: "dask-sql"
+          version_system: "CalVer"
+
+      - name: Find and replace dask-sql version
+        uses: jacobtomlinson/gha-find-replace@2.0.0
+        with:
+          find: ${{ steps.old_version.outputs.result }}
+          replace: ${{ steps.new_version.outputs.version }}
+          regex: false
+
+      - name: Create pull request with changes
+        uses: peter-evans/create-pull-request@v3
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          draft: true
+          commit-message: Update `STABLE_DASK_SQL_VERSION` to `${{ steps.new_version.outputs.version }}`
+          title: Update `STABLE_DASK_SQL_VERSION` to `${{ steps.new_version.outputs.version }}`
+          author: github-actions[bot] <41898282+github-actions[bot]@users.noreply.github.com>
+          branch: "upgrade-dask-sql"
+          body: |
+            A new stable dask-sql version has been detected.
+
+            Updated all config files and READMEs to use `${{ steps.new_version.outputs.version }}`.
