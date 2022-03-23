@@ -42,7 +42,6 @@ jobs:
         uses: peter-evans/create-pull-request@v3
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
-          draft: true
           commit-message: Update `STABLE_DASK_SQL_VERSION` to `${{ steps.new_version.outputs.version }}`
           title: Update `STABLE_DASK_SQL_VERSION` to `${{ steps.new_version.outputs.version }}`
           author: github-actions[bot] <41898282+github-actions[bot]@users.noreply.github.com>
