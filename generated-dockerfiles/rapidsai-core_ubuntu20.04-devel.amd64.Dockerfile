@@ -163,7 +163,7 @@ RUN cd ${RAPIDS_DIR}/benchmark && \
 
 RUN cd ${RAPIDS_DIR}/raft && \
   source activate rapids && \
-  ./build.sh --allgpuarch --compile-libs libraft pyraft
+  ./build.sh --allgpuarch --compile-libs --install libraft pyraft pylibraft
 
 RUN cd ${RAPIDS_DIR}/cudf && \
   source activate rapids && \
