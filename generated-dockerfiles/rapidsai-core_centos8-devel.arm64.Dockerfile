@@ -16,7 +16,7 @@ ARG FROM_IMAGE=gpuci/rapidsai
 FROM ${FROM_IMAGE}:${RAPIDS_VER}-cuda${CUDA_VER}-devel-${LINUX_VER}-py${PYTHON_VER}
 
 ARG PARALLEL_LEVEL=16
-ARG RAPIDS_VER
+ENV RAPIDS_VER
 ARG CUDA_VER
 ARG UCX_PY_VER
 ARG BUILD_BRANCH="branch-${RAPIDS_VER}"
@@ -89,50 +89,63 @@ WORKDIR ${RAPIDS_DIR}/notebooks
 EXPOSE 8888
 EXPOSE 8787
 EXPOSE 8786
+COPY tag-repo.sh /usr/local/bin/tag-repo
+
 RUN cd ${RAPIDS_DIR} \
   && source activate rapids \
   && git clone -b ${BUILD_BRANCH} --depth 1 --single-branch https://github.com/rapidsai/cudf.git \
   && cd cudf \
+  && tag-repo \
   && git submodule update --init --recursive --no-single-branch --depth 1 \
   && cd ${RAPIDS_DIR} \
   && git clone -b ${BUILD_BRANCH} --depth 1 --single-branch https://github.com/rapidsai/cuml.git \
   && cd cuml \
+  && tag-repo \
   && git submodule update --init --recursive --no-single-branch --depth 1 \
   && cd ${RAPIDS_DIR} \
   && git clone -b branch-${RAPIDS_VER} --depth 1 --single-branch https://github.com/rapidsai/xgboost.git \
   && cd xgboost \
+  && tag-repo \
   && git submodule update --init --recursive --no-single-branch --depth 1 \
   && cd ${RAPIDS_DIR} \
   && git clone -b ${BUILD_BRANCH} --depth 1 --single-branch https://github.com/rapidsai/rmm.git \
   && cd rmm \
+  && tag-repo \
   && git submodule update --init --remote --recursive --no-single-branch --depth 1 \
   && cd ${RAPIDS_DIR} \
   && git clone -b main --depth 1 --single-branch https://github.com/rapidsai/benchmark.git \
   && cd benchmark \
+  && tag-repo \
   && git submodule update --init --remote --recursive --no-single-branch --depth 1 \
   && cd ${RAPIDS_DIR} \
   && git clone -b ${BUILD_BRANCH} --depth 1 --single-branch https://github.com/rapidsai/raft.git \
   && cd raft \
+  && tag-repo \
   && git submodule update --init --remote --recursive --no-single-branch --depth 1 \
   && cd ${RAPIDS_DIR} \
   && git clone -b ${BUILD_BRANCH} --depth 1 --single-branch https://github.com/rapidsai/cusignal.git \
   && cd cusignal \
+  && tag-repo \
   && git submodule update --init --remote --recursive --no-single-branch --depth 1 \
   && cd ${RAPIDS_DIR} \
   && git clone -b ${BUILD_BRANCH} --depth 1 --single-branch https://github.com/rapidsai/cuxfilter \
   && cd cuxfilter \
+  && tag-repo \
   && git submodule update --init --remote --recursive --no-single-branch --depth 1 \
   && cd ${RAPIDS_DIR} \
   && git clone -b ${BUILD_BRANCH} --depth 1 --single-branch https://github.com/rapidsai/cuspatial.git \
   && cd cuspatial \
+  && tag-repo \
   && git submodule update --init --remote --recursive --no-single-branch --depth 1 \
   && cd ${RAPIDS_DIR} \
   && git clone -b ${BUILD_BRANCH} --depth 1 --single-branch https://github.com/rapidsai/cugraph.git \
   && cd cugraph \
+  && tag-repo \
   && git submodule update --init --remote --recursive --no-single-branch --depth 1 \
   && cd ${RAPIDS_DIR} \
   && git clone -b ${BUILD_BRANCH} --depth 1 --single-branch https://github.com/rapidsai/dask-cuda.git \
   && cd dask-cuda \
+  && tag-repo \
   && git submodule update --init --remote --recursive --no-single-branch --depth 1 
   
 
