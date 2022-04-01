@@ -72,12 +72,15 @@ RUN gpuci_mamba_retry install -y -n rapids \
 
 {% include 'partials/install_notebooks.dockerfile.j2' %}
 
+COPY tag-repo.sh /usr/local/bin/tag-repo
+
 {# Clone RAPIDS libraries #}
 RUN cd ${RAPIDS_DIR} \
   && source activate rapids \
 {% for lib in RAPIDS_LIBS | sort(attribute="update_submodules") %}
   && git clone -b {{ "branch-${RAPIDS_VER}" if lib.name == "xgboost" else lib.branch | default('${BUILD_BRANCH}') }} --depth 1 --single-branch {{ lib.repo_url }} \
   && cd {{ lib.name }} \
+  && tag-repo \
   && git submodule update --init{{ ' --remote' if lib.update_submodules }} --recursive --no-single-branch --depth 1 {{ "\\" if not loop.last }}
   {{ "&& cd ${RAPIDS_DIR} \\" if not loop.last }}
 {% endfor %}
