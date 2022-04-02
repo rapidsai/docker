@@ -17,10 +17,11 @@ FROM ${FROM_IMAGE}:${RAPIDS_VER}-cuda${CUDA_VER}-devel-${LINUX_VER}-py${PYTHON_V
 
 {# devel environment config args #}
 ARG PARALLEL_LEVEL=16
-ENV RAPIDS_VER
+ARG RAPIDS_VER
 ARG CUDA_VER
 ARG UCX_PY_VER
 ARG BUILD_BRANCH="branch-${RAPIDS_VER}"
+ENV RAPIDS_VER=$RAPIDS_VER
 
 RUN if [ "${BUILD_BRANCH}" = "main" ]; then sed -i '/nightly/d;/dask\/label\/dev/d' /opt/conda/.condarc; fi
 
