@@ -9,15 +9,14 @@
 ARG CUDA_VER=11.0
 ARG LINUX_VER=centos7
 ARG PYTHON_VER=3.8
-ARG RAPIDS_VER=22.02
+ARG RAPIDS_VER=22.04
 ARG FROM_IMAGE=rapidsai/rapidsai-core
 
 FROM ${FROM_IMAGE}:${RAPIDS_VER}-cuda${CUDA_VER}-runtime-${LINUX_VER}-py${PYTHON_VER}
 
 ARG DASK_SQL_VER
 
-RUN gpuci_mamba_retry install -y -n rapids -c dask/label/dev \
-  "dask-sql=${DASK_SQL_VER}"
+RUN gpuci_mamba_retry install -y -n rapids "dask-sql=${DASK_SQL_VER}"
 
 
 RUN chmod -R ugo+w /opt/conda ${RAPIDS_DIR} ${DASK_SQL_DIR} \

@@ -21,8 +21,9 @@ ARG RAPIDS_VER
 ARG CUDA_VER
 ARG UCX_PY_VER
 ARG BUILD_BRANCH="branch-${RAPIDS_VER}"
+ENV RAPIDS_VER=$RAPIDS_VER
 
-RUN if [ "${BUILD_BRANCH}" = "main" ]; then sed -i '/nightly/d' /opt/conda/.condarc; fi
+RUN if [ "${BUILD_BRANCH}" = "main" ]; then sed -i '/nightly/d;/dask\/label\/dev/d' /opt/conda/.condarc; fi
 
 ARG PYTHON_VER
 
@@ -50,6 +51,7 @@ RUN gpuci_mamba_retry install -y -n rapids \
       "rapids-build-env=${RAPIDS_VER}*" \
       "rapids-doc-env=${RAPIDS_VER}*" \
       "libcumlprims=${RAPIDS_VER}*" \
+      "libcugraphops=${RAPIDS_VER}*" \
       "ucx-py=${UCX_PY_VER}.*" \
     && gpuci_conda_retry remove -y -n rapids --force-remove \
       "rapids-build-env=${RAPIDS_VER}*" \
@@ -58,6 +60,7 @@ RUN gpuci_mamba_retry install -y -n rapids \
 RUN gpuci_mamba_retry install -y -n rapids \
       "rapids-build-env=${RAPIDS_VER}*" \
       "libcumlprims=${RAPIDS_VER}*" \
+      "libcugraphops=${RAPIDS_VER}*" \
       "ucx-py=${UCX_PY_VER}.*" \
     && gpuci_conda_retry remove -y -n rapids --force-remove \
       "rapids-build-env=${RAPIDS_VER}*"
@@ -70,12 +73,15 @@ RUN gpuci_mamba_retry install -y -n rapids \
 
 {% include 'partials/install_notebooks.dockerfile.j2' %}
 
+COPY tag-repo.sh /usr/local/bin/tag-repo
+
 {# Clone RAPIDS libraries #}
 RUN cd ${RAPIDS_DIR} \
   && source activate rapids \
 {% for lib in RAPIDS_LIBS | sort(attribute="update_submodules") %}
   && git clone -b {{ "branch-${RAPIDS_VER}" if lib.name == "xgboost" else lib.branch | default('${BUILD_BRANCH}') }} --depth 1 --single-branch {{ lib.repo_url }} \
   && cd {{ lib.name }} \
+  && tag-repo \
   && git submodule update --init{{ ' --remote' if lib.update_submodules }} --recursive --no-single-branch --depth 1 {{ "\\" if not loop.last }}
   {{ "&& cd ${RAPIDS_DIR} \\" if not loop.last }}
 {% endfor %}
@@ -132,6 +138,9 @@ RUN cd ${RAPIDS_DIR}/{{ lib.name }} && \
 
   {% elif lib.name == "cuml" %}
   ./build.sh --allgpuarch libcuml cuml prims
+
+  {% elif lib.name == "raft"%}
+  ./build.sh --allgpuarch --compile-libs --install libraft pyraft pylibraft
 
   {% elif lib.name == "dask-cuda"%}
   python setup.py install

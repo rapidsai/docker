@@ -8,7 +8,7 @@
 ARG CUDA_VER=11.0
 ARG LINUX_VER=centos7
 ARG PYTHON_VER=3.8
-ARG RAPIDS_VER=22.02
+ARG RAPIDS_VER=22.04
 ARG FROM_IMAGE=gpuci/rapidsai
 
 FROM ${FROM_IMAGE}:${RAPIDS_VER}-cuda${CUDA_VER}-base-${LINUX_VER}-py${PYTHON_VER}
@@ -17,8 +17,9 @@ ARG CUDA_VER
 ARG DASK_XGBOOST_VER=0.2*
 ARG RAPIDS_VER
 ARG BUILD_BRANCH="branch-${RAPIDS_VER}"
+ENV RAPIDS_VER=$RAPIDS_VER
 
-RUN if [ "${BUILD_BRANCH}" = "main" ]; then sed -i '/nightly/d' /opt/conda/.condarc; fi
+RUN if [ "${BUILD_BRANCH}" = "main" ]; then sed -i '/nightly/d;/dask\/label\/dev/d' /opt/conda/.condarc; fi
 
 ENV RAPIDS_DIR=/rapids
 

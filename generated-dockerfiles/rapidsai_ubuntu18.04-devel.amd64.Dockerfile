@@ -10,7 +10,7 @@
 ARG CUDA_VER=11.0
 ARG LINUX_VER=ubuntu18.04
 ARG PYTHON_VER=3.8
-ARG RAPIDS_VER=22.02
+ARG RAPIDS_VER=22.04
 ARG FROM_IMAGE=rapidsai/rapidsai-core-dev
 
 FROM ${FROM_IMAGE}:${RAPIDS_VER}-cuda${CUDA_VER}-devel-${LINUX_VER}-py${PYTHON_VER}
@@ -32,7 +32,8 @@ RUN mkdir -p ${DASK_SQL_DIR} \
 
 RUN source activate rapids \
     && cd ${DASK_SQL_DIR}/dask-sql \
-    && python -m pip install . --no-deps -vv
+    && python -m pip install . --no-deps -vv \
+    && rm -rf ~/.m2
 
 RUN chmod -R ugo+w /opt/conda ${RAPIDS_DIR} ${DASK_SQL_DIR} \
   && conda clean -tipy \

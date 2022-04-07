@@ -9,10 +9,10 @@ IMAGE_TYPE:
   - devel
 
 RAPIDS_VER:
-  - '22.02'
+  - '22.04'
 
 DASK_SQL_VER:
-  - '2021.12.0'
+  - '2022.3.0'
 
 CUDA_VER:
   - 11.5
@@ -28,5 +28,5 @@ PYTHON_VER:
   - 3.9
 
 exclude:
-  - RAPIDS_VER: '22.02'
+  - RAPIDS_VER: '22.04'
     BUILD_IMAGE: rapidsai/rapidsai-dev-nightly
