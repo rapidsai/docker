@@ -5,8 +5,10 @@ COPY source_entrypoints/runtime_devel.sh /opt/docker/bin/entrypoint_source
 {% endif %}
 COPY entrypoint.sh /opt/docker/bin/entrypoint
 
+{% if image_type != "devel" %}
 {# Set the default PATH to include the RAPIDS conda env #}
 ENV PATH="/opt/conda/condabin:/opt/conda/envs/rapids/bin:/opt/conda/bin:/usr/local/nvidia/bin:/usr/local/cuda/bin:/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin"
+{% endif %}
 
 ENTRYPOINT [ "/opt/conda/bin/tini", "--", "/opt/docker/bin/entrypoint" ]
 
