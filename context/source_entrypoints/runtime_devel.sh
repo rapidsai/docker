@@ -1,5 +1,13 @@
 #!/bin/bash
 
+if [[ "$@" = *"ipykernel"* ]]; then
+   return 0
+fi
+
+if [[ "$@" = *"jupyter kernelspec"* ]]; then
+   return 0
+fi
+
 
 # Disable automatic Jupyter launch if $DISABLE_JUPYTER is set
 if [[ "${DISABLE_JUPYTER}" =~ ^(true|yes|y)$ ]]; then
