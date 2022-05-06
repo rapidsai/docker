@@ -21,6 +21,7 @@ RUN source activate rapids && \
     "clx=${RAPIDS_VER}" \
     "cudf_kafka=${RAPIDS_VER}" \
     "custreamz=${RAPIDS_VER}" \
+    "transformers=4.*" \
     seqeval \
     python-whois \
     "cudatoolkit=${CUDA_VER}" && \
