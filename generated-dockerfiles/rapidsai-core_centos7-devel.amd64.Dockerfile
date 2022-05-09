@@ -20,6 +20,7 @@ ARG RAPIDS_VER
 ARG CUDA_VER
 ARG UCX_PY_VER
 ARG BUILD_BRANCH="branch-${RAPIDS_VER}"
+ARG LINUX_VER
 ENV RAPIDS_VER=$RAPIDS_VER
 
 RUN if [ "${BUILD_BRANCH}" = "main" ]; then sed -i '/nightly/d;/dask\/label\/dev/d' /opt/conda/.condarc; fi
@@ -28,15 +29,15 @@ ARG PYTHON_VER
 
 ENV RAPIDS_DIR=/rapids
 
-
-RUN mkdir -p ${RAPIDS_DIR}/utils ${GCC9_DIR}/lib64
-
 RUN yum install -y \
       openssh-clients \
       openmpi-devel \
       libnsl \
       && yum clean all
 
+
+
+RUN mkdir -p ${RAPIDS_DIR}/utils ${GCC9_DIR}/lib64
 
 
 RUN source activate rapids \

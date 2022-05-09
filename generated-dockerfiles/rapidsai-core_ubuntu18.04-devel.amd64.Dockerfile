@@ -20,6 +20,7 @@ ARG RAPIDS_VER
 ARG CUDA_VER
 ARG UCX_PY_VER
 ARG BUILD_BRANCH="branch-${RAPIDS_VER}"
+ARG LINUX_VER
 ENV RAPIDS_VER=$RAPIDS_VER
 
 RUN if [ "${BUILD_BRANCH}" = "main" ]; then sed -i '/nightly/d;/dask\/label\/dev/d' /opt/conda/.condarc; fi
@@ -28,19 +29,20 @@ ARG PYTHON_VER
 
 ENV RAPIDS_DIR=/rapids
 
-RUN apt-get update && apt-get install -y --no-install-recommends \
-    gsfonts \
-    && rm -rf /var/lib/apt/lists/*
 
-RUN mkdir -p ${RAPIDS_DIR}/utils 
-
-
-RUN apt-get update \
+RUN apt-key adv --fetch-keys "https://developer.download.nvidia.com/compute/cuda/repos/${LINUX_VER/./}/$(uname -p)/3bf863cc.pub" \
+    && apt-get update \
     && apt-get install --no-install-recommends -y \
       openssh-client \
       libopenmpi-dev \
       openmpi-bin \
     && rm -rf /var/lib/apt/lists/*
+
+RUN apt-get update && apt-get install -y --no-install-recommends \
+    gsfonts \
+    && rm -rf /var/lib/apt/lists/*
+
+RUN mkdir -p ${RAPIDS_DIR}/utils 
 
 
 RUN source activate rapids \
