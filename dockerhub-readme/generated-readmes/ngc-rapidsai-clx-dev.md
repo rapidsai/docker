@@ -1,6 +1,5 @@
-# [NIGHTLY] RAPIDS - Open GPU Data Science
+#  RAPIDS - Open GPU Data Science
 
-**IMPORTANT:** For our latest stable release please use the [rapidsai/rapidsai-clx-dev](https://hub.docker.com/r/rapidsai/rapidsai-clx-dev) containers.
 
 
 ## What is RAPIDS?
@@ -12,16 +11,11 @@ The RAPIDS suite of software libraries gives you the freedom to execute end-to-e
 **NOTE:** Review our prerequisites section below to ensure your system meets the minimum requirements for RAPIDS.
 
 
+### Current Version - RAPIDS v22.04
 
-## What are RAPIDS NIGHTLY images?
+Versions of libraries included in the `22.04` images:
+- `cuDF` [v22.04](https://github.com/rapidsai/cudf/tree/v22.04.00), `cuML` [v22.04](https://github.com/rapidsai/cuml/tree/v22.04.00), `cuGraph` [v22.04](https://github.com/rapidsai/cugraph/tree/v22.04.00), `RMM` [v22.04](https://github.com/rapidsai/RMM/tree/v22.04.00), `RAFT` [v22.04](https://github.com/rapidsai/raft/tree/v22.04.00), `cuSpatial` [v22.04](https://github.com/rapidsai/cuspatial/tree/v22.04.00), `cuSignal` [v22.04](https://github.com/rapidsai/cusignal/tree/v22.04.00), `cuxfilter` [v22.04](https://github.com/rapidsai/cuxfilter/tree/v22.04.00), `clx` [v22.04](https://github.com/rapidsai/clx/tree/v22.04.00)
 
-The `rapidsai/rapidsai-clx-dev-nightly` repo contains nightly docker builds of the latest WIP changes merged into GitHub repos throughout the day for the next RAPIDS release. These containers are generally considered unstable, and should only be used for development and testing. For our latest stable release, please use the [rapidsai/rapidsai-clx-dev](https://hub.docker.com/r/rapidsai/rapidsai-clx-dev) containers.
-
-### RAPIDS NIGHTLY v22.06a
-
-Versions of libraries included in the `22.06` images:
-- `cuDF` [v22.06.00a](https://github.com/rapidsai/cudf), `cuML` [v22.06.00a](https://github.com/rapidsai/cuml), `cuGraph` [v22.06.00a](https://github.com/rapidsai/cugraph), `RMM` [v22.06.00a](https://github.com/rapidsai/RMM), `RAFT` [v22.06.00a](https://github.com/rapidsai/raft), `cuSpatial` [v22.06.00a](https://github.com/rapidsai/cuspatial), `cuSignal` [v22.06.00a](https://github.com/rapidsai/cusignal), `cuxfilter` [v22.06.00a](https://github.com/rapidsai/cuxfilter), `clx` [v22.06](https://github.com/rapidsai/clx)
-- `xgboost` [branch](https://github.com/rapidsai/xgboost), `dask-cuda` [branch](https://github.com/rapidsai/dask-cuda)
 
 ### Image Types
 
@@ -30,14 +24,14 @@ images in order to make it easy to add RAPIDS libraries while maintaining suppor
 
 RAPIDS images come in three types, distributed in two different repos:
 
-The [rapidsai/rapidsai-clx-nightly](https://hub.docker.com/r/rapidsai/rapidsai-clx-nightly/tags) repo contains the following:
+The [rapidsai/rapidsai-clx](https://catalog.ngc.nvidia.com/orgs/nvidia/teams/rapidsai/containers/rapidsai-clx/tags) repo contains the following:
 
 - `base` - contains a RAPIDS environment ready for use.
   - **TIP: Use this image if you want to use RAPIDS as a part of your pipeline.**
 - `runtime` - extends the `base` image by adding a notebook server and example notebooks.
   - **TIP: Use this image if you want to explore RAPIDS through notebooks and examples.**
 
-This repo (rapidsai/rapidsai-clx-dev-nightly), contains the following:
+This repo (rapidsai/rapidsai-clx-dev), contains the following:
 - `devel` - contains the full RAPIDS source tree, pre-built with all artifacts in place, and the compiler toolchain, the debugging tools, the headers and the static libraries for RAPIDS development.
   - **TIP: Use this image to develop RAPIDS from source.**
 
@@ -45,7 +39,7 @@ This repo (rapidsai/rapidsai-clx-dev-nightly), contains the following:
 
 The tag naming scheme for RAPIDS images incorporates key platform details into the tag as shown below:
 ```
-22.06-cuda11.0-devel-ubuntu18.04-py3.8
+22.04-cuda11.0-devel-ubuntu18.04-py3.8
  ^       ^    ^        ^         ^
  |       |    type     |         python version
  |       |             |
@@ -69,16 +63,16 @@ The tag naming scheme for RAPIDS images incorporates key platform details into t
 
 #### Preferred - Docker CE v19+ and `nvidia-container-toolkit`
 ```bash
-$ docker pull rapidsai/rapidsai-clx-dev-nightly:22.06-cuda11.0-devel-ubuntu18.04-py3.8
+$ docker pull nvcr.io/nvidia/rapidsai/rapidsai-clx-dev:22.04-cuda11.0-devel-ubuntu18.04-py3.8
 $ docker run --gpus all --rm -it -p 8888:8888 -p 8787:8787 -p 8786:8786 \
-         rapidsai/rapidsai-clx-dev-nightly:22.06-cuda11.0-devel-ubuntu18.04-py3.8
+         nvcr.io/nvidia/rapidsai/rapidsai-clx-dev:22.04-cuda11.0-devel-ubuntu18.04-py3.8
 ```
 
 #### Legacy - Docker CE v18 and `nvidia-docker2`
 ```bash
-$ docker pull rapidsai/rapidsai-clx-dev-nightly:22.06-cuda11.0-devel-ubuntu18.04-py3.8
+$ docker pull nvcr.io/nvidia/rapidsai/rapidsai-clx-dev:22.04-cuda11.0-devel-ubuntu18.04-py3.8
 $ docker run --runtime=nvidia --rm -it -p 8888:8888 -p 8787:8787 -p 8786:8786 \
-         rapidsai/rapidsai-clx-dev-nightly:22.06-cuda11.0-devel-ubuntu18.04-py3.8
+         nvcr.io/nvidia/rapidsai/rapidsai-clx-dev:22.04-cuda11.0-devel-ubuntu18.04-py3.8
 ```
 
 ### Container Ports
@@ -117,7 +111,7 @@ $ docker run \
     -p 8888:8888 \
     -p 8787:8787 \
     -p 8786:8786 \
-    rapidsai/rapidsai-clx-dev-nightly:22.06-cuda11.0-devel-ubuntu18.04-py3.8
+    nvcr.io/nvidia/rapidsai/rapidsai-clx-dev:22.04-cuda11.0-devel-ubuntu18.04-py3.8
 ```
 
 ### Bind Mounts
@@ -140,12 +134,12 @@ $ docker run \
     -it \
     --gpus all \
     -v $(pwd)/environment.yml:/opt/rapids/environment.yml \
-    rapidsai/rapidsai-clx-dev-nightly:22.06-cuda11.0-devel-ubuntu18.04-py3.8
+    nvcr.io/nvidia/rapidsai/rapidsai-clx-dev:22.04-cuda11.0-devel-ubuntu18.04-py3.8
 ```
 
 ### Use JupyterLab to Explore the Notebooks
 
-Notebooks can be found in the following directories within the 22.06 container :
+Notebooks can be found in the following directories within the 22.04 container :
 
 * `/rapids/notebooks/clx` - CLX demo notebooks
 * `/rapids/notebooks/cugraph` - cuGraph demo notebooks
@@ -155,7 +149,7 @@ Notebooks can be found in the following directories within the 22.06 container :
 * `/rapids/notebooks/cuspatial` - cuSpatial demo notebooks
 * `/rapids/notebooks/xgboost` - XGBoost demo notebooks
 
-For a full description of each notebook, see the [README](https://github.com/rapidsai/notebooks/blob/branch-22.06/README.md) in the notebooks repository.
+For a full description of each notebook, see the [README](https://github.com/rapidsai/notebooks/blob/branch-22.04/README.md) in the notebooks repository.
 
 ### Extending RAPIDS Images
 
@@ -169,14 +163,14 @@ You are free to modify the above steps. For example, you can launch an interacti
 ```bash
 $ docker run --gpus all --rm -it -p 8888:8888 -p 8787:8787 -p 8786:8786 \
          -v /path/to/host/data:/rapids/my_data \
-         rapidsai/rapidsai-clx-dev-nightly:22.06-cuda11.0-devel-ubuntu18.04-py3.8
+         nvcr.io/nvidia/rapidsai/rapidsai-clx-dev:22.04-cuda11.0-devel-ubuntu18.04-py3.8
 ```
 
 #### Legacy - Docker CE v18 and `nvidia-docker2`
 ```bash
 $ docker run --runtime=nvidia --rm -it -p 8888:8888 -p 8787:8787 -p 8786:8786 \
          -v /path/to/host/data:/rapids/my_data \
-         rapidsai/rapidsai-clx-dev-nightly:22.06-cuda11.0-devel-ubuntu18.04-py3.8
+         nvcr.io/nvidia/rapidsai/rapidsai-clx-dev:22.04-cuda11.0-devel-ubuntu18.04-py3.8
 ```
 This will map data from your host operating system to the container OS in the `/rapids/my_data` directory. You may need to modify the provided notebooks for the new data paths.
 
@@ -205,3 +199,7 @@ Please submit issues with the container to this GitHub repository: [https://gith
 For issues with RAPIDS libraries like cuDF, cuML, RMM, or others file an issue in the related GitHub project.
 
 Additional help can be found on [Stack Overflow](https://stackoverflow.com/tags/rapids) or [Google Groups](https://groups.google.com/forum/#!forum/rapidsai).
+
+# License
+
+By pulling and using the container, you accept the terms and conditions of this [End User License Agreement](https://developer.download.nvidia.com/licenses/NVIDIA_Deep_Learning_Container_License.pdf).
