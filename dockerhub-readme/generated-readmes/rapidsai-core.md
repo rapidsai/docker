@@ -25,6 +25,7 @@ images in order to make it easy to add RAPIDS libraries while maintaining suppor
 RAPIDS images come in three types, distributed in two different repos:
 
 This repo (rapidsai-core), contains the following:
+
 - `base` - contains a RAPIDS environment ready for use.
   - **TIP: Use this image if you want to use RAPIDS as a part of your pipeline.**
 - `runtime` - extends the `base` image by adding a notebook server and example notebooks.
