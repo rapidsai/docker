@@ -26,7 +26,12 @@ OUTPUT_READMES = [
     "rapidsai-clx-nightly",
     "rapidsai-clx-dev",
     "rapidsai-clx-dev-nightly",
-    "ngc",
+    "ngc-rapidsai-core",
+    "ngc-rapidsai-core-dev",
+    "ngc-rapidsai",
+    "ngc-rapidsai-dev",
+    "ngc-rapidsai-clx",
+    "ngc-rapidsai-clx-dev",
 ]
 
 
@@ -62,7 +67,7 @@ def main(nightly_version, stable_version, settings):
     template = env.get_template("base.md.j2")
     for output_file in OUTPUT_READMES:
         jinja_vars = {}
-        jinja_vars["repo_name"] = "rapidsai" if output_file == "ngc" else output_file
+        jinja_vars["repo_name"] = output_file.replace('ngc-','')
         jinja_vars["is_nightly"] = "nightly" in output_file
         jinja_vars["is_stable"] = not jinja_vars["is_nightly"]
         jinja_vars["is_devel"] = "dev" in output_file

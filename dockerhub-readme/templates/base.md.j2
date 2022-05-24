@@ -40,41 +40,34 @@ Versions of libraries included in the `{{ nightly_version }}` images:
 The RAPIDS images are based on [nvidia/cuda](https://hub.docker.com/r/nvidia/cuda), and are intended to be drop-in replacements for the corresponding CUDA
 images in order to make it easy to add RAPIDS libraries while maintaining support for existing CUDA applications.
 
-{% if is_ngc %}
-The RAPIDS images provided by NGC come in two types:
-{% else %}
 RAPIDS images come in three types, distributed in two different repos:
 
-  {% if is_br %}
+{% if is_br %}
 This repo ({{ repo_name }}), contains the following:
-  {% elif is_devel %}
-The [rapidsai/{{ repo_name | devel2br }}](https://hub.docker.com/r/rapidsai/{{ repo_name | devel2br }}/tags) repo contains the following:
-  {% endif %}
+{% elif is_devel %}
+The [rapidsai/{{ repo_name | devel2br }}]({% if not is_ngc %}https://hub.docker.com/r/rapidsai/{{ repo_name | devel2br }}/tags{% else %}https://catalog.ngc.nvidia.com/orgs/nvidia/teams/rapidsai/containers/{{ repo_name | devel2br }}/tags{% endif %}) repo contains the following:
 {% endif %}
+
 - `base` - contains a RAPIDS environment ready for use.
   - **TIP: Use this image if you want to use RAPIDS as a part of your pipeline.**
 - `runtime` - extends the `base` image by adding a notebook server and example notebooks.
   - **TIP: Use this image if you want to explore RAPIDS through notebooks and examples.**
 
-{% if is_ngc %}
-For `devel` images that contain: the full RAPIDS source tree, pre-built with all artifacts in place, the compiler toolchain, the debugging tools, the headers and the static libraries for RAPIDS development refer to the [rapidsai/rapidsai-dev](https://hub.docker.com/repository/docker/rapidsai/rapidsai-dev) repo on DockerHub.
-{% else %}
-  {% if is_devel %}
+{% if is_devel %}
 This repo (rapidsai/{{ repo_name }}), contains the following:
-  {% elif is_br %}
-The [rapidsai/{{ repo_name | br2devel }}](https://hub.docker.com/r/rapidsai/{{ repo_name | br2devel }}/tags) repo contains the following:
-  {% endif %}
+{% elif is_br %}
+The [rapidsai/{{ repo_name | br2devel }}]({% if not is_ngc %}https://hub.docker.com/r/rapidsai/{{ repo_name | br2devel }}/tags{% else %}https://catalog.ngc.nvidia.com/orgs/nvidia/teams/rapidsai/containers/{{ repo_name | br2devel }}/tags{% endif %}) repo contains the following:
+{% endif %}
 - `devel` - contains the full RAPIDS source tree, pre-built with all artifacts in place, and the compiler toolchain, the debugging tools, the headers and the static libraries for RAPIDS development.
   - **TIP: Use this image to develop RAPIDS from source.**
-{% endif %}
 
 ### Image Tag Naming Scheme
 
 The tag naming scheme for RAPIDS images incorporates key platform details into the tag as shown below:
 ```
-{{ repo_rapids_version }}-cuda{{ DEFAULT_CUDA_VERSION }}-{{ repo_default_img_type }}-ubuntu18.04{{ "-py"+DEFAULT_PYTHON_VERSION if not is_ngc }}
- ^       ^    ^        ^         {{ "^" if not is_ngc }}
- |       |    type     |         {{ "python version" if not is_ngc }}
+{{ repo_rapids_version }}-cuda{{ DEFAULT_CUDA_VERSION }}-{{ repo_default_img_type }}-ubuntu18.04-py{{DEFAULT_PYTHON_VERSION }}
+ ^       ^    ^        ^         ^
+ |       |    type     |         python version
  |       |             |
  |       cuda version  |
  |                     |
