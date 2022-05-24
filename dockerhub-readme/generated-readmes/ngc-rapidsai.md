@@ -14,7 +14,7 @@ The RAPIDS suite of software libraries gives you the freedom to execute end-to-e
 ### Current Version - RAPIDS v22.04
 
 Versions of libraries included in the `22.04` images:
-- `cuDF` [v22.04](https://github.com/rapidsai/cudf/tree/v22.04.00), `cuML` [v22.04](https://github.com/rapidsai/cuml/tree/v22.04.00), `cuGraph` [v22.04](https://github.com/rapidsai/cugraph/tree/v22.04.00), `RMM` [v22.04](https://github.com/rapidsai/RMM/tree/v22.04.00), `RAFT` [v22.04](https://github.com/rapidsai/raft/tree/v22.04.00), `cuSpatial` [v22.04](https://github.com/rapidsai/cuspatial/tree/v22.04.00), `cuSignal` [v22.04](https://github.com/rapidsai/cusignal/tree/v22.04.00), `cuxfilter` [v22.04](https://github.com/rapidsai/cuxfilter/tree/v22.04.00)
+- `cuDF` [v22.04](https://github.com/rapidsai/cudf/tree/v22.04.00), `cuML` [v22.04](https://github.com/rapidsai/cuml/tree/v22.04.00), `cuGraph` [v22.04](https://github.com/rapidsai/cugraph/tree/v22.04.00), `RMM` [v22.04](https://github.com/rapidsai/RMM/tree/v22.04.00), `RAFT` [v22.04](https://github.com/rapidsai/raft/tree/v22.04.00), `cuSpatial` [v22.04](https://github.com/rapidsai/cuspatial/tree/v22.04.00), `cuSignal` [v22.04](https://github.com/rapidsai/cusignal/tree/v22.04.00), `cuxfilter` [v22.04](https://github.com/rapidsai/cuxfilter/tree/v22.04.00), `dask-sql` [2022.4.1](https://github.com/dask-contrib/dask-sql/tree/2022.4.1)
 
 
 ### Image Types
@@ -58,7 +58,7 @@ Many users do not need a specific platform combination but would like to ensure 
 ## Prerequisites
 
 - NVIDIA Pascal™ GPU architecture or better
-- CUDA [10.1/10.2/11.0/11.2](https://developer.nvidia.com/cuda-downloads) with a compatible NVIDIA driver
+- CUDA [11.0/11.2/11.4/11.5](https://developer.nvidia.com/cuda-downloads) with a compatible NVIDIA driver
 - Ubuntu 18.04/20.04 or CentOS 7/8
 - Docker CE v18+
 - [nvidia-container-toolkit](https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/install-guide.html#docker)
@@ -69,16 +69,16 @@ Many users do not need a specific platform combination but would like to ensure 
 
 #### Preferred - Docker CE v19+ and `nvidia-container-toolkit`
 ```bash
-$ docker pull nvcr.io/nvidia/rapidsai/rapidsai:22.04-cuda11.0-runtime-ubuntu18.04
+$ docker pull nvcr.io/nvidia/rapidsai/rapidsai:22.04-cuda11.0-runtime-ubuntu18.04-py3.8
 $ docker run --gpus all --rm -it -p 8888:8888 -p 8787:8787 -p 8786:8786 \
-         nvcr.io/nvidia/rapidsai/rapidsai:22.04-cuda11.0-runtime-ubuntu18.04
+         nvcr.io/nvidia/rapidsai/rapidsai:22.04-cuda11.0-runtime-ubuntu18.04-py3.8
 ```
 
 #### Legacy - Docker CE v18 and `nvidia-docker2`
 ```bash
-$ docker pull nvcr.io/nvidia/rapidsai/rapidsai:22.04-cuda11.0-runtime-ubuntu18.04
+$ docker pull nvcr.io/nvidia/rapidsai/rapidsai:22.04-cuda11.0-runtime-ubuntu18.04-py3.8
 $ docker run --runtime=nvidia --rm -it -p 8888:8888 -p 8787:8787 -p 8786:8786 \
-         nvcr.io/nvidia/rapidsai/rapidsai:22.04-cuda11.0-runtime-ubuntu18.04
+         nvcr.io/nvidia/rapidsai/rapidsai:22.04-cuda11.0-runtime-ubuntu18.04-py3.8
 ```
 
 ### Container Ports
@@ -117,7 +117,7 @@ $ docker run \
     -p 8888:8888 \
     -p 8787:8787 \
     -p 8786:8786 \
-    nvcr.io/nvidia/rapidsai/rapidsai:22.04-cuda11.0-runtime-ubuntu18.04
+    nvcr.io/nvidia/rapidsai/rapidsai:22.04-cuda11.0-runtime-ubuntu18.04-py3.8
 ```
 
 ### Bind Mounts
@@ -140,7 +140,7 @@ $ docker run \
     -it \
     --gpus all \
     -v $(pwd)/environment.yml:/opt/rapids/environment.yml \
-    nvcr.io/nvidia/rapidsai/rapidsai:22.04-cuda11.0-runtime-ubuntu18.04
+    nvcr.io/nvidia/rapidsai/rapidsai:22.04-cuda11.0-runtime-ubuntu18.04-py3.8
 ```
 
 ### Use JupyterLab to Explore the Notebooks
@@ -169,14 +169,14 @@ You are free to modify the above steps. For example, you can launch an interacti
 ```bash
 $ docker run --gpus all --rm -it -p 8888:8888 -p 8787:8787 -p 8786:8786 \
          -v /path/to/host/data:/rapids/my_data \
-                  nvcr.io/nvidia/rapidsai/rapidsai:22.04-cuda11.0-runtime-ubuntu18.04
+         nvcr.io/nvidia/rapidsai/rapidsai:22.04-cuda11.0-runtime-ubuntu18.04-py3.8
 ```
 
 #### Legacy - Docker CE v18 and `nvidia-docker2`
 ```bash
 $ docker run --runtime=nvidia --rm -it -p 8888:8888 -p 8787:8787 -p 8786:8786 \
          -v /path/to/host/data:/rapids/my_data \
-                  nvcr.io/nvidia/rapidsai/rapidsai:22.04-cuda11.0-runtime-ubuntu18.04
+         nvcr.io/nvidia/rapidsai/rapidsai:22.04-cuda11.0-runtime-ubuntu18.04-py3.8
 ```
 This will map data from your host operating system to the container OS in the `/rapids/my_data` directory. You may need to modify the provided notebooks for the new data paths.
 

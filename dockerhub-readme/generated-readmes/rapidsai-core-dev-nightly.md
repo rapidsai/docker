@@ -58,7 +58,7 @@ The tag naming scheme for RAPIDS images incorporates key platform details into t
 ## Prerequisites
 
 - NVIDIA Pascal™ GPU architecture or better
-- CUDA [10.1/10.2/11.0/11.2](https://developer.nvidia.com/cuda-downloads) with a compatible NVIDIA driver
+- CUDA [11.0/11.2/11.4/11.5](https://developer.nvidia.com/cuda-downloads) with a compatible NVIDIA driver
 - Ubuntu 18.04/20.04 or CentOS 7/8
 - Docker CE v18+
 - [nvidia-container-toolkit](https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/install-guide.html#docker)
@@ -169,14 +169,14 @@ You are free to modify the above steps. For example, you can launch an interacti
 ```bash
 $ docker run --gpus all --rm -it -p 8888:8888 -p 8787:8787 -p 8786:8786 \
          -v /path/to/host/data:/rapids/my_data \
-                  rapidsai/rapidsai-core-dev-nightly:22.06-cuda11.0-devel-ubuntu18.04-py3.8
+         rapidsai/rapidsai-core-dev-nightly:22.06-cuda11.0-devel-ubuntu18.04-py3.8
 ```
 
 #### Legacy - Docker CE v18 and `nvidia-docker2`
 ```bash
 $ docker run --runtime=nvidia --rm -it -p 8888:8888 -p 8787:8787 -p 8786:8786 \
          -v /path/to/host/data:/rapids/my_data \
-                  rapidsai/rapidsai-core-dev-nightly:22.06-cuda11.0-devel-ubuntu18.04-py3.8
+         rapidsai/rapidsai-core-dev-nightly:22.06-cuda11.0-devel-ubuntu18.04-py3.8
 ```
 This will map data from your host operating system to the container OS in the `/rapids/my_data` directory. You may need to modify the provided notebooks for the new data paths.
 
