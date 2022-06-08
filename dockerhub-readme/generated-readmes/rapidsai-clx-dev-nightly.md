@@ -45,7 +45,7 @@ This repo (rapidsai/rapidsai-clx-dev-nightly), contains the following:
 
 The tag naming scheme for RAPIDS images incorporates key platform details into the tag as shown below:
 ```
-22.08-cuda11.0-devel-ubuntu18.04-py3.8
+22.08-cuda11.5-devel-ubuntu18.04-py3.9
  ^       ^    ^        ^         ^
  |       |    type     |         python version
  |       |             |
@@ -69,16 +69,16 @@ The tag naming scheme for RAPIDS images incorporates key platform details into t
 
 #### Preferred - Docker CE v19+ and `nvidia-container-toolkit`
 ```bash
-$ docker pull rapidsai/rapidsai-clx-dev-nightly:22.08-cuda11.0-devel-ubuntu18.04-py3.8
+$ docker pull rapidsai/rapidsai-clx-dev-nightly:22.08-cuda11.5-devel-ubuntu18.04-py3.9
 $ docker run --gpus all --rm -it -p 8888:8888 -p 8787:8787 -p 8786:8786 \
-         rapidsai/rapidsai-clx-dev-nightly:22.08-cuda11.0-devel-ubuntu18.04-py3.8
+         rapidsai/rapidsai-clx-dev-nightly:22.08-cuda11.5-devel-ubuntu18.04-py3.9
 ```
 
 #### Legacy - Docker CE v18 and `nvidia-docker2`
 ```bash
-$ docker pull rapidsai/rapidsai-clx-dev-nightly:22.08-cuda11.0-devel-ubuntu18.04-py3.8
+$ docker pull rapidsai/rapidsai-clx-dev-nightly:22.08-cuda11.5-devel-ubuntu18.04-py3.9
 $ docker run --runtime=nvidia --rm -it -p 8888:8888 -p 8787:8787 -p 8786:8786 \
-         rapidsai/rapidsai-clx-dev-nightly:22.08-cuda11.0-devel-ubuntu18.04-py3.8
+         rapidsai/rapidsai-clx-dev-nightly:22.08-cuda11.5-devel-ubuntu18.04-py3.9
 ```
 
 ### Container Ports
@@ -117,7 +117,7 @@ $ docker run \
     -p 8888:8888 \
     -p 8787:8787 \
     -p 8786:8786 \
-    rapidsai/rapidsai-clx-dev-nightly:22.08-cuda11.0-devel-ubuntu18.04-py3.8
+    rapidsai/rapidsai-clx-dev-nightly:22.08-cuda11.5-devel-ubuntu18.04-py3.9
 ```
 
 ### Bind Mounts
@@ -140,7 +140,7 @@ $ docker run \
     -it \
     --gpus all \
     -v $(pwd)/environment.yml:/opt/rapids/environment.yml \
-    rapidsai/rapidsai-clx-dev-nightly:22.08-cuda11.0-devel-ubuntu18.04-py3.8
+    rapidsai/rapidsai-clx-dev-nightly:22.08-cuda11.5-devel-ubuntu18.04-py3.9
 ```
 
 ### Use JupyterLab to Explore the Notebooks
@@ -169,14 +169,14 @@ You are free to modify the above steps. For example, you can launch an interacti
 ```bash
 $ docker run --gpus all --rm -it -p 8888:8888 -p 8787:8787 -p 8786:8786 \
          -v /path/to/host/data:/rapids/my_data \
-         rapidsai/rapidsai-clx-dev-nightly:22.08-cuda11.0-devel-ubuntu18.04-py3.8
+         rapidsai/rapidsai-clx-dev-nightly:22.08-cuda11.5-devel-ubuntu18.04-py3.9
 ```
 
 #### Legacy - Docker CE v18 and `nvidia-docker2`
 ```bash
 $ docker run --runtime=nvidia --rm -it -p 8888:8888 -p 8787:8787 -p 8786:8786 \
          -v /path/to/host/data:/rapids/my_data \
-         rapidsai/rapidsai-clx-dev-nightly:22.08-cuda11.0-devel-ubuntu18.04-py3.8
+         rapidsai/rapidsai-clx-dev-nightly:22.08-cuda11.5-devel-ubuntu18.04-py3.9
 ```
 This will map data from your host operating system to the container OS in the `/rapids/my_data` directory. You may need to modify the provided notebooks for the new data paths.
 
