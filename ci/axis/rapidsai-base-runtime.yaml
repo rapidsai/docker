@@ -13,7 +13,7 @@ RAPIDS_VER:
   - '22.06'
 
 DASK_SQL_VER:
-  - '2022.05.2'
+  - '2022.6.0'
 
 CUDA_VER:
   - 11.5
