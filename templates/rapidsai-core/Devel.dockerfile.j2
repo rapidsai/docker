@@ -152,7 +152,7 @@ RUN cd ${RAPIDS_DIR}/{{ lib.name }} && \
 {% endfor %}
 
 
-{% if ( "rocky" in os or "centos" in os ) in os %}
+{% if ( "rocky" in os or "centos" in os ) %}
 {# Change LD_LIBRARY_PATH to exclude /usr/local/cuda/* since
 numba.cuda cannot load that, and instead have it load
 /lib64/libcuda.so instead #}
