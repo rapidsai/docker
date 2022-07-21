@@ -4,7 +4,7 @@
 RUN source activate rapids \
     && npm i -g npm@">=7.0"
 
-{% if "centos" in os %}
+{% if ( "rocky" in os or "centos" in os ) %}
 RUN yum -y upgrade \
     && yum clean all
 {% else %}
