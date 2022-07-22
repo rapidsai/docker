@@ -1,4 +1,4 @@
-# RAPIDS Dockerfile for centos8 "runtime" image
+# RAPIDS Dockerfile for rockylinux8 "runtime" image
 #
 # runtime: RAPIDS is installed from published conda packages to the 'rapids'
 # conda environment. RAPIDS jupyter notebooks are also provided, as well as
@@ -7,7 +7,7 @@
 # Copyright (c) 2022, NVIDIA CORPORATION.
 
 ARG CUDA_VER=11.5
-ARG LINUX_VER=centos8
+ARG LINUX_VER=rockylinux8
 ARG PYTHON_VER=3.9
 ARG RAPIDS_VER=22.08
 ARG FROM_IMAGE=rapidsai/rapidsai-core
