@@ -36,7 +36,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     && rm -rf /var/lib/apt/lists/*
 {% endif %}
 
-RUN mkdir -p ${RAPIDS_DIR}/utils {{ "${GCC9_DIR}/lib64" if ( "rocky" in os or "centos" in os ) }}
+RUN mkdir -p ${RAPIDS_DIR}/utils
 
 {% include 'partials/os_pkgs.dockerfile.j2' %}
 
