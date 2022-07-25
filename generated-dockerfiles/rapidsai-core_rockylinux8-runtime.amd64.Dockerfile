@@ -24,7 +24,7 @@ RUN if [ "${BUILD_BRANCH}" = "main" ]; then sed -i '/nightly/d;/dask\/label\/dev
 
 ENV RAPIDS_DIR=/rapids
 
-RUN mkdir -p ${RAPIDS_DIR}/utils ${GCC9_DIR}/lib64
+RUN mkdir -p ${RAPIDS_DIR}/utils
 
 RUN yum install -y \
       openssh-clients \

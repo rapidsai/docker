@@ -23,7 +23,7 @@ RUN if [ "${BUILD_BRANCH}" = "main" ]; then sed -i '/nightly/d;/dask\/label\/dev
 
 ENV RAPIDS_DIR=/rapids
 
-RUN mkdir -p ${RAPIDS_DIR}/utils 
+RUN mkdir -p ${RAPIDS_DIR}/utils
 
 
 RUN apt-get update \

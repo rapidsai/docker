@@ -29,7 +29,7 @@ ARG PYTHON_VER
 ENV RAPIDS_DIR=/rapids
 
 
-RUN mkdir -p ${RAPIDS_DIR}/utils ${GCC9_DIR}/lib64
+RUN mkdir -p ${RAPIDS_DIR}/utils
 
 RUN yum install -y \
       openssh-clients \
