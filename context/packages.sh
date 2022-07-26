@@ -12,7 +12,7 @@ if [ "$EXTRA_APT_PACKAGES" ]; then
 fi
 
 if [ "$EXTRA_YUM_PACKAGES" ]; then
-    if ((! grep -i "centos" /etc/os-release > /dev/null ) or (! grep -i "rocky" /etc/os-release > /dev/null )); then
+    if ! grep -iE "centos|rocky" /etc/os-release > /dev/null; then
       echo "EXTRA_YUM_PACKAGES var provided in a non-Centos environment."
       echo "Exiting..."
       exit 1
