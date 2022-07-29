@@ -36,7 +36,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     && rm -rf /var/lib/apt/lists/*
 {% endif %}
 
-RUN mkdir -p ${RAPIDS_DIR}/utils {{ "${GCC9_DIR}/lib64" if "centos" in os }}
+RUN mkdir -p ${RAPIDS_DIR}/utils
 
 {% include 'partials/os_pkgs.dockerfile.j2' %}
 
@@ -86,7 +86,7 @@ RUN cd ${RAPIDS_DIR} \
   {{ "&& cd ${RAPIDS_DIR} \\" if not loop.last }}
 {% endfor %}
 
-{% if "centos" in os %}
+{% if ( "rocky" in os or "centos" in os ) %}
 {# Add /usr/local/cuda/* temporarily to LD_LIBRARY_PATH to support various build steps
 This will need to be removed later since it causes problems with certain runtime libs (numba.cuda) #}
 ENV LD_LIBRARY_PATH_PREBUILD=${LD_LIBRARY_PATH}
@@ -152,7 +152,7 @@ RUN cd ${RAPIDS_DIR}/{{ lib.name }} && \
 {% endfor %}
 
 
-{% if "centos" in os %}
+{% if ( "rocky" in os or "centos" in os ) %}
 {# Change LD_LIBRARY_PATH to exclude /usr/local/cuda/* since
 numba.cuda cannot load that, and instead have it load
 /lib64/libcuda.so instead #}

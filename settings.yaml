@@ -12,7 +12,7 @@ ARCHS:
   - name: amd64
     os_list:
       - centos7
-      - centos8
+      - rockylinux8
       - ubuntu18.04
       - ubuntu20.04
     images:
@@ -21,7 +21,7 @@ ARCHS:
       - rapidsai-clx
   - name: arm64
     os_list:
-      - centos8
+      - rockylinux8
       - ubuntu18.04
       - ubuntu20.04
     images:

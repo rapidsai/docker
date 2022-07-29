@@ -32,7 +32,7 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
     gsfonts \
     && rm -rf /var/lib/apt/lists/*
 
-RUN mkdir -p ${RAPIDS_DIR}/utils 
+RUN mkdir -p ${RAPIDS_DIR}/utils
 
 
 RUN apt-get update \

@@ -25,7 +25,7 @@ LINUX_VER:
   - ubuntu18.04
   - ubuntu20.04
   - centos7
-  - centos8
+  - rockylinux8
 
 PYTHON_VER:
   - 3.8
