@@ -10,6 +10,7 @@ IMAGE_TYPE:
   - runtime
 
 RAPIDS_VER:
+  - '22.10'
   - '22.08'
 
 CUDA_VER:
@@ -28,4 +29,6 @@ PYTHON_VER:
 
 exclude:
   - RAPIDS_VER: '22.08'
+    BUILD_IMAGE: rapidsai/rapidsai-core-arm64
+  - RAPIDS_VER: '22.10'
     BUILD_IMAGE: rapidsai/rapidsai-core-arm64
