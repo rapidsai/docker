@@ -176,7 +176,7 @@ RUN cd ${RAPIDS_DIR}/raft && \
 
 RUN cd ${RAPIDS_DIR}/cudf && \
   source activate rapids && \
-  ./build.sh --allgpuarch libcudf cudf dask_cudf libcudf_kafka cudf_kafka tests
+  ./build.sh --allgpuarch libcudf cudf dask_cudf libcudf_kafka cudf_kafka tests --cmake-args=\"-DCUDF_ENABLE_ARROW_S3=ON\"
 
 RUN cd ${RAPIDS_DIR}/cusignal && \
   source activate rapids && \
