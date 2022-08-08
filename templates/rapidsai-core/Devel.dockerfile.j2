@@ -112,7 +112,7 @@ RUN cd ${RAPIDS_DIR}/{{ lib.name }} && \
   python setup.py install
 
   {% elif lib.name == "cudf" %}
-  ./build.sh --allgpuarch libcudf cudf dask_cudf libcudf_kafka cudf_kafka tests
+  ./build.sh --allgpuarch libcudf cudf dask_cudf libcudf_kafka cudf_kafka tests --cmake-args=\"-DCUDF_ENABLE_ARROW_S3=ON\"
 
   {% elif lib.name == "cuspatial" %}
   export CUSPATIAL_HOME="$PWD" && \
