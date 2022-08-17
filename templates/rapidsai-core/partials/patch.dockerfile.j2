@@ -1,8 +1,12 @@
 {# This partial is used to install patches to resolve known CVEs #}
 
 {# Patch for CVE-2020-8116 https://github.com/advisories/GHSA-ff7x-qrg7-qggm #}
+{# Patch for CVE-2022-34749 https://github.com/advisories/GHSA-fw3v-x4f2-v673 #}
+{# Patch for CVE-2020-15123 https://nvd.nist.gov/vuln/detail/CVE-2020-15123 #}
 RUN source activate rapids \
     && npm i -g npm@">=7.0"
+    && npm i -g codecov@">=3.7.1"
+    && conda install mistune=2.0.3
 
 {% if ( "rocky" in os or "centos" in os ) %}
 RUN yum -y upgrade \
