@@ -21,6 +21,7 @@ ARG RAPIDS_VER
 ARG CUDA_VER
 ARG UCX_PY_VER
 ARG BUILD_BRANCH="branch-${RAPIDS_VER}"
+ARG LINUX_VER
 ENV RAPIDS_VER=$RAPIDS_VER
 
 RUN if [ "${BUILD_BRANCH}" = "main" ]; then sed -i '/nightly/d;/dask\/label\/dev/d' /opt/conda/.condarc; fi
@@ -28,6 +29,8 @@ RUN if [ "${BUILD_BRANCH}" = "main" ]; then sed -i '/nightly/d;/dask\/label\/dev
 ARG PYTHON_VER
 
 ENV RAPIDS_DIR=/rapids
+
+{% include 'partials/os_pkgs.dockerfile.j2' %}
 
 {% if "ubuntu" in os %}
 {# gsfonts is used to correctly render fonts in doxygen/graphviz diagrams #}
@@ -37,8 +40,6 @@ RUN apt-get update && apt-get install -y --no-install-recommends \
 {% endif %}
 
 RUN mkdir -p ${RAPIDS_DIR}/utils
-
-{% include 'partials/os_pkgs.dockerfile.j2' %}
 
 {# Install dependencies needed for devel: build deps + RAPIDS runtime deps +
 notebook deps. This is done as a single install to ensure compatibility

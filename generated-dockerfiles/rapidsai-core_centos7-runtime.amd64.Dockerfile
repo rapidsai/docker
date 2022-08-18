@@ -18,6 +18,7 @@ ARG CUDA_VER
 ARG DASK_XGBOOST_VER=0.2*
 ARG RAPIDS_VER
 ARG BUILD_BRANCH="branch-${RAPIDS_VER}"
+ARG LINUX_VER
 ENV RAPIDS_VER=$RAPIDS_VER
 
 RUN if [ "${BUILD_BRANCH}" = "main" ]; then sed -i '/nightly/d;/dask\/label\/dev/d' /opt/conda/.condarc; fi
