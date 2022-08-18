@@ -9,7 +9,6 @@ IMAGE_TYPE:
   - devel
 
 RAPIDS_VER:
-  - '22.10'
   - '22.08'
 
 CUDA_VER:
@@ -27,6 +26,4 @@ PYTHON_VER:
 
 exclude:
   - RAPIDS_VER: '22.08'
-    BUILD_IMAGE: rapidsai/rapidsai-core-dev
-  - RAPIDS_VER: '22.10'
-    BUILD_IMAGE: rapidsai/rapidsai-core-dev
+    BUILD_IMAGE: rapidsai/rapidsai-core-dev-nightly
