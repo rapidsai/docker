@@ -6,7 +6,7 @@
 RUN source activate rapids \
     && npm i -g npm@">=7.0"
     && npm i -g codecov@">=3.7.1"
-    && conda install mistune>=2.0.3
+    && conda install "mistune>=2.0.3"
 
 {% if ( "rocky" in os or "centos" in os ) %}
 RUN yum -y upgrade \
