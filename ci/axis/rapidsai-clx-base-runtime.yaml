@@ -10,7 +10,7 @@ IMAGE_TYPE:
   - runtime
 
 RAPIDS_VER:
-  - '22.06'
+  - '22.08'
 
 CUDA_VER:
   - 11.5
@@ -22,12 +22,12 @@ LINUX_VER:
   - ubuntu18.04
   - ubuntu20.04
   - centos7
-  - centos8
+  - rockylinux8
 
 PYTHON_VER:
   - 3.8
   - 3.9
 
 exclude:
-  - RAPIDS_VER: '22.06'
+  - RAPIDS_VER: '22.08'
     BUILD_IMAGE: rapidsai/rapidsai-clx-nightly

@@ -26,7 +26,7 @@ RUN if [ "${BUILD_BRANCH}" = "main" ]; then sed -i '/nightly/d;/dask\/label\/dev
 ENV RAPIDS_DIR=/rapids
 
 {# Copy files needed by RAPIDS and 3rd parties for builds, test, and runtime. #}
-RUN mkdir -p ${RAPIDS_DIR}/utils {{ "${GCC9_DIR}/lib64" if "centos" in os }}
+RUN mkdir -p ${RAPIDS_DIR}/utils
 
 {% include 'partials/os_pkgs.dockerfile.j2' %}
 

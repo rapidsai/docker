@@ -1,4 +1,4 @@
-{% if "centos" in os %}
+{% if ( "rocky" in os or "centos" in os ) %}
 RUN yum install -y \
       openssh-clients \
       openmpi-devel \

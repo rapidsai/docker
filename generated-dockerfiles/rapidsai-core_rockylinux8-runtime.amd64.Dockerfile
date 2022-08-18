@@ -1,4 +1,4 @@
-# RAPIDS Dockerfile for centos8 "runtime" image
+# RAPIDS Dockerfile for rockylinux8 "runtime" image
 #
 # runtime: RAPIDS is installed from published conda packages to the 'rapids'
 # conda environment. RAPIDS jupyter notebooks are also provided, as well as
@@ -6,10 +6,10 @@
 #
 # Copyright (c) 2022, NVIDIA CORPORATION.
 
-ARG CUDA_VER=11.0
-ARG LINUX_VER=centos8
-ARG PYTHON_VER=3.8
-ARG RAPIDS_VER=22.06
+ARG CUDA_VER=11.5
+ARG LINUX_VER=rockylinux8
+ARG PYTHON_VER=3.9
+ARG RAPIDS_VER=22.08
 ARG FROM_IMAGE=gpuci/rapidsai
 
 FROM ${FROM_IMAGE}:${RAPIDS_VER}-cuda${CUDA_VER}-runtime-${LINUX_VER}-py${PYTHON_VER}
@@ -25,7 +25,7 @@ RUN if [ "${BUILD_BRANCH}" = "main" ]; then sed -i '/nightly/d;/dask\/label\/dev
 
 ENV RAPIDS_DIR=/rapids
 
-RUN mkdir -p ${RAPIDS_DIR}/utils ${GCC9_DIR}/lib64
+RUN mkdir -p ${RAPIDS_DIR}/utils
 
 RUN yum install -y \
       openssh-clients \
@@ -45,7 +45,10 @@ RUN gpuci_mamba_retry install -y -n rapids \
 
 
 RUN source activate rapids \
-    && npm i -g npm@">=7.0"
+    && npm i -g npm@">=7.0" \
+    && npm i -g codecov@">=3.7.1"
+
+RUN gpuci_mamba_retry install -y -n rapids "mistune>=2.0.3"
 
 RUN yum -y upgrade \
     && yum clean all
