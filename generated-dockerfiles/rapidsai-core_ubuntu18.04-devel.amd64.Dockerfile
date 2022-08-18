@@ -65,8 +65,6 @@ RUN source activate rapids \
     && npm i -g npm@">=7.0" \
     && npm i -g codecov@">=3.7.1"
 
-RUN gpuci_mamba_retry install -y -n rapids "mistune>=2.0.3"
-
 RUN apt-get update \
     && apt-get -y upgrade \
     && rm -rf /var/lib/apt/lists/*
