@@ -141,7 +141,7 @@ RUN cd ${RAPIDS_DIR}/{{ lib.name }} && \
   ./build.sh --allgpuarch libcuml cuml prims
 
   {% elif lib.name == "raft"%}
-  ./build.sh --allgpuarch --compile-libs --install libraft pyraft pylibraft
+  ./build.sh --allgpuarch --compile-libs --install libraft raft-dask pylibraft
 
   {% elif lib.name == "dask-cuda"%}
   python setup.py install
