@@ -56,7 +56,8 @@ RUN gpuci_mamba_retry install -y -n rapids \
       "rapids-doc-env=${RAPIDS_VER}*"
 
 
-RUN rm /opt/conda/lib/python3.9/mailcap.py
+RUN rm /opt/conda/lib/python3.9/mailcap.py \
+    && rm /opt/conda/rapids/lib/python3.9/mailcap.py
 
 RUN yum -y upgrade \
     && yum clean all
