@@ -43,6 +43,10 @@ RUN gpuci_mamba_retry install -y -n rapids \
   "rapids=${RAPIDS_VER}*"
 
 
+RUN source activate rapids \
+    && npm i -g npm@">=7.0" \
+    && npm i -g codecov@">=3.7.1"
+
 RUN rm /opt/conda/lib/python3.9/mailcap.py \
     && rm /opt/conda/rapids/lib/python3.9/mailcap.py
 
