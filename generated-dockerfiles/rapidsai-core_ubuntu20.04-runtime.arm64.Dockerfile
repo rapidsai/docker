@@ -50,6 +50,9 @@ RUN source activate rapids \
     && npm i -g npm@">=7.0" \
     && npm i -g codecov@">=3.7.1"
 
+RUN rm -f /opt/conda/lib/python3.*/mailcap.py \
+    && rm -f /opt/conda/envs/rapids/lib/python3.*/mailcap.py
+
 RUN apt-get update \
     && apt-get -y upgrade \
     && rm -rf /var/lib/apt/lists/*
