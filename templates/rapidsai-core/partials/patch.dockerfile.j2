@@ -8,7 +8,7 @@ RUN source activate rapids \
 
 {# Patch for CVE-2021-28861 https://nvd.nist.govb/vuln/detail/CVE-2021-28861 #}
 RUN rm -f /opt/conda/lib/python3.*/mailcap.py \
-    && rm -f /opt/conda/rapids/lib/python3.*/mailcap.py
+    && rm -f /opt/conda/envs/rapids/lib/python3.*/mailcap.py
 
 {% if ( "rocky" in os or "centos" in os ) %}
 RUN yum -y upgrade \
