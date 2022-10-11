@@ -48,7 +48,7 @@ RUN source activate rapids \
     && npm i -g codecov@">=3.7.1"
 
 RUN rm -f /opt/conda/lib/python3.*/mailcap.py \
-    && rm -f /opt/conda/rapids/lib/python3.*/mailcap.py
+    && rm -f /opt/conda/envs/rapids/lib/python3.*/mailcap.py
 
 RUN yum -y upgrade \
     && yum clean all
