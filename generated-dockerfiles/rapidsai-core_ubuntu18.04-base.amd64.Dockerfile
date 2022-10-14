@@ -8,7 +8,7 @@
 ARG CUDA_VER=11.5
 ARG LINUX_VER=ubuntu18.04
 ARG PYTHON_VER=3.9
-ARG RAPIDS_VER=22.08
+ARG RAPIDS_VER=22.10
 ARG FROM_IMAGE=gpuci/rapidsai
 
 FROM ${FROM_IMAGE}:${RAPIDS_VER}-cuda${CUDA_VER}-base-${LINUX_VER}-py${PYTHON_VER}
@@ -48,6 +48,9 @@ RUN gpuci_mamba_retry install -y -n rapids \
 RUN source activate rapids \
     && npm i -g npm@">=7.0" \
     && npm i -g codecov@">=3.7.1"
+
+RUN rm -f /opt/conda/lib/python3.*/mailcap.py \
+    && rm -f /opt/conda/envs/rapids/lib/python3.*/mailcap.py
 
 RUN apt-get update \
     && apt-get -y upgrade \

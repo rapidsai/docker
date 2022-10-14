@@ -10,7 +10,7 @@
 ARG CUDA_VER=11.5
 ARG LINUX_VER=ubuntu18.04
 ARG PYTHON_VER=3.9
-ARG RAPIDS_VER=22.08
+ARG RAPIDS_VER=22.10
 ARG FROM_IMAGE=rapidsai/rapidsai-core-dev
 
 FROM ${FROM_IMAGE}:${RAPIDS_VER}-cuda${CUDA_VER}-devel-${LINUX_VER}-py${PYTHON_VER}
@@ -21,16 +21,19 @@ ENV DASK_SQL_DIR=/dask-sql
 
 
 RUN gpuci_mamba_retry install -y -n rapids \
-      "maven>=3.6.0" \
-      "setuptools_scm" \
+      "setuptools-rust" \
       && gpuci_mamba_retry install -y -n rapids \
-      --only-deps dask-sql=${DASK_SQL_VER}
+      --only-deps dask-sql=${DASK_SQL_VER} \
+      && curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs \
+      | sh -s -- --profile=minimal -y
+
 
 RUN mkdir -p ${DASK_SQL_DIR} \
     && cd ${DASK_SQL_DIR} \
     && git clone -b ${DASK_SQL_VER} https://github.com/dask-contrib/dask-sql dask-sql
 
 RUN source activate rapids \
+    && source "$HOME/.cargo/env" \
     && cd ${DASK_SQL_DIR}/dask-sql \
     && python -m pip install . --no-deps -vv \
     && rm -rf ~/.m2
