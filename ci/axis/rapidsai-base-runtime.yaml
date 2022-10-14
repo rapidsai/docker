@@ -3,14 +3,14 @@ BUILD_IMAGE:
   - rapidsai/rapidsai-nightly
 
 FROM_IMAGE:
-  - rapidsai/rapidsai-core
+  - rapidsai/rapidsai-core-nightly
 
 IMAGE_TYPE:
   - base
   - runtime
 
 RAPIDS_VER:
-  - '22.10'
+  - '22.12'
 
 DASK_SQL_VER:
   - '2022.10.0'
@@ -31,5 +31,5 @@ PYTHON_VER:
   - 3.9
 
 exclude:
-  - RAPIDS_VER: '22.10'
-    BUILD_IMAGE: rapidsai/rapidsai-nightly
+  - RAPIDS_VER: '22.12'
+    BUILD_IMAGE: rapidsai/rapidsai
