@@ -10,6 +10,7 @@ IMAGE_TYPE:
 
 RAPIDS_VER:
   - '22.12'
+  - '23.02'
 
 DASK_SQL_VER:
   - '2022.10.1'
@@ -29,4 +30,6 @@ PYTHON_VER:
 
 exclude:
   - RAPIDS_VER: '22.12'
+    BUILD_IMAGE: rapidsai/rapidsai-dev
+  - RAPIDS_VER: '23.02'
     BUILD_IMAGE: rapidsai/rapidsai-dev
