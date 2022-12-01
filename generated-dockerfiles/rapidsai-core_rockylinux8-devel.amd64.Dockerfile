@@ -33,6 +33,7 @@ RUN yum install -y \
       openssh-clients \
       openmpi-devel \
       libnsl \
+      findutils \
       && yum clean all
 
 
