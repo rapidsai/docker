@@ -29,7 +29,7 @@ jobs:
         with:
           org: "conda-forge"
           package: "dask-sql"
-          version_system: "CalVer"
+          version_system: "SemVer"
 
       - name: Find and replace dask-sql version
         uses: jacobtomlinson/gha-find-replace@2.0.0

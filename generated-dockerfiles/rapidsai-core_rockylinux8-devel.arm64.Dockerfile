@@ -10,7 +10,7 @@
 ARG CUDA_VER=11.5
 ARG LINUX_VER=rockylinux8
 ARG PYTHON_VER=3.9
-ARG RAPIDS_VER=22.10
+ARG RAPIDS_VER=22.12
 ARG FROM_IMAGE=gpuci/rapidsai
 
 FROM ${FROM_IMAGE}:${RAPIDS_VER}-cuda${CUDA_VER}-devel-${LINUX_VER}-py${PYTHON_VER}
@@ -33,6 +33,7 @@ RUN yum install -y \
       openssh-clients \
       openmpi-devel \
       libnsl \
+      findutils \
       && yum clean all
 
 
@@ -177,7 +178,7 @@ RUN cd ${RAPIDS_DIR}/benchmark && \
 
 RUN cd ${RAPIDS_DIR}/raft && \
   source activate rapids && \
-  ./build.sh --allgpuarch --compile-libs --install libraft raft-dask pylibraft
+  ./build.sh --allgpuarch --compile-libs libraft raft-dask pylibraft
 
 RUN cd ${RAPIDS_DIR}/cudf && \
   source activate rapids && \
