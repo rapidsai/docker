@@ -58,8 +58,9 @@ RUN apt-get update \
     && rm -rf /var/lib/apt/lists/*
 
 
+ARG OPENSSL_VERSION=1.1.1
 RUN gpuci_mamba_retry install -y -n rapids \
-        "rapids-notebook-env=${RAPIDS_VER}*" \
+        "rapids-notebook-env=${RAPIDS_VER}*" "openssl=${OPENSSL_VERSION}" \
     && gpuci_conda_retry remove -y -n rapids --force-remove \
         "rapids-notebook-env=${RAPIDS_VER}*"
 
