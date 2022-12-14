@@ -11,7 +11,8 @@ ENV DASK_LABEXTENSION__FACTORY__MODULE="dask_cuda"
 ENV DASK_LABEXTENSION__FACTORY__CLASS="LocalCUDACluster"
 
 {# Install jupyter lab stuff #}
-RUN gpuci_mamba_retry install -y -n rapids jupyterlab-nvdashboard
+{# TODO: Remove pyarrow pin when RAPIDS upgrades to a new pyarrow version #}
+RUN gpuci_mamba_retry install -y -n rapids jupyterlab-nvdashboard "pyarrow=9.0.0"
 
 {# Install notebooks repo #}
 RUN cd ${RAPIDS_DIR} \
