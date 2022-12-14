@@ -3,7 +3,7 @@
 {# Install the rapids-notebook-env meta-pkg #}
 ARG OPENSSL_VERSION=1.1.1
 RUN gpuci_mamba_retry install -y -n rapids \
-        "rapids-notebook-env=${RAPIDS_VER}*" "openssl=${OPENSSL_VERSION}" \
+        "rapids-notebook-env=${RAPIDS_VER}*" \
     && gpuci_conda_retry remove -y -n rapids --force-remove \
         "rapids-notebook-env=${RAPIDS_VER}*"
 
@@ -12,7 +12,8 @@ ENV DASK_LABEXTENSION__FACTORY__MODULE="dask_cuda"
 ENV DASK_LABEXTENSION__FACTORY__CLASS="LocalCUDACluster"
 
 {# Install jupyter lab stuff #}
-RUN gpuci_mamba_retry install -y -n rapids jupyterlab-nvdashboard
+{# TODO: Remove pyarrow pin when RAPIDS upgrades to a new pyarrow version #}
+RUN gpuci_mamba_retry install -y -n rapids jupyterlab-nvdashboard "pyarrow=9.0.0"
 
 {# Install notebooks repo #}
 RUN cd ${RAPIDS_DIR} \
