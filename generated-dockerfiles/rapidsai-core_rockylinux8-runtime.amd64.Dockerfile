@@ -56,7 +56,7 @@ RUN yum -y upgrade \
     && yum clean all
 
 
-RUN gpuci_mamba_retry install -y -n rapids \
+RUN gpuci_mamba_retry install -y -n rapids --freeze-installed \
         "rapids-notebook-env=${RAPIDS_VER}*" \
     && gpuci_conda_retry remove -y -n rapids --force-remove \
         "rapids-notebook-env=${RAPIDS_VER}*"
@@ -64,7 +64,7 @@ RUN gpuci_mamba_retry install -y -n rapids \
 ENV DASK_LABEXTENSION__FACTORY__MODULE="dask_cuda"
 ENV DASK_LABEXTENSION__FACTORY__CLASS="LocalCUDACluster"
 
-RUN gpuci_mamba_retry install -y -n rapids jupyterlab-nvdashboard "pyarrow=9.0.0"
+RUN gpuci_mamba_retry install -y -n rapids --freeze-installed jupyterlab-nvdashboard
 
 RUN cd ${RAPIDS_DIR} \
   && source activate rapids \
