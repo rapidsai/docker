@@ -74,7 +74,6 @@ RUN source activate rapids \
   && conda config --show-sources \
   && conda list --show-channel-urls
 
-ARG OPENSSL_VERSION=1.1.1
 RUN gpuci_mamba_retry install -y -n rapids \
         "rapids-notebook-env=${RAPIDS_VER}*" \
     && gpuci_conda_retry remove -y -n rapids --force-remove \

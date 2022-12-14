@@ -56,7 +56,6 @@ RUN yum -y upgrade \
     && yum clean all
 
 
-ARG OPENSSL_VERSION=1.1.1
 RUN gpuci_mamba_retry install -y -n rapids \
         "rapids-notebook-env=${RAPIDS_VER}*" \
     && gpuci_conda_retry remove -y -n rapids --force-remove \
