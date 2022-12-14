@@ -58,16 +58,15 @@ RUN apt-get update \
     && rm -rf /var/lib/apt/lists/*
 
 
-ARG OPENSSL_VERSION=1.1.1
 RUN gpuci_mamba_retry install -y -n rapids \
-        "rapids-notebook-env=${RAPIDS_VER}*" "openssl=${OPENSSL_VERSION}" \
+        "rapids-notebook-env=${RAPIDS_VER}*" \
     && gpuci_conda_retry remove -y -n rapids --force-remove \
         "rapids-notebook-env=${RAPIDS_VER}*"
 
 ENV DASK_LABEXTENSION__FACTORY__MODULE="dask_cuda"
 ENV DASK_LABEXTENSION__FACTORY__CLASS="LocalCUDACluster"
 
-RUN gpuci_mamba_retry install -y -n rapids jupyterlab-nvdashboard
+RUN gpuci_mamba_retry install -y -n rapids jupyterlab-nvdashboard "pyarrow=9.0.0"
 
 RUN cd ${RAPIDS_DIR} \
   && source activate rapids \
