@@ -206,7 +206,7 @@ RUN cd ${RAPIDS_DIR}/cuml && \
 
 RUN cd ${RAPIDS_DIR}/cugraph && \
   source activate rapids && \
-  ./build.sh --allgpuarch cugraph libcugraph pylibcugraph
+  ./build.sh --allgpuarch libcugraph pylibcugraph cugraph cugraph-service cugraph-dgl cugraph-pyg
 
 RUN cd ${RAPIDS_DIR}/xgboost && \
   source activate rapids && \
