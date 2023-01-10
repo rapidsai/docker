@@ -15,13 +15,9 @@ CUDA_VER:
   - 11.5
 
 LINUX_VER:
-  - ubuntu18.04
   - ubuntu20.04
-  - centos7
-  - rockylinux8
 
 PYTHON_VER:
-  - 3.8
   - 3.9
 
 exclude:
