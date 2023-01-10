@@ -3,7 +3,7 @@
 # base: RAPIDS is installed from published conda packages to the 'rapids' conda
 # environment.
 #
-# Copyright (c) 2022, NVIDIA CORPORATION.
+# Copyright (c) 2023, NVIDIA CORPORATION.
 
 ARG CUDA_VER=11.5
 ARG LINUX_VER=ubuntu18.04
