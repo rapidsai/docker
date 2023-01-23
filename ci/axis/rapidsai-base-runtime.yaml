@@ -11,6 +11,7 @@ IMAGE_TYPE:
 
 RAPIDS_VER:
   - '23.02'
+  - '23.04'
 
 DASK_SQL_VER:
   - '2022.12.0'
