@@ -13,20 +13,29 @@ RAPIDS_VER:
   - '23.02'
 
 CUDA_VER:
+  - 11.8
   - 11.5
   - 11.4
   - 11.2
 
 LINUX_VER:
-  - ubuntu18.04
   - ubuntu20.04
+  - ubuntu22.04
   - centos7
   - rockylinux8
 
 PYTHON_VER:
   - 3.8
   - 3.9
+  - '3.10'
 
 exclude:
   - RAPIDS_VER: '23.02'
     BUILD_IMAGE: rapidsai/rapidsai-clx
+  
+  - CUDA_VER: 11.2
+    LINUX_VER: ubuntu22.04
+  - CUDA_VER: 11.4
+    LINUX_VER: ubuntu22.04
+  - CUDA_VER: 11.5
+    LINUX_VER: ubuntu22.04
