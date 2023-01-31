@@ -1,13 +1,13 @@
-# RAPIDS Dockerfile for ubuntu18.04 "base" image
+# RAPIDS Dockerfile for ubuntu22.04 "base" image
 #
 # base: RAPIDS is installed from published conda packages to the 'rapids' conda
 # environment.
 #
 # Copyright (c) 2023, NVIDIA CORPORATION.
 
-ARG CUDA_VER=11.5
-ARG LINUX_VER=ubuntu18.04
-ARG PYTHON_VER=3.9
+ARG CUDA_VER=11.8
+ARG LINUX_VER=ubuntu22.04
+ARG PYTHON_VER=3.10
 ARG RAPIDS_VER=23.02
 ARG FROM_IMAGE=rapidsai/rapidsai-core
 
