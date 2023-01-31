@@ -15,13 +15,13 @@ DASK_SQL_VER:
   - '2022.12.0'
 
 CUDA_VER:
-  - 11.5
+  - 11.8
 
 LINUX_VER:
-  - ubuntu20.04
+  - ubuntu22.04
 
 PYTHON_VER:
-  - 3.9
+  - '3.10'
 
 exclude:
   - RAPIDS_VER: '23.02'
