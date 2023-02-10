@@ -9,7 +9,6 @@ jobs:
   up-to-date:
     name: up-to-date
     runs-on: ubuntu-latest
-    container: python:3.8
     steps:
       - name: Checkout repo
         uses: actions/checkout@v3
