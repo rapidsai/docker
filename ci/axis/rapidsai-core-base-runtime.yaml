@@ -10,7 +10,7 @@ IMAGE_TYPE:
   - runtime
 
 RAPIDS_VER:
-  - '23.02'
+  - '23.04'
 
 CUDA_VER:
   - 11.8
@@ -29,8 +29,8 @@ PYTHON_VER:
   - '3.10'
 
 exclude:
-  - RAPIDS_VER: '23.02'
-    BUILD_IMAGE: rapidsai/rapidsai-core-nightly
+  - RAPIDS_VER: '23.04'
+    BUILD_IMAGE: rapidsai/rapidsai-core
   
   - CUDA_VER: 11.2
     LINUX_VER: ubuntu22.04

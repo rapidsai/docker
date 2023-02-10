@@ -3,14 +3,14 @@ BUILD_IMAGE:
   - rapidsai/rapidsai-nightly
 
 FROM_IMAGE:
-  - rapidsai/rapidsai-core
+  - rapidsai/rapidsai-core-nightly
 
 IMAGE_TYPE:
   - base
   - runtime
 
 RAPIDS_VER:
-  - '23.02'
+  - '23.04'
 
 DASK_SQL_VER:
   - '2023.2.0'
@@ -32,8 +32,8 @@ PYTHON_VER:
   - '3.10'
 
 exclude:
-  - RAPIDS_VER: '23.02'
-    BUILD_IMAGE: rapidsai/rapidsai-nightly
+  - RAPIDS_VER: '23.04'
+    BUILD_IMAGE: rapidsai/rapidsai
 
   - CUDA_VER: 11.2
     LINUX_VER: ubuntu22.04
