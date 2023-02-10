@@ -32,7 +32,6 @@ jobs:
       - name: Check diffs
         run: |
           set -x
-          ls -al
           pwd
           git diff
           git diff --exit-code --quiet
