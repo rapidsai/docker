@@ -33,6 +33,7 @@ jobs:
       - name: Check diffs
         run: |
           set -x
+          git --version
           ls -al
           pwd
           git diff
