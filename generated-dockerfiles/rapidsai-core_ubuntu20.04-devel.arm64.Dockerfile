@@ -5,17 +5,17 @@
 # jupyter notebooks are also provided, as well as jupyterlab and all the
 # dependencies required to run them.
 #
-# Copyright (c) 2022, NVIDIA CORPORATION.
+# Copyright (c) 2023, NVIDIA CORPORATION.
 
-ARG CUDA_VER=11.5
+ARG CUDA_VER=11.8
 ARG LINUX_VER=ubuntu20.04
-ARG PYTHON_VER=3.9
-ARG RAPIDS_VER=22.12
+ARG PYTHON_VER=3.10
+ARG RAPIDS_VER=23.02
 ARG FROM_IMAGE=gpuci/rapidsai
 
 FROM ${FROM_IMAGE}:${RAPIDS_VER}-cuda${CUDA_VER}-devel-${LINUX_VER}-py${PYTHON_VER}
 
-ARG PARALLEL_LEVEL=16
+ARG PARALLEL_LEVEL=8
 ARG RAPIDS_VER
 ARG CUDA_VER
 ARG UCX_PY_VER
@@ -207,7 +207,7 @@ RUN cd ${RAPIDS_DIR}/cuml && \
 
 RUN cd ${RAPIDS_DIR}/cugraph && \
   source activate rapids && \
-  ./build.sh --allgpuarch cugraph libcugraph pylibcugraph
+  ./build.sh --allgpuarch libcugraph pylibcugraph cugraph cugraph-service cugraph-dgl cugraph-pyg
 
 RUN cd ${RAPIDS_DIR}/xgboost && \
   source activate rapids && \

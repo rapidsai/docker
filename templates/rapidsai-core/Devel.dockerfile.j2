@@ -16,7 +16,7 @@ ARG FROM_IMAGE=gpuci/rapidsai
 FROM ${FROM_IMAGE}:${RAPIDS_VER}-cuda${CUDA_VER}-devel-${LINUX_VER}-py${PYTHON_VER}
 
 {# devel environment config args #}
-ARG PARALLEL_LEVEL=16
+ARG PARALLEL_LEVEL=8
 ARG RAPIDS_VER
 ARG CUDA_VER
 ARG UCX_PY_VER
@@ -135,7 +135,7 @@ RUN cd ${RAPIDS_DIR}/{{ lib.name }} && \
   cd ../python-package && python setup.py install;
 
   {% elif lib.name == "cugraph" %}
-  ./build.sh --allgpuarch cugraph libcugraph pylibcugraph
+  ./build.sh --allgpuarch libcugraph pylibcugraph cugraph cugraph-service cugraph-dgl cugraph-pyg
 
   {% elif lib.name == "cuml" %}
   ./build.sh --allgpuarch libcuml cuml prims

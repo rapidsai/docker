@@ -1,20 +1,20 @@
 ---
 # Default Docker build arguments
-DEFAULT_PYTHON_VERSION: "3.9"
-DEFAULT_CUDA_VERSION: "11.5"
-DEFAULT_STABLE_RAPIDS_VERSION: "22.10"
-DEFAULT_NIGHTLY_RAPIDS_VERSION: "22.12"
-DEFAULT_NEXT_RAPIDS_VERSION: "23.02"
+DEFAULT_PYTHON_VERSION: "3.10"
+DEFAULT_CUDA_VERSION: "11.8"
+DEFAULT_STABLE_RAPIDS_VERSION: "22.12"
+DEFAULT_NIGHTLY_RAPIDS_VERSION: "23.02"
+DEFAULT_NEXT_RAPIDS_VERSION: "23.04"
 
-STABLE_DASK_SQL_VERSION: "2022.12.0"
+STABLE_DASK_SQL_VERSION: "2023.2.0"
 
 ARCHS:
   - name: amd64
     os_list:
       - centos7
       - rockylinux8
-      - ubuntu18.04
       - ubuntu20.04
+      - ubuntu22.04
     images:
       - rapidsai-core
       - rapidsai
@@ -22,8 +22,8 @@ ARCHS:
   - name: arm64
     os_list:
       - rockylinux8
-      - ubuntu18.04
       - ubuntu20.04
+      - ubuntu22.04
     images:
       - rapidsai-core
 

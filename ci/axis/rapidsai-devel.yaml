@@ -9,24 +9,20 @@ IMAGE_TYPE:
   - devel
 
 RAPIDS_VER:
-  - '22.12'
+  - '23.02'
 
 DASK_SQL_VER:
-  - '2022.12.0'
+  - '2023.2.0'
 
 CUDA_VER:
-  - 11.5
+  - 11.8
 
 LINUX_VER:
-  - ubuntu18.04
-  - ubuntu20.04
-  - centos7
-  - rockylinux8
+  - ubuntu22.04
 
 PYTHON_VER:
-  - 3.8
-  - 3.9
+  - '3.10'
 
 exclude:
-  - RAPIDS_VER: '22.12'
+  - RAPIDS_VER: '23.02'
     BUILD_IMAGE: rapidsai/rapidsai-dev-nightly

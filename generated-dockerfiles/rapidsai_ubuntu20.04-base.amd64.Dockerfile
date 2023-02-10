@@ -3,12 +3,12 @@
 # base: RAPIDS is installed from published conda packages to the 'rapids' conda
 # environment.
 #
-# Copyright (c) 2022, NVIDIA CORPORATION.
+# Copyright (c) 2023, NVIDIA CORPORATION.
 
-ARG CUDA_VER=11.5
+ARG CUDA_VER=11.8
 ARG LINUX_VER=ubuntu20.04
-ARG PYTHON_VER=3.9
-ARG RAPIDS_VER=22.12
+ARG PYTHON_VER=3.10
+ARG RAPIDS_VER=23.02
 ARG FROM_IMAGE=rapidsai/rapidsai-core
 
 FROM ${FROM_IMAGE}:${RAPIDS_VER}-cuda${CUDA_VER}-base-${LINUX_VER}-py${PYTHON_VER}

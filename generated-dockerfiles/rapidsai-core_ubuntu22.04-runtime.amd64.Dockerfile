@@ -1,15 +1,15 @@
-# RAPIDS Dockerfile for ubuntu18.04 "runtime" image
+# RAPIDS Dockerfile for ubuntu22.04 "runtime" image
 #
 # runtime: RAPIDS is installed from published conda packages to the 'rapids'
 # conda environment. RAPIDS jupyter notebooks are also provided, as well as
 # jupyterlab and all the dependencies required to run them.
 #
-# Copyright (c) 2022, NVIDIA CORPORATION.
+# Copyright (c) 2023, NVIDIA CORPORATION.
 
-ARG CUDA_VER=11.5
-ARG LINUX_VER=ubuntu18.04
-ARG PYTHON_VER=3.9
-ARG RAPIDS_VER=22.12
+ARG CUDA_VER=11.8
+ARG LINUX_VER=ubuntu22.04
+ARG PYTHON_VER=3.10
+ARG RAPIDS_VER=23.02
 ARG FROM_IMAGE=gpuci/rapidsai
 
 FROM ${FROM_IMAGE}:${RAPIDS_VER}-cuda${CUDA_VER}-runtime-${LINUX_VER}-py${PYTHON_VER}

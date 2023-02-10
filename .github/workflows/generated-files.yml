@@ -9,10 +9,9 @@ jobs:
   up-to-date:
     name: up-to-date
     runs-on: ubuntu-latest
-    container: python:3.8
     steps:
       - name: Checkout repo
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
       - name: Generate new Dockerfiles & READMEs
         shell: bash
         run: |
