@@ -31,7 +31,5 @@ jobs:
           BASE_BRANCH_NAME: ${{ github.base_ref }}
       - name: Check diffs
         run: |
-          set -x
-          pwd
           git diff
           git diff --exit-code --quiet
