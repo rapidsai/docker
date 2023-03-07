@@ -18,7 +18,6 @@ ARCHS:
     images:
       - rapidsai-core
       - rapidsai
-      - rapidsai-clx
   - name: arm64
     os_list:
       - rockylinux8

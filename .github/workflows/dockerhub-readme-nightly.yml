@@ -21,8 +21,6 @@ jobs:
           - rapidsai-dev-nightly
           - rapidsai-core-nightly
           - rapidsai-core-dev-nightly
-          - rapidsai-clx-nightly
-          - rapidsai-clx-dev-nightly
     steps:
       - name: checkout code
         uses: actions/checkout@v2

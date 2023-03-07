@@ -147,7 +147,6 @@ $ docker run \
 
 Notebooks can be found in the following directories within the 23.02 container (not applicable for `base` images):
 
-* `/rapids/notebooks/clx` - CLX demo notebooks
 * `/rapids/notebooks/cugraph` - cuGraph demo notebooks
 * `/rapids/notebooks/cuml` - cuML demo notebooks
 * `/rapids/notebooks/cusignal` - cuSignal demo notebooks
