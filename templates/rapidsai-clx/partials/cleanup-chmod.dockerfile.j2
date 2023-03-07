@@ -1,6 +1,0 @@
-{# This partial file is used for cleanup and ACL changes at the end of each image #}
-
-{# Clean-up conda and update ACLs for all users #}
-RUN chmod -R ugo+w /opt/conda ${CLX_DIR} \
-  && conda clean -tipy \
-  && chmod -R ugo+w /opt/conda ${CLX_DIR}

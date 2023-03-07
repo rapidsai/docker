@@ -21,6 +21,7 @@ The `rapidsai/rapidsai-core-dev-nightly` repo contains nightly docker builds of 
 
 Versions of libraries included in the `23.04` images:
 - `cuDF` [v23.04.00a](https://github.com/rapidsai/cudf), `cuML` [v23.04.00a](https://github.com/rapidsai/cuml), `cuGraph` [v23.04.00a](https://github.com/rapidsai/cugraph), `RMM` [v23.04.00a](https://github.com/rapidsai/RMM), `RAFT` [v23.04.00a](https://github.com/rapidsai/raft), `cuSpatial` [v23.04.00a](https://github.com/rapidsai/cuspatial), `cuSignal` [v23.04.00a](https://github.com/rapidsai/cusignal), `cuxfilter` [v23.04.00a](https://github.com/rapidsai/cuxfilter)
+
 - `xgboost` [branch](https://github.com/rapidsai/xgboost), `dask-cuda` [branch](https://github.com/rapidsai/dask-cuda)
 
 ### Image Types
@@ -147,7 +148,6 @@ $ docker run \
 
 Notebooks can be found in the following directories within the 23.04 container :
 
-* `/rapids/notebooks/clx` - CLX demo notebooks
 * `/rapids/notebooks/cugraph` - cuGraph demo notebooks
 * `/rapids/notebooks/cuml` - cuML demo notebooks
 * `/rapids/notebooks/cusignal` - cuSignal demo notebooks

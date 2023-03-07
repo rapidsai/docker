@@ -22,16 +22,10 @@ OUTPUT_READMES = [
     "rapidsai-nightly",
     "rapidsai-dev",
     "rapidsai-dev-nightly",
-    "rapidsai-clx",
-    "rapidsai-clx-nightly",
-    "rapidsai-clx-dev",
-    "rapidsai-clx-dev-nightly",
     "ngc-rapidsai-core",
     "ngc-rapidsai-core-dev",
     "ngc-rapidsai",
     "ngc-rapidsai-dev",
-    "ngc-rapidsai-clx",
-    "ngc-rapidsai-clx-dev",
 ]
 
 
@@ -75,10 +69,7 @@ def main(nightly_version, stable_version, settings):
         jinja_vars["is_ngc"] = "ngc" in output_file
         jinja_vars["ngc_prefix"] = "nvcr.io/nvidia/"
         jinja_vars["is_rapids_core"] = "core" in output_file
-        jinja_vars["is_rapids_clx"] = "clx" in output_file
-        jinja_vars["is_rapids_proper"] = not (
-            jinja_vars["is_rapids_core"] or jinja_vars["is_rapids_clx"]
-        )
+        jinja_vars["is_rapids_proper"] = not (jinja_vars["is_rapids_core"])
         jinja_vars["stable_version"] = stable_version
         jinja_vars["nightly_version"] = nightly_version
         jinja_vars["dask_sql_version"] = dask_sql_version
