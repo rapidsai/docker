@@ -180,7 +180,7 @@ RUN cd ${RAPIDS_DIR}/benchmark && \
 
 RUN cd ${RAPIDS_DIR}/raft && \
   source activate rapids && \
-  ./build.sh --allgpuarch --compile-libs libraft raft-dask pylibraft
+  ./build.sh --allgpuarch --compile-lib libraft raft-dask pylibraft
 
 RUN cd ${RAPIDS_DIR}/cudf && \
   source activate rapids && \
