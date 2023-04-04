@@ -39,13 +39,13 @@ jobs:
           echo SHORT_NEW_VER=${FULL_NEW_VER::-2} >> $GITHUB_ENV
 
       - name: Find and replace full dask-sql version
-        uses: jacobtomlinson/gha-find-replace@3
+        uses: jacobtomlinson/gha-find-replace@v3
         with:
           find: ${{ steps.current_version.outputs.STABLE_DASK_SQL_VERSION }}
           replace: ${{ steps.new_version.outputs.version }}
 
       - name: Find and replace short dask-sql version
-        uses: jacobtomlinson/gha-find-replace@3
+        uses: jacobtomlinson/gha-find-replace@v3
         with:
           find: ${{ env.SHORT_VER }}
           replace: ${{ env.SHORT_NEW_VER }}
