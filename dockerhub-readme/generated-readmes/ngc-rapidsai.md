@@ -14,7 +14,7 @@ The RAPIDS suite of software libraries gives you the freedom to execute end-to-e
 ### Current Version - RAPIDS v23.02
 
 Versions of libraries included in the `23.02` images:
-- `cuDF` [v23.02](https://github.com/rapidsai/cudf/tree/v23.02.00), `cuML` [v23.02](https://github.com/rapidsai/cuml/tree/v23.02.00), `cuGraph` [v23.02](https://github.com/rapidsai/cugraph/tree/v23.02.00), `RMM` [v23.02](https://github.com/rapidsai/RMM/tree/v23.02.00), `RAFT` [v23.02](https://github.com/rapidsai/raft/tree/v23.02.00), `cuSpatial` [v23.02](https://github.com/rapidsai/cuspatial/tree/v23.02.00), `cuSignal` [v23.02](https://github.com/rapidsai/cusignal/tree/v23.02.00), `cuxfilter` [v23.02](https://github.com/rapidsai/cuxfilter/tree/v23.02.00), `dask-sql` [2023.2.0](https://github.com/dask-contrib/dask-sql/tree/2023.2.0)
+- `cuDF` [v23.02](https://github.com/rapidsai/cudf/tree/v23.02.00), `cuML` [v23.02](https://github.com/rapidsai/cuml/tree/v23.02.00), `cuGraph` [v23.02](https://github.com/rapidsai/cugraph/tree/v23.02.00), `RMM` [v23.02](https://github.com/rapidsai/RMM/tree/v23.02.00), `RAFT` [v23.02](https://github.com/rapidsai/raft/tree/v23.02.00), `cuSpatial` [v23.02](https://github.com/rapidsai/cuspatial/tree/v23.02.00), `cuSignal` [v23.02](https://github.com/rapidsai/cusignal/tree/v23.02.00), `cuxfilter` [v23.02](https://github.com/rapidsai/cuxfilter/tree/v23.02.00), `dask-sql` [2023.4.0](https://github.com/dask-contrib/dask-sql/tree/2023.4.0)
 
 
 ### Image Types
