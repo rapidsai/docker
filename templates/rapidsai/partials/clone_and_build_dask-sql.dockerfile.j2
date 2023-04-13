@@ -4,7 +4,7 @@
 RUN gpuci_mamba_retry install -y -n rapids \
       "setuptools-rust" \
       && gpuci_mamba_retry install -y -n rapids \
-      --only-deps dask-sql=${DASK_SQL_VER} \
+      --only-deps "dask-sql=${DASK_SQL_VER%.*}" \
       && curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs \
       | sh -s -- --profile=minimal -y
 

@@ -10,7 +10,7 @@
 ARG CUDA_VER=11.8
 ARG LINUX_VER=rockylinux8
 ARG PYTHON_VER=3.10
-ARG RAPIDS_VER=23.02
+ARG RAPIDS_VER=23.04
 ARG FROM_IMAGE=rapidsai/rapidsai-core-dev
 
 FROM ${FROM_IMAGE}:${RAPIDS_VER}-cuda${CUDA_VER}-devel-${LINUX_VER}-py${PYTHON_VER}
@@ -23,7 +23,7 @@ ENV DASK_SQL_DIR=/dask-sql
 RUN gpuci_mamba_retry install -y -n rapids \
       "setuptools-rust" \
       && gpuci_mamba_retry install -y -n rapids \
-      --only-deps dask-sql=${DASK_SQL_VER} \
+      --only-deps "dask-sql=${DASK_SQL_VER%.*}" \
       && curl --proto '=https' --tlsv1.2 -sSf https://sh.rustup.rs \
       | sh -s -- --profile=minimal -y
 

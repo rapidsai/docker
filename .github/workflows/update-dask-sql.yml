@@ -16,12 +16,11 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
-      - name: Get old dask-sql version
-        id: old_version
-        uses: the-coding-turtle/ga-yaml-parser@v0.1.1
+      - name: Get current dask-sql version
+        id: current_version
+        uses: the-coding-turtle/ga-yaml-parser@v0.1.2
         with:
           file: settings.yaml
-          key: STABLE_DASK_SQL_VERSION
 
       - name: Get new dask-sql version
         id: new_version
@@ -31,12 +30,25 @@ jobs:
           package: "dask-sql"
           version_system: "SemVer"
 
-      - name: Find and replace dask-sql version
-        uses: jacobtomlinson/gha-find-replace@2.0.0
+      - name: Get current/new versions without patch
+        env:
+          FULL_VER: ${{ steps.current_version.outputs.STABLE_DASK_SQL_VERSION }}
+          FULL_NEW_VER: ${{ steps.new_version.outputs.version }}
+        run: |
+          echo SHORT_VER=${FULL_VER::-2} >> $GITHUB_ENV
+          echo SHORT_NEW_VER=${FULL_NEW_VER::-2} >> $GITHUB_ENV
+
+      - name: Find and replace full dask-sql version
+        uses: jacobtomlinson/gha-find-replace@v3
         with:
-          find: ${{ steps.old_version.outputs.result }}
+          find: ${{ steps.current_version.outputs.STABLE_DASK_SQL_VERSION }}
           replace: ${{ steps.new_version.outputs.version }}
-          regex: false
+
+      - name: Find and replace short dask-sql version
+        uses: jacobtomlinson/gha-find-replace@v3
+        with:
+          find: ${{ env.SHORT_VER }}
+          replace: ${{ env.SHORT_NEW_VER }}
 
       - name: Create pull request with changes
         uses: peter-evans/create-pull-request@v3

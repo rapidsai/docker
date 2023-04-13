@@ -10,7 +10,7 @@
 ARG CUDA_VER=11.8
 ARG LINUX_VER=centos7
 ARG PYTHON_VER=3.10
-ARG RAPIDS_VER=23.02
+ARG RAPIDS_VER=23.04
 ARG FROM_IMAGE=gpuci/rapidsai
 
 FROM ${FROM_IMAGE}:${RAPIDS_VER}-cuda${CUDA_VER}-devel-${LINUX_VER}-py${PYTHON_VER}
@@ -88,7 +88,6 @@ RUN cd ${RAPIDS_DIR} \
   && git clone -b ${BUILD_BRANCH} --depth 1 --single-branch https://github.com/rapidsai/notebooks.git \
   && ln -s $(realpath notebooks/test/test.sh) /test.sh \
   && cd notebooks \
-  && rm -rf ci clx \
   && git submodule update --init --remote --no-single-branch --depth 1
 
 COPY start-jupyter.sh stop-jupyter.sh /rapids/utils/
@@ -179,7 +178,7 @@ RUN cd ${RAPIDS_DIR}/benchmark && \
 
 RUN cd ${RAPIDS_DIR}/raft && \
   source activate rapids && \
-  ./build.sh --allgpuarch --compile-libs libraft raft-dask pylibraft
+  ./build.sh --allgpuarch --compile-lib libraft raft-dask pylibraft
 
 RUN cd ${RAPIDS_DIR}/cudf && \
   source activate rapids && \
