@@ -3,7 +3,7 @@ BUILD_IMAGE:
   - rapidsai/rapidsai-dev-nightly
 
 FROM_IMAGE:
-  - rapidsai/rapidsai-core-dev
+  - rapidsai/rapidsai-core-dev-nightly
 
 IMAGE_TYPE:
   - devel
@@ -25,4 +25,4 @@ PYTHON_VER:
 
 exclude:
   - RAPIDS_VER: '23.04'
-    BUILD_IMAGE: rapidsai/rapidsai-dev-nightly
+    BUILD_IMAGE: rapidsai/rapidsai-dev

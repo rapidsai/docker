@@ -3,7 +3,7 @@ BUILD_IMAGE:
   - rapidsai/rapidsai-nightly
 
 FROM_IMAGE:
-  - rapidsai/rapidsai-core
+  - rapidsai/rapidsai-core-nightly
 
 IMAGE_TYPE:
   - base
@@ -33,7 +33,7 @@ PYTHON_VER:
 
 exclude:
   - RAPIDS_VER: '23.04'
-    BUILD_IMAGE: rapidsai/rapidsai-nightly
+    BUILD_IMAGE: rapidsai/rapidsai
 
   - CUDA_VER: 11.2
     LINUX_VER: ubuntu22.04
