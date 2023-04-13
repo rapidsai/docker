@@ -10,7 +10,7 @@ IMAGE_TYPE:
   - runtime
 
 RAPIDS_VER:
-  - '23.04'
+  - '23.06'
 
 DASK_SQL_VER:
   - '2023.4'
@@ -32,7 +32,7 @@ PYTHON_VER:
   - '3.10'
 
 exclude:
-  - RAPIDS_VER: '23.04'
+  - RAPIDS_VER: '23.06'
     BUILD_IMAGE: rapidsai/rapidsai
 
   - CUDA_VER: 11.2
