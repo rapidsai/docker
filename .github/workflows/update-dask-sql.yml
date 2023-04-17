@@ -20,7 +20,7 @@ jobs:
         id: current_version
         uses: the-coding-turtle/ga-yaml-parser@v0.1.2
         with:
-          file: settings.yaml
+          file: axis.yaml
 
       - name: Get new dask-sql version
         id: new_version
@@ -32,7 +32,7 @@ jobs:
 
       - name: Get current/new versions without patch
         env:
-          FULL_VER: ${{ steps.current_version.outputs.STABLE_DASK_SQL_VERSION }}
+          FULL_VER: ${{ steps.current_version.outputs.DASK_SQL_VER }}
           FULL_NEW_VER: ${{ steps.new_version.outputs.version }}
         run: |
           echo SHORT_VER=${FULL_VER::-2} >> $GITHUB_ENV
@@ -41,7 +41,7 @@ jobs:
       - name: Find and replace full dask-sql version
         uses: jacobtomlinson/gha-find-replace@v3
         with:
-          find: ${{ steps.current_version.outputs.STABLE_DASK_SQL_VERSION }}
+          find: ${{ steps.current_version.outputs.DASK_SQL_VER }}
           replace: ${{ steps.new_version.outputs.version }}
 
       - name: Find and replace short dask-sql version
