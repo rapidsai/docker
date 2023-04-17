@@ -1,0 +1,21 @@
+name: publish
+
+on:
+  push:
+    branches:
+      - "branch-*"
+    tags:
+      - v[0-9][0-9].[0-9][0-9].[0-9][0-9]
+  workflow_dispatch:
+
+concurrency:
+  group: "${{ github.workflow }} @ ${{ github.ref }}"
+  cancel-in-progress: true
+
+jobs:
+  build-images:
+    uses: ./.github/workflows/build-and-publish-images.yml
+    with:
+      push: true
+      build_type: branch
+    secrets: inherit
