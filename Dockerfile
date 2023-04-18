@@ -86,4 +86,4 @@ EXPOSE 8888
 
 ENTRYPOINT ["/home/rapids/entrypoint.sh"]
 
-CMD ["jupyter-lab", "--allow-root", "--notebook-dir=/home/rapids/notebooks", "--ip=0.0.0.0", "--no-browser", "--NotebookApp.token=''", "--NotebookApp.allow_origin='*'"]
+CMD ["jupyter-lab", "--notebook-dir=/home/rapids/notebooks", "--ip=0.0.0.0", "--no-browser", "--NotebookApp.token=''", "--NotebookApp.allow_origin='*'"]
