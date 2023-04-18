@@ -13,7 +13,7 @@
 set -euox pipefail
 
 TAG="$RAPIDS_VER-cuda$CUDA_VER-$LINUX_VER-py$PYTHON_VER"
- check
+
 BUILD_ARGS=(
     "--build-arg" "CUDA_VER=$CUDA_VER"
     "--build-arg" "LINUX_VER=$LINUX_VER"
