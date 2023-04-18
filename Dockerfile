@@ -4,7 +4,7 @@ ARG CUDA_VER=11.8.0
 ARG PYTHON_VER=3.10
 ARG LINUX_VER=ubuntu22.04
 
-ARG RAPIDS_VER=23.04
+ARG RAPIDS_VER=23.06
 ARG DASK_SQL_VER=2023.2.0
 
 ARG BASE_FROM_IMAGE=rapidsai/mambaforge-cuda
@@ -46,8 +46,7 @@ COPY entrypoint.sh /home/rapids/entrypoint.sh
 # CI should handle modifying this file instead of the dockerfile
 # RUN if [ "${RAPIDS_BRANCH}" = "main" ]; then sed -i '/nightly/d;/dask\/label\/dev/d' /opt/conda/.condarc; fi
 
-RUN --mount=type=cache,target=/opt/conda/pkgs \
-    mamba install -y -n base \
+RUN mamba install -y -n base \
         "rapids=${RAPIDS_VER}.*" \
         "dask-sql=${DASK_SQL_VER%.*}.*" \
         "python=${PYTHON_VER}.*" \
@@ -71,12 +70,10 @@ COPY --from=dependencies --chown=rapids /test_notebooks_dependencies.yaml test_n
 
 COPY --from=dependencies --chown=rapids /notebooks /home/rapids/notebooks
 
-RUN --mount=type=cache,target=/opt/conda/pkgs \
-    mamba env update -n base -f test_notebooks_dependencies.yaml \
+RUN mamba env update -n base -f test_notebooks_dependencies.yaml \
     && conda clean -afy
 
-RUN --mount=type=cache,target=/opt/conda/pkgs \
-    mamba install -y -n base \
+RUN mamba install -y -n base \
         jupyterlab \
         dask-labextension \
         jupyterlab-nvdashboard \

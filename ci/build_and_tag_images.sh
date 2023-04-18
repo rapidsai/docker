@@ -1,7 +1,19 @@
 #!/bin/bash
 
-TAG="$RAPIDS_VER-cuda$CUDA_VER-$LINUX_VER-py$PYTHON_VER"
+# Build both base & notebook images, tag them, and upload to S3
+# Requires environment variables:
+#    CUDA_VER
+#    LINUX_VER
+#    PYTHON_VER
+#    RAPIDS_VER
+#    DASK_SQL_VER
+# Example Usage:
+#   ./ci/build_and_tag_images.sh
 
+set -euox pipefail
+
+TAG="$RAPIDS_VER-cuda$CUDA_VER-$LINUX_VER-py$PYTHON_VER"
+ check
 BUILD_ARGS=(
     "--build-arg" "CUDA_VER=$CUDA_VER"
     "--build-arg" "LINUX_VER=$LINUX_VER"
@@ -18,7 +30,7 @@ docker buildx build --pull -f Dockerfile \
 
 docker buildx build --pull -f Dockerfile \
     --target notebooks \
-    $BUILD_ARGS[@] \
+    "$BUILD_ARGS[@]" \
     -t "rapidsai/rapidsai-notebooks:$TAG" \
     ./context
 

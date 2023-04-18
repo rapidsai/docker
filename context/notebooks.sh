@@ -1,9 +1,17 @@
 #!/usr/bin/env bash
-set -e
+
+# Clones repos with notebooks & compiles notebook test dependencies
+# Requires environment variables:
+#    RAPIDS_BRANCH
+#    CUDA_VER
+#    PYTHON_VER
+
+set -euo pipefail
+
+NOTEBOOK_REPOS=(cudf cuml cugraph cuxfilter cuspatial cusignal xgboost-conda)
 
 mkdir -p /notebooks /dependencies
-NB_REPOS=(cudf cuml cugraph cuxfilter cuspatial cusignal xgboost-conda)
-for REPO in "${NB_REPOS[@]}"; do
+for REPO in "${NOTEBOOK_REPOS[@]}"; do
     echo "Cloning $REPO..."
     git clone -b "${RAPIDS_BRANCH}" --depth 1 --single-branch "https://github.com/rapidsai/$REPO" "$REPO"
     cp -rL "$REPO"/notebooks /notebooks/"$REPO"
