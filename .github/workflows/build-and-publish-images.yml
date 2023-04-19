@@ -53,7 +53,7 @@ jobs:
     needs: compute-matrix
     strategy:
       matrix: ${{ fromJSON(needs.compute-matrix.outputs.MATRIX) }}
-    runs-on: ${{ fromJSON(matrix.runner_arch != 'arm64' && '"ubuntu-latest"' || '"linux-arm64-cpu4"') }}
+    runs-on: "linux-${{ matrix.runner_arch }}-cpu4"
     env:
       RAPIDS_BUILD_TYPE: ${{ inputs.build_type }}
     steps:
