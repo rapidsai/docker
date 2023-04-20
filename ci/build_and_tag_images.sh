@@ -22,17 +22,20 @@ BUILD_ARGS=(
     "--build-arg" "DASK_SQL_VER=$DASK_SQL_VER"
 )
 
-docker buildx build --pull -f Dockerfile \
-    --target base \
-    "${BUILD_ARGS[@]}" \
-    -t "rapidsai/rapidsai:$TAG" \
-    ./context
+docker_build() {
+    target="$1"
+    repo="$2"
 
-docker buildx build --pull -f Dockerfile \
-    --target notebooks \
-    "${BUILD_ARGS[@]}" \
-    -t "rapidsai/rapidsai-notebooks:$TAG" \
-    ./context
+    docker buildx build --pull --load \
+        -f Dockerfile \
+        --target "$target" \
+        "${BUILD_ARGS[@]}" \
+        -t "$repo:$TAG" \
+        ./context
+}
+
+docker_build base rapidsai/rapidsai
+docker_build notebooks rapidsai/rapidsai-notebooks
 
 rapids-upload-docker-to-s3 "rapidsai/rapidsai:$TAG"
 rapids-upload-docker-to-s3 "rapidsai/rapidsai-notebooks:$TAG"
