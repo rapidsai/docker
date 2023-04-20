@@ -1,16 +1,16 @@
 CUDA_VER:
-  - "11.2.2"
-  - "11.4.1"
+#  - "11.2.2"
+#  - "11.4.1"
   - "11.5.1"
   - "11.8.0"
 PYTHON_VER:
-  - "3.8"
+#  - "3.8"
   - "3.10"
 LINUX_VER:
-  - "ubuntu20.04"
+#  - "ubuntu20.04"
   - "ubuntu22.04"
   - "centos7"
-  - "rockylinux8"
+#  - "rockylinux8"
 RUNNER_ARCH:
   - "amd64"
   - "arm64"
