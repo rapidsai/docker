@@ -30,7 +30,7 @@ docker buildx build --pull -f Dockerfile \
 
 docker buildx build --pull -f Dockerfile \
     --target notebooks \
-    "$BUILD_ARGS[@]" \
+    "${BUILD_ARGS[@]}" \
     -t "rapidsai/rapidsai-notebooks:$TAG" \
     ./context
 
