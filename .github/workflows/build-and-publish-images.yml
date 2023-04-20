@@ -52,6 +52,7 @@ jobs:
   docker-build-per-arch:
     needs: compute-matrix
     strategy:
+      fail-fast: false
       matrix: ${{ fromJSON(needs.compute-matrix.outputs.MATRIX) }}
     runs-on: "linux-${{ matrix.runner_arch }}-cpu4"
     env:
