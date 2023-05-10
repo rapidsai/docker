@@ -5,7 +5,7 @@ ARG PYTHON_VER=3.10
 ARG LINUX_VER=ubuntu22.04
 
 ARG RAPIDS_VER=23.06
-ARG DASK_SQL_VER=2023.2.0
+ARG DASK_SQL_VER=2023.4.0
 
 ARG BASE_FROM_IMAGE=rapidsai/mambaforge-cuda
 
@@ -41,8 +41,6 @@ WORKDIR /home/rapids
 
 COPY condarc /opt/conda/.condarc
 
-COPY entrypoint.sh /home/rapids/entrypoint.sh
-
 # CI should handle modifying this file instead of the dockerfile
 # RUN if [ "${RAPIDS_BRANCH}" = "main" ]; then sed -i '/nightly/d;/dask\/label\/dev/d' /opt/conda/.condarc; fi
 
@@ -53,6 +51,8 @@ RUN mamba install -y -n base \
         "cudatoolkit=${CUDA_VER%.*}.*" \
         ipython \
     && conda clean -afy
+
+COPY entrypoint.sh /home/rapids/entrypoint.sh
 
 ENTRYPOINT ["/home/rapids/entrypoint.sh"]
 

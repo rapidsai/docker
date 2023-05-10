@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-set -euo pipefail
+set -eo pipefail
 
 cat << EOF
 This container image and its contents are governed by the NVIDIA Deep Learning Container License.

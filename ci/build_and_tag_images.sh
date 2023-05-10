@@ -36,6 +36,3 @@ docker_build() {
 
 docker_build base rapidsai/rapidsai
 docker_build notebooks rapidsai/rapidsai-notebooks
-
-rapids-upload-docker-to-s3 "rapidsai/rapidsai:$TAG"
-rapids-upload-docker-to-s3 "rapidsai/rapidsai-notebooks:$TAG"
