@@ -1,0 +1,98 @@
+name: Build and push image variant
+
+on:
+  workflow_call:
+    inputs:
+      ARCHES:
+        required: true
+        type: string
+      CUDA_VER:
+        required: true
+        type: string
+      LINUX_VER:
+        required: true
+        type: string
+      PYTHON_VER:
+        required: true
+        type: string
+      RAPIDS_VER:
+        required: true
+        type: string
+      DASK_SQL_VER:
+        required: true
+        type: string
+      BASE_TAG:
+        required: true
+        type: string
+      NOTEBOOKS_TAG:
+        required: true
+        type: string
+
+jobs:
+  docker-build:
+    strategy:
+      matrix:
+        ARCH: ${{ fromJSON(inputs.ARCHES) }}
+        CUDA_VER: ["${{ inputs.CUDA_VER }}"]
+        LINUX_VER: ["${{ inputs.LINUX_VER }}"]
+        PYTHON_VER: ["${{ inputs.PYTHON_VER }}"]
+        RAPIDS_BER: ["${{ inputs.RAPIDS_VER }}"]
+        DASK_SQL_VER: ["${{ inputs.DASK_SQL_VER }}"]
+      fail-fast: false
+    runs-on: "linux-${{ matrix.ARCH }}-cpu4"
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: Login to DockerHub
+        uses: docker/login-action@v2
+        with:
+          username: ${{ secrets.GPUCIBOT_DOCKERHUB_USER }}
+          password: ${{ secrets.GPUCIBOT_DOCKERHUB_TOKEN }}
+      - name: Set up Docker Context for Buildx
+        id: buildx-context
+        run: |
+          docker context create builders
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v2
+        with:
+          driver: docker
+          endpoint: builders
+      - name: Build base image
+        uses: docker/build-push-action@v4
+        with:
+          context: context
+          file: Dockerfile
+          target: base
+          push: true
+          pull: true
+          build-args: |
+            CUDA_VER=${{ inputs.CUDA_VER }}
+            LINUX_VER=${{ inputs.LINUX_VER }}
+            PYTHON_VER=${{ inputs.PYTHON_VER }}
+            RAPIDS_VER=${{ inputs.RAPIDS_VER }}
+            DASK_SQL_VER=${{ inputs.DASK_SQL_VER }}
+          tags: ${{ inputs.BASE_TAG }}-${{ matrix.ARCH }}
+      - name: Build notebooks image
+        uses: docker/build-push-action@v4
+        with:
+          context: context
+          file: Dockerfile
+          target: notebooks
+          push: true
+          pull: true
+          build-args: |
+            CUDA_VER=${{ inputs.CUDA_VER }}
+            LINUX_VER=${{ inputs.LINUX_VER }}
+            PYTHON_VER=${{ inputs.PYTHON_VER }}
+            RAPIDS_VER=${{ inputs.RAPIDS_VER }}
+            DASK_SQL_VER=${{ inputs.DASK_SQL_VER }}
+          tags: ${{ inputs.NOTEBOOKS_TAG }}-${{ matrix.ARCH }}
+      # - name: Build images
+      #   run: ./ci/build_and_tag_images.sh
+      #   env:
+      #       TAG: ${{ inputs.TAG }}-${{ matrix.ARCH }}
+      #       CUDA_VER: ${{ matrix.CUDA_VER }}
+      #       LINUX_VER: ${{ matrix.LINUX_VER }}
+      #       PYTHON_VER: ${{ matrix.PYTHON_VER }}
+      #       RAPIDS_VER: ${{ matrix.RAPIDS_VER }}
+      #       DASK_SQL_VER: ${{ matrix.DASK_SQL_VER }}

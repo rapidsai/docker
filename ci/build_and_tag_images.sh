@@ -2,6 +2,7 @@
 
 # Build both base & notebook images, tag them, and upload to S3
 # Requires environment variables:
+#    TAG
 #    CUDA_VER
 #    LINUX_VER
 #    PYTHON_VER
@@ -11,8 +12,6 @@
 #   ./ci/build_and_tag_images.sh
 
 set -euox pipefail
-
-TAG="$RAPIDS_VER-cuda$CUDA_VER-$LINUX_VER-py$PYTHON_VER"
 
 BUILD_ARGS=(
     "--build-arg" "CUDA_VER=$CUDA_VER"

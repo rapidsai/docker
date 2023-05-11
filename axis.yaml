@@ -11,9 +11,6 @@ LINUX_VER:
   - "ubuntu22.04"
   - "centos7"
 #  - "rockylinux8"
-RUNNER_ARCH:
-  - "amd64"
-  - "arm64"
 RAPIDS_VER:
   - "23.06"
 DASK_SQL_VER:
@@ -25,9 +22,3 @@ exclude:
     CUDA_VER: "11.4.1"
   - LINUX_VER: "ubuntu22.04"
     CUDA_VER: "11.5.1"
-  # skip ARM builds for centos7
-  - LINUX_VER: "centos7"
-    RUNNER_ARCH: "arm64"
-  # skip ARM builds for CUDA 11.2.2
-  - CUDA_VER: 11.2.2
-    RUNNER_ARCH: "arm64"

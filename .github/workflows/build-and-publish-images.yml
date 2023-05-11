@@ -1,144 +1,129 @@
-name: Build and publish images workflow
+name: build and publish imgs workflow
 
 on:
   workflow_call:
     inputs:
-      repo:
-        type: string
-      branch:
-        type: string
-      date:
-        type: string
-      sha:
-        type: string
       build_type:
         required: true
         type: string
-
-      push:
-        required: true
-        type: boolean
 
 defaults:
   run:
     shell: bash
 
-permissions:
-  actions: none
-  checks: none
-  contents: read
-  deployments: none
-  discussions: none
-  id-token: write
-  issues: none
-  packages: read
-  pages: none
-  pull-requests: read
-  repository-projects: none
-  security-events: none
-  statuses: none
-
 jobs:
   compute-matrix:
     runs-on: ubuntu-latest
     outputs:
+      BASE_IMAGE_REPO: ${{ steps.compute-image-repo.outputs.BASE_IMAGE_REPO }}
+      NOTEBOOKS_IMAGE_REPO: ${{ steps.compute-image-repo.outputs.NOTEBOOKS_IMAGE_REPO }}
       MATRIX: ${{ steps.compute-matrix.outputs.MATRIX }}
+      BASE_TAG_PREFIX: ${{ steps.compute-tag-prefix.outputs.BASE_TAG_PREFIX }}
+      NOTEBOOKS_TAG_PREFIX: ${{ steps.compute-tag-prefix.outputs.NOTEBOOKS_TAG_PREFIX }}
     steps:
       - name: Checkout
         uses: actions/checkout@v3
       - name: Compute matrix
         id: compute-matrix
-        run: ./ci/compute-matrix.sh
-  docker-build-per-arch:
+        run: |
+          MATRIX=$(ci/compute-mx.sh)
+          echo "MATRIX=${MATRIX}" | tee -a ${GITHUB_OUTPUT}
+      - name: Compute tag prefix
+        id: compute-tag-prefix
+        run: |
+          TAG_PREFIX=""
+          if [ "${{ inputs.build_type }}" = "pull-request" ]; then
+            pr_num="${GITHUB_REF_NAME##*/}"
+            BASE_TAG_PREFIX="rapidsai-${pr_num}-"
+            NOTEBOOKS_TAG_PREFIX="rapidsai-notebooks-${pr_num}-"
+          fi
+          echo "BASE_TAG_PREFIX=${BASE_TAG_PREFIX}" | tee -a ${GITHUB_OUTPUT}
+          echo "NOTEBOOKS_TAG_PREFIX=${NOTEBOOKS_TAG_PREFIX}" | tee -a ${GITHUB_OUTPUT}
+      - name: Compute image repo
+        id: compute-image-repo
+        run: |
+          base_repo="rapidsai"
+          notebooks_repo="rapidsai-notebooks"
+          if [ "${{ inputs.build_type }}" = "pull-request" ]; then
+            base_repo="staging"
+            notebooks_repo="staging"
+          fi
+          echo "BASE_IMAGE_REPO=${base_repo}" | tee -a ${GITHUB_OUTPUT}
+          echo "NOTEBOOKS_IMAGE_REPO=${notebooks_repo}" | tee -a ${GITHUB_OUTPUT}
+  docker:
     needs: compute-matrix
     strategy:
-      fail-fast: false
       matrix: ${{ fromJSON(needs.compute-matrix.outputs.MATRIX) }}
-    runs-on: "linux-${{ matrix.runner_arch }}-cpu4"
-    env:
-      RAPIDS_BUILD_TYPE: ${{ inputs.build_type }}
+      fail-fast: false
+    secrets: inherit
+    uses: ./.github/workflows/build-image.yml
+    with:
+      ARCHES: ${{ toJSON(matrix.ARCHES) }}
+      CUDA_VER: ${{ matrix.CUDA_VER }}
+      LINUX_VER: ${{ matrix.LINUX_VER }}
+      PYTHON_VER: ${{ matrix.PYTHON_VER }}
+      RAPIDS_VER: ${{ matrix.RAPIDS_VER }}
+      DASK_SQL_VER: ${{ matrix.DASK_SQL_VER }}
+      BASE_TAG: rapidsai/${{ needs.compute-matrix.outputs.BASE_IMAGE_REPO }}:${{ needs.compute-matrix.outputs.BASE_TAG_PREFIX }}${{ matrix.RAPIDS_VER }}cuda${{ matrix.CUDA_VER }}-${{ matrix.LINUX_VER }}-py${{ matrix.PYTHON_VER }}
+      NOTEBOOKS_TAG: rapidsai/${{ needs.compute-matrix.outputs.NOTEBOOKS_IMAGE_REPO }}:${{ needs.compute-matrix.outputs.NOTEBOOKS_TAG_PREFIX }}${{ matrix.RAPIDS_VER }}cuda${{ matrix.CUDA_VER }}-${{ matrix.LINUX_VER }}-py${{ matrix.PYTHON_VER }}
+  build-multiarch-manifest:
+    if: inputs.build_type == 'branch'
+    needs: [docker, compute-matrix]
+    strategy:
+      matrix: ${{ fromJSON(needs.compute-matrix.outputs.MATRIX) }}
+    runs-on: ubuntu-latest
     steps:
-      - name: Get AWS credentials
-        uses: aws-actions/configure-aws-credentials@v1-node16
-        with:
-          role-to-assume: ${{ vars.AWS_ROLE_ARN }}
-          aws-region: ${{ vars.AWS_REGION }}
-          role-duration-seconds: 43200 # 12h
       - name: Checkout
         uses: actions/checkout@v3
-      - name: Standardize repository information
-        uses: rapidsai/shared-action-workflows/rapids-github-info@branch-23.06
+      - name: Login to DockerHub
+        uses: docker/login-action@v2
         with:
-          repo: ${{ inputs.repo }}
-          branch: ${{ inputs.branch }}
-          date: ${{ inputs.date }}
-          sha: ${{ inputs.sha }}
-      - name: Set up Docker Context for Buildx
-        id: buildx-context
-        run: docker context create builders
-      - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v2
-        with:
-          endpoint: builders
-      - name: Download and untar gha-tools
+          username: ${{ secrets.GPUCIBOT_DOCKERHUB_USER }}
+          password: ${{ secrets.GPUCIBOT_DOCKERHUB_TOKEN }}
+      - name: Create multiarch manifest
         run: |
-          set -x
-          sudo apt-get update -y && sudo apt-get install -y awscli git
-          git clone https://github.com/rapidsai/gha-tools.git -b main ./gha-tools
-          chmod +x ./gha-tools/tools/*
-          sudo cp ./gha-tools/tools/* /usr/bin/
-      - name: Build and push intermediate images to s3
-        run: ./ci/build_and_tag_images.sh
-        env:
-            CUDA_VER: ${{ matrix.CUDA_VER }}
-            LINUX_VER: ${{ matrix.LINUX_VER }}
-            PYTHON_VER: ${{ matrix.PYTHON_VER }}
-            RAPIDS_VER: ${{ matrix.RAPIDS_VER }}
-            DASK_SQL_VER: ${{ matrix.DASK_SQL_VER }}
-  # docker-assemble-push-multiarch:
-  #   needs: [compute-matrix, docker-build-per-arch]
-  #   runs-on: ubuntu-latest
-  #   env:
-  #     DOCKERHUB_USERNAME: ${{ secrets.GPUCIBOT_DOCKERHUB_USER }}
-  #     DOCKERHUB_TOKEN: ${{ secrets.GPUCIBOT_DOCKERHUB_TOKEN }}
-  #     RAPIDS_BUILD_TYPE: ${{ inputs.build_type }}
-  #   services:
-  #     registry:
-  #       image: registry:2
-  #       ports:
-  #         - 5000:5000
-  #   steps:
-  #     - name: Get AWS credentials
-  #       uses: aws-actions/configure-aws-credentials@v1-node16
-  #       with:
-  #         role-to-assume: ${{ vars.AWS_ROLE_ARN }}
-  #         aws-region: ${{ vars.AWS_REGION }}
-  #         role-duration-seconds: 43200 # 12h
-  #     - name: Checkout
-  #       uses: actions/checkout@v3
-  #     - name: Standardize repository information
-  #       uses: rapidsai/shared-action-workflows/rapids-github-info@branch-23.06
-  #       with:
-  #         repo: ${{ inputs.repo }}
-  #         branch: ${{ inputs.branch }}
-  #         date: ${{ inputs.date }}
-  #         sha: ${{ inputs.sha }}
-  #     - name: Set up Docker Buildx
-  #       uses: docker/setup-buildx-action@v2
-  #     - if: ${{ env.DOCKERHUB_USERNAME != '' && env.DOCKERHUB_TOKEN != '' }}
-  #       name: Login to DockerHub
-  #       uses: docker/login-action@v2
-  #       with:
-  #         username: ${{ env.DOCKERHUB_USERNAME }}
-  #         password: ${{ env.DOCKERHUB_TOKEN }}
-  #     - name: Download and untar gha-tools
-  #       run: |
-  #         set -x
-  #         sudo apt-get update -y && sudo apt-get install -y awscli git
-  #         git clone https://github.com/sevagh/gha-tools -b feat/docker-s3 ./gha-tools
-  #         chmod +x ./gha-tools/tools/*
-  #         sudo cp ./gha-tools/tools/* /usr/bin/
-  #     - name: Assemble multiarch manifest from s3
-  #       run: |
-  #         set -x
-  #         rapids-docker-multiarch-from-s3
+          base_source_tags=()
+          notebooks_source_tags=()
+          base_tag="rapidsai/${{ needs.compute-matrix.outputs.BASE_IMAGE_REPO }}:${{ needs.compute-matrix.outputs.BASE_TAG_PREFIX }}${{ matrix.RAPIDS_VER }}cuda${{ matrix.CUDA_VER }}-${{ matrix.LINUX_VER }}-py${{ matrix.PYTHON_VER }}"
+          notebooks_tag="rapidsai/${{ needs.compute-matrix.outputs.NOTEBOOKS_IMAGE_REPO }}:${{ needs.compute-matrix.outputs.NOTEBOOKS_TAG_PREFIX }}${{ matrix.RAPIDS_VER }}cuda${{ matrix.CUDA_VER }}-${{ matrix.LINUX_VER }}-py${{ matrix.PYTHON_VER }}"
+          for arch in $(echo '${{ toJSON(matrix.ARCHES) }}' | jq .[] -r); do
+            base_source_tags+=("${base_tag}-${arch}")
+            notebooks_source_tags+=("${notebooks_tag}-${arch}")
+          done
+          
+          docker manifest create ${base_tag} ${base_source_tags[@]}
+          docker manifest push ${base_tag}
+          docker manifest create ${notebooks_tag} ${notebooks_source_tags[@]}
+          docker manifest push ${notebooks_tag}
+  delete-temp-images:
+    if: always()
+    needs: [compute-matrix, build-multiarch-manifest]
+    strategy:
+      matrix: ${{ fromJSON(needs.compute-matrix.outputs.MATRIX) }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Remove temporary images
+        run: |
+          HUB_TOKEN=$(
+            curl -s -H "Content-Type: application/json" \
+              -X POST \
+              -d "{\"username\": \"${{ secrets.GPUCIBOT_DOCKERHUB_USER }}\", \"password\": \"${{ secrets.GPUCIBOT_DOCKERHUB_TOKEN }}\"}" \
+              https://hub.docker.com/v2/users/login/ | jq -r .token \
+          )
+
+          org="rapidsai"
+          base_repo="${{ needs.compute-matrix.outputs.BASE_IMAGE_REPO }}"
+          base_tag="${{ needs.compute-matrix.outputs.BASE_TAG_PREFIX }}${{ matrix.RAPIDS_VER }}cuda${{ matrix.CUDA_VER }}-${{ matrix.LINUX_VER }}-py${{ matrix.PYTHON_VER }}"
+          notebooks_repo="${{ needs.compute-matrix.outputs.NOTEBOOKS_IMAGE_REPO }}"
+          notebooks_tag="${{ needs.compute-matrix.outputs.NOTEBOOKS_TAG_PREFIX }}${{ matrix.RAPIDS_VER }}cuda${{ matrix.CUDA_VER }}-${{ matrix.LINUX_VER }}-py${{ matrix.PYTHON_VER }}"
+
+          for arch in $(echo '${{ toJSON(matrix.ARCHES) }}' | jq .[] -r); do
+            curl -i -X DELETE \
+              -H "Accept: application/json" \
+              -H "Authorization: JWT $HUB_TOKEN" \
+              "https://hub.docker.com/v2/repositories/$org/$base_repo/tags/$base_tag-$arch/"
+            curl -i -X DELETE \
+              -H "Accept: application/json" \
+              -H "Authorization: JWT $HUB_TOKEN" \
+              "https://hub.docker.com/v2/repositories/$org/$notebooks_repo/tags/$notebooks_tag-$arch/"
+          done
