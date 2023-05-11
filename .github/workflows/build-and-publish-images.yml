@@ -20,6 +20,7 @@ jobs:
       MATRIX: ${{ steps.compute-matrix.outputs.MATRIX }}
       BASE_TAG_PREFIX: ${{ steps.compute-tag-prefix.outputs.BASE_TAG_PREFIX }}
       NOTEBOOKS_TAG_PREFIX: ${{ steps.compute-tag-prefix.outputs.NOTEBOOKS_TAG_PREFIX }}
+      RAPIDS_VER: ${{ steps.compute-rapids-ver.outputs.RAPIDS_VER }}
     steps:
       - name: Checkout
         uses: actions/checkout@v3
@@ -50,6 +51,47 @@ jobs:
           fi
           echo "BASE_IMAGE_REPO=${base_repo}" | tee -a ${GITHUB_OUTPUT}
           echo "NOTEBOOKS_IMAGE_REPO=${notebooks_repo}" | tee -a ${GITHUB_OUTPUT}
+      - name: Compute RAPIDS_VER
+        id: compute-rapids-ver
+        run: |
+          RAPIDS_VER=$(yq '.RAPIDS_VER[0]' axis.yaml)
+          echo "RAPIDS_VER=${RAPIDS_VER}" | tee -a ${GITHUB_OUTPUT}
+  compute-test-matrix:
+    runs-on: ubuntu-latest
+    needs: compute-matrix
+    outputs:
+      TEST_MATRIX: ${{ steps.compute-test-matrix.outputs.TEST_MATRIX }}
+    steps:
+      - name: Compute test matrix
+        id: compute-test-matrix
+        run: |
+          set -eo pipefail
+
+          export MATRICES="
+            pull-request:
+              #- { CUDA_VER: '11.2.2', LINUX_VER: 'centos7', ARCH: 'amd64', PYTHON_VER: '3.9', GPU: 'v100', DRIVER: 'earliest' }
+              #- { CUDA_VER: '11.4.1', LINUX_VER: 'ubuntu20.04', ARCH: 'amd64', PYTHON_VER: '3.9', GPU: 'v100', DRIVER: 'latest' }
+              - { CUDA_VER: '11.8.0', LINUX_VER: 'ubuntu22.04', ARCH: 'amd64', PYTHON_VER: '3.10', GPU: 'v100', DRIVER: 'latest' }
+              - { CUDA_VER: '11.8.0', LINUX_VER: 'ubuntu22.04', ARCH: 'arm64', PYTHON_VER: '3.10', GPU: 'a100', DRIVER: 'latest' }
+            nightly:
+              - { CUDA_VER: '11.2.2', LINUX_VER: 'centos7', ARCH: 'amd64', PYTHON_VER: '3.9', GPU: 'v100', DRIVER: 'earliest' }
+              - { CUDA_VER: '11.2.2', LINUX_VER: 'ubuntu20.04', ARCH: 'amd64', PYTHON_VER: '3.9', GPU: 'v100', DRIVER: 'earliest' }
+              - { CUDA_VER: '11.2.2', LINUX_VER: 'ubuntu20.04', ARCH: 'amd64', PYTHON_VER: '3.9', GPU: 'v100', DRIVER: 'latest' }
+              - { CUDA_VER: '11.4.1', LINUX_VER: 'ubuntu20.04', ARCH: 'amd64', PYTHON_VER: '3.9', GPU: 'v100', DRIVER: 'earliest' }
+              - { CUDA_VER: '11.4.1', LINUX_VER: 'ubuntu20.04', ARCH: 'amd64', PYTHON_VER: '3.9', GPU: 'v100', DRIVER: 'latest' }
+              - { CUDA_VER: '11.4.1', LINUX_VER: 'ubuntu20.04', ARCH: 'arm64', PYTHON_VER: '3.9', GPU: 'a100', DRIVER: 'latest' }
+              - { CUDA_VER: '11.5.1', LINUX_VER: 'ubuntu20.04', ARCH: 'amd64', PYTHON_VER: '3.10', GPU: 'v100', DRIVER: 'earliest' }
+              - { CUDA_VER: '11.5.1', LINUX_VER: 'rockylinux8', ARCH: 'amd64', PYTHON_VER: '3.10', GPU: 'v100', DRIVER: 'earliest' }
+              - { CUDA_VER: '11.8.0', LINUX_VER: 'ubuntu22.04', ARCH: 'amd64', PYTHON_VER: '3.10', GPU: 'v100', DRIVER: 'latest' }
+              - { CUDA_VER: '11.8.0', LINUX_VER: 'ubuntu22.04', ARCH: 'arm64', PYTHON_VER: '3.10', GPU: 'a100', DRIVER: 'latest' }
+              - { CUDA_VER: '11.8.0', LINUX_VER: 'rockylinux8', ARCH: 'amd64', PYTHON_VER: '3.10', GPU: 'v100', DRIVER: 'latest' }
+              - { CUDA_VER: '11.8.0', LINUX_VER: 'rockylinux8', ARCH: 'arm64', PYTHON_VER: '3.10', GPU: 'a100', DRIVER: 'latest' }
+          "
+
+          TEST_MATRIX=$(yq -n 'env(MATRICES) | .${{ inputs.build_type }}')
+          export TEST_MATRIX
+
+          echo "TEST_MATRIX=$(yq -n -o json 'env(TEST_MATRIX)')" | tee --append "${GITHUB_OUTPUT}"
   docker:
     needs: compute-matrix
     strategy:
@@ -66,9 +108,27 @@ jobs:
       DASK_SQL_VER: ${{ matrix.DASK_SQL_VER }}
       BASE_TAG: rapidsai/${{ needs.compute-matrix.outputs.BASE_IMAGE_REPO }}:${{ needs.compute-matrix.outputs.BASE_TAG_PREFIX }}${{ matrix.RAPIDS_VER }}cuda${{ matrix.CUDA_VER }}-${{ matrix.LINUX_VER }}-py${{ matrix.PYTHON_VER }}
       NOTEBOOKS_TAG: rapidsai/${{ needs.compute-matrix.outputs.NOTEBOOKS_IMAGE_REPO }}:${{ needs.compute-matrix.outputs.NOTEBOOKS_TAG_PREFIX }}${{ matrix.RAPIDS_VER }}cuda${{ matrix.CUDA_VER }}-${{ matrix.LINUX_VER }}-py${{ matrix.PYTHON_VER }}
+  test:
+    needs: [docker, compute-matrix, compute-test-matrix]
+    # TODO: nightly tests
+    if: inputs.build_type == 'pull-request'
+    strategy:
+      matrix: ${{ fromJSON(needs.compute-test-matrix.outputs.TEST_MATRIX) }}
+      fail-fast: false
+    secrets: inherit
+    uses: ./.github/workflows/test-image.yml
+    with:
+      ARCH: ${{ matrix.ARCH }}
+      GPU: ${{ matrix.GPU }}
+      DRIVER: ${{ matrix.DRIVER }}
+      CUDA_VER: ${{ matrix.CUDA_VER }}
+      LINUX_VER: ${{ matrix.LINUX_VER }}
+      PYTHON_VER: ${{ matrix.PYTHON_VER }}
+      RAPIDS_VER: ${{ needs.compute-matrix.outputs.RAPIDS_VER }}
+      NOTEBOOKS_TAG: rapidsai/${{ needs.compute-matrix.outputs.NOTEBOOKS_IMAGE_REPO }}:${{ needs.compute-matrix.outputs.NOTEBOOKS_TAG_PREFIX }}${{ needs.compute-matrix.outputs.RAPIDS_VER }}cuda${{ matrix.CUDA_VER }}-${{ matrix.LINUX_VER }}-py${{ matrix.PYTHON_VER }}-${{ matrix.ARCH }}
   build-multiarch-manifest:
     if: inputs.build_type == 'branch'
-    needs: [docker, compute-matrix]
+    needs: [docker, test, compute-matrix]
     strategy:
       matrix: ${{ fromJSON(needs.compute-matrix.outputs.MATRIX) }}
     runs-on: ubuntu-latest

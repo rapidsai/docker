@@ -87,12 +87,3 @@ jobs:
             RAPIDS_VER=${{ inputs.RAPIDS_VER }}
             DASK_SQL_VER=${{ inputs.DASK_SQL_VER }}
           tags: ${{ inputs.NOTEBOOKS_TAG }}-${{ matrix.ARCH }}
-      # - name: Build images
-      #   run: ./ci/build_and_tag_images.sh
-      #   env:
-      #       TAG: ${{ inputs.TAG }}-${{ matrix.ARCH }}
-      #       CUDA_VER: ${{ matrix.CUDA_VER }}
-      #       LINUX_VER: ${{ matrix.LINUX_VER }}
-      #       PYTHON_VER: ${{ matrix.PYTHON_VER }}
-      #       RAPIDS_VER: ${{ matrix.RAPIDS_VER }}
-      #       DASK_SQL_VER: ${{ matrix.DASK_SQL_VER }}
