@@ -26,7 +26,7 @@ def compute_mx($input):
   map(.value) |
   [
     combinations |
-    {CUDA_VER: .[0], PYTHON_VER: .[1], LINUX_VER: .[2]} |
+    {CUDA_VER: .[0], PYTHON_VER: .[1], LINUX_VER: .[2], RAPIDS_VER: .[3], DASK_SQL_VER: .[4]} |
     filter_excludes(.; $excludes) |
     compute_arch(.)
   ] |
