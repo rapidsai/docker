@@ -91,7 +91,7 @@ jobs:
           TEST_MATRIX=$(yq -n 'env(MATRICES) | .${{ inputs.build_type }}')
           export TEST_MATRIX
 
-          echo "TEST_MATRIX=$(yq -n -o json 'env(TEST_MATRIX)' | jq -c '.')" | tee --append "${GITHUB_OUTPUT}"
+          echo "TEST_MATRIX=$(yq -n -o json 'env(TEST_MATRIX)' | jq -c '{include: .}')" | tee --append "${GITHUB_OUTPUT}"
   docker:
     needs: compute-matrix
     strategy:
