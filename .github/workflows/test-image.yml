@@ -39,6 +39,7 @@ jobs:
     runs-on: "linux-${{ inputs.ARCH }}-gpu-${{ inputs.GPU }}-${{ inputs.DRIVER }}-1"
     container:
       image: ${{ inputs.NOTEBOOKS_TAG }}
+      options: --user rapids
       env:
         #RAPIDS_BUILD_TYPE: ${{ inputs.build_type }}
         #PARALLEL_LEVEL: ${{ env.PARALLEL_LEVEL }}
