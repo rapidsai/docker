@@ -82,6 +82,8 @@ RUN mamba install -y -n base \
 ENV DASK_LABEXTENSION__FACTORY__MODULE="dask_cuda"
 ENV DASK_LABEXTENSION__FACTORY__CLASS="LocalCUDACluster"
 
+COPY test_notebooks.py /home/rapids/
+
 EXPOSE 8888
 
 ENTRYPOINT ["/home/rapids/entrypoint.sh"]
