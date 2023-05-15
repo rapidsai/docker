@@ -54,11 +54,11 @@ def get_notebooks(directory: str) -> Iterable[str]:
 def test_notebook(notebook_file, executed_nb_file):
     current_directory = os.path.realpath(os.path.curdir)
     try:
-        notebook_dir = os.path.dirname(notebook_file)
-        os.chdir(notebook_dir)
-
         with open(notebook_file) as f:
             nb = nbformat.read(f, as_version=4)
+
+        notebook_dir = os.path.dirname(notebook_file)
+        os.chdir(notebook_dir)
 
         errors = []
         warnings = []
@@ -117,6 +117,7 @@ def test_notebook(notebook_file, executed_nb_file):
                             str(ec + 1) + "\n" + str(output["traceback"]),
                         ]
                     )
+                    print(str(output["ename"]), str(output["traceback"]))
                 else:
                     print(f'Unknown output type: {output["output_type"]}')
 
@@ -159,7 +160,7 @@ if __name__ == "__main__":
     for notebook in notebooks:
         print(f"Testing {notebook}")
         notebook_file = os.path.join(ns.input, notebook)
-        executed_nb_file = os.path.join(ns.output, notebook)
+        executed_nb_file = os.path.realpath(os.path.join(ns.output, notebook))
 
         executed_nb_dir = os.path.dirname(executed_nb_file)
         os.makedirs(executed_nb_dir, exist_ok=True)
@@ -177,7 +178,7 @@ if __name__ == "__main__":
             "errors": errors,
         }
         nb_errors[notebook]=errors
-        found_errors = found_errors and len(errors)!=0
+        found_errors = found_errors or len(errors)!=0
         with open(executed_nb_file + ".yaml", "w", encoding="utf-8") as f:
             yaml.dump(result, f)
         print(f'Completed {notebook} with {len(warnings)} warnings and {len(errors)} errors')
