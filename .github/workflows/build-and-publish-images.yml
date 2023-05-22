@@ -118,6 +118,7 @@ jobs:
     secrets: inherit
     uses: ./.github/workflows/test-image.yml
     with:
+      BUILD_TYPE: ${{ inputs.build_type }}
       ARCH: ${{ matrix.ARCH }}
       GPU: ${{ matrix.GPU }}
       DRIVER: ${{ matrix.DRIVER }}

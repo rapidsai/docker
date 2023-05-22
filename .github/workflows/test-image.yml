@@ -3,6 +3,9 @@ name: Test notebooks
 on:
   workflow_call:
     inputs:
+      BUILD_TYPE:
+        required: true
+        type: string
       ARCH:
         required: true
         type: string
@@ -39,12 +42,29 @@ jobs:
     runs-on: "linux-${{ inputs.ARCH }}-gpu-${{ inputs.GPU }}-${{ inputs.DRIVER }}-1"
     container:
       image: ${{ inputs.NOTEBOOKS_TAG }}
-      options: --user rapids
       env:
-        #RAPIDS_BUILD_TYPE: ${{ inputs.build_type }}
-        #PARALLEL_LEVEL: ${{ env.PARALLEL_LEVEL }}
         NVIDIA_VISIBLE_DEVICES: ${{ env.NVIDIA_VISIBLE_DEVICES }}
+        RAPIDS_BUILD_TYPE: ${{ inputs.build_type }}
+        RAPIDS_GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     steps:
+      - name: Install gha-tools
+        run: |
+          git clone https://github.com/rapidsai/gha-tools.git -b main /tmp/gha-tools
+          echo "/tmp/gha-tools/tools" >> "${GITHUB_PATH}"
+      - name: Checkout code
+        uses: actions/checkout@v3
+      - name: Get PR Info
+        id: get-pr-info
+        uses: rapidsai/shared-action-workflows/get-pr-info@branch-23.06
+      - name: Print environment
+        run: |
+          rapids-print-env
+          rapids-logger "nvidia-smi"
+          nvidia-smi
       - name: Test notebooks
-        run: /home/rapids/test_notebooks.py -i /home/rapids/notebooks 
-      # TODO: archive outputs
+        # Temporarily just cudf notebooks to speed up iterating on this workflow
+        run: /home/rapids/test_notebooks.py -i /home/rapids/notebooks/cudf -o /home/rapids/notebooks_output
+      - name: Install awscli
+        run: rapids-mamba-retry install -n base awscli
+      - name: Upload notebook test outputs
+        run: rapids-upload-to-s3 notebooks_output.tar.gz /home/rapids/notebooks_output
