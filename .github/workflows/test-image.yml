@@ -54,9 +54,9 @@ jobs:
           echo "/tmp/gha-tools" >> "${GITHUB_PATH}"
       - name: Checkout code
         uses: actions/checkout@v3
-      - name: Get PR Info
-        id: get-pr-info
-        uses: rapidsai/shared-action-workflows/get-pr-info@branch-23.06
+      - name: Get RAPIDS GitHub Info 
+        id: get-rapids-github-info
+        uses: rapidsai/shared-action-workflows/rapids-github-info@branch-23.06
       - name: Print environment
         run: |
           rapids-print-env
@@ -67,5 +67,10 @@ jobs:
         run: /home/rapids/test_notebooks.py -i /home/rapids/notebooks/cudf -o /home/rapids/notebooks_output
       - name: Install awscli
         run: rapids-mamba-retry install -n base awscli
+      - uses: aws-actions/configure-aws-credentials@v1-node16
+        with:
+          role-to-assume: ${{ vars.AWS_ROLE_ARN }}
+          aws-region: ${{ vars.AWS_REGION }}
+          role-duration-seconds: 43200 # 12h
       - name: Upload notebook test outputs
         run: rapids-upload-to-s3 notebooks_output.tar.gz /home/rapids/notebooks_output
