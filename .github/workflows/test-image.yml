@@ -49,8 +49,9 @@ jobs:
     steps:
       - name: Install gha-tools
         run: |
-          git clone https://github.com/rapidsai/gha-tools.git -b main /tmp/gha-tools
-          echo "/tmp/gha-tools/tools" >> "${GITHUB_PATH}"
+          mkdir -p /tmp/gha-tools
+          curl -s -L 'https://github.com/rapidsai/gha-tools/releases/latest/download/tools.tar.gz' | tar -xz -C /tmp/gha-tools
+          echo "/tmp/gha-tools" >> "${GITHUB_PATH}"
       - name: Checkout code
         uses: actions/checkout@v3
       - name: Get PR Info
