@@ -19,14 +19,18 @@ def matches($entry; $exclude):
 def filter_excludes($entry; $excludes):
   select(any($excludes[]; matches($entry; .)) | not);
 
+def lists2dict($keys; $values):
+  reduce range($keys | length) as $ind ({}; . + {($keys[$ind]): $values[$ind]});
+
 def compute_mx($input):
   ($input.exclude // []) as $excludes |
   $input | del(.exclude) |
+  keys_unsorted as $mx_keys |
   to_entries |
   map(.value) |
   [
     combinations |
-    {CUDA_VER: .[0], PYTHON_VER: .[1], LINUX_VER: .[2], RAPIDS_VER: .[3], DASK_SQL_VER: .[4]} |
+    lists2dict($mx_keys; .) |
     filter_excludes(.; $excludes) |
     compute_arch(.)
   ] |
