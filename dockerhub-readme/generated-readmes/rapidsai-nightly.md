@@ -22,7 +22,7 @@ The `rapidsai/rapidsai-nightly` repo contains nightly docker builds of the lates
 Versions of libraries included in the `23.06` images:
 - `cuDF` [v23.06.00a](https://github.com/rapidsai/cudf), `cuML` [v23.06.00a](https://github.com/rapidsai/cuml), `cuGraph` [v23.06.00a](https://github.com/rapidsai/cugraph), `RMM` [v23.06.00a](https://github.com/rapidsai/RMM), `RAFT` [v23.06.00a](https://github.com/rapidsai/raft), `cuSpatial` [v23.06.00a](https://github.com/rapidsai/cuspatial), `cuSignal` [v23.06.00a](https://github.com/rapidsai/cusignal), `cuxfilter` [v23.06.00a](https://github.com/rapidsai/cuxfilter)
 
-- `dask-sql` [2023.4.0](https://github.com/dask-contrib/dask-sql), `xgboost` [branch](https://github.com/rapidsai/xgboost), `dask-cuda` [branch](https://github.com/rapidsai/dask-cuda)
+- `dask-sql` [2023.6.0](https://github.com/dask-contrib/dask-sql), `xgboost` [branch](https://github.com/rapidsai/xgboost), `dask-cuda` [branch](https://github.com/rapidsai/dask-cuda)
 
 ### Image Types
 
