@@ -19,7 +19,6 @@ CUDA_VER:
   - 11.2
 
 LINUX_VER:
-  - ubuntu20.04
   - ubuntu22.04
   - rockylinux8
 
