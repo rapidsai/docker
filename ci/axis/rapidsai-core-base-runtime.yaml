@@ -30,7 +30,7 @@ PYTHON_VER:
 
 exclude:
   - RAPIDS_VER: '23.06'
-    BUILD_IMAGE: rapidsai/rapidsai-core
+    BUILD_IMAGE: rapidsai/rapidsai-core-nightly
   
   - CUDA_VER: 11.2
     LINUX_VER: ubuntu22.04

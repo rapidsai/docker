@@ -22,4 +22,4 @@ PYTHON_VER:
 
 exclude:
   - RAPIDS_VER: '23.06'
-    BUILD_IMAGE: rapidsai/rapidsai-core-dev
+    BUILD_IMAGE: rapidsai/rapidsai-core-dev-nightly
