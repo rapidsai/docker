@@ -9,9 +9,9 @@ PYTHON_VER:
 LINUX_VER:
   - "ubuntu22.04"
 RAPIDS_VER:
-  - "23.06"
+  - "23.08"
 DASK_SQL_VER:
-  - "2023.4.0"
+  - "2023.6.0"
 exclude:
   - LINUX_VER: "ubuntu22.04"
     CUDA_VER: "11.2.2"
