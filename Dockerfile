@@ -48,7 +48,7 @@ RUN mamba install -y -n base \
         "rapids=${RAPIDS_VER}.*" \
         "dask-sql=${DASK_SQL_VER%.*}.*" \
         "python=${PYTHON_VER}.*" \
-        "cudatoolkit=${CUDA_VER%.*}.*" \
+        "cuda-version=${CUDA_VER%.*}.*" \
         ipython \
     && conda clean -afy
 
