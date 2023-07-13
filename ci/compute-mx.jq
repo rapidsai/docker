@@ -1,8 +1,6 @@
 def compute_arch($x):
   ["amd64"] |
   if
-    $x.CUDA_VER > "11.2.2" and
-    $x.LINUX_VER != "centos7" and
     $x.LINUX_VER != "ubuntu20.04" # Dask-sql arm64 requires glibc >=2.32
   then
     . + ["arm64"]
