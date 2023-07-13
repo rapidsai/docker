@@ -35,6 +35,7 @@ jobs:
       BASE_IMAGE_REPO: ${{ steps.compute-image-repo.outputs.BASE_IMAGE_REPO }}
       NOTEBOOKS_IMAGE_REPO: ${{ steps.compute-image-repo.outputs.NOTEBOOKS_IMAGE_REPO }}
       MATRIX: ${{ steps.compute-matrix.outputs.MATRIX }}
+      TEST_MATRIX: ${{ steps.compute-test-matrix.outputs.TEST_MATRIX }}
       BASE_TAG_PREFIX: ${{ steps.compute-tag-prefix.outputs.BASE_TAG_PREFIX }}
       NOTEBOOKS_TAG_PREFIX: ${{ steps.compute-tag-prefix.outputs.NOTEBOOKS_TAG_PREFIX }}
       RAPIDS_VER: ${{ steps.compute-rapids-ver.outputs.RAPIDS_VER }}
@@ -85,11 +86,6 @@ jobs:
 
           echo "RAPIDS_VER=${RAPIDS_VER}" | tee -a ${GITHUB_OUTPUT}
           echo "ALPHA_TAG=${ALPHA_TAG}" | tee -a ${GITHUB_OUTPUT}
-  compute-test-matrix:
-    runs-on: ubuntu-latest
-    outputs:
-      TEST_MATRIX: ${{ steps.compute-test-matrix.outputs.TEST_MATRIX }}
-    steps:
       - name: Compute test matrix
         id: compute-test-matrix
         run: |
@@ -115,7 +111,7 @@ jobs:
       BASE_TAG: rapidsai/${{ needs.compute-matrix.outputs.BASE_IMAGE_REPO }}:${{ needs.compute-matrix.outputs.BASE_TAG_PREFIX }}${{ needs.compute-matrix.outputs.RAPIDS_VER }}${{ needs.compute-matrix.outputs.ALPHA_TAG }}cuda${{ matrix.CUDA_VER }}-${{ matrix.LINUX_VER }}-py${{ matrix.PYTHON_VER }}
       NOTEBOOKS_TAG: rapidsai/${{ needs.compute-matrix.outputs.NOTEBOOKS_IMAGE_REPO }}:${{ needs.compute-matrix.outputs.NOTEBOOKS_TAG_PREFIX }}${{ needs.compute-matrix.outputs.RAPIDS_VER }}${{ needs.compute-matrix.outputs.ALPHA_TAG }}cuda${{ matrix.CUDA_VER }}-${{ matrix.LINUX_VER }}-py${{ matrix.PYTHON_VER }}
   test:
-    needs: [docker, compute-matrix, compute-test-matrix]
+    needs: [docker, compute-matrix]
     # TODO: nightly tests
     if: inputs.build_type == 'pull-request'
     strategy:
