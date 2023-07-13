@@ -76,6 +76,8 @@ jobs:
         run: rapids-mamba-retry install -n base --freeze-installed git
       - name: Checkout code
         uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
       - name: Get RAPIDS GitHub Info
         id: get-rapids-github-info
         uses: rapidsai/shared-action-workflows/rapids-github-info@branch-23.06

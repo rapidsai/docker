@@ -43,6 +43,16 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+      - name: Clean up condarc for release builds
+        run: |
+          GIT_DESCRIBE_TAG="$(git describe --tags --abbrev=0)"
+          GIT_DESCRIBE_TAG="${GIT_DESCRIBE_TAG:1}" #remove leading 'v'
+          if [[ ! $GIT_DESCRIBE_TAG =~ [a-z] ]]; then
+            rapids-logger "Most recent tag is for release, removing nightly channels"
+            sed -i '/nightly/d;/dask\/label\/dev/d' context/condarc
+          fi
       - name: Login to DockerHub
         uses: docker/login-action@v2
         with:
