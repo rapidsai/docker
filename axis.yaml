@@ -1,21 +1,14 @@
 CUDA_VER:
-#  - "11.2.2"
-#  - "11.4.1"
-  - "11.5.1"
+  - "11.2.2"
   - "11.8.0"
 PYTHON_VER:
-#  - "3.8"
+  - "3.9"
   - "3.10"
 LINUX_VER:
+  - "ubuntu20.04"
   - "ubuntu22.04"
-RAPIDS_VER:
-  - "23.08"
 DASK_SQL_VER:
   - "2023.6.0"
 exclude:
   - LINUX_VER: "ubuntu22.04"
     CUDA_VER: "11.2.2"
-  - LINUX_VER: "ubuntu22.04"
-    CUDA_VER: "11.4.1"
-  - LINUX_VER: "ubuntu22.04"
-    CUDA_VER: "11.5.1"

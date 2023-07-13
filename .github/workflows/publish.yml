@@ -14,8 +14,7 @@ concurrency:
 
 jobs:
   build-images:
-    uses: ./.github/workflows/build-and-publish-images.yml
+    uses: ./.github/workflows/build-test-publish-images.yml
     with:
-      push: true
       build_type: branch
     secrets: inherit
