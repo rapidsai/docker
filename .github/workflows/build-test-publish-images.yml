@@ -110,8 +110,8 @@ jobs:
       PYTHON_VER: ${{ matrix.PYTHON_VER }}
       RAPIDS_VER: ${{ needs.compute-matrix.outputs.RAPIDS_VER }}
       DASK_SQL_VER: ${{ matrix.DASK_SQL_VER }}
-      BASE_TAG: rapidsai/${{ needs.compute-matrix.outputs.BASE_IMAGE_REPO }}:${{ needs.compute-matrix.outputs.BASE_TAG_PREFIX }}${{ needs.compute-matrix.outputs.RAPIDS_VER }}${{ needs.compute-matrix.outputs.ALPHA_TAG }}cuda${{ matrix.CUDA_VER }}-${{ matrix.LINUX_VER }}-py${{ matrix.PYTHON_VER }}
-      NOTEBOOKS_TAG: rapidsai/${{ needs.compute-matrix.outputs.NOTEBOOKS_IMAGE_REPO }}:${{ needs.compute-matrix.outputs.NOTEBOOKS_TAG_PREFIX }}${{ needs.compute-matrix.outputs.RAPIDS_VER }}${{ needs.compute-matrix.outputs.ALPHA_TAG }}cuda${{ matrix.CUDA_VER }}-${{ matrix.LINUX_VER }}-py${{ matrix.PYTHON_VER }}
+      BASE_TAG: rapidsai/${{ needs.compute-matrix.outputs.BASE_IMAGE_REPO }}:${{ needs.compute-matrix.outputs.BASE_TAG_PREFIX }}${{ needs.compute-matrix.outputs.RAPIDS_VER }}${{ needs.compute-matrix.outputs.ALPHA_TAG }}-cuda${{ matrix.CUDA_VER }}-${{ matrix.LINUX_VER }}-py${{ matrix.PYTHON_VER }}
+      NOTEBOOKS_TAG: rapidsai/${{ needs.compute-matrix.outputs.NOTEBOOKS_IMAGE_REPO }}:${{ needs.compute-matrix.outputs.NOTEBOOKS_TAG_PREFIX }}${{ needs.compute-matrix.outputs.RAPIDS_VER }}${{ needs.compute-matrix.outputs.ALPHA_TAG }}-cuda${{ matrix.CUDA_VER }}-${{ matrix.LINUX_VER }}-py${{ matrix.PYTHON_VER }}
   test:
     needs: [docker, compute-matrix]
     # TODO: nightly tests
@@ -130,7 +130,7 @@ jobs:
       LINUX_VER: ${{ matrix.LINUX_VER }}
       PYTHON_VER: ${{ matrix.PYTHON_VER }}
       RAPIDS_VER: ${{ needs.compute-matrix.outputs.RAPIDS_VER }}
-      NOTEBOOKS_TAG: rapidsai/${{ needs.compute-matrix.outputs.NOTEBOOKS_IMAGE_REPO }}:${{ needs.compute-matrix.outputs.NOTEBOOKS_TAG_PREFIX }}${{ needs.compute-matrix.outputs.RAPIDS_VER }}${{ needs.compute-matrix.outputs.ALPHA_TAG }}cuda${{ matrix.CUDA_VER }}-${{ matrix.LINUX_VER }}-py${{ matrix.PYTHON_VER }}-${{ matrix.ARCH }}
+      NOTEBOOKS_TAG: rapidsai/${{ needs.compute-matrix.outputs.NOTEBOOKS_IMAGE_REPO }}:${{ needs.compute-matrix.outputs.NOTEBOOKS_TAG_PREFIX }}${{ needs.compute-matrix.outputs.RAPIDS_VER }}${{ needs.compute-matrix.outputs.ALPHA_TAG }}-cuda${{ matrix.CUDA_VER }}-${{ matrix.LINUX_VER }}-py${{ matrix.PYTHON_VER }}-${{ matrix.ARCH }}
   build-multiarch-manifest:
     if: inputs.build_type == 'branch'
     needs: [docker, test, compute-matrix]
@@ -151,8 +151,8 @@ jobs:
         run: |
           base_source_tags=()
           notebooks_source_tags=()
-          base_tag="rapidsai/${{ needs.compute-matrix.outputs.BASE_IMAGE_REPO }}:${{ needs.compute-matrix.outputs.BASE_TAG_PREFIX }}${{ needs.compute-matrix.outputs.RAPIDS_VER }}${{ needs.compute-matrix.outputs.ALPHA_TAG }}cuda${{ matrix.CUDA_VER }}-${{ matrix.LINUX_VER }}-py${{ matrix.PYTHON_VER }}"
-          notebooks_tag="rapidsai/${{ needs.compute-matrix.outputs.NOTEBOOKS_IMAGE_REPO }}:${{ needs.compute-matrix.outputs.NOTEBOOKS_TAG_PREFIX }}${{ needs.compute-matrix.outputs.RAPIDS_VER }}${{ needs.compute-matrix.outputs.ALPHA_TAG }}cuda${{ matrix.CUDA_VER }}-${{ matrix.LINUX_VER }}-py${{ matrix.PYTHON_VER }}"
+          base_tag="rapidsai/${{ needs.compute-matrix.outputs.BASE_IMAGE_REPO }}:${{ needs.compute-matrix.outputs.BASE_TAG_PREFIX }}${{ needs.compute-matrix.outputs.RAPIDS_VER }}${{ needs.compute-matrix.outputs.ALPHA_TAG }}-cuda${{ matrix.CUDA_VER }}-${{ matrix.LINUX_VER }}-py${{ matrix.PYTHON_VER }}"
+          notebooks_tag="rapidsai/${{ needs.compute-matrix.outputs.NOTEBOOKS_IMAGE_REPO }}:${{ needs.compute-matrix.outputs.NOTEBOOKS_TAG_PREFIX }}${{ needs.compute-matrix.outputs.RAPIDS_VER }}${{ needs.compute-matrix.outputs.ALPHA_TAG }}-cuda${{ matrix.CUDA_VER }}-${{ matrix.LINUX_VER }}-py${{ matrix.PYTHON_VER }}"
           for arch in $(echo '${{ toJSON(matrix.ARCHES) }}' | jq .[] -r); do
             base_source_tags+=("${base_tag}-${arch}")
             notebooks_source_tags+=("${notebooks_tag}-${arch}")
@@ -180,9 +180,9 @@ jobs:
 
           org="rapidsai"
           base_repo="${{ needs.compute-matrix.outputs.BASE_IMAGE_REPO }}"
-          base_tag="${{ needs.compute-matrix.outputs.BASE_TAG_PREFIX }}${{ needs.compute-matrix.outputs.RAPIDS_VER }}${{ needs.compute-matrix.outputs.ALPHA_TAG }}cuda${{ matrix.CUDA_VER }}-${{ matrix.LINUX_VER }}-py${{ matrix.PYTHON_VER }}"
+          base_tag="${{ needs.compute-matrix.outputs.BASE_TAG_PREFIX }}${{ needs.compute-matrix.outputs.RAPIDS_VER }}${{ needs.compute-matrix.outputs.ALPHA_TAG }}-cuda${{ matrix.CUDA_VER }}-${{ matrix.LINUX_VER }}-py${{ matrix.PYTHON_VER }}"
           notebooks_repo="${{ needs.compute-matrix.outputs.NOTEBOOKS_IMAGE_REPO }}"
-          notebooks_tag="${{ needs.compute-matrix.outputs.NOTEBOOKS_TAG_PREFIX }}${{ needs.compute-matrix.outputs.RAPIDS_VER }}${{ needs.compute-matrix.outputs.ALPHA_TAG }}cuda${{ matrix.CUDA_VER }}-${{ matrix.LINUX_VER }}-py${{ matrix.PYTHON_VER }}"
+          notebooks_tag="${{ needs.compute-matrix.outputs.NOTEBOOKS_TAG_PREFIX }}${{ needs.compute-matrix.outputs.RAPIDS_VER }}${{ needs.compute-matrix.outputs.ALPHA_TAG }}-cuda${{ matrix.CUDA_VER }}-${{ matrix.LINUX_VER }}-py${{ matrix.PYTHON_VER }}"
 
           for arch in $(echo '${{ toJSON(matrix.ARCHES) }}' | jq .[] -r); do
             curl -i -X DELETE \
