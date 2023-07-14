@@ -87,8 +87,7 @@ jobs:
           rapids-logger "nvidia-smi"
           nvidia-smi
       - name: Test notebooks
-        # TODO: Temporarily just cudf notebooks to speed up iterating on this workflow
-        run: /home/rapids/test_notebooks.py -i /home/rapids/notebooks/cudf -o /home/rapids/notebooks_output
+        run: /home/rapids/test_notebooks.py -i /home/rapids/notebooks -o /home/rapids/notebooks_output
       - name: Install awscli
         run: rapids-mamba-retry install -n base awscli
       - uses: aws-actions/configure-aws-credentials@v1-node16
