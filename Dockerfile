@@ -41,9 +41,6 @@ WORKDIR /home/rapids
 
 COPY condarc /opt/conda/.condarc
 
-# CI should handle modifying this file instead of the dockerfile
-# RUN if [ "${RAPIDS_BRANCH}" = "main" ]; then sed -i '/nightly/d;/dask\/label\/dev/d' /opt/conda/.condarc; fi
-
 RUN mamba install -y -n base \
         "rapids=${RAPIDS_VER}.*" \
         "dask-sql=${DASK_SQL_VER%.*}.*" \
