@@ -130,7 +130,7 @@ jobs:
       LINUX_VER: ${{ matrix.LINUX_VER }}
       PYTHON_VER: ${{ matrix.PYTHON_VER }}
       RAPIDS_VER: ${{ needs.compute-matrix.outputs.RAPIDS_VER }}
-      NOTEBOOKS_TAG: rapidsai/${{ needs.compute-matrix.outputs.NOTEBOOKS_IMAGE_REPO }}:${{ needs.compute-matrix.outputs.NOTEBOOKS_TAG_PREFIX }}${{ needs.compute-matrix.outputs.RAPIDS_VER }}${{ needs.compute-matrix.outputs.ALPHA_TAG }}cuda${{ matrix.CUDA_VER }}-${{ matrix.LINUX_VER }}-py${{ matrix.PYTHON_VER }}
+      NOTEBOOKS_TAG: rapidsai/${{ needs.compute-matrix.outputs.NOTEBOOKS_IMAGE_REPO }}:${{ needs.compute-matrix.outputs.NOTEBOOKS_TAG_PREFIX }}${{ needs.compute-matrix.outputs.RAPIDS_VER }}${{ needs.compute-matrix.outputs.ALPHA_TAG }}cuda${{ matrix.CUDA_VER }}-${{ matrix.LINUX_VER }}-py${{ matrix.PYTHON_VER }}-${{ matrix.ARCH }}
   build-multiarch-manifest:
     if: inputs.build_type == 'branch'
     needs: [docker, test, compute-matrix]
