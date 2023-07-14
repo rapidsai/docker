@@ -29,7 +29,7 @@ on:
         type: string
 
 jobs:
-  docker-build:
+  build:
     strategy:
       matrix:
         ARCH: ${{ fromJSON(inputs.ARCHES) }}

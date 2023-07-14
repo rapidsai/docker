@@ -10,7 +10,7 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  build-images:
+  docker:
     uses: ./.github/workflows/build-test-publish-images.yml
     with:
       build_type: pull-request

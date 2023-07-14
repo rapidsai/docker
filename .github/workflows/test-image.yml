@@ -40,7 +40,7 @@ permissions:
 
 
 jobs:
-  docker-test:
+  test:
     runs-on: "linux-${{ inputs.ARCH }}-gpu-${{ inputs.GPU }}-${{ inputs.DRIVER }}-1"
     container:
       image: ${{ inputs.NOTEBOOKS_TAG }}

@@ -96,7 +96,7 @@ jobs:
           export TEST_MATRIX
 
           echo "TEST_MATRIX=$(yq -n -o json 'env(TEST_MATRIX)' | jq -c '{include: .}')" | tee --append "${GITHUB_OUTPUT}"
-  docker:
+  build:
     needs: compute-matrix
     strategy:
       matrix: ${{ fromJSON(needs.compute-matrix.outputs.MATRIX) }}
@@ -113,7 +113,7 @@ jobs:
       BASE_TAG: rapidsai/${{ needs.compute-matrix.outputs.BASE_IMAGE_REPO }}:${{ needs.compute-matrix.outputs.BASE_TAG_PREFIX }}${{ needs.compute-matrix.outputs.RAPIDS_VER }}${{ needs.compute-matrix.outputs.ALPHA_TAG }}-cuda${{ matrix.CUDA_VER }}-${{ matrix.LINUX_VER }}-py${{ matrix.PYTHON_VER }}
       NOTEBOOKS_TAG: rapidsai/${{ needs.compute-matrix.outputs.NOTEBOOKS_IMAGE_REPO }}:${{ needs.compute-matrix.outputs.NOTEBOOKS_TAG_PREFIX }}${{ needs.compute-matrix.outputs.RAPIDS_VER }}${{ needs.compute-matrix.outputs.ALPHA_TAG }}-cuda${{ matrix.CUDA_VER }}-${{ matrix.LINUX_VER }}-py${{ matrix.PYTHON_VER }}
   test:
-    needs: [docker, compute-matrix]
+    needs: [build, compute-matrix]
     # TODO: nightly tests
     if: inputs.build_type == 'pull-request'
     strategy:
@@ -129,7 +129,7 @@ jobs:
       NOTEBOOKS_TAG: rapidsai/${{ needs.compute-matrix.outputs.NOTEBOOKS_IMAGE_REPO }}:${{ needs.compute-matrix.outputs.NOTEBOOKS_TAG_PREFIX }}${{ needs.compute-matrix.outputs.RAPIDS_VER }}${{ needs.compute-matrix.outputs.ALPHA_TAG }}-cuda${{ matrix.CUDA_VER }}-${{ matrix.LINUX_VER }}-py${{ matrix.PYTHON_VER }}-${{ matrix.ARCH }}
   build-multiarch-manifest:
     if: inputs.build_type == 'branch'
-    needs: [docker, test, compute-matrix]
+    needs: [build, test, compute-matrix]
     strategy:
       matrix: ${{ fromJSON(needs.compute-matrix.outputs.MATRIX) }}
     runs-on: ubuntu-latest
