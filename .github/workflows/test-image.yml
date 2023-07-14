@@ -15,24 +15,6 @@ on:
       DRIVER:
         required: true
         type: string
-      CUDA_VER:
-        required: true
-        type: string
-      LINUX_VER:
-        required: true
-        type: string
-      PYTHON_VER:
-        required: true
-        type: string
-      RAPIDS_VER:
-        required: true
-        type: string
-      # DASK_SQL_VER:
-      #   required: true
-      #   type: string
-      # BASE_TAG:
-      #   required: true
-      #   type: string
       NOTEBOOKS_TAG:
         required: true
         type: string
@@ -64,7 +46,7 @@ jobs:
       image: ${{ inputs.NOTEBOOKS_TAG }}
       env:
         NVIDIA_VISIBLE_DEVICES: ${{ env.NVIDIA_VISIBLE_DEVICES }}
-        RAPIDS_BUILD_TYPE: ${{ inputs.build_type }}
+        RAPIDS_BUILD_TYPE: ${{ inputs.BUILD_TYPE }}
         RAPIDS_GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     steps:
       - name: Install gha-tools
