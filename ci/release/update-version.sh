@@ -28,3 +28,8 @@ function sed_runner() {
 }
 
 sed_runner "s/ARG RAPIDS_VER=.*/ARG RAPIDS_VER=${NEXT_SHORT_TAG}/g" Dockerfile
+
+# CI files
+for FILE in .github/workflows/*.yml; do
+  sed_runner "/shared-action-workflows/ s/@.*/@branch-${NEXT_SHORT_TAG}/g" "${FILE}"
+done

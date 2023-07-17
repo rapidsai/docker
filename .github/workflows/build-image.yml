@@ -53,7 +53,7 @@ jobs:
       - name: Clean up condarc for release builds
         run: |
           GIT_DESCRIBE_TAG="$(git describe --tags --abbrev=0)"
-          GIT_DESCRIBE_TAG="${GIT_DESCRIBE_TAG:1}" #remove leading 'v'
+          GIT_DESCRIBE_TAG="${GIT_DESCRIBE_TAG:1}" # remove leading 'v'
           if [[ ! $GIT_DESCRIBE_TAG =~ [a-z] ]]; then
             rapids-logger "Most recent tag is for release, removing `rapidsai-nightly` and `dask/label/dev` channels."
             sed -i '\|rapidsai-nightly|d;\|dask/label/dev|d' context/condarc
