@@ -9,7 +9,7 @@ https://developer.download.nvidia.com/licenses/NVIDIA_Deep_Learning_Container_Li
 EOF
 
 if [ -e "/home/rapids/environment.yml" ]; then
-    echo "environment.yml found. Installing packages"
+    echo "environment.yml found. Installing packages."
     timeout ${CONDA_TIMEOUT:-600} mamba env update -n base -f /home/rapids/environment.yml || exit $?
 fi
 

@@ -20,7 +20,7 @@ for REPO in "${NOTEBOOK_REPOS[@]}"; do
         rapids-dependency-file-generator \
             --config "$REPO/dependencies.yaml" \
             --file_key test_notebooks \
-            --matrix "cuda=${CUDA_VER%.*};py=${PYTHON_VER};arch=$(arch)" \
+            --matrix "cuda=${CUDA_VER%.*};arch=$(arch);py=${PYTHON_VER}" \
             --output conda > "/dependencies/${REPO}_notebooks_tests_dependencies.yaml"; \
     fi
 done
