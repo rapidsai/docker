@@ -216,6 +216,7 @@ jobs:
               -d "{\"username\": \"${{ secrets.GPUCIBOT_DOCKERHUB_USER }}\", \"password\": \"${{ secrets.GPUCIBOT_DOCKERHUB_TOKEN }}\"}" \
               https://hub.docker.com/v2/users/login/ | jq -r .token \
           )
+          echo "::add-mask::${HUB_TOKEN}"
 
           org="rapidsai"
           base_repo="${{ needs.compute-matrix.outputs.BASE_IMAGE_REPO }}"
