@@ -12,7 +12,7 @@ from nbconvert.preprocessors import ExecutePreprocessor
 import yaml
 
 
-bad_subdirectory_names = [
+ignored_subdirectory_names = [
     "data",
     "the_archive",
     "utils",
@@ -22,8 +22,8 @@ bad_subdirectory_names = [
     "tools",
     "demo",
 ]
-bad_filenames = ["-csv", "benchmark", "target", "performance"]
-excluded_notebooks = [
+ignored_filenames = ["-csv", "benchmark", "target", "performance"]
+ignored_notebooks = [
     'cusignal/api_guide/io_examples.ipynb' # 26gb data download
 ]
 
@@ -35,15 +35,15 @@ def get_notebooks(directory: str) -> Iterable[str]:
                 file.endswith(".ipynb")
                 and not (
                     any(
-                        match_bad_subs in root
-                        for match_bad_subs in bad_subdirectory_names
+                        match_ignored_subs in root
+                        for match_ignored_subs in ignored_subdirectory_names
                     )
                 )
                 and not (
-                    any(match_bad_file in file for match_bad_file in bad_filenames)
+                    any(match_ignored_file in file for match_ignored_file in ignored_filenames)
                 )
                 and "MNMG" not in file.upper()
-                and file not in excluded_notebooks
+                and file not in ignored_notebooks
             ):
                 path = os.path.join(root.replace(directory, ''), file)
                 if path.startswith('/'):
