@@ -33,7 +33,7 @@ The following environment variables can be passed to the `docker run` commands f
 - `CONDA_TIMEOUT` - how long (in seconds) the `conda` install should wait before exiting
 - `EXTRA_PIP_PACKAGES` - used to install additional `pip` packages in the container. Use a space separated list of pip version specs
 - `PIP_TIMEOUT` - how long (in seconds) the `pip` install should wait before exiting
-- `UNQUOTE` -
+- `UNQUOTE` - Whether the command line args to `docker run` should be [executed with or without being quoted](./context/entrypoint.sh). Default to false and it is unlikely that you need to change this.
 
 ## Bind Mounts
 
