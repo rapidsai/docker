@@ -36,7 +36,7 @@ jobs:
         CUDA_VER: ["${{ inputs.CUDA_VER }}"]
         LINUX_VER: ["${{ inputs.LINUX_VER }}"]
         PYTHON_VER: ["${{ inputs.PYTHON_VER }}"]
-        RAPIDS_BER: ["${{ inputs.RAPIDS_VER }}"]
+        RAPIDS_VER: ["${{ inputs.RAPIDS_VER }}"]
         DASK_SQL_VER: ["${{ inputs.DASK_SQL_VER }}"]
       fail-fast: false
     runs-on: "linux-${{ matrix.ARCH }}-cpu4"
