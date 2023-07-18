@@ -20,7 +20,7 @@ jobs:
         id: current_version
         uses: the-coding-turtle/ga-yaml-parser@v0.1.2
         with:
-          file: axis.yaml
+          file: matrix.yaml
 
       - name: Get new dask-sql version
         id: new_version

@@ -89,7 +89,7 @@ jobs:
       - name: Compute test matrix
         id: compute-test-matrix
         run: |
-          TEST_MATRIX=$(yq '.${{ inputs.build_type }}' axis-test.yaml)
+          TEST_MATRIX=$(yq '.${{ inputs.build_type }}' matrix-test.yaml)
           export TEST_MATRIX
 
           echo "TEST_MATRIX=$(yq -n -o json 'env(TEST_MATRIX)' | jq -c '{include: .}')" | tee --append "${GITHUB_OUTPUT}"
