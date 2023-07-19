@@ -48,7 +48,7 @@ jobs:
       - name: Compute matrix
         id: compute-matrix
         run: |
-          MATRIX=$(ci/compute-mx.sh)
+          MATRIX=$(ci/compute-matrix.sh)
           echo "MATRIX=${MATRIX}" | tee -a ${GITHUB_OUTPUT}
       - name: Compute tag prefix
         id: compute-tag-prefix

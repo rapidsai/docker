@@ -21,15 +21,15 @@ def filter_excludes($entry; $excludes):
 def lists2dict($keys; $values):
   reduce range($keys | length) as $ind ({}; . + {($keys[$ind]): $values[$ind]});
 
-def compute_mx($input):
+def compute_matrix($input):
   ($input.exclude // []) as $excludes |
   $input | del(.exclude) |
-  keys_unsorted as $mx_keys |
+  keys_unsorted as $matrix_keys |
   to_entries |
   map(.value) |
   [
     combinations |
-    lists2dict($mx_keys; .) |
+    lists2dict($matrix_keys; .) |
     filter_excludes(.; $excludes) |
     compute_arch(.)
   ] |
