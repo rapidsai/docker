@@ -9,6 +9,16 @@ def compute_arch($x):
   end |
   $x + {ARCHES: .};
 
+def compute_ubuntu_version($x):
+  if
+    $x.CUDA_VER >= "11.7" # Ubuntu 22.04 nvidia/cuda images were added starting with CUDA 11.7
+  then
+    "ubuntu22.04"
+  else
+    "ubuntu20.04"
+  end |
+  $x + {LINUX_VER: .};
+
 # Checks the current entry to see if it matches the given exclude
 def matches($entry; $exclude):
   all($exclude | to_entries | .[]; $entry[.key] == .value);
@@ -30,6 +40,7 @@ def compute_matrix($input):
   [
     combinations |
     lists2dict($matrix_keys; .) |
+    compute_ubuntu_version(.) |
     filter_excludes(.; $excludes) |
     compute_arch(.)
   ] |
