@@ -10,5 +10,7 @@ LINUX_VER:
 DASK_SQL_VER:
   - "2023.6.0"
 exclude:
+  - LINUX_VER: "ubuntu20.04"
+    CUDA_VER: "11.8.0"
   - LINUX_VER: "ubuntu22.04"
     CUDA_VER: "11.2.2"

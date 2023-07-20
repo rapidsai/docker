@@ -113,7 +113,6 @@ jobs:
         ${{ needs.compute-matrix.outputs.RAPIDS_VER }}\
         ${{ needs.compute-matrix.outputs.ALPHA_TAG }}-\
         cuda${{ matrix.CUDA_VER }}-\
-        ${{ matrix.LINUX_VER }}-\
         py${{ matrix.PYTHON_VER }}"
       NOTEBOOKS_TAG:
         "rapidsai/${{ needs.compute-matrix.outputs.NOTEBOOKS_IMAGE_REPO }}:\
@@ -121,7 +120,6 @@ jobs:
         ${{ needs.compute-matrix.outputs.RAPIDS_VER }}\
         ${{ needs.compute-matrix.outputs.ALPHA_TAG }}-\
         cuda${{ matrix.CUDA_VER }}-\
-        ${{ matrix.LINUX_VER }}-\
         py${{ matrix.PYTHON_VER }}"
   test:
     needs: [build, compute-matrix]
@@ -138,7 +136,6 @@ jobs:
       GPU: ${{ matrix.GPU }}
       DRIVER: ${{ matrix.DRIVER }}
       CUDA_VER: ${{ matrix.CUDA_VER }}
-      LINUX_VER: ${{ matrix.LINUX_VER }}
       PYTHON_VER: ${{ matrix.PYTHON_VER }}
       NOTEBOOKS_TAG:
         "rapidsai/${{ needs.compute-matrix.outputs.NOTEBOOKS_IMAGE_REPO }}:\
@@ -146,7 +143,6 @@ jobs:
         ${{ needs.compute-matrix.outputs.RAPIDS_VER }}\
         ${{ needs.compute-matrix.outputs.ALPHA_TAG }}-\
         cuda${{ matrix.CUDA_VER }}-\
-        ${{ matrix.LINUX_VER }}-\
         py${{ matrix.PYTHON_VER }}-\
         ${{ matrix.ARCH }}"
   build-multiarch-manifest:
@@ -176,7 +172,6 @@ jobs:
             ${{ needs.compute-matrix.outputs.RAPIDS_VER }}
             ${{ needs.compute-matrix.outputs.ALPHA_TAG }}-
             cuda${{ matrix.CUDA_VER }}-
-            ${{ matrix.LINUX_VER }}-
             py${{ matrix.PYTHON_VER }}
           )
           base_tag="$(printf %s "${base_tag_array[@]}" $'\n')" # Converts array to string w/o spaces
@@ -187,7 +182,6 @@ jobs:
             ${{ needs.compute-matrix.outputs.RAPIDS_VER }}
             ${{ needs.compute-matrix.outputs.ALPHA_TAG }}-
             cuda${{ matrix.CUDA_VER }}-
-            ${{ matrix.LINUX_VER }}-
             py${{ matrix.PYTHON_VER }}
           )
           notebooks_tag="$(printf %s "${notebooks_tag_array[@]}" $'\n')" # Converts array to string w/o spaces
@@ -225,7 +219,6 @@ jobs:
             ${{ needs.compute-matrix.outputs.RAPIDS_VER }}
             ${{ needs.compute-matrix.outputs.ALPHA_TAG }}-
             cuda${{ matrix.CUDA_VER }}-
-            ${{ matrix.LINUX_VER }}-
             py${{ matrix.PYTHON_VER }}
           )
           base_tag="$(printf %s "${base_tag_array[@]}" $'\n')" # Converts array to string w/o spaces
@@ -237,7 +230,6 @@ jobs:
             ${{ needs.compute-matrix.outputs.RAPIDS_VER }}
             ${{ needs.compute-matrix.outputs.ALPHA_TAG }}-
             cuda${{ matrix.CUDA_VER }}-
-            ${{ matrix.LINUX_VER }}-
             py${{ matrix.PYTHON_VER }}
           )
           notebooks_tag="$(printf %s "${notebooks_tag_array[@]}" $'\n')" # Converts array to string w/o spaces
