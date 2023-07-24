@@ -85,11 +85,14 @@ jobs:
       - name: Test notebooks
         run: /home/rapids/test_notebooks.py -i /home/rapids/notebooks -o /home/rapids/notebooks_output
       - name: Install awscli
+        if: '!cancelled()'
         run: rapids-mamba-retry install -n base awscli
       - uses: aws-actions/configure-aws-credentials@v1-node16
+        if: '!cancelled()'
         with:
           role-to-assume: ${{ vars.AWS_ROLE_ARN }}
           aws-region: ${{ vars.AWS_REGION }}
           role-duration-seconds: 43200 # 12h
       - name: Upload notebook test outputs
+        if: '!cancelled()'
         run: rapids-upload-to-s3 notebooks_output.tar.gz /home/rapids/notebooks_output
