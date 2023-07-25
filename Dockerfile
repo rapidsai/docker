@@ -1,6 +1,6 @@
 # syntax=docker/dockerfile:1
 
-ARG CUDA_VER=11.8.0
+ARG CUDA_VER=12.0.1
 ARG PYTHON_VER=3.10
 ARG LINUX_VER=ubuntu22.04
 
