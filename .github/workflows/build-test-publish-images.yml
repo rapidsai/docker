@@ -129,7 +129,7 @@ jobs:
       matrix: ${{ fromJSON(needs.compute-matrix.outputs.TEST_MATRIX) }}
       fail-fast: false
     secrets: inherit
-    uses: ./.github/workflows/test-image.yml
+    uses: ./.github/workflows/test-notebooks.yml
     with:
       BUILD_TYPE: ${{ inputs.build_type }}
       ARCH: ${{ matrix.ARCH }}
