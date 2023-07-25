@@ -92,7 +92,7 @@ jobs:
         with:
           role-to-assume: ${{ vars.AWS_ROLE_ARN }}
           aws-region: ${{ vars.AWS_REGION }}
-          role-duration-seconds: 43200 # 12h
+          role-duration-seconds: 1800 # 30m
       - name: Upload notebook test outputs
         if: '!cancelled()'
         run: rapids-upload-to-s3 test_notebooks_output_${{ inputs.ARCH }}_cuda${{ inputs.CUDA_VER }}_py${{ inputs.PYTHON_VER }}_${{ inputs.GPU }}-${{ inputs.DRIVER }}.tar.gz /home/rapids/notebooks_output
