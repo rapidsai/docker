@@ -95,4 +95,4 @@ jobs:
           role-duration-seconds: 43200 # 12h
       - name: Upload notebook test outputs
         if: '!cancelled()'
-        run: rapids-upload-to-s3 notebooks_output.tar.gz /home/rapids/notebooks_output
+        run: rapids-upload-to-s3 test_notebooks_output_${{ inputs.ARCH }}_cuda${{ inputs.CUDA_VER }}_py${{ inputs.PYTHON_VER }}_${{ inputs.GPU }}-${{ inputs.DRIVER }}.tar.gz /home/rapids/notebooks_output
