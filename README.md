@@ -21,7 +21,7 @@ It extends the `base` images to include RAPIDS notebooks and a [`jupyterlab` ser
 
 ## Image tags
 
-Tags for both `base` and `notebooks` images take the form of `${RAPIDS_VER}-cuda${CUDA_VER}-${LINUX_VER}-py${PYTHON_VER}`.
+Tags for both `base` and `notebooks` images take the form of `${RAPIDS_VER}-cuda${CUDA_VER}-py${PYTHON_VER}`.
 
 There is no `latest` tag.
 
