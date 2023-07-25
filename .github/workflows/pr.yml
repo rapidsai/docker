@@ -1,0 +1,17 @@
+name: ci
+
+on:
+  push:
+    branches:
+      - "pull-request/[0-9]+"
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  docker:
+    uses: ./.github/workflows/build-test-publish-images.yml
+    with:
+      build_type: pull-request
+    secrets: inherit
