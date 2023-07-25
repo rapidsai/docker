@@ -1,4 +1,4 @@
-# Contributing to `docker`
+# Contributing to `rapidsai/docker`
 
 ## Requirements
 
