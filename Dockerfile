@@ -7,8 +7,6 @@ ARG LINUX_VER=ubuntu22.04
 ARG RAPIDS_VER=23.08
 ARG DASK_SQL_VER=2023.6.0
 
-ARG BASE_FROM_IMAGE=rapidsai/mambaforge-cuda
-
 # Gather dependency information
 FROM rapidsai/ci:latest AS dependencies
 ARG CUDA_VER
@@ -26,7 +24,7 @@ RUN /notebooks.sh
 
 
 # Base image
-FROM ${BASE_FROM_IMAGE}:cuda${CUDA_VER}-base-${LINUX_VER}-py${PYTHON_VER} as base
+FROM rapidsai/mambaforge-cuda:cuda${CUDA_VER}-base-${LINUX_VER}-py${PYTHON_VER} as base
 ARG CUDA_VER
 ARG PYTHON_VER
 
