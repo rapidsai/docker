@@ -1,0 +1,98 @@
+name: Test notebooks
+
+on:
+  workflow_call:
+    inputs:
+      BUILD_TYPE:
+        required: true
+        type: string
+      ARCH:
+        required: true
+        type: string
+      GPU:
+        required: true
+        type: string
+      DRIVER:
+        required: true
+        type: string
+      CUDA_VER:
+        required: true
+        type: string
+      PYTHON_VER:
+        required: true
+        type: string
+      NOTEBOOKS_TAG:
+        required: true
+        type: string
+
+defaults:
+  run:
+    shell: bash
+
+permissions:
+  actions: read
+  checks: none
+  contents: read
+  deployments: none
+  discussions: none
+  id-token: write
+  issues: none
+  packages: read
+  pages: none
+  pull-requests: read
+  repository-projects: none
+  security-events: none
+  statuses: none
+
+
+jobs:
+  test:
+    strategy:
+      matrix:
+        ARCH: ["${{ inputs.ARCH }}"]
+        CUDA_VER: ["${{ inputs.CUDA_VER }}"]
+        PYTHON_VER: ["${{ inputs.PYTHON_VER }}"]
+        GPU: ["${{ inputs.GPU }}"]
+        DRIVER: ["${{ inputs.DRIVER }}"]
+      fail-fast: false
+    runs-on: "linux-${{ inputs.ARCH }}-gpu-${{ inputs.GPU }}-${{ inputs.DRIVER }}-1"
+    container:
+      image: ${{ inputs.NOTEBOOKS_TAG }}
+      env:
+        NVIDIA_VISIBLE_DEVICES: ${{ env.NVIDIA_VISIBLE_DEVICES }}
+        RAPIDS_BUILD_TYPE: ${{ inputs.BUILD_TYPE }}
+        RAPIDS_GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    steps:
+      - name: Install gha-tools
+        run: |
+          mkdir -p /tmp/gha-tools
+          curl -s -L 'https://github.com/rapidsai/gha-tools/releases/latest/download/tools.tar.gz' | tar -xz -C /tmp/gha-tools
+          echo "/tmp/gha-tools" >> "${GITHUB_PATH}"
+      - name: Install git
+        run: rapids-mamba-retry install -n base --freeze-installed git
+      - name: Checkout code
+        uses: actions/checkout@v3
+        with:
+          fetch-depth: 0
+      - name: Get RAPIDS GitHub Info
+        id: get-rapids-github-info
+        uses: rapidsai/shared-action-workflows/rapids-github-info@branch-23.08
+      - name: Print environment
+        run: |
+          rapids-print-env
+          rapids-logger "nvidia-smi"
+          nvidia-smi
+      - name: Test notebooks
+        run: /home/rapids/test_notebooks.py -i /home/rapids/notebooks -o /home/rapids/notebooks_output
+      - name: Install awscli
+        if: '!cancelled()'
+        run: rapids-mamba-retry install -n base awscli
+      - uses: aws-actions/configure-aws-credentials@v1-node16
+        if: '!cancelled()'
+        with:
+          role-to-assume: ${{ vars.AWS_ROLE_ARN }}
+          aws-region: ${{ vars.AWS_REGION }}
+          role-duration-seconds: 1800 # 30m
+      - name: Upload notebook test outputs
+        if: '!cancelled()'
+        run: rapids-upload-to-s3 test_notebooks_output_${{ inputs.ARCH }}_cuda${{ inputs.CUDA_VER }}_py${{ inputs.PYTHON_VER }}_${{ inputs.GPU }}-${{ inputs.DRIVER }}.tar.gz /home/rapids/notebooks_output
