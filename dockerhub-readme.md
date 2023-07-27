@@ -30,9 +30,9 @@ The RAPIDS images are based on [`nvidia/cuda`](https://hub.docker.com/r/nvidia/c
 
 
 There are two types:
-- `rapidsai/rapidsai` - contains a RAPIDS environment ready for use.
+- `rapidsai/base` - contains a RAPIDS environment ready for use.
   - **TIP: Use this image if you want to use RAPIDS as a part of your pipeline.**
-- `rapidsai/rapidsai-notebooks` - extends the `rapidsai/rapidsai` image by adding a [`jupyterlab` server](https://jupyter.org/), example notebooks, and dependencies.
+- `rapidsai/notebooks` - extends the `rapidsai/base` image by adding a [`jupyterlab` server](https://jupyter.org/), example notebooks, and dependencies.
   - **TIP: Use this image if you want to explore RAPIDS through notebooks and examples.**
 
 ### Image Tag Naming Scheme
@@ -40,25 +40,25 @@ There are two types:
 The tag naming scheme for RAPIDS images incorporates key platform details into the tag as shown below:
 ```
 23.08-cuda11.8-py3.10
- ^    ^        ^
- |    |        python version
- |    |
- |    cuda version
+ ^        ^      ^
+ |        |      python version
+ |        |
+ |        cuda version
  |
  RAPIDS version
 ```
 
-**Note: Nightly builds of the images have the RAPIDS version appended with `a` (ie `23.08a-cuda11.8-py3.10`)**
+**Note: Nightly builds of the images have the RAPIDS version appended with an `a` (ie `23.08a-cuda11.8-py3.10`)**
 
 ## Usage
 
-The `rapidsai/rapidsai` image starts with an [`ipython` shell](https://ipython.org/) by default.
+The `rapidsai/base` image starts with an [`ipython` shell](https://ipython.org/) by default.
 
-The `rapidsai/rapidsai-notebooks` image starts with the [JupyterLab notebook server](https://jupyter.org/) by default.
+The `rapidsai/notebooks` image starts with the [JupyterLab notebook server](https://jupyter.org/) by default.
 
 ### Container Ports
 
-`rapidsai/rapidsai-notebooks` exposes port `8888` for the [JupyterLab notebook server](https://jupyter.org/).
+`rapidsai/notebooks` exposes port `8888` for the [JupyterLab notebook server](https://jupyter.org/).
 
 ### Environment Variables
 
@@ -80,7 +80,7 @@ $ docker run \
     -e EXTRA_CONDA_PACKAGES="jq" \
     -e EXTRA_PIP_PACKAGES="beautifulsoup4" \
     -p 8888:8888 \
-    rapidsai/rapidsai-notebooks:23.08-cuda11.8-py3.10
+    rapidsai/notebooks:23.08-cuda11.8-py3.10
 ```
 
 ### Bind Mounts
@@ -104,12 +104,12 @@ $ docker run \
     --gpus all \
     -shm-size=1g --ulimit memlock=-1 --ulimit stack=67108864 \
     -v $(pwd)/environment.yml:/home/rapids/environment.yml \
-    rapidsai/rapidsai:23.08-cuda11.8-py3.10
+    rapidsai/base:23.08-cuda11.8-py3.10
 ```
 
 ### Use JupyterLab to Explore the Notebooks
 
-The `rapidsai/rapidsai-notebooks` container has notebooks for the RAPIDS libraries in `/home/rapids/notebooks`.
+The `rapidsai/notebooks` container has notebooks for the RAPIDS libraries in `/home/rapids/notebooks`.
 
 ### Extending RAPIDS Images
 
