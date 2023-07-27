@@ -44,6 +44,7 @@ RUN mamba install -y -n base \
         "dask-sql=${DASK_SQL_VER%.*}.*" \
         "python=${PYTHON_VER}.*" \
         "cuda-version=${CUDA_VER%.*}.*" \
+        "libxml2>=2.11" \
         ipython \
     && conda clean -afy
 
