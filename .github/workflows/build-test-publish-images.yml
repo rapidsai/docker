@@ -56,16 +56,16 @@ jobs:
           TAG_PREFIX=""
           if [ "${{ inputs.build_type }}" = "pull-request" ]; then
             pr_num="${GITHUB_REF_NAME##*/}"
-            BASE_TAG_PREFIX="rapidsai-${pr_num}-"
-            NOTEBOOKS_TAG_PREFIX="rapidsai-notebooks-${pr_num}-"
+            BASE_TAG_PREFIX="docker-${pr_num}-"
+            NOTEBOOKS_TAG_PREFIX="docker-notebooks-${pr_num}-"
           fi
           echo "BASE_TAG_PREFIX=${BASE_TAG_PREFIX}" | tee -a ${GITHUB_OUTPUT}
           echo "NOTEBOOKS_TAG_PREFIX=${NOTEBOOKS_TAG_PREFIX}" | tee -a ${GITHUB_OUTPUT}
       - name: Compute image repo
         id: compute-image-repo
         run: |
-          base_repo="rapidsai"
-          notebooks_repo="rapidsai-notebooks"
+          base_repo="base"
+          notebooks_repo="notebooks"
           if [ "${{ inputs.build_type }}" = "pull-request" ]; then
             base_repo="staging"
             notebooks_repo="staging"
