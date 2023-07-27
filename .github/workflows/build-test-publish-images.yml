@@ -142,7 +142,7 @@ jobs:
         ${{ needs.compute-matrix.outputs.NOTEBOOKS_TAG_PREFIX }}\
         ${{ needs.compute-matrix.outputs.RAPIDS_VER }}\
         ${{ needs.compute-matrix.outputs.ALPHA_TAG }}-\
-        cuda${{ matrix.CUDA_TAG }}-\
+        cuda${{ matrix.CUDA_VER }}-\
         py${{ matrix.PYTHON_VER }}-\
         ${{ matrix.ARCH }}"
   build-multiarch-manifest:
