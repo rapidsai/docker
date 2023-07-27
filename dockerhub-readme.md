@@ -42,9 +42,9 @@ The tag naming scheme for RAPIDS images incorporates key platform details into t
 ```
 23.08-cuda11.8-py3.10
  ^        ^      ^
- |        |      python version
+ |        |      Python version
  |        |
- |        cuda version
+ |        CUDA version
  |
  RAPIDS version
 ```
