@@ -142,12 +142,12 @@ jobs:
         ${{ needs.compute-matrix.outputs.NOTEBOOKS_TAG_PREFIX }}\
         ${{ needs.compute-matrix.outputs.RAPIDS_VER }}\
         ${{ needs.compute-matrix.outputs.ALPHA_TAG }}-\
-        cuda${{ matrix.CUDA_VER }}-\
+        cuda${{ matrix.CUDA_TAG }}-\
         py${{ matrix.PYTHON_VER }}-\
         ${{ matrix.ARCH }}"
   build-multiarch-manifest:
     if: inputs.build_type == 'branch'
-    needs: [build, compute-matrix]
+    needs: [build, test, compute-matrix]
     strategy:
       matrix: ${{ fromJSON(needs.compute-matrix.outputs.MATRIX) }}
     runs-on: ubuntu-latest
@@ -171,7 +171,7 @@ jobs:
             ${{ needs.compute-matrix.outputs.BASE_TAG_PREFIX }}
             ${{ needs.compute-matrix.outputs.RAPIDS_VER }}
             ${{ needs.compute-matrix.outputs.ALPHA_TAG }}-
-            cuda${{ matrix.CUDA_VER }}-
+            cuda${{ matrix.CUDA_TAG }}-
             py${{ matrix.PYTHON_VER }}
           )
           base_tag="$(printf %s "${base_tag_array[@]}" $'\n')" # Converts array to string w/o spaces
@@ -181,7 +181,7 @@ jobs:
             ${{ needs.compute-matrix.outputs.NOTEBOOKS_TAG_PREFIX }}
             ${{ needs.compute-matrix.outputs.RAPIDS_VER }}
             ${{ needs.compute-matrix.outputs.ALPHA_TAG }}-
-            cuda${{ matrix.CUDA_VER }}-
+            cuda${{ matrix.CUDA_TAG }}-
             py${{ matrix.PYTHON_VER }}
           )
           notebooks_tag="$(printf %s "${notebooks_tag_array[@]}" $'\n')" # Converts array to string w/o spaces
@@ -218,7 +218,7 @@ jobs:
             ${{ needs.compute-matrix.outputs.BASE_TAG_PREFIX }}
             ${{ needs.compute-matrix.outputs.RAPIDS_VER }}
             ${{ needs.compute-matrix.outputs.ALPHA_TAG }}-
-            cuda${{ matrix.CUDA_VER }}-
+            cuda${{ matrix.CUDA_TAG }}-
             py${{ matrix.PYTHON_VER }}
           )
           base_tag="$(printf %s "${base_tag_array[@]}" $'\n')" # Converts array to string w/o spaces
@@ -229,7 +229,7 @@ jobs:
             ${{ needs.compute-matrix.outputs.NOTEBOOKS_TAG_PREFIX }}
             ${{ needs.compute-matrix.outputs.RAPIDS_VER }}
             ${{ needs.compute-matrix.outputs.ALPHA_TAG }}-
-            cuda${{ matrix.CUDA_VER }}-
+            cuda${{ matrix.CUDA_TAG }}-
             py${{ matrix.PYTHON_VER }}
           )
           notebooks_tag="$(printf %s "${notebooks_tag_array[@]}" $'\n')" # Converts array to string w/o spaces
