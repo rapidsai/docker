@@ -112,14 +112,14 @@ jobs:
         ${{ needs.compute-matrix.outputs.BASE_TAG_PREFIX }}\
         ${{ needs.compute-matrix.outputs.RAPIDS_VER }}\
         ${{ needs.compute-matrix.outputs.ALPHA_TAG }}-\
-        cuda${{ matrix.CUDA_VER }}-\
+        cuda${{ matrix.CUDA_TAG }}-\
         py${{ matrix.PYTHON_VER }}"
       NOTEBOOKS_TAG:
         "rapidsai/${{ needs.compute-matrix.outputs.NOTEBOOKS_IMAGE_REPO }}:\
         ${{ needs.compute-matrix.outputs.NOTEBOOKS_TAG_PREFIX }}\
         ${{ needs.compute-matrix.outputs.RAPIDS_VER }}\
         ${{ needs.compute-matrix.outputs.ALPHA_TAG }}-\
-        cuda${{ matrix.CUDA_VER }}-\
+        cuda${{ matrix.CUDA_TAG }}-\
         py${{ matrix.PYTHON_VER }}"
   test:
     needs: [build, compute-matrix]
