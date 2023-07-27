@@ -20,6 +20,7 @@ Libraries included in the images:
 - `cuSpatial`
 - `cuSignal`
 - `cuxfilter`
+- `cuCIM`
 - `xgboost`
 - `dask-sql`
 
