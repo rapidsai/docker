@@ -8,7 +8,7 @@
 
 set -euo pipefail
 
-NOTEBOOK_REPOS=(cudf cuml cugraph cuxfilter cuspatial cusignal xgboost-conda)
+NOTEBOOK_REPOS=(cudf cuml cugraph cuspatial)
 
 mkdir -p /notebooks /dependencies
 for REPO in "${NOTEBOOK_REPOS[@]}"; do
