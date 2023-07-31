@@ -76,6 +76,7 @@ Example:
 $ docker run \
     --rm \
     -it \
+    --pull always \
     --gpus all \
     -shm-size=1g --ulimit memlock=-1 --ulimit stack=67108864 \
     -e EXTRA_CONDA_PACKAGES="jq" \
@@ -102,6 +103,7 @@ Example:
 $ docker run \
     --rm \
     -it \
+    --pull always \
     --gpus all \
     -shm-size=1g --ulimit memlock=-1 --ulimit stack=67108864 \
     -v $(pwd)/environment.yml:/home/rapids/environment.yml \
