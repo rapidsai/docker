@@ -140,4 +140,4 @@ Please submit issues with the container to this GitHub repository: [https://gith
 
 For issues with RAPIDS libraries like cuDF, cuML, RMM, or others file an issue in the related GitHub project.
 
-Additional help can be found on [Stack Overflow](https://stackoverflow.com/tags/rapids) or [Google Groups](https://groups.google.com/forum/#!forum/rapidsai).
+Additional help can be found on [Stack Overflow](https://stackoverflow.com/tags/rapids).
