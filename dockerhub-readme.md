@@ -11,7 +11,7 @@ The RAPIDS suite of software libraries gives you the freedom to execute end-to-e
 
 ### Current Version - RAPIDS v23.08
 
-Libraries included in the images:
+RAPIDS Libraries included in the images:
 - `cuDF`
 - `cuML`
 - `cuGraph`
@@ -27,7 +27,7 @@ Libraries included in the images:
 
 ### Image Types
 
-The RAPIDS images are based on [`nvidia/cuda`](https://hub.docker.com/r/nvidia/cuda) and [`rapidsai/mambaforge-cuda`](https://hub.docker.com/r/rapidsai/mambaforge-cuda). The RAPIDS images provide `amd64` & `arm64` architectures where supported.
+The RAPIDS images are based on [`nvidia/cuda`](https://hub.docker.com/r/nvidia/cuda) and [`rapidsai/mambaforge-cuda`](https://hub.docker.com/r/rapidsai/mambaforge-cuda). The RAPIDS images provide `amd64` & `arm64` architectures [where supported](https://docs.rapids.ai/install#system-req).
 
 
 There are two types:
@@ -126,7 +126,7 @@ You can check the documentation for RAPIDS APIs inside the JupyterLab notebook u
 ```
 This prints the function signature and its usage documentation. If this is not enough, you can see the full code for the function using `??`:
 ```
-[1] ??pygdf.read_csv
+[1] ??cudf.read_csv
 ```
 Check out the RAPIDS [documentation](https://docs.rapids.ai/) for more detailed information.
 
