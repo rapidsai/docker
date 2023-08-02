@@ -6,6 +6,10 @@ on:
       build_type:
         required: true
         type: string
+      run_tests:
+        required: false
+        default: false
+        type: boolean
 
 defaults:
   run:
@@ -123,8 +127,7 @@ jobs:
         py${{ matrix.PYTHON_VER }}"
   test:
     needs: [build, compute-matrix]
-    # TODO: nightly tests
-    if: inputs.build_type == 'pull-request'
+    if: inputs.run_tests
     strategy:
       matrix: ${{ fromJSON(needs.compute-matrix.outputs.TEST_MATRIX) }}
       fail-fast: false

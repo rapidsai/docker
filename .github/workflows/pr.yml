@@ -14,4 +14,5 @@ jobs:
     uses: ./.github/workflows/build-test-publish-images.yml
     with:
       build_type: pull-request
+      run_tests: true
     secrets: inherit
