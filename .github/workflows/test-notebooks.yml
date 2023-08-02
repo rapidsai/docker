@@ -87,7 +87,7 @@ jobs:
       - name: Install awscli
         if: '!cancelled()'
         run: rapids-mamba-retry install -n base awscli
-      - uses: aws-actions/configure-aws-credentials@v1-node16
+      - uses: aws-actions/configure-aws-credentials@v2
         if: '!cancelled()'
         with:
           role-to-assume: ${{ vars.AWS_ROLE_ARN }}
