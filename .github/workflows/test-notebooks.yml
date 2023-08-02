@@ -58,6 +58,7 @@ jobs:
     runs-on: "linux-${{ inputs.ARCH }}-gpu-${{ inputs.GPU }}-${{ inputs.DRIVER }}-1"
     container:
       image: ${{ inputs.NOTEBOOKS_TAG }}
+      options: --user=root
       env:
         NVIDIA_VISIBLE_DEVICES: ${{ env.NVIDIA_VISIBLE_DEVICES }}
         RAPIDS_BUILD_TYPE: ${{ inputs.BUILD_TYPE }}
