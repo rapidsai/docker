@@ -69,7 +69,6 @@ jobs:
         run: |
           mkdir -p "$GHA_TOOLS_DIR"
           curl -s -L 'https://github.com/rapidsai/gha-tools/releases/latest/download/tools.tar.gz' | tar -xz -C "$GHA_TOOLS_DIR"
-          echo "/tmp/gha-tools" >> "${GITHUB_PATH}"
       - name: Install git
         run: |
           PATH="$PATH:$GHA_TOOLS_DIR"
