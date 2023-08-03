@@ -44,6 +44,8 @@ permissions:
   security-events: none
   statuses: none
 
+env:
+  GHA_TOOLS_DIR: /home/rapids/.local/bin # Workaround for https://github.com/actions/runner/issues/2411
 
 jobs:
   test:
@@ -65,11 +67,13 @@ jobs:
     steps:
       - name: Install gha-tools
         run: |
-          mkdir -p /tmp/gha-tools
-          curl -s -L 'https://github.com/rapidsai/gha-tools/releases/latest/download/tools.tar.gz' | tar -xz -C /tmp/gha-tools
+          mkdir -p "$GHA_TOOLS_DIR"
+          curl -s -L 'https://github.com/rapidsai/gha-tools/releases/latest/download/tools.tar.gz' | tar -xz -C "$GHA_TOOLS_DIR"
           echo "/tmp/gha-tools" >> "${GITHUB_PATH}"
       - name: Install git
-        run: rapids-mamba-retry install -n base --freeze-installed git
+        run: |
+          PATH="$PATH:$GHA_TOOLS_DIR"
+          rapids-mamba-retry install -n base --freeze-installed git
       - name: Checkout code
         uses: actions/checkout@v3
         with:
@@ -79,6 +83,7 @@ jobs:
         uses: rapidsai/shared-action-workflows/rapids-github-info@branch-23.08
       - name: Print environment
         run: |
+          PATH="$PATH:$GHA_TOOLS_DIR"
           rapids-print-env
           rapids-logger "nvidia-smi"
           nvidia-smi
@@ -86,7 +91,9 @@ jobs:
         run: /home/rapids/test_notebooks.py -i /home/rapids/notebooks -o /home/rapids/notebooks_output
       - name: Install awscli
         if: '!cancelled()'
-        run: rapids-mamba-retry install -n base awscli
+        run: |
+          PATH="$PATH:$GHA_TOOLS_DIR"
+          rapids-mamba-retry install -n base awscli
       - uses: aws-actions/configure-aws-credentials@v1-node16
         if: '!cancelled()'
         with:
@@ -95,4 +102,6 @@ jobs:
           role-duration-seconds: 1800 # 30m
       - name: Upload notebook test outputs
         if: '!cancelled()'
-        run: rapids-upload-to-s3 test_notebooks_output_${{ inputs.ARCH }}_cuda${{ inputs.CUDA_VER }}_py${{ inputs.PYTHON_VER }}_${{ inputs.GPU }}-${{ inputs.DRIVER }}.tar.gz /home/rapids/notebooks_output
+        run: |
+          PATH="$PATH:$GHA_TOOLS_DIR"
+          rapids-upload-to-s3 test_notebooks_output_${{ inputs.ARCH }}_cuda${{ inputs.CUDA_VER }}_py${{ inputs.PYTHON_VER }}_${{ inputs.GPU }}-${{ inputs.DRIVER }}.tar.gz /home/rapids/notebooks_output
