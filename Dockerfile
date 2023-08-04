@@ -69,10 +69,11 @@ RUN mamba env update -n base -f test_notebooks_dependencies.yaml \
     && conda clean -afy
 
 RUN mamba install -y -n base \
-        jupyterlab \
+        "jupyterlab=3" \
         dask-labextension \
-        jupyterlab-nvdashboard \
-    && conda clean -afy
+    && pip install jupyterlab-nvdashboard \
+    && conda clean -afy \
+    && pip cache purge
 
 ENV DASK_LABEXTENSION__FACTORY__MODULE="dask_cuda"
 ENV DASK_LABEXTENSION__FACTORY__CLASS="LocalCUDACluster"
