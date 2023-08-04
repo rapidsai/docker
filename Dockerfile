@@ -31,7 +31,7 @@ ARG PYTHON_VER
 ARG RAPIDS_VER
 ARG DASK_SQL_VER
 
-RUN useradd -rm -d /home/rapids -s /bin/bash -g conda -u 1000 rapids
+RUN useradd -rm -d /home/rapids -s /bin/bash -g conda -u 1001 rapids
 
 USER rapids
 
