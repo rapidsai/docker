@@ -20,6 +20,9 @@ def compute_ubuntu_version($x):
   end |
   $x + {LINUX_VER: .};
 
+def compute_cuda_tag($x):
+  $x + {CUDA_TAG: $x.CUDA_VER | split(".") | [.[0], .[1]] | join(".") };
+
 # Checks the current entry to see if it matches the given exclude
 def matches($entry; $exclude):
   all($exclude | to_entries | .[]; $entry[.key] == .value);
@@ -42,6 +45,7 @@ def compute_matrix($input):
     combinations |
     lists2dict($matrix_keys; .) |
     compute_ubuntu_version(.) |
+    compute_cuda_tag(.) |
     filter_excludes(.; $excludes) |
     compute_arch(.)
   ] |
