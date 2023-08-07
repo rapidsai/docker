@@ -200,7 +200,7 @@ jobs:
           docker manifest push ${notebooks_tag}
   delete-temp-images:
     if: always()
-    needs: [compute-matrix, build-multiarch-manifest]
+    needs: [compute-matrix, build, test, build-multiarch-manifest]
     strategy:
       matrix: ${{ fromJSON(needs.compute-matrix.outputs.MATRIX) }}
     runs-on: ubuntu-latest
