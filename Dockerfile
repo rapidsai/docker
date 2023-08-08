@@ -5,7 +5,7 @@ ARG PYTHON_VER=3.10
 ARG LINUX_VER=ubuntu22.04
 
 ARG RAPIDS_VER=23.10
-ARG DASK_SQL_VER=2023.6.0
+ARG DASK_SQL_VER=2023.8.0
 
 # Gather dependency information
 FROM rapidsai/ci:latest AS dependencies
