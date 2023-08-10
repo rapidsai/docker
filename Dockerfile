@@ -1,11 +1,11 @@
 # syntax=docker/dockerfile:1
 
-ARG CUDA_VER=11.8.0
+ARG CUDA_VER=12.0.1
 ARG PYTHON_VER=3.10
 ARG LINUX_VER=ubuntu22.04
 
 ARG RAPIDS_VER=23.08
-ARG DASK_SQL_VER=2023.6.0
+ARG DASK_SQL_VER=2023.8.0
 
 # Gather dependency information
 FROM rapidsai/ci:latest AS dependencies
@@ -31,7 +31,7 @@ ARG PYTHON_VER
 ARG RAPIDS_VER
 ARG DASK_SQL_VER
 
-RUN useradd -rm -d /home/rapids -s /bin/bash -g conda -u 1000 rapids
+RUN useradd -rm -d /home/rapids -s /bin/bash -g conda -u 1001 rapids
 
 USER rapids
 
@@ -70,10 +70,11 @@ RUN mamba env update -n base -f test_notebooks_dependencies.yaml \
     && conda clean -afy
 
 RUN mamba install -y -n base \
-        jupyterlab \
+        "jupyterlab=3" \
         dask-labextension \
-        jupyterlab-nvdashboard \
-    && conda clean -afy
+    && pip install jupyterlab-nvdashboard \
+    && conda clean -afy \
+    && pip cache purge
 
 ENV DASK_LABEXTENSION__FACTORY__MODULE="dask_cuda"
 ENV DASK_LABEXTENSION__FACTORY__CLASS="LocalCUDACluster"

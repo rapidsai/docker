@@ -2,6 +2,7 @@ def compute_arch($x):
   ["amd64"] |
   if
     $x.LINUX_VER != "ubuntu20.04" # Dask-sql arm64 requires glibc >=2.32
+    and $x.CUDA_VER < "12.0" # arm64 packages not available for CUDA 12.0 yet
   then
     . + ["arm64"]
   else
@@ -18,6 +19,9 @@ def compute_ubuntu_version($x):
     "ubuntu20.04"
   end |
   $x + {LINUX_VER: .};
+
+def compute_cuda_tag($x):
+  $x + {CUDA_TAG: $x.CUDA_VER | split(".") | [.[0], .[1]] | join(".") };
 
 # Checks the current entry to see if it matches the given exclude
 def matches($entry; $exclude):
@@ -41,6 +45,7 @@ def compute_matrix($input):
     combinations |
     lists2dict($matrix_keys; .) |
     compute_ubuntu_version(.) |
+    compute_cuda_tag(.) |
     filter_excludes(.; $excludes) |
     compute_arch(.)
   ] |

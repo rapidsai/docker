@@ -6,6 +6,10 @@ on:
       build_type:
         required: true
         type: string
+      run_tests:
+        required: false
+        default: false
+        type: boolean
 
 defaults:
   run:
@@ -56,16 +60,16 @@ jobs:
           TAG_PREFIX=""
           if [ "${{ inputs.build_type }}" = "pull-request" ]; then
             pr_num="${GITHUB_REF_NAME##*/}"
-            BASE_TAG_PREFIX="rapidsai-${pr_num}-"
-            NOTEBOOKS_TAG_PREFIX="rapidsai-notebooks-${pr_num}-"
+            BASE_TAG_PREFIX="docker-${pr_num}-"
+            NOTEBOOKS_TAG_PREFIX="docker-notebooks-${pr_num}-"
           fi
           echo "BASE_TAG_PREFIX=${BASE_TAG_PREFIX}" | tee -a ${GITHUB_OUTPUT}
           echo "NOTEBOOKS_TAG_PREFIX=${NOTEBOOKS_TAG_PREFIX}" | tee -a ${GITHUB_OUTPUT}
       - name: Compute image repo
         id: compute-image-repo
         run: |
-          base_repo="rapidsai"
-          notebooks_repo="rapidsai-notebooks"
+          base_repo="base"
+          notebooks_repo="notebooks"
           if [ "${{ inputs.build_type }}" = "pull-request" ]; then
             base_repo="staging"
             notebooks_repo="staging"
@@ -112,19 +116,18 @@ jobs:
         ${{ needs.compute-matrix.outputs.BASE_TAG_PREFIX }}\
         ${{ needs.compute-matrix.outputs.RAPIDS_VER }}\
         ${{ needs.compute-matrix.outputs.ALPHA_TAG }}-\
-        cuda${{ matrix.CUDA_VER }}-\
+        cuda${{ matrix.CUDA_TAG }}-\
         py${{ matrix.PYTHON_VER }}"
       NOTEBOOKS_TAG:
         "rapidsai/${{ needs.compute-matrix.outputs.NOTEBOOKS_IMAGE_REPO }}:\
         ${{ needs.compute-matrix.outputs.NOTEBOOKS_TAG_PREFIX }}\
         ${{ needs.compute-matrix.outputs.RAPIDS_VER }}\
         ${{ needs.compute-matrix.outputs.ALPHA_TAG }}-\
-        cuda${{ matrix.CUDA_VER }}-\
+        cuda${{ matrix.CUDA_TAG }}-\
         py${{ matrix.PYTHON_VER }}"
   test:
     needs: [build, compute-matrix]
-    # TODO: nightly tests
-    if: inputs.build_type == 'pull-request'
+    if: inputs.run_tests
     strategy:
       matrix: ${{ fromJSON(needs.compute-matrix.outputs.TEST_MATRIX) }}
       fail-fast: false
@@ -171,7 +174,7 @@ jobs:
             ${{ needs.compute-matrix.outputs.BASE_TAG_PREFIX }}
             ${{ needs.compute-matrix.outputs.RAPIDS_VER }}
             ${{ needs.compute-matrix.outputs.ALPHA_TAG }}-
-            cuda${{ matrix.CUDA_VER }}-
+            cuda${{ matrix.CUDA_TAG }}-
             py${{ matrix.PYTHON_VER }}
           )
           base_tag="$(printf %s "${base_tag_array[@]}" $'\n')" # Converts array to string w/o spaces
@@ -181,7 +184,7 @@ jobs:
             ${{ needs.compute-matrix.outputs.NOTEBOOKS_TAG_PREFIX }}
             ${{ needs.compute-matrix.outputs.RAPIDS_VER }}
             ${{ needs.compute-matrix.outputs.ALPHA_TAG }}-
-            cuda${{ matrix.CUDA_VER }}-
+            cuda${{ matrix.CUDA_TAG }}-
             py${{ matrix.PYTHON_VER }}
           )
           notebooks_tag="$(printf %s "${notebooks_tag_array[@]}" $'\n')" # Converts array to string w/o spaces
@@ -197,7 +200,7 @@ jobs:
           docker manifest push ${notebooks_tag}
   delete-temp-images:
     if: always()
-    needs: [compute-matrix, build-multiarch-manifest]
+    needs: [compute-matrix, build, test, build-multiarch-manifest]
     strategy:
       matrix: ${{ fromJSON(needs.compute-matrix.outputs.MATRIX) }}
     runs-on: ubuntu-latest
@@ -218,7 +221,7 @@ jobs:
             ${{ needs.compute-matrix.outputs.BASE_TAG_PREFIX }}
             ${{ needs.compute-matrix.outputs.RAPIDS_VER }}
             ${{ needs.compute-matrix.outputs.ALPHA_TAG }}-
-            cuda${{ matrix.CUDA_VER }}-
+            cuda${{ matrix.CUDA_TAG }}-
             py${{ matrix.PYTHON_VER }}
           )
           base_tag="$(printf %s "${base_tag_array[@]}" $'\n')" # Converts array to string w/o spaces
@@ -229,7 +232,7 @@ jobs:
             ${{ needs.compute-matrix.outputs.NOTEBOOKS_TAG_PREFIX }}
             ${{ needs.compute-matrix.outputs.RAPIDS_VER }}
             ${{ needs.compute-matrix.outputs.ALPHA_TAG }}-
-            cuda${{ matrix.CUDA_VER }}-
+            cuda${{ matrix.CUDA_TAG }}-
             py${{ matrix.PYTHON_VER }}
           )
           notebooks_tag="$(printf %s "${notebooks_tag_array[@]}" $'\n')" # Converts array to string w/o spaces
