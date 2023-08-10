@@ -1,10 +1,5 @@
-#!/bin/bash
-
-set -e
-
-# Activate the `rapids` conda environment.
-. /opt/conda/etc/profile.d/conda.sh
-conda activate rapids
+#!/usr/bin/env bash
+set -eo pipefail
 
 cat << EOF
 This container image and its contents are governed by the NVIDIA Deep Learning Container License.
@@ -13,24 +8,24 @@ https://developer.download.nvidia.com/licenses/NVIDIA_Deep_Learning_Container_Li
 
 EOF
 
-source /opt/docker/bin/packages.sh
+if [ -e "/home/rapids/environment.yml" ]; then
+    echo "environment.yml found. Installing packages."
+    timeout ${CONDA_TIMEOUT:-600} mamba env update -n base -f /home/rapids/environment.yml || exit $?
+fi
 
-# Source "source" file if it exists
-SRC_FILE="/opt/docker/bin/entrypoint_source"
-[ -f "${SRC_FILE}" ] && source "${SRC_FILE}"
+if [ "$EXTRA_CONDA_PACKAGES" ]; then
+    echo "EXTRA_CONDA_PACKAGES environment variable found. Installing packages."
+    timeout ${CONDA_TIMEOUT:-600} mamba install -n base -y $EXTRA_CONDA_PACKAGES || exit $?
+fi
 
-# Check if we should quote the exec params
-UNQUOTE=false
-if [ "$1" = "--unquote-exec" ]; then
-  UNQUOTE=true
-  shift
-elif [ -n "${UNQUOTE_EXEC}" ] && [[ "${UNQUOTE_EXEC}" =~ ^(true|yes|y)$ ]]; then
-  UNQUOTE=true
+if [ "$EXTRA_PIP_PACKAGES" ]; then
+    echo "EXTRA_PIP_PACKAGES environment variable found. Installing packages.".
+    timeout ${PIP_TIMEOUT:-600} pip install $EXTRA_PIP_PACKAGES || exit $?
 fi
 
 # Run whatever the user wants.
 if [ "${UNQUOTE}" = "true" ]; then
-  exec $@
+    exec $@
 else
-  exec "$@"
+    exec "$@"
 fi
