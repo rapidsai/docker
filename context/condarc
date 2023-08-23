@@ -5,3 +5,4 @@ channels:
   - pytorch
   - conda-forge
   - nvidia
+  - nvidia/label/tst
