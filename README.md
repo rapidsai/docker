@@ -1,4 +1,4 @@
-1# `rapidsai/docker`
+# `rapidsai/docker`
 
 This repository contains the end-user docker images for [RAPIDS](https://rapids.ai).
 
