@@ -217,7 +217,7 @@ jobs:
           for arch in $(echo '${{ toJSON(matrix.ARCHES) }}' | jq .[] -r); do
             base_source_tags+=("${base_tag}-${arch}")
             notebooks_source_tags+=("${notebooks_tag}-${arch}")
-            ann_bench_source_tags+=("${notebooks_tag}-${arch}")
+            ann_bench_source_tags+=("${ann_bench_tag}-${arch}")
           done
 
           docker manifest create ${base_tag} ${base_source_tags[@]}
