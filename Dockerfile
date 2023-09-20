@@ -8,7 +8,7 @@ ARG RAPIDS_VER=23.10
 ARG DASK_SQL_VER=2023.8.0
 
 # Gather dependency information
-FROM rapidsai/ci:latest AS dependencies
+FROM rapidsai/ci-conda:latest AS dependencies
 ARG CUDA_VER
 ARG PYTHON_VER
 

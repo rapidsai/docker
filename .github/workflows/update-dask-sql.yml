@@ -12,7 +12,7 @@ jobs:
   update-dask-sql:
     runs-on: ubuntu-latest
     container:
-      image: rapidsai/ci:latest
+      image: rapidsai/ci-conda:latest
     if: github.repository == 'rapidsai/docker'
 
     steps:
