@@ -126,7 +126,7 @@ jobs:
         uses: docker/build-push-action@v4
         with:
           context: context
-          file: raft-ann-bench/gpu/Dockerfile
+          file: raft-ann-bench/cpu/Dockerfile
           target: raft-ann-bench-cpu
           push: true
           pull: true
