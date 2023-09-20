@@ -14,10 +14,6 @@ RUN useradd -rm -d /home/rapids -s /bin/bash -g conda -u 1001 rapids
 
 WORKDIR /home/rapids
 
-RUN mamba install -y -n base -c rapidsai \
-        "faiss-proc=*=cuda" \
-        "libfaiss>=1.7.1"
-
 COPY condarc /opt/conda/.condarc
 
 RUN mamba install -y -n base \
