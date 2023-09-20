@@ -22,10 +22,6 @@ WORKDIR /home/rapids
 
 COPY condarc /opt/conda/.condarc
 
-RUN mamba install -y -n base -c rapidsai \
-        "faiss-proc=*=cuda" \
-        "libfaiss>=1.7.1"
-
 RUN mamba install -y -n base \
         "raft-ann-bench-cpu=${RAPIDS_VER}.*" \
         "python=${PYTHON_VER}" \
