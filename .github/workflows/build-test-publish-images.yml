@@ -74,15 +74,15 @@ jobs:
         run: |
           base_repo="base"
           notebooks_repo="notebooks"
-          ann-bench_repo="raft-ann-bench"
+          ann_bench_repo="raft-ann-bench"
           if [ "${{ inputs.build_type }}" = "pull-request" ]; then
             base_repo="staging"
             notebooks_repo="staging"
-            ann-bench_repo="staging"
+            ann_bench_repo="staging"
           fi
           echo "BASE_IMAGE_REPO=${base_repo}" | tee -a ${GITHUB_OUTPUT}
           echo "NOTEBOOKS_IMAGE_REPO=${notebooks_repo}" | tee -a ${GITHUB_OUTPUT}
-          echo "ANN_BENCH_IMAGE_REPO=${ann-bench_repo}" | tee -a ${GITHUB_OUTPUT}
+          echo "ANN_BENCH_IMAGE_REPO=${ann_bench_repo}" | tee -a ${GITHUB_OUTPUT}
       - name: Compute RAPIDS_VER
         id: compute-rapids-ver
         run: |
@@ -182,7 +182,7 @@ jobs:
         run: |
           base_source_tags=()
           notebooks_source_tags=()
-          ann-bench_source_tags=()
+          ann_bench_source_tags=()
 
           base_tag_array=(
             rapidsai/${{ needs.compute-matrix.outputs.BASE_IMAGE_REPO }}:
@@ -204,7 +204,7 @@ jobs:
           )
           notebooks_tag="$(printf %s "${notebooks_tag_array[@]}" $'\n')" # Converts array to string w/o spaces
 
-          ann-bench_tag_array=(
+          ann_bench_tag_array=(
             rapidsai/${{ needs.compute-matrix.outputs.ANN_BENCH_IMAGE_REPO }}:
             ${{ needs.compute-matrix.outputs.ANN_BENCH_TAG_PREFIX }}
             ${{ needs.compute-matrix.outputs.RAPIDS_VER }}
@@ -212,20 +212,20 @@ jobs:
             cuda${{ matrix.CUDA_TAG }}-
             py${{ matrix.PYTHON_VER }}
           )
-          ann-bench_tag="$(printf %s "${ann-bench_tag_array[@]}" $'\n')" # Converts array to string w/o spaces
+          ann_bench_tag="$(printf %s "${ann_bench_tag_array[@]}" $'\n')" # Converts array to string w/o spaces
 
           for arch in $(echo '${{ toJSON(matrix.ARCHES) }}' | jq .[] -r); do
             base_source_tags+=("${base_tag}-${arch}")
             notebooks_source_tags+=("${notebooks_tag}-${arch}")
-            ann-bench_source_tags+=("${notebooks_tag}-${arch}")
+            ann_bench_source_tags+=("${notebooks_tag}-${arch}")
           done
 
           docker manifest create ${base_tag} ${base_source_tags[@]}
           docker manifest push ${base_tag}
           docker manifest create ${notebooks_tag} ${notebooks_source_tags[@]}
           docker manifest push ${notebooks_tag}
-          docker manifest create ${ann-bench_tag} ${ann-bench_source_tags[@]}
-          docker manifest push ${ann-bench_tag}
+          docker manifest create ${ann_bench_tag} ${ann_bench_source_tags[@]}
+          docker manifest push ${ann_bench_tag}
   delete-temp-images:
     if: always()
     needs: [compute-matrix, build, test, build-multiarch-manifest]
@@ -265,15 +265,15 @@ jobs:
           )
           notebooks_tag="$(printf %s "${notebooks_tag_array[@]}" $'\n')" # Converts array to string w/o spaces
 
-          ann-bench_repo="${{ needs.compute-matrix.outputs.ANN_BENCH_IMAGE_REPO }}"
-          ann-bench_tag_array=(
+          ann_bench_repo="${{ needs.compute-matrix.outputs.ANN_BENCH_IMAGE_REPO }}"
+          ann_bench_tag_array=(
             ${{ needs.compute-matrix.outputs.ANN_BENCH_TAG_PREFIX }}
             ${{ needs.compute-matrix.outputs.RAPIDS_VER }}
             ${{ needs.compute-matrix.outputs.ALPHA_TAG }}-
             cuda${{ matrix.CUDA_TAG }}-
             py${{ matrix.PYTHON_VER }}
           )
-          ann-bench_tag="$(printf %s "${ann-bench_tag_array[@]}" $'\n')" # Converts array to string w/o spaces
+          ann_bench_tag="$(printf %s "${ann_bench_tag_array[@]}" $'\n')" # Converts array to string w/o spaces
 
           for arch in $(echo '${{ toJSON(matrix.ARCHES) }}' | jq .[] -r); do
             curl -i -X DELETE \
@@ -287,5 +287,5 @@ jobs:
             curl -i -X DELETE \
               -H "Accept: application/json" \
               -H "Authorization: JWT $HUB_TOKEN" \
-              "https://hub.docker.com/v2/repositories/$org/$ann-bench_repo/tags/$ann-bench_tag-$arch/"
+              "https://hub.docker.com/v2/repositories/$org/$ann_bench_repo/tags/$ann_bench_tag-$arch/"
           done
