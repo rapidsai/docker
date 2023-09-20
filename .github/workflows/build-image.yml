@@ -30,6 +30,12 @@ on:
       RAFT_ANN_BENCH_TAG:
         required: true
         type: string
+      RAFT_ANN_DATASETS_BENCH_TAG:
+        required: true
+        type: string
+      RAFT_ANN_BENCH_CPU_TAG:
+        required: true
+        type: string
 
 jobs:
   build:
