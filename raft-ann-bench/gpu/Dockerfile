@@ -22,7 +22,7 @@ RUN mamba install -y -n base \
         "cuda-version=${CUDA_VER%.*}.*" \
     && conda clean -afy
 
-COPY run_benchmark.sh /home/rapids/raftannbench/run_benchmark.sh
+COPY raft-ann-bench/run_benchmark.sh /home/rapids/raftannbench/run_benchmark.sh
 
 CMD ["--dataset fashion-mnist-784-euclidean", "", "--algorithms raft_cagra"]
 
@@ -31,7 +31,9 @@ ENTRYPOINT ["/bin/bash", "/home/rapids/raftannbench/run_benchmark.sh"]
 
 FROM raft-ann-bench as raft-ann-bench-datasets
 
-COPY get_datasets.sh /home/rapids/raftannbench/get_datasets.sh
+COPY raft-ann-bench/get_datasets.sh /home/rapids/raftannbench/get_datasets.sh
+
+COPY raft-ann-bench/run_benchmark.sh /home/rapids/raftannbench/run_benchmark_preloaded_datasets.sh
 
 RUN /home/rapids/raftannbench/get_datasets.sh
 

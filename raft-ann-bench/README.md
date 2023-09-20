@@ -11,8 +11,6 @@ There are two image types:
 - gpu: Contains dockerfile to build images using conda packages for GPU systems.
 - cpu: Contains dockerfile to build images using conda packages for CPU systems. Based on `mambaforge`.
 
-
-
 # Running the Containers
 
 For complete details, refer to RAFT's documentation https://docs.rapids.ai/api/raft/nightly/raft_ann_benchmarks/#installing-the-benchmarks.
