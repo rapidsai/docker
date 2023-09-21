@@ -132,7 +132,7 @@ jobs:
         with:
           context: context
           file: raft-ann-bench/gpu/Dockerfile
-          target: raft-ann-bench
+          target: raft-ann-bench-datasets
           push: true
           pull: true
           build-args: |
