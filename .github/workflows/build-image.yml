@@ -113,36 +113,36 @@ jobs:
       #       RAPIDS_VER=${{ inputs.RAPIDS_VER }}
       #       DASK_SQL_VER=${{ inputs.DASK_SQL_VER }}
       #     tags: ${{ inputs.NOTEBOOKS_TAG }}-${{ matrix.ARCH }}
-      - name: Build RAFT ANN Benchmarks GPU image
-        uses: docker/build-push-action@v4
-        with:
-          context: context
-          file: raft-ann-bench/gpu/Dockerfile
-          target: raft-ann-bench
-          push: true
-          pull: true
-          build-args: |
-            CUDA_VER=${{ inputs.CUDA_VER }}
-            LINUX_VER=${{ inputs.LINUX_VER }}
-            PYTHON_VER=${{ inputs.PYTHON_VER }}
-            RAPIDS_VER=${{ inputs.RAPIDS_VER }}
-          tags: ${{ inputs.RAFT_ANN_BENCH_TAG }}-${{ matrix.ARCH }}
-      - name: Build RAFT ANN Benchmarks GPU with datasets image
-        uses: docker/build-push-action@v4
-        with:
-          context: context
-          file: raft-ann-bench/gpu/Dockerfile
-          target: raft-ann-bench-datasets
-          push: true
-          pull: true
-          build-args: |
-            CUDA_VER=${{ inputs.CUDA_VER }}
-            LINUX_VER=${{ inputs.LINUX_VER }}
-            PYTHON_VER=${{ inputs.PYTHON_VER }}
-            RAPIDS_VER=${{ inputs.RAPIDS_VER }}
-          tags: ${{ inputs.RAFT_ANN_BENCH_TAG }}-${{ matrix.ARCH }}
+      # - name: Build RAFT ANN Benchmarks GPU image
+      #   uses: docker/build-push-action@v4
+      #   with:
+      #     context: context
+      #     file: raft-ann-bench/gpu/Dockerfile
+      #     target: raft-ann-bench
+      #     push: true
+      #     pull: true
+      #     build-args: |
+      #       CUDA_VER=${{ inputs.CUDA_VER }}
+      #       LINUX_VER=${{ inputs.LINUX_VER }}
+      #       PYTHON_VER=${{ inputs.PYTHON_VER }}
+      #       RAPIDS_VER=${{ inputs.RAPIDS_VER }}
+      #     tags: ${{ inputs.RAFT_ANN_BENCH_TAG }}-${{ matrix.ARCH }}
+      # - name: Build RAFT ANN Benchmarks GPU with datasets image
+      #   uses: docker/build-push-action@v4
+      #   with:
+      #     context: context
+      #     file: raft-ann-bench/gpu/Dockerfile
+      #     target: raft-ann-bench-datasets
+      #     push: true
+      #     pull: true
+      #     build-args: |
+      #       CUDA_VER=${{ inputs.CUDA_VER }}
+      #       LINUX_VER=${{ inputs.LINUX_VER }}
+      #       PYTHON_VER=${{ inputs.PYTHON_VER }}
+      #       RAPIDS_VER=${{ inputs.RAPIDS_VER }}
+      #     tags: ${{ inputs.RAFT_ANN_BENCH_DATASETS_TAG }}-${{ matrix.ARCH }}
       - name: Build RAFT ANN Benchmarks CPU image
-        if: ${{inputs.CUDA_VER}} == '12.0.1'
+        if: inputs.CUDA_VER == '12.0.1'
         uses: docker/build-push-action@v4
         with:
           context: context
@@ -155,4 +155,4 @@ jobs:
             LINUX_VER=${{ inputs.LINUX_VER }}
             PYTHON_VER=${{ inputs.PYTHON_VER }}
             RAPIDS_VER=${{ inputs.RAPIDS_VER }}
-          tags: ${{ inputs.RAFT_ANN_BENCH_TAG }}-cpu-${{ matrix.ARCH }}
+          tags: ${{ inputs.RAFT_ANN_BENCH_TAG }}-${{ matrix.ARCH }}
