@@ -30,7 +30,7 @@ on:
       RAFT_ANN_BENCH_TAG:
         required: true
         type: string
-      RAFT_ANN_DATASETS_BENCH_TAG:
+      RAFT_ANN_BENCH_DATASETS_TAG:
         required: true
         type: string
       RAFT_ANN_BENCH_CPU_TAG:
