@@ -153,16 +153,16 @@ jobs:
         ${{ needs.compute-matrix.outputs.ALPHA_TAG }}-\
         cuda${{ matrix.CUDA_TAG }}-\
         py${{ matrix.PYTHON_VER }}"
-      RAFT_ANN_BENCH_DATASETS_TAG_PREFIX:
+      RAFT_ANN_BENCH_DATASETS_TAG:
         "rapidsai/${{ needs.compute-matrix.outputs.RAFT_ANN_BENCH_IMAGE_REPO }}:\
-        ${{ needs.compute-matrix.outputs.RAFT_ANN_BENCH_TAG_PREFIX }}\
+        ${{ needs.compute-matrix.outputs.RAFT_ANN_BENCH_DATASETS_TAG_PREFIX }}\
         ${{ needs.compute-matrix.outputs.RAPIDS_VER }}\
         ${{ needs.compute-matrix.outputs.ALPHA_TAG }}-\
         cuda${{ matrix.CUDA_TAG }}-\
         py${{ matrix.PYTHON_VER }}"
       RAFT_ANN_BENCH_CPU_TAG:
         "rapidsai/${{ needs.compute-matrix.outputs.RAFT_ANN_BENCH_IMAGE_REPO }}:\
-        ${{ needs.compute-matrix.outputs.RAFT_ANN_BENCH_TAG_PREFIX }}\
+        ${{ needs.compute-matrix.outputs.RAFT_ANN_BENCH_CPU_TAG_PREFIX }}\
         ${{ needs.compute-matrix.outputs.RAPIDS_VER }}\
         ${{ needs.compute-matrix.outputs.ALPHA_TAG }}-\
         py${{ matrix.PYTHON_VER }}"
@@ -245,7 +245,7 @@ jobs:
 
           raft_ann_bench_datasets_tag_array=(
             rapidsai/${{ needs.compute-matrix.outputs.RAFT_ANN_BENCH_IMAGE_REPO }}:
-            ${{ needs.compute-matrix.outputs.RAFT_ANN_BENCH_TAG_PREFIX }}
+            ${{ needs.compute-matrix.outputs.RAFT_ANN_BENCH_DATASETS_TAG_PREFIX }}
             ${{ needs.compute-matrix.outputs.RAPIDS_VER }}
             ${{ needs.compute-matrix.outputs.ALPHA_TAG }}-
             cuda${{ matrix.CUDA_TAG }}-
@@ -255,7 +255,7 @@ jobs:
 
           raft_ann_bench_cpu_tag_array=(
             rapidsai/${{ needs.compute-matrix.outputs.RAFT_ANN_BENCH_IMAGE_REPO }}:
-            ${{ needs.compute-matrix.outputs.RAFT_ANN_BENCH_TAG_PREFIX }}
+            ${{ needs.compute-matrix.outputs.RAFT_ANN_BENCH_CPU_TAG_PREFIX }}
             ${{ needs.compute-matrix.outputs.RAPIDS_VER }}
             ${{ needs.compute-matrix.outputs.ALPHA_TAG }}-
             py${{ matrix.PYTHON_VER }}
@@ -266,6 +266,8 @@ jobs:
             base_source_tags+=("${base_tag}-${arch}")
             notebooks_source_tags+=("${notebooks_tag}-${arch}")
             raft_ann_bench_source_tags+=("${raft_ann_bench_tag}-${arch}")
+            raft_ann_bench_datasets_source_tags+=("${raft_ann_bench_datasets_tag}-${arch}")
+            raft_ann_bench__cpusource_tags+=("${raft_ann_bench_cpu_tag}-${arch}")
           done
 
           docker manifest create ${base_tag} ${base_source_tags[@]}
@@ -329,7 +331,7 @@ jobs:
 
           raft_ann_datasets_bench_repo="${{ needs.compute-matrix.outputs.RAFT_ANN_BENCH_IMAGE_REPO }}"
           raft_ann_datasets_bench_tag_array=(
-            ${{ needs.compute-matrix.outputs.RAFT_ANN_BENCH_TAG_PREFIX }}
+            ${{ needs.compute-matrix.outputs.RAFT_ANN_BENCH_DATASETS_TAG_PREFIX }}
             ${{ needs.compute-matrix.outputs.RAPIDS_VER }}
             ${{ needs.compute-matrix.outputs.ALPHA_TAG }}-
             cuda${{ matrix.CUDA_TAG }}-
@@ -339,7 +341,7 @@ jobs:
 
           raft_ann_bench_cpu_repo="${{ needs.compute-matrix.outputs.RAFT_ANN_BENCH_IMAGE_REPO }}"
           raft_ann_bench_cpu_tag_array=(
-            ${{ needs.compute-matrix.outputs.RAFT_ANN_BENCH_TAG_PREFIX }}
+            ${{ needs.compute-matrix.outputs.RAFT_ANN_BENCH_CPU_TAG_PREFIX }}
             ${{ needs.compute-matrix.outputs.RAPIDS_VER }}
             ${{ needs.compute-matrix.outputs.ALPHA_TAG }}-
             py${{ matrix.PYTHON_VER }}
