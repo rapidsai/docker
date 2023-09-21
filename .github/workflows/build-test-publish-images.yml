@@ -70,13 +70,13 @@ jobs:
             NOTEBOOKS_TAG_PREFIX="docker-notebooks-${pr_num}-"
             RAFT_ANN_BENCH_TAG_PREFIX="docker-raft-ann-bench-${pr_num}-"
             RAFT_ANN_BENCH_DATASETS_TAG_PREFIX="docker-raft-ann-bench-datasets-${pr_num}-"
-            RAFT_ANN_BENCH_TAG_PREFIX="docker-raft-ann-bench-cpu-${pr_num}-"
+            RAFT_ANN_BENCH_CPU_TAG_PREFIX="docker-raft-ann-bench-cpu-${pr_num}-"
           fi
           echo "BASE_TAG_PREFIX=${BASE_TAG_PREFIX}" | tee -a ${GITHUB_OUTPUT}
           echo "NOTEBOOKS_TAG_PREFIX=${NOTEBOOKS_TAG_PREFIX}" | tee -a ${GITHUB_OUTPUT}
           echo "RAFT_ANN_BENCH_TAG_PREFIX=${RAFT_ANN_BENCH_TAG_PREFIX}" | tee -a ${GITHUB_OUTPUT}
-          echo "RAFT_ANN_DATASETS_BENCH_TAG_PREFIX=${RAFT_ANN_BENCH_TAG_PREFIX}" | tee -a ${GITHUB_OUTPUT}
-          echo "RAFT_ANN_BENCH_TAG_PREFIX=${RAFT_ANN_BENCH_TAG_PREFIX}" | tee -a ${GITHUB_OUTPUT}
+          echo "RAFT_ANN_BENCH_DATASETS_TAG_PREFIX=${RAFT_ANN_BENCH_DATASETS_TAG_PREFIX}" | tee -a ${GITHUB_OUTPUT}
+          echo "RAFT_ANN_BENCH_CPU_TAG_PREFIX=${RAFT_ANN_BENCH_CPU_TAG_PREFIX}" | tee -a ${GITHUB_OUTPUT}
       - name: Compute image repo
         id: compute-image-repo
         run: |
