@@ -153,7 +153,7 @@ jobs:
         ${{ needs.compute-matrix.outputs.ALPHA_TAG }}-\
         cuda${{ matrix.CUDA_TAG }}-\
         py${{ matrix.PYTHON_VER }}"
-      RAFT_ANN_DATASETS_BENCH_TAG:
+      RAFT_ANN_BENCH_DATASETS_TAG_PREFIX:
         "rapidsai/${{ needs.compute-matrix.outputs.RAFT_ANN_BENCH_IMAGE_REPO }}:\
         ${{ needs.compute-matrix.outputs.RAFT_ANN_BENCH_TAG_PREFIX }}\
         ${{ needs.compute-matrix.outputs.RAPIDS_VER }}\
