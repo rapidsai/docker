@@ -80,7 +80,7 @@ jobs:
           fetch-depth: 0
       - name: Get RAPIDS GitHub Info
         id: get-rapids-github-info
-        uses: rapidsai/shared-action-workflows/rapids-github-info@branch-23.10
+        uses: rapidsai/shared-action-workflows/rapids-github-info@branch-23.12
       - name: Print environment
         run: |
           PATH="$PATH:$GHA_TOOLS_DIR"
