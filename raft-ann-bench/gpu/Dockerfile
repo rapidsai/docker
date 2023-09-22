@@ -19,6 +19,7 @@ COPY condarc /opt/conda/.condarc
 RUN mamba install -y -n base \
         "raft-ann-bench=${RAPIDS_VER}.*" \
         "cuda-version=${CUDA_VER%.*}.*" \
+        "rmm=${RAPIDS_VER}.*" \
     && conda clean -afy
 
 COPY raft-ann-bench/run_benchmark.sh /home/rapids/raftannbench/run_benchmark.sh
