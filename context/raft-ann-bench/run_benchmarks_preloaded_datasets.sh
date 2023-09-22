@@ -18,7 +18,7 @@ export CONDA_PREFIX=/opt/conda
 export DATASET_ARG=$1
 export GET_DATASET_ARGS=$2
 export RUN_ARGS=$3
-export $PLOT_ARGS=$4
+export PLOT_ARGS=$4
 
 # (1) prepare dataset only if not using prebuilt dataset
 case $DATASET_ARG in

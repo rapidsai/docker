@@ -18,7 +18,7 @@ export CONDA_PREFIX=/opt/conda
 export DATASET_ARG=$1
 export GET_DATASET_ARGS=$2
 export RUN_ARGS=$3
-export $PLOT_ARGS=$4
+export PLOT_ARGS=$4
 
 # (1) prepare dataset.
 python -m raft-ann-bench.get_dataset ${DATASET_ARG} ${GET_DATASET_ARGS} --dataset-path /home/rapids/benchmarks/datasets

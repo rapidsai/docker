@@ -23,7 +23,7 @@ RUN mamba install -y -n base \
 
 COPY raft-ann-bench/run_benchmark.sh /home/rapids/raftannbench/run_benchmark.sh
 
-CMD ["--dataset fashion-mnist-784-euclidean", "", "--algorithms raft_cagra"]
+CMD ["--dataset fashion-mnist-784-euclidean", "", "--algorithms raft_cagra", ""]
 
 ENTRYPOINT ["/bin/bash", "/home/rapids/raftannbench/run_benchmark.sh"]
 
@@ -36,7 +36,7 @@ COPY raft-ann-bench/run_benchmark.sh /home/rapids/raftannbench/run_benchmark_pre
 
 RUN /home/rapids/raftannbench/get_datasets.sh
 
-CMD ["--dataset fashion-mnist-784-euclidean", "", "--algorithms hnswlib"]
+CMD ["--dataset fashion-mnist-784-euclidean", "", "--algorithms hnswlib", ""]
 
 ENTRYPOINT ["/bin/bash", "/home/rapids/raftannbench/run_benchmark_preloaded_datasets.sh"]
 
