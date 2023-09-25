@@ -36,4 +36,8 @@ python -m raft-ann-bench.run  ${DATASET_ARG} --dataset-path /home/rapids/benchma
 python -m raft-ann-bench.data_export  ${DATASET_ARG} --dataset-path /home/rapids/benchmarks/datasets
 
 # (4) plot results
-python -m raft-ann-bench.plot  ${DATASET_ARG} ${PLOT_ARGS} --dataset-path /home/rapids/benchmarks/datasets --output-filepath /home/rapids/benchmarks/results
+mkdir -p /home/rapids/benchmarks/datasets/result
+cd /home/rapids/benchmarks/datasets/result
+python -m raft-ann-bench.plot  ${DATASET_ARG} ${PLOT_ARGS} --dataset-path /home/rapids/benchmarks/datasets
+
+chown -R `stat -c "%u:%g" /home/rapids/benchmarks` /home/rapids/benchmarks

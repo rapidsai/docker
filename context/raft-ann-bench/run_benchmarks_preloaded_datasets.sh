@@ -20,13 +20,12 @@ export GET_DATASET_ARGS=$2
 export RUN_ARGS=$3
 export PLOT_ARGS=$4
 
-# (1) prepare dataset only if not using prebuilt dataset
 case $DATASET_ARG in
-   deep-image-96-angular|fashion-mnist-784|glove-50-angular|glove-100-angular|lastfm-65-angular|mnist-784-euclidean|nytimes-256-angular|sift-128-euclidean)
-     export DATASET_PATH=/home/rapids/preloaded_datasets ;;
+   "--dataset deep-image-96-angular"|"--dataset fashion-mnist-784"|"--dataset glove-50-angular"|"--dataset glove-100-angular"|"--dataset lastfm-65-angular"|"--dataset mnist-784-euclidean"|"--dataset nytimes-256-angular"|"--dataset sift-128-euclidean")
+    export DATASET_PATH=/home/rapids/preloaded_datasets ;;
    *)
-      python -m raft-ann-bench.get_dataset ${DATASET_ARG} ${GET_DATASET_ARGS} --dataset-path /home/rapids/benchmarks/datasets
-     export DATASET_PATH=/home/rapids/benchmarks/datasets ;;
+    python -m raft-ann-bench.get_dataset ${DATASET_ARG} ${GET_DATASET_ARGS} --dataset-path /home/rapids/benchmarks/datasets
+    export DATASET_PATH=/home/rapids/benchmarks/datasets ;;
 esac
 
 if [[ "$DATASET_ARG" == *"angular"* ]]; then
@@ -42,4 +41,8 @@ python -m raft-ann-bench.run  ${DATASET_ARG} --dataset-path /home/rapids/benchma
 python -m raft-ann-bench.data_export  ${DATASET_ARG} --dataset-path /home/rapids/benchmarks/datasets
 
 # (4) plot results
-python -m raft-ann-bench.plot  ${DATASET_ARG} ${PLOT_ARGS} --dataset-path /home/rapids/benchmarks/datasets --output-filepath /home/rapids/benchmarks/results
+mkdir -p /home/rapids/benchmarks/datasets/result
+cd /home/rapids/benchmarks/datasets/result
+python -m raft-ann-bench.plot  ${DATASET_ARG} ${PLOT_ARGS} --dataset-path /home/rapids/benchmarks/datasets
+
+chown -R `stat -c "%u:%g" /home/rapids/benchmarks` /home/rapids/benchmarks
