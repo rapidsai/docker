@@ -33,11 +33,11 @@ FROM raft-ann-bench as raft-ann-bench-datasets
 
 COPY raft-ann-bench/get_datasets.sh /home/rapids/raftannbench/get_datasets.sh
 
-COPY raft-ann-bench/run_benchmark.sh /home/rapids/raftannbench/run_benchmark_preloaded_datasets.sh
+COPY raft-ann-bench/run_benchmarks_preloaded_datasets.sh /home/rapids/raftannbench/run_benchmarks_preloaded_datasets.sh
 
 RUN /home/rapids/raftannbench/get_datasets.sh
 
 CMD ["--dataset fashion-mnist-784-euclidean", "", "--algorithms hnswlib", ""]
 
-ENTRYPOINT ["/bin/bash", "/home/rapids/raftannbench/run_benchmark_preloaded_datasets.sh"]
+ENTRYPOINT ["/bin/bash", "/home/rapids/raftannbench/run_benchmarks_preloaded_datasets.sh"]
 
