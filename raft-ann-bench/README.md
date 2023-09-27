@@ -27,13 +27,15 @@ Nightly images are located in [dockerhub](https://hub.docker.com/r/rapidsai/raft
 
 The containers can be used in two manners:
 
-1. **Quick benchmark with single `docker run`**: The docker containers already include helper scripts to be able to invoke most of the functionality of the benchmarks from docker run for a simple and easy way to run benchmarks. To use the containers in this manner, use the following commands:
+1. **Quick benchmark with single `docker run`**: The docker containers already include helper scripts to be able to invoke most of the functionality of the benchmarks from docker run for a simple and easy way to run benchmarks.
 
 For GPU systems, where $DATA_FOLDER is a local folder where you want datasets stored in $DATA_FOLDER/datasets and results in $DATA_FOLDER/results:
 
 ```bash
+export DATA_FOLDER=path/to/store/results/and/data
 docker run --gpus all --rm -it \
     -v $DATA_FOLDER:/home/rapids/benchmarks  \
+    -u $(id -u) \
     rapidsai/raft-ann-bench:23.10a-cuda11.8-py3.10 \
     "--dataset deep-image-96-angular" \
     "--normalize" \
@@ -44,8 +46,10 @@ docker run --gpus all --rm -it \
 Where:
 
 ```bash
+export DATA_FOLDER=path/to/store/results/and/data # <- Results and datasets will be written to this host folder.
 docker run --gpus all --rm -it \
     -v $DATA_FOLDER:/home/rapids/benchmarks  \ # <- local folder to store datasets and results
+    -u $(id -u) \ # <- this flag allows the container to use the host user for permissions
     rapidsai/raft-ann-bench:23.10a-cuda11.8-py3.10 \ # <- image to use, either `raft-ann-bench` or `raft-ann-bench-datasets`
     "--dataset deep-image-96-angular" \ # <- dataset name
     "--normalize" \ # <- whether to normalize the dataset, leave string empty ("") to not normalize.
@@ -55,8 +59,10 @@ docker run --gpus all --rm -it \
 
 For CPU systems the same interface applies, except for not needing the gpus argument and using the cpu images:
 ```bash
+export DATA_FOLDER=path/to/store/results/and/data
 docker run  all --rm -it \
     -v $DATA_FOLDER:/home/rapids/benchmarks  \
+    -u $(id -u) \ # <- this flag allows the container to use the host user for permissions
     rapidsai/raft-ann-bench-cpu:23.10a-py3.10 \
      "--dataset deep-image-96-angular" \
      "--normalize" \
@@ -67,13 +73,15 @@ docker run  all --rm -it \
 2. **Using the preinstalled `raft_ann_benchmarks` python package**: The docker containers are built using the conda packages described in the following section, so they can be used directly as if they were installed manually following the instructions in the next section. This allows using the full flexibility of the scripts. To use the python scripts directly, an easy way is to use the following command:
 
 ```bash
+export DATA_FOLDER=path/to/store/results/and/data
 docker run --gpus all --rm -it \
     -v $DATA_FOLDER:/home/rapids/benchmarks  \
+    -u $(id -u) \
     rapidsai/raft-ann-bench:23.10a-cuda11.8-py3.10 \
     --entrypoint /bin/bash
 ```
 
-This will drop you into a command line in the container, with the `raft_ann_benchmarks` python package ready to use:
+This will drop you into a command line in the container, with RAFT and the `raft_ann_benchmarks` python package ready to use:
 
 ```
 (base) root@00b068fbb862:/home/rapids#
