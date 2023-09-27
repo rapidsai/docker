@@ -21,7 +21,7 @@ We provide images for GPU enabled systems, as well as systems without a GPU. The
 - `raft-ann-bench-datasets`: Contains the GPU and CPU benchmarks with million-scale datasets already included in the container. Best suited for users that want to run multiple million scale datasets already included in the image.
 - `raft-ann-bench-cpu`: Contains only CPU benchmarks with minimal size. Best suited for users that want the smallest containers to reproduce benchmarks on systems without a GPU.
 
-Nightly images are located in [dockerhub](https://hub.docker.com/r/rapidsai/raft-ann-bench), meanwhile release (stable) versions are located in [NGC](https://hub.docker.com/r/rapidsai/raft-ann-bench), starting with release 23.10.
+Nightly images are located in [dockerhub](https://hub.docker.com/r/rapidsai/raft-ann-bench), meanwhile release (stable) versions are located in [NGC](https://hub.docker.com/r/rapidsai/raft-ann-bench), starting with release 23.12.
 
 ## Container Usage
 
@@ -36,7 +36,7 @@ export DATA_FOLDER=path/to/store/results/and/data
 docker run --gpus all --rm -it \
     -v $DATA_FOLDER:/home/rapids/benchmarks  \
     -u $(id -u) \
-    rapidsai/raft-ann-bench:23.10a-cuda11.8-py3.10 \
+    rapidsai/raft-ann-bench:23.12a-cuda11.8-py3.10 \
     "--dataset deep-image-96-angular" \
     "--normalize" \
     "--algorithms raft_cagra" \
@@ -50,7 +50,7 @@ export DATA_FOLDER=path/to/store/results/and/data # <- Results and datasets will
 docker run --gpus all --rm -it \
     -v $DATA_FOLDER:/home/rapids/benchmarks  \ # <- local folder to store datasets and results
     -u $(id -u) \ # <- this flag allows the container to use the host user for permissions
-    rapidsai/raft-ann-bench:23.10a-cuda11.8-py3.10 \ # <- image to use, either `raft-ann-bench` or `raft-ann-bench-datasets`
+    rapidsai/raft-ann-bench:23.12a-cuda11.8-py3.10 \ # <- image to use, either `raft-ann-bench` or `raft-ann-bench-datasets`
     "--dataset deep-image-96-angular" \ # <- dataset name
     "--normalize" \ # <- whether to normalize the dataset, leave string empty ("") to not normalize.
     "--algorithms raft_cagra" \ # <- what algorithm(s) to use as a ; separated list, as well as any other argument to pass to `raft_ann_benchmarks.run`
@@ -63,7 +63,7 @@ export DATA_FOLDER=path/to/store/results/and/data
 docker run  all --rm -it \
     -v $DATA_FOLDER:/home/rapids/benchmarks  \
     -u $(id -u) \ # <- this flag allows the container to use the host user for permissions
-    rapidsai/raft-ann-bench-cpu:23.10a-py3.10 \
+    rapidsai/raft-ann-bench-cpu:23.12a-py3.10 \
      "--dataset deep-image-96-angular" \
      "--normalize" \
      "--algorithms raft_cagra" \
@@ -77,7 +77,7 @@ export DATA_FOLDER=path/to/store/results/and/data
 docker run --gpus all --rm -it \
     -v $DATA_FOLDER:/home/rapids/benchmarks  \
     -u $(id -u) \
-    rapidsai/raft-ann-bench:23.10a-cuda11.8-py3.10 \
+    rapidsai/raft-ann-bench:23.12a-cuda11.8-py3.10 \
     --entrypoint /bin/bash
 ```
 
