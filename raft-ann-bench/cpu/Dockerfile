@@ -24,7 +24,8 @@ WORKDIR /home/rapids
 
 COPY condarc /opt/conda/.condarc
 
-RUN mamba install -y -n base \
+RUN mamba update --all -y -n base \
+    &&mamba install -y -n base \
         "raft-ann-bench-cpu=${RAPIDS_VER}.*" \
         "python=${PYTHON_VER}" \
     && mamba update --all -y -n base \

@@ -4,7 +4,7 @@ ARG CUDA_VER=12.0.1
 ARG PYTHON_VER=3.10
 ARG LINUX_VER=ubuntu22.04
 
-ARG RAPIDS_VER=23.10
+ARG RAPIDS_VER=23.12
 
 FROM rapidsai/mambaforge-cuda:cuda${CUDA_VER}-base-${LINUX_VER}-py${PYTHON_VER} as raft-ann-bench
 ARG CUDA_VER
@@ -19,11 +19,11 @@ WORKDIR /home/rapids
 
 COPY condarc /opt/conda/.condarc
 
-RUN mamba install -y -n base \
+RUN mamba update --all -y -n base \
+    && mamba install -y -n base \
         "raft-ann-bench=${RAPIDS_VER}.*" \
         "cuda-version=${CUDA_VER%.*}.*" \
         "rmm=${RAPIDS_VER}.*" \
-    && mamba update --all -y -n base \
     && conda clean -afy
 
 # we need to change the permissions of the conda folder so that all users can execute
