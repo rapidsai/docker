@@ -21,7 +21,7 @@ export RUN_ARGS=$3
 export PLOT_ARGS=$4
 
 # (1) prepare dataset.
-python -m raft-ann-bench.get_dataset ${DATASET_ARG} ${GET_DATASET_ARGS} --dataset-path /home/rapids/benchmarks/datasets
+python -m raft-ann-bench.get_dataset ${DATASET_ARG} ${GET_DATASET_ARGS} --dataset-path /data/benchmarks/datasets
 
 if [[ "$DATASET_ARG" == *"angular"* ]]; then
   export DATASET_ARG=${DATASET_ARG/angular/inner}
@@ -30,14 +30,12 @@ if [[ "$DATASET_ARG" == *"angular"* ]]; then
 fi
 
 # (2) build and search index
-python -m raft-ann-bench.run  ${DATASET_ARG} --dataset-path /home/rapids/benchmarks/datasets $3
+python -m raft-ann-bench.run  ${DATASET_ARG} --dataset-path /data/benchmarks/datasets $3
 
 # (3) export data
-python -m raft-ann-bench.data_export  ${DATASET_ARG} --dataset-path /home/rapids/benchmarks/datasets
+python -m raft-ann-bench.data_export  ${DATASET_ARG} --dataset-path /data/benchmarks/datasets
 
 # (4) plot results
-mkdir -p /home/rapids/benchmarks/datasets/result
-cd /home/rapids/benchmarks/datasets/result
-python -m raft-ann-bench.plot  ${DATASET_ARG} ${PLOT_ARGS} --dataset-path /home/rapids/benchmarks/datasets
-
-chown -R `stat -c "%u:%g" /home/rapids/benchmarks` /home/rapids/benchmarks
+mkdir -p /data/benchmarks/datasets/result
+cd /data/benchmarks/datasets/result
+python -m raft-ann-bench.plot  ${DATASET_ARG} ${PLOT_ARGS} --dataset-path /data/benchmarks/datasets
