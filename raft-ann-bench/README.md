@@ -2,7 +2,7 @@
 
 This folder contains the dockerfiles for generating GPU and CPU RAFT ANN benchmark images.
 
-This images are meant to
+This images are meant to enable end users of RAFT's ANN algorithms to easily run and reproduce benchmarks and comparisons between RAFT and third party libraries. 
 
 # Image types:
 
