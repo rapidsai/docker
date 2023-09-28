@@ -17,6 +17,9 @@ RUN chmod g+ws /opt/conda
 # Reassign root's primary group to root
 RUN usermod -g root root
 
+# Create a data folder accessible by any user so mounted volumes under it can be accessible
+# when the user passes their uid to docker run with -u $(id -u)
+RUN mkdir /data && chmod 777 /data
 RUN useradd -rm -d /home/rapids -s /bin/bash -g conda -u 1001 rapids
 USER rapids
 
