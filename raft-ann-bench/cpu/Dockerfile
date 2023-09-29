@@ -7,12 +7,14 @@ FROM condaforge/mambaforge:23.3.1-0 as raft-ann-bench-cpu
 ARG RAPIDS_VER
 ARG PYTHON_VER
 
-# # Create a conda group and assign it as root's primary group
+# Create a conda group and assign it as root's primary group
 RUN groupadd conda; \
   usermod -g conda root
 
-# # Ensure new files are created with group write access & setgid. See https://unix.stackexchange.com/a/12845
-RUN chmod g+ws /opt/conda
+# Ensure new files are created with group write access & setgid. See https://unix.stackexchange.com/a/12845
+# /opt/conda will need to be accessible by every user to support the flag -u $(id -u)
+RUN chown root:conda /opt/conda \
+    && chmod -R 777 /opt/conda
 
 # Reassign root's primary group to root
 RUN usermod -g root root
@@ -34,6 +36,7 @@ RUN mamba update --all -y -n base \
     && conda clean -afy
 
 # we need to change the permissions of the conda folder so that all users can execute
+# particularly the user passed by -u $(id -u)
 USER root
 RUN chmod -R 777 /opt/conda
 USER rapids
