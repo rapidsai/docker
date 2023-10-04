@@ -10,31 +10,28 @@ FROM rapidsai/mambaforge-cuda:cuda${CUDA_VER}-base-${LINUX_VER}-py${PYTHON_VER} 
 ARG CUDA_VER
 ARG RAPIDS_VER
 
+COPY condarc /opt/conda/.condarc
+
 # Create a data folder accessible by any user so mounted volumes under it can be accessible
 # when the user passes their uid to docker run with -u $(id -u)
 RUN mkdir /data && chmod 777 /data
-RUN useradd -rm -d /home/rapids -s /bin/bash -g conda -u 1001 rapids
-# rapids is the default user, but users can use the -u docker run flag to write/read to mounted volumes.
-USER rapids
 
-WORKDIR /home/rapids
-
-COPY condarc /opt/conda/.condarc
-
+# temporarily downgrade conda from 23.9.0 due to https://github.com/mamba-org/mamba/issues/2882
+# after the mamba update step
 RUN mamba update --all -y -n base \
+    && conda install -y -n base conda==23.7.4 \
     && mamba install -y -n base \
         "raft-ann-bench=${RAPIDS_VER}.*" \
         "cuda-version=${CUDA_VER%.*}.*" \
         "rmm=${RAPIDS_VER}.*" \
-    && conda clean -afy
+    && conda clean -afy \
+    && chmod -R 777 /opt/conda
 
-# Change the permissions of the conda folder so that all users can execute,
-# particularly the user passed by -u $(id -u)
-USER root
-RUN chmod -R 777 /opt/conda
-
-# switch back to rapids user by default
+# We add rapids is the default user in case the user runs without -u,
+# but users are encouraged to  use the -u docker run flag to write/read to mounted volumes.
+RUN useradd -rm -d /home/rapids -s /bin/bash -g conda -u 1001 rapids
 USER rapids
+WORKDIR /home/rapids
 
 COPY raft-ann-bench/run_benchmark.sh /data/scripts/run_benchmark.sh
 
