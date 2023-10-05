@@ -13,11 +13,13 @@ ARG CUDA_VER
 ARG PYTHON_VER
 
 ARG RAPIDS_VER
+ARG DASK_SQL_VER
 
 ARG RAPIDS_BRANCH="branch-${RAPIDS_VER}"
 
 RUN pip install --upgrade conda-merge rapids-dependency-file-generator
 
+COPY condarc /condarc
 COPY notebooks.sh /notebooks.sh
 
 RUN /notebooks.sh
