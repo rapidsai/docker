@@ -27,7 +27,7 @@ RAPIDS Libraries included in the images:
 
 ### Image Types
 
-The RAPIDS images are based on [`nvidia/cuda`](https://hub.docker.com/r/nvidia/cuda) and [`rapidsai/mambaforge-cuda`](https://hub.docker.com/r/rapidsai/mambaforge-cuda). The RAPIDS images provide `amd64` & `arm64` architectures [where supported](https://docs.rapids.ai/install#system-req).
+The RAPIDS images are based on [`nvidia/cuda`](https://hub.docker.com/r/nvidia/cuda) and [`rapidsai/miniforge-cuda`](https://hub.docker.com/r/rapidsai/miniforge-cuda). The RAPIDS images provide `amd64` & `arm64` architectures [where supported](https://docs.rapids.ai/install#system-req).
 
 
 There are two types:

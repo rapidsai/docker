@@ -24,7 +24,7 @@ RUN /notebooks.sh
 
 
 # Base image
-FROM rapidsai/mambaforge-cuda:cuda${CUDA_VER}-base-${LINUX_VER}-py${PYTHON_VER} as base
+FROM rapidsai/miniforge-cuda:cuda${CUDA_VER}-base-${LINUX_VER}-py${PYTHON_VER} as base
 ARG CUDA_VER
 ARG PYTHON_VER
 
