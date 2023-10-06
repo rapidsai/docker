@@ -95,8 +95,8 @@ jobs:
           echo "BASE_IMAGE_REPO=${base_repo}" | tee -a ${GITHUB_OUTPUT}
           echo "NOTEBOOKS_IMAGE_REPO=${notebooks_repo}" | tee -a ${GITHUB_OUTPUT}
           echo "RAFT_ANN_BENCH_IMAGE_REPO=${raft_ann_bench_repo}" | tee -a ${GITHUB_OUTPUT}
-          echo "RAFT_ANN_BENCH_IMAGE_REPO=${raft_ann_bench_datasets_repo}" | tee -a ${GITHUB_OUTPUT}
-          echo "RAFT_ANN_BENCH_IMAGE_REPO=${raft_ann_bench_cpu_repo}" | tee -a ${GITHUB_OUTPUT}
+          echo "RAFT_ANN_BENCH_DATASETS_IMAGE_REPO=${raft_ann_bench_datasets_repo}" | tee -a ${GITHUB_OUTPUT}
+          echo "RAFT_ANN_BENCH_CPU_IMAGE_REPO=${raft_ann_bench_cpu_repo}" | tee -a ${GITHUB_OUTPUT}
       - name: Compute RAPIDS_VER
         id: compute-rapids-ver
         run: |
@@ -154,14 +154,14 @@ jobs:
         cuda${{ matrix.CUDA_TAG }}-\
         py${{ matrix.PYTHON_VER }}"
       RAFT_ANN_BENCH_DATASETS_TAG:
-        "rapidsai/${{ needs.compute-matrix.outputs.RAFT_ANN_BENCH_IMAGE_REPO }}:\
+        "rapidsai/${{ needs.compute-matrix.outputs.RAFT_ANN_BENCH_DATASETS_IMAGE_REPO }}:\
         ${{ needs.compute-matrix.outputs.RAFT_ANN_BENCH_DATASETS_TAG_PREFIX }}\
         ${{ needs.compute-matrix.outputs.RAPIDS_VER }}\
         ${{ needs.compute-matrix.outputs.ALPHA_TAG }}-\
         cuda${{ matrix.CUDA_TAG }}-\
         py${{ matrix.PYTHON_VER }}"
       RAFT_ANN_BENCH_CPU_TAG:
-        "rapidsai/${{ needs.compute-matrix.outputs.RAFT_ANN_BENCH_IMAGE_REPO }}:\
+        "rapidsai/${{ needs.compute-matrix.outputs.RAFT_ANN_BENCH_CPU_IMAGE_REPO }}:\
         ${{ needs.compute-matrix.outputs.RAFT_ANN_BENCH_CPU_TAG_PREFIX }}\
         ${{ needs.compute-matrix.outputs.RAPIDS_VER }}\
         ${{ needs.compute-matrix.outputs.ALPHA_TAG }}-\
@@ -267,7 +267,7 @@ jobs:
             notebooks_source_tags+=("${notebooks_tag}-${arch}")
             raft_ann_bench_source_tags+=("${raft_ann_bench_tag}-${arch}")
             raft_ann_bench_datasets_source_tags+=("${raft_ann_bench_datasets_tag}-${arch}")
-            raft_ann_bench__cpusource_tags+=("${raft_ann_bench_cpu_tag}-${arch}")
+            raft_ann_bench_cpu_source_tags+=("${raft_ann_bench_cpu_tag}-${arch}")
           done
 
           docker manifest create ${base_tag} ${base_source_tags[@]}

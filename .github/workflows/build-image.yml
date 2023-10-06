@@ -157,4 +157,4 @@ jobs:
             LINUX_VER=${{ inputs.LINUX_VER }}
             PYTHON_VER=${{ inputs.PYTHON_VER }}
             RAPIDS_VER=${{ inputs.RAPIDS_VER }}
-          tags: ${{ inputs.RAFT_ANN_BENCH_TAG }}-${{ matrix.ARCH }}
+          tags: ${{ inputs.RAFT_ANN_BENCH_CPU_TAG }}-${{ matrix.ARCH }}
