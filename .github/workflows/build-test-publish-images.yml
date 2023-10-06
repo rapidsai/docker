@@ -83,8 +83,8 @@ jobs:
           base_repo="base"
           notebooks_repo="notebooks"
           raft_ann_bench_repo="raft-ann-bench"
-          raft_ann_bench_datasets_repo="raft-ann-bench"
-          raft_ann_bench_cpu_repo="raft-ann-bench"
+          raft_ann_bench_datasets_repo="raft-ann-bench-datasets"
+          raft_ann_bench_cpu_repo="raft-ann-bench-cpu"
           if [ "${{ inputs.build_type }}" = "pull-request" ]; then
             base_repo="staging"
             notebooks_repo="staging"
@@ -244,7 +244,7 @@ jobs:
           raft_ann_bench_tag="$(printf %s "${raft_ann_bench_tag_array[@]}" $'\n')" # Converts array to string w/o spaces
 
           raft_ann_bench_datasets_tag_array=(
-            rapidsai/${{ needs.compute-matrix.outputs.RAFT_ANN_BENCH_IMAGE_REPO }}:
+            rapidsai/${{ needs.compute-matrix.outputs.RAFT_ANN_BENCH_DATASETS_IMAGE_REPO }}:
             ${{ needs.compute-matrix.outputs.RAFT_ANN_BENCH_DATASETS_TAG_PREFIX }}
             ${{ needs.compute-matrix.outputs.RAPIDS_VER }}
             ${{ needs.compute-matrix.outputs.ALPHA_TAG }}-
@@ -254,7 +254,7 @@ jobs:
           raft_ann_bench_datasets_tag="$(printf %s "${raft_ann_bench_datasets_tag_array[@]}" $'\n')" # Converts array to string w/o spaces
 
           raft_ann_bench_cpu_tag_array=(
-            rapidsai/${{ needs.compute-matrix.outputs.RAFT_ANN_BENCH_IMAGE_REPO }}:
+            rapidsai/${{ needs.compute-matrix.outputs.RAFT_ANN_BENCH_CPU_IMAGE_REPO }}:
             ${{ needs.compute-matrix.outputs.RAFT_ANN_BENCH_CPU_TAG_PREFIX }}
             ${{ needs.compute-matrix.outputs.RAPIDS_VER }}
             ${{ needs.compute-matrix.outputs.ALPHA_TAG }}-
@@ -329,17 +329,17 @@ jobs:
           )
           raft_ann_bench_tag="$(printf %s "${raft_ann_bench_tag_array[@]}" $'\n')" # Converts array to string w/o spaces
 
-          raft_ann_datasets_bench_repo="${{ needs.compute-matrix.outputs.RAFT_ANN_BENCH_IMAGE_REPO }}"
-          raft_ann_datasets_bench_tag_array=(
+          raft_ann_bench_datasets_repo="${{ needs.compute-matrix.outputs.RAFT_ANN_BENCH_DATASETS_IMAGE_REPO }}"
+          raft_ann_bench_datasets_tag_array=(
             ${{ needs.compute-matrix.outputs.RAFT_ANN_BENCH_DATASETS_TAG_PREFIX }}
             ${{ needs.compute-matrix.outputs.RAPIDS_VER }}
             ${{ needs.compute-matrix.outputs.ALPHA_TAG }}-
             cuda${{ matrix.CUDA_TAG }}-
             py${{ matrix.PYTHON_VER }}
           )
-          raft_ann_datasets_bench_tag="$(printf %s "${raft_ann_datasets_bench_tag_array[@]}" $'\n')" # Converts array to string w/o spaces
+          raft_ann_bench_datasets_tag="$(printf %s "${raft_ann_bench_datasets_tag_array[@]}" $'\n')" # Converts array to string w/o spaces
 
-          raft_ann_bench_cpu_repo="${{ needs.compute-matrix.outputs.RAFT_ANN_BENCH_IMAGE_REPO }}"
+          raft_ann_bench_cpu_repo="${{ needs.compute-matrix.outputs.RAFT_ANN_BENCH_CPU_IMAGE_REPO }}"
           raft_ann_bench_cpu_tag_array=(
             ${{ needs.compute-matrix.outputs.RAFT_ANN_BENCH_CPU_TAG_PREFIX }}
             ${{ needs.compute-matrix.outputs.RAPIDS_VER }}
