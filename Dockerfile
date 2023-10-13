@@ -4,20 +4,22 @@ ARG CUDA_VER=12.0.1
 ARG PYTHON_VER=3.10
 ARG LINUX_VER=ubuntu22.04
 
-ARG RAPIDS_VER=23.08
-ARG DASK_SQL_VER=2023.8.0
+ARG RAPIDS_VER=23.10
+ARG DASK_SQL_VER=2023.10.0
 
 # Gather dependency information
-FROM rapidsai/ci:latest AS dependencies
+FROM rapidsai/ci-conda:latest AS dependencies
 ARG CUDA_VER
 ARG PYTHON_VER
 
 ARG RAPIDS_VER
+ARG DASK_SQL_VER
 
 ARG RAPIDS_BRANCH="branch-${RAPIDS_VER}"
 
 RUN pip install --upgrade conda-merge rapids-dependency-file-generator
 
+COPY condarc /condarc
 COPY notebooks.sh /notebooks.sh
 
 RUN /notebooks.sh
@@ -84,4 +86,4 @@ EXPOSE 8888
 
 ENTRYPOINT ["/home/rapids/entrypoint.sh"]
 
-CMD ["jupyter-lab", "--notebook-dir=/home/rapids/notebooks", "--ip=0.0.0.0", "--no-browser", "--NotebookApp.token=''", "--NotebookApp.allow_origin='*'"]
+CMD [ "sh", "-c", "jupyter-lab --notebook-dir=/home/rapids/notebooks --ip=0.0.0.0 --no-browser --NotebookApp.token='' --NotebookApp.allow_origin='*' --NotebookApp.base_url=\"${NB_PREFIX:-/}\"" ]

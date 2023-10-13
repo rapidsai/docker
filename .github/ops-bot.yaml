@@ -3,4 +3,3 @@
 
 auto_merger: true
 branch_checker: true
-copy_prs: true

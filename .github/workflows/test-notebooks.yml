@@ -65,21 +65,22 @@ jobs:
         RAPIDS_BUILD_TYPE: ${{ inputs.BUILD_TYPE }}
         RAPIDS_GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     steps:
+      - name: Install required tools
+        run: |
+          mamba install -n base --freeze-installed \
+            curl \
+            git
       - name: Install gha-tools
         run: |
           mkdir -p "$GHA_TOOLS_DIR"
           curl -s -L 'https://github.com/rapidsai/gha-tools/releases/latest/download/tools.tar.gz' | tar -xz -C "$GHA_TOOLS_DIR"
-      - name: Install git
-        run: |
-          PATH="$PATH:$GHA_TOOLS_DIR"
-          rapids-mamba-retry install -n base --freeze-installed git
       - name: Checkout code
         uses: actions/checkout@v3
         with:
           fetch-depth: 0
       - name: Get RAPIDS GitHub Info
         id: get-rapids-github-info
-        uses: rapidsai/shared-action-workflows/rapids-github-info@branch-23.08
+        uses: rapidsai/shared-action-workflows/rapids-github-info@branch-23.10
       - name: Print environment
         run: |
           PATH="$PATH:$GHA_TOOLS_DIR"
