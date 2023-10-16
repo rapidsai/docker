@@ -21,11 +21,9 @@ RUN mkdir /data && chmod 777 /data \
 # temporarily downgrade conda from 23.9.0 due to https://github.com/mamba-org/mamba/issues/2882
 # after the mamba update step
 RUN mamba update --all -y -n base \
-    && conda install -y -n base conda==23.7.4 \
     && mamba install -y -n base \
         "raft-ann-bench=${RAPIDS_VER}.*" \
         "cuda-version=${CUDA_VER%.*}.*" \
-        "rmm=${RAPIDS_VER}.*" \
     && conda clean -afy \
     && chmod -R 777 /opt/conda
 
