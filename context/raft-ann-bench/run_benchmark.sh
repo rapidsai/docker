@@ -30,12 +30,25 @@ if [[ "$DATASET_ARG" == *"angular"* ]]; then
 fi
 
 # (2) build and search index
-python -m raft-ann-bench.run  ${DATASET_ARG} --dataset-path /data/benchmarks/datasets $3
+python -m raft-ann-bench.run  ${DATASET_ARG} --dataset-path /data/benchmarks/datasets ${RUN_ARGS}
 
 # (3) export data
 python -m raft-ann-bench.data_export  ${DATASET_ARG} --dataset-path /data/benchmarks/datasets
 
+
+# Extract the algorithms from the run command to use in the plot command
+if [[ "$RUN_ARGS" == *"--algorithms"* ]]; then
+    ALGOS=$(sed 's/.*--algorithms\(.*\)--.*/\1/' <<< "$RUN_ARGS")
+    if [[ "$ALGOS" == "" ]]; then
+        ALGOS=$(sed 's/.*--algorithms\(.*\).*/\1/' <<< "$RUN_ARGS")
+    fi
+
+    if [[ "$ALGOS" != "" ]]; then
+        ALGOS="--algorithms $ALGOS"
+    fi
+fi
+
 # (4) plot results
 mkdir -p /data/benchmarks/datasets/result
 cd /data/benchmarks/datasets/result
-python -m raft-ann-bench.plot  ${DATASET_ARG} ${PLOT_ARGS} --dataset-path /data/benchmarks/datasets
+python -m raft-ann-bench.plot  ${DATASET_ARG} ${ALGOS} ${PLOT_ARGS} --dataset-path /data/benchmarks/datasets
