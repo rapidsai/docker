@@ -14,7 +14,9 @@ COPY condarc /opt/conda/.condarc
 
 # Create a data folder accessible by any user so mounted volumes under it can be accessible
 # when the user passes their uid to docker run with -u $(id -u)
-RUN mkdir /data && chmod 777 /data
+# Also add the conda_prefix config to the global bashrc file so that all users have it correctly configured.
+RUN mkdir /data && chmod 777 /data \
+    &&  echo "export CONDA_PREFIX=/opt/conda" >> /etc/bash.bashrc
 
 # temporarily downgrade conda from 23.9.0 due to https://github.com/mamba-org/mamba/issues/2882
 # after the mamba update step
@@ -31,7 +33,7 @@ RUN mamba update --all -y -n base \
 # but users are encouraged to  use the -u docker run flag to write/read to mounted volumes.
 RUN useradd -rm -d /home/rapids -s /bin/bash -g conda -u 1001 rapids
 USER rapids
-WORKDIR /home/rapids
+WORKDIR /data/benchmarks
 
 COPY raft-ann-bench/run_benchmark.sh /data/scripts/run_benchmark.sh
 
