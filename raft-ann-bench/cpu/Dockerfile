@@ -15,9 +15,11 @@ COPY condarc /opt/conda/.condarc
 RUN mkdir /data && chmod 777 /data \
     &&  echo "export CONDA_PREFIX=/opt/conda" >> /etc/bash.bashrc
 
-# temporarily downgrade conda from 23.9.0 due to https://github.com/mamba-org/mamba/issues/2882
-# after the mamba update step
-RUN mamba update --all -y -n base \
+# Install python before updating environment, otherwise Python 3.9 image
+# runs into a solver conflict with truststore 0.8.0. This avoids the environment installing
+# packages incompatible with python version needed before python itself is pinned to the correct version.
+RUN mamba install -y -n base "python=${PYTHON_VER}" \
+    && mamba update --all -y -n base \
     && mamba install -y -n base \
     "raft-ann-bench-cpu=${RAPIDS_VER}.*" \
     "python=${PYTHON_VER}" \
