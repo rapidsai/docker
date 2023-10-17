@@ -14,9 +14,11 @@ COPY condarc /opt/conda/.condarc
 
 # Create a data folder accessible by any user so mounted volumes under it can be accessible
 # when the user passes their uid to docker run with -u $(id -u)
+
 # Also add the conda_prefix config to the global bashrc file so that all users have it correctly configured.
 RUN mkdir /data && chmod 777 /data \
-    &&  echo "export CONDA_PREFIX=/opt/conda" >> /etc/bash.bashrc
+    &&  ln -s /opt/conda/etc/profile.d/conda.sh /etc/profile.d/conda.sh; \
+    &&  echo ". /opt/conda/etc/profile.d/conda.sh; conda activate base" >> /etc/bash.bashrc
 
 # temporarily downgrade conda from 23.9.0 due to https://github.com/mamba-org/mamba/issues/2882
 # after the mamba update step
