@@ -17,8 +17,8 @@ COPY condarc /opt/conda/.condarc
 
 # Also add the conda_prefix config to the global bashrc file so that all users have it correctly configured.
 RUN mkdir /data && chmod 777 /data \
-    &&  ln -s /opt/conda/etc/profile.d/conda.sh /etc/profile.d/conda.sh; \
-    &&  echo ". /opt/conda/etc/profile.d/conda.sh; conda activate base" >> /etc/bash.bashrc
+      ln -s /opt/conda/etc/profile.d/conda.sh /etc/profile.d/conda.sh; \
+      echo ". /opt/conda/etc/profile.d/conda.sh; conda activate base" >> /etc/bash.bashrc
 
 # temporarily downgrade conda from 23.9.0 due to https://github.com/mamba-org/mamba/issues/2882
 # after the mamba update step
