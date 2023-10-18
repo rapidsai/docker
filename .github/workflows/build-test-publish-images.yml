@@ -38,10 +38,16 @@ jobs:
     outputs:
       BASE_IMAGE_REPO: ${{ steps.compute-image-repo.outputs.BASE_IMAGE_REPO }}
       NOTEBOOKS_IMAGE_REPO: ${{ steps.compute-image-repo.outputs.NOTEBOOKS_IMAGE_REPO }}
+      RAFT_ANN_BENCH_IMAGE_REPO: ${{ steps.compute-image-repo.outputs.RAFT_ANN_BENCH_IMAGE_REPO }}
+      RAFT_ANN_BENCH_DATASETS_IMAGE_REPO: ${{ steps.compute-image-repo.outputs.RAFT_ANN_BENCH_DATASETS_IMAGE_REPO }}
+      RAFT_ANN_BENCH_CPU_IMAGE_REPO: ${{ steps.compute-image-repo.outputs.RAFT_ANN_BENCH_CPU_IMAGE_REPO }}
       MATRIX: ${{ steps.compute-matrix.outputs.MATRIX }}
       TEST_MATRIX: ${{ steps.compute-test-matrix.outputs.TEST_MATRIX }}
       BASE_TAG_PREFIX: ${{ steps.compute-tag-prefix.outputs.BASE_TAG_PREFIX }}
       NOTEBOOKS_TAG_PREFIX: ${{ steps.compute-tag-prefix.outputs.NOTEBOOKS_TAG_PREFIX }}
+      RAFT_ANN_BENCH_TAG_PREFIX: ${{ steps.compute-tag-prefix.outputs.RAFT_ANN_BENCH_TAG_PREFIX }}
+      RAFT_ANN_BENCH_DATASETS_TAG_PREFIX: ${{ steps.compute-tag-prefix.outputs.RAFT_ANN_BENCH_DATASETS_TAG_PREFIX }}
+      RAFT_ANN_BENCH_CPU_TAG_PREFIX: ${{ steps.compute-tag-prefix.outputs.RAFT_ANN_BENCH_CPU_TAG_PREFIX }}
       RAPIDS_VER: ${{ steps.compute-rapids-ver.outputs.RAPIDS_VER }}
       ALPHA_TAG: ${{ steps.compute-rapids-ver.outputs.ALPHA_TAG }}
     steps:
@@ -62,20 +68,35 @@ jobs:
             pr_num="${GITHUB_REF_NAME##*/}"
             BASE_TAG_PREFIX="docker-${pr_num}-"
             NOTEBOOKS_TAG_PREFIX="docker-notebooks-${pr_num}-"
+            RAFT_ANN_BENCH_TAG_PREFIX="docker-raft-ann-bench-${pr_num}-"
+            RAFT_ANN_BENCH_DATASETS_TAG_PREFIX="docker-raft-ann-bench-datasets-${pr_num}-"
+            RAFT_ANN_BENCH_CPU_TAG_PREFIX="docker-raft-ann-bench-cpu-${pr_num}-"
           fi
           echo "BASE_TAG_PREFIX=${BASE_TAG_PREFIX}" | tee -a ${GITHUB_OUTPUT}
           echo "NOTEBOOKS_TAG_PREFIX=${NOTEBOOKS_TAG_PREFIX}" | tee -a ${GITHUB_OUTPUT}
+          echo "RAFT_ANN_BENCH_TAG_PREFIX=${RAFT_ANN_BENCH_TAG_PREFIX}" | tee -a ${GITHUB_OUTPUT}
+          echo "RAFT_ANN_BENCH_DATASETS_TAG_PREFIX=${RAFT_ANN_BENCH_DATASETS_TAG_PREFIX}" | tee -a ${GITHUB_OUTPUT}
+          echo "RAFT_ANN_BENCH_CPU_TAG_PREFIX=${RAFT_ANN_BENCH_CPU_TAG_PREFIX}" | tee -a ${GITHUB_OUTPUT}
       - name: Compute image repo
         id: compute-image-repo
         run: |
           base_repo="base"
           notebooks_repo="notebooks"
+          raft_ann_bench_repo="raft-ann-bench"
+          raft_ann_bench_datasets_repo="raft-ann-bench-datasets"
+          raft_ann_bench_cpu_repo="raft-ann-bench-cpu"
           if [ "${{ inputs.build_type }}" = "pull-request" ]; then
             base_repo="staging"
             notebooks_repo="staging"
+            raft_ann_bench_repo="staging"
+            raft_ann_bench_datasets_repo="staging"
+            raft_ann_bench_cpu_repo="staging"
           fi
           echo "BASE_IMAGE_REPO=${base_repo}" | tee -a ${GITHUB_OUTPUT}
           echo "NOTEBOOKS_IMAGE_REPO=${notebooks_repo}" | tee -a ${GITHUB_OUTPUT}
+          echo "RAFT_ANN_BENCH_IMAGE_REPO=${raft_ann_bench_repo}" | tee -a ${GITHUB_OUTPUT}
+          echo "RAFT_ANN_BENCH_DATASETS_IMAGE_REPO=${raft_ann_bench_datasets_repo}" | tee -a ${GITHUB_OUTPUT}
+          echo "RAFT_ANN_BENCH_CPU_IMAGE_REPO=${raft_ann_bench_cpu_repo}" | tee -a ${GITHUB_OUTPUT}
       - name: Compute RAPIDS_VER
         id: compute-rapids-ver
         run: |
@@ -125,6 +146,26 @@ jobs:
         ${{ needs.compute-matrix.outputs.ALPHA_TAG }}-\
         cuda${{ matrix.CUDA_TAG }}-\
         py${{ matrix.PYTHON_VER }}"
+      RAFT_ANN_BENCH_TAG:
+        "rapidsai/${{ needs.compute-matrix.outputs.RAFT_ANN_BENCH_IMAGE_REPO }}:\
+        ${{ needs.compute-matrix.outputs.RAFT_ANN_BENCH_TAG_PREFIX }}\
+        ${{ needs.compute-matrix.outputs.RAPIDS_VER }}\
+        ${{ needs.compute-matrix.outputs.ALPHA_TAG }}-\
+        cuda${{ matrix.CUDA_TAG }}-\
+        py${{ matrix.PYTHON_VER }}"
+      RAFT_ANN_BENCH_DATASETS_TAG:
+        "rapidsai/${{ needs.compute-matrix.outputs.RAFT_ANN_BENCH_DATASETS_IMAGE_REPO }}:\
+        ${{ needs.compute-matrix.outputs.RAFT_ANN_BENCH_DATASETS_TAG_PREFIX }}\
+        ${{ needs.compute-matrix.outputs.RAPIDS_VER }}\
+        ${{ needs.compute-matrix.outputs.ALPHA_TAG }}-\
+        cuda${{ matrix.CUDA_TAG }}-\
+        py${{ matrix.PYTHON_VER }}"
+      RAFT_ANN_BENCH_CPU_TAG:
+        "rapidsai/${{ needs.compute-matrix.outputs.RAFT_ANN_BENCH_CPU_IMAGE_REPO }}:\
+        ${{ needs.compute-matrix.outputs.RAFT_ANN_BENCH_CPU_TAG_PREFIX }}\
+        ${{ needs.compute-matrix.outputs.RAPIDS_VER }}\
+        ${{ needs.compute-matrix.outputs.ALPHA_TAG }}-\
+        py${{ matrix.PYTHON_VER }}"
   test:
     needs: [build, compute-matrix]
     if: inputs.run_tests
@@ -168,6 +209,9 @@ jobs:
         run: |
           base_source_tags=()
           notebooks_source_tags=()
+          raft_ann_bench_source_tags=()
+          raft_ann_bench_dataset_source_tags=()
+          raft_ann_bench_cpu_source_tags=()
 
           base_tag_array=(
             rapidsai/${{ needs.compute-matrix.outputs.BASE_IMAGE_REPO }}:
@@ -189,15 +233,53 @@ jobs:
           )
           notebooks_tag="$(printf %s "${notebooks_tag_array[@]}" $'\n')" # Converts array to string w/o spaces
 
+          raft_ann_bench_tag_array=(
+            rapidsai/${{ needs.compute-matrix.outputs.RAFT_ANN_BENCH_IMAGE_REPO }}:
+            ${{ needs.compute-matrix.outputs.RAFT_ANN_BENCH_TAG_PREFIX }}
+            ${{ needs.compute-matrix.outputs.RAPIDS_VER }}
+            ${{ needs.compute-matrix.outputs.ALPHA_TAG }}-
+            cuda${{ matrix.CUDA_TAG }}-
+            py${{ matrix.PYTHON_VER }}
+          )
+          raft_ann_bench_tag="$(printf %s "${raft_ann_bench_tag_array[@]}" $'\n')" # Converts array to string w/o spaces
+
+          raft_ann_bench_datasets_tag_array=(
+            rapidsai/${{ needs.compute-matrix.outputs.RAFT_ANN_BENCH_DATASETS_IMAGE_REPO }}:
+            ${{ needs.compute-matrix.outputs.RAFT_ANN_BENCH_DATASETS_TAG_PREFIX }}
+            ${{ needs.compute-matrix.outputs.RAPIDS_VER }}
+            ${{ needs.compute-matrix.outputs.ALPHA_TAG }}-
+            cuda${{ matrix.CUDA_TAG }}-
+            py${{ matrix.PYTHON_VER }}
+          )
+          raft_ann_bench_datasets_tag="$(printf %s "${raft_ann_bench_datasets_tag_array[@]}" $'\n')" # Converts array to string w/o spaces
+
+          raft_ann_bench_cpu_tag_array=(
+            rapidsai/${{ needs.compute-matrix.outputs.RAFT_ANN_BENCH_CPU_IMAGE_REPO }}:
+            ${{ needs.compute-matrix.outputs.RAFT_ANN_BENCH_CPU_TAG_PREFIX }}
+            ${{ needs.compute-matrix.outputs.RAPIDS_VER }}
+            ${{ needs.compute-matrix.outputs.ALPHA_TAG }}-
+            py${{ matrix.PYTHON_VER }}
+          )
+          raft_ann_bench_cpu_tag="$(printf %s "${raft_ann_bench_cpu_tag_array[@]}" $'\n')" # Converts array to string w/o spaces
+
           for arch in $(echo '${{ toJSON(matrix.ARCHES) }}' | jq .[] -r); do
             base_source_tags+=("${base_tag}-${arch}")
             notebooks_source_tags+=("${notebooks_tag}-${arch}")
+            raft_ann_bench_source_tags+=("${raft_ann_bench_tag}-${arch}")
+            raft_ann_bench_datasets_source_tags+=("${raft_ann_bench_datasets_tag}-${arch}")
+            raft_ann_bench_cpu_source_tags+=("${raft_ann_bench_cpu_tag}-${arch}")
           done
 
           docker manifest create ${base_tag} ${base_source_tags[@]}
           docker manifest push ${base_tag}
           docker manifest create ${notebooks_tag} ${notebooks_source_tags[@]}
           docker manifest push ${notebooks_tag}
+          docker manifest create ${raft_ann_bench_tag} ${raft_ann_bench_source_tags[@]}
+          docker manifest push ${raft_ann_bench_tag}
+          docker manifest create ${raft_ann_bench_datasets_tag} ${raft_ann_bench_datasets_source_tags[@]}
+          docker manifest push ${raft_ann_bench_datasets_tag}
+          docker manifest create ${raft_ann_bench_cpu_tag} ${raft_ann_bench_cpu_source_tags[@]}
+          docker manifest push ${raft_ann_bench_cpu_tag}
   delete-temp-images:
     if: always()
     needs: [compute-matrix, build, test, build-multiarch-manifest]
@@ -237,6 +319,35 @@ jobs:
           )
           notebooks_tag="$(printf %s "${notebooks_tag_array[@]}" $'\n')" # Converts array to string w/o spaces
 
+          raft_ann_bench_repo="${{ needs.compute-matrix.outputs.RAFT_ANN_BENCH_IMAGE_REPO }}"
+          raft_ann_bench_tag_array=(
+            ${{ needs.compute-matrix.outputs.RAFT_ANN_BENCH_TAG_PREFIX }}
+            ${{ needs.compute-matrix.outputs.RAPIDS_VER }}
+            ${{ needs.compute-matrix.outputs.ALPHA_TAG }}-
+            cuda${{ matrix.CUDA_TAG }}-
+            py${{ matrix.PYTHON_VER }}
+          )
+          raft_ann_bench_tag="$(printf %s "${raft_ann_bench_tag_array[@]}" $'\n')" # Converts array to string w/o spaces
+
+          raft_ann_bench_datasets_repo="${{ needs.compute-matrix.outputs.RAFT_ANN_BENCH_DATASETS_IMAGE_REPO }}"
+          raft_ann_bench_datasets_tag_array=(
+            ${{ needs.compute-matrix.outputs.RAFT_ANN_BENCH_DATASETS_TAG_PREFIX }}
+            ${{ needs.compute-matrix.outputs.RAPIDS_VER }}
+            ${{ needs.compute-matrix.outputs.ALPHA_TAG }}-
+            cuda${{ matrix.CUDA_TAG }}-
+            py${{ matrix.PYTHON_VER }}
+          )
+          raft_ann_bench_datasets_tag="$(printf %s "${raft_ann_bench_datasets_tag_array[@]}" $'\n')" # Converts array to string w/o spaces
+
+          raft_ann_bench_cpu_repo="${{ needs.compute-matrix.outputs.RAFT_ANN_BENCH_CPU_IMAGE_REPO }}"
+          raft_ann_bench_cpu_tag_array=(
+            ${{ needs.compute-matrix.outputs.RAFT_ANN_BENCH_CPU_TAG_PREFIX }}
+            ${{ needs.compute-matrix.outputs.RAPIDS_VER }}
+            ${{ needs.compute-matrix.outputs.ALPHA_TAG }}-
+            py${{ matrix.PYTHON_VER }}
+          )
+          raft_ann_bench_cpu_tag="$(printf %s "${raft_ann_bench_cpu_tag_array[@]}" $'\n')" # Converts array to string w/o spaces
+
           for arch in $(echo '${{ toJSON(matrix.ARCHES) }}' | jq .[] -r); do
             curl -i -X DELETE \
               -H "Accept: application/json" \
@@ -246,4 +357,16 @@ jobs:
               -H "Accept: application/json" \
               -H "Authorization: JWT $HUB_TOKEN" \
               "https://hub.docker.com/v2/repositories/$org/$notebooks_repo/tags/$notebooks_tag-$arch/"
+            curl -i -X DELETE \
+              -H "Accept: application/json" \
+              -H "Authorization: JWT $HUB_TOKEN" \
+              "https://hub.docker.com/v2/repositories/$org/$raft_ann_bench_repo/tags/$raft_ann_bench_tag-$arch/"
+            curl -i -X DELETE \
+              -H "Accept: application/json" \
+              -H "Authorization: JWT $HUB_TOKEN" \
+              "https://hub.docker.com/v2/repositories/$org/$raft_ann_bench_datasets_repo/tags/$raft_ann_bench_datasets_tag-$arch/"
+            curl -i -X DELETE \
+              -H "Accept: application/json" \
+              -H "Authorization: JWT $HUB_TOKEN" \
+              "https://hub.docker.com/v2/repositories/$org/$raft_ann_bench_cpu_repo/tags/$raft_ann_bench_cpu_tag-$arch/"
           done

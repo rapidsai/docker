@@ -30,9 +30,13 @@ sed_runner "s/ARG RAPIDS_VER=.*/ARG RAPIDS_VER=${NEXT_SHORT_TAG}/g" Dockerfile
 
 # CI files
 for FILE in .github/workflows/*.yml; do
-  sed_runner "/shared-action-workflows/ s/@.*/@branch-${NEXT_SHORT_TAG}/g" "${FILE}"
+  sed_runner "/shared-workflows/ s/@.*/@branch-${NEXT_SHORT_TAG}/g" "${FILE}"
 done
 
 sed_runner "s/v[[:digit:]]\+\.[[:digit:]]\+/v${NEXT_SHORT_TAG}/g" dockerhub-readme.md
 sed_runner "s/[[:digit:]]\+\.[[:digit:]]\+-cuda/${NEXT_SHORT_TAG}-cuda/g" dockerhub-readme.md
 sed_runner "s/[[:digit:]]\+\.[[:digit:]]\+a-cuda/${NEXT_SHORT_TAG}a-cuda/g" dockerhub-readme.md
+
+sed_runner "s/v[[:digit:]]\+\.[[:digit:]]\+/v${NEXT_SHORT_TAG}/g" raft-ann-bench/README.md
+sed_runner "s/[[:digit:]]\+\.[[:digit:]]\+-cuda/${NEXT_SHORT_TAG}-cuda/g" raft-ann-bench/README.md
+sed_runner "s/[[:digit:]]\+\.[[:digit:]]\+a-cuda/${NEXT_SHORT_TAG}a-cuda/g" raft-ann-bench/README.md

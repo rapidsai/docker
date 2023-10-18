@@ -4,7 +4,7 @@ ARG CUDA_VER=12.0.1
 ARG PYTHON_VER=3.10
 ARG LINUX_VER=ubuntu22.04
 
-ARG RAPIDS_VER=23.10
+ARG RAPIDS_VER=23.12
 ARG DASK_SQL_VER=2023.8.0
 
 # Gather dependency information
@@ -13,11 +13,13 @@ ARG CUDA_VER
 ARG PYTHON_VER
 
 ARG RAPIDS_VER
+ARG DASK_SQL_VER
 
 ARG RAPIDS_BRANCH="branch-${RAPIDS_VER}"
 
 RUN pip install --upgrade conda-merge rapids-dependency-file-generator
 
+COPY condarc /condarc
 COPY notebooks.sh /notebooks.sh
 
 RUN /notebooks.sh
