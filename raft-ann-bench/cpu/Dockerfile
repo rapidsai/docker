@@ -13,7 +13,8 @@ COPY condarc /opt/conda/.condarc
 # when the user passes their uid to docker run with -u $(id -u)
 # Also add the conda_prefix config to the global bashrc file so that all users have it correctly configured.
 RUN mkdir /data && chmod 777 /data \
-    &&  echo "export CONDA_PREFIX=/opt/conda" >> /etc/bash.bashrc
+    &&  ln -s /opt/conda/etc/profile.d/conda.sh /etc/profile.d/conda.sh; \
+    echo ". /opt/conda/etc/profile.d/conda.sh; conda activate base" >> /etc/bash.bashrc
 
 # Install python before updating environment, otherwise Python 3.9 image
 # runs into a solver conflict with truststore 0.8.0. This avoids the environment installing
