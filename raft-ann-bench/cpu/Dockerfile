@@ -11,12 +11,16 @@ COPY condarc /opt/conda/.condarc
 
 # Create a data folder accessible by any user so mounted volumes under it can be accessible
 # when the user passes their uid to docker run with -u $(id -u)
-RUN mkdir /data && chmod 777 /data
+# Also add the conda_prefix config to the global bashrc file so that all users have it correctly configured.
+RUN mkdir /data && chmod 777 /data \
+    &&  ln -s /opt/conda/etc/profile.d/conda.sh /etc/profile.d/conda.sh; \
+    echo ". /opt/conda/etc/profile.d/conda.sh; conda activate base" >> /etc/bash.bashrc
 
-# temporarily downgrade conda from 23.9.0 due to https://github.com/mamba-org/mamba/issues/2882
-# after the mamba update step
-RUN mamba update --all -y -n base \
-    && conda install -y -n base conda==23.7.4 \
+# Install python before updating environment, otherwise Python 3.9 image
+# runs into a solver conflict with truststore 0.8.0. This avoids the environment installing
+# packages incompatible with python version needed before python itself is pinned to the correct version.
+RUN mamba install -y -n base "python=${PYTHON_VER}" \
+    && mamba update --all -y -n base \
     && mamba install -y -n base \
     "raft-ann-bench-cpu=${RAPIDS_VER}.*" \
     "python=${PYTHON_VER}" \
@@ -25,7 +29,7 @@ RUN mamba update --all -y -n base \
 
 RUN useradd -rm -d /home/rapids -s /bin/bash -u 1001 rapids
 USER rapids
-WORKDIR /home/rapids
+WORKDIR /data/benchmarks
 
 COPY raft-ann-bench/run_benchmark.sh /data/scripts/run_benchmark.sh
 
