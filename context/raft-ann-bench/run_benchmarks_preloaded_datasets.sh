@@ -43,15 +43,9 @@ python -m raft-ann-bench.run  ${DATASET_ARG} --dataset-path $DATASET_PATH ${RUN_
 python -m raft-ann-bench.data_export  ${DATASET_ARG} --dataset-path $DATASET_PATH
 
 # Extract the algorithms from the run command to use in the plot command
-if [[ "$RUN_ARGS" == *"--algorithms"* ]]; then
-    ALGOS=$(sed 's/.*--algorithms\(.*\)--.*/\1/' <<< "$RUN_ARGS")
-    if [[ "$ALGOS" == "" ]]; then
-        ALGOS=$(sed 's/.*--algorithms\(.*\).*/\1/' <<< "$RUN_ARGS")
-    fi
-
-    if [[ "$ALGOS" != "" ]]; then
-        ALGOS="--algorithms $ALGOS"
-    fi
+ALGOS=$(grep -oP "algorithms\s+\K(\w+,?\w+)" <<< "$RUN_ARGS")
+if [[ "$ALGOS" != "" ]]; then
+    ALGOS="--algorithms $ALGOS"
 fi
 
 # (4) plot results
