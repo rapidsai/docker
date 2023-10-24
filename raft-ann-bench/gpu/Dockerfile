@@ -6,7 +6,7 @@ ARG LINUX_VER=ubuntu22.04
 
 ARG RAPIDS_VER=23.12
 
-FROM rapidsai/mambaforge-cuda:cuda${CUDA_VER}-base-${LINUX_VER}-py${PYTHON_VER} as raft-ann-bench
+FROM rapidsai/miniforge-cuda:cuda${CUDA_VER}-base-${LINUX_VER}-py${PYTHON_VER} as raft-ann-bench
 ARG CUDA_VER
 ARG RAPIDS_VER
 
