@@ -15,21 +15,26 @@ COPY condarc /opt/conda/.condarc
 # Create a data folder accessible by any user so mounted volumes under it can be accessible
 # when the user passes their uid to docker run with -u $(id -u)
 # Also add the conda_prefix config to the global bashrc file so that all users have it correctly configured.
-RUN mkdir /data && chmod 777 /data \
-      && ln -s /opt/conda/etc/profile.d/conda.sh /etc/profile.d/conda.sh; \
-      echo ". /opt/conda/etc/profile.d/conda.sh; conda activate base" >> /etc/bash.bashrc
+RUN <<EOF
+mkdir /data
+chmod 777 /data
+ln -s /opt/conda/etc/profile.d/conda.sh /etc/profile.d/conda.sh
+echo ". /opt/conda/etc/profile.d/conda.sh; conda activate base" >> /etc/bash.bashrc
+EOF
 
 # we need perl temporarily for the remaining benchmark perl scripts
 RUN apt-get install perl -y
 
 # temporarily downgrade conda from 23.9.0 due to https://github.com/mamba-org/mamba/issues/2882
 # after the mamba update step
-RUN mamba update --all -y -n base \
-    && mamba install -y -n base \
-        "raft-ann-bench=${RAPIDS_VER}.*" \
-        "cuda-version=${CUDA_VER%.*}.*" \
-    && conda clean -afy \
-    && chmod -R 777 /opt/conda
+RUN <<EOF
+mamba update --all -y -n base
+mamba install -y -n base \
+    "raft-ann-bench=${RAPIDS_VER}.*" \
+    "cuda-version=${CUDA_VER%.*}.*"
+conda clean -afy
+chmod -R 777 /opt/conda
+EOF
 
 # We add rapids is the default user in case the user runs without -u,
 # but users are encouraged to  use the -u docker run flag to write/read to mounted volumes.
