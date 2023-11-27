@@ -9,6 +9,8 @@ ARG PYTHON_VER
 
 COPY condarc /opt/conda/.condarc
 
+SHELL ["/bin/bash", "-euo", "pipefail", "-c"]
+
 # Create a data folder accessible by any user so mounted volumes under it can be accessible
 # when the user passes their uid to docker run with -u $(id -u)
 # Also add the conda_prefix config to the global bashrc file so that all users have it correctly configured.

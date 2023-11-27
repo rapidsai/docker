@@ -17,6 +17,8 @@ ARG DASK_SQL_VER
 
 ARG RAPIDS_BRANCH="branch-${RAPIDS_VER}"
 
+SHELL ["/bin/bash", "-euo", "pipefail", "-c"]
+
 RUN pip install --upgrade conda-merge rapids-dependency-file-generator
 
 COPY condarc /condarc
