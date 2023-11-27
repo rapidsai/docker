@@ -20,7 +20,6 @@ SHELL ["/bin/bash", "-euo", "pipefail", "-c"]
 RUN <<EOF
 mkdir /data
 chmod 777 /data
-ln -s /opt/conda/etc/profile.d/conda.sh /etc/profile.d/conda.sh
 echo ". /opt/conda/etc/profile.d/conda.sh; conda activate base" >> /etc/bash.bashrc
 EOF
 
