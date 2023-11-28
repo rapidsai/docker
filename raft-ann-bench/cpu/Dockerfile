@@ -29,9 +29,9 @@ RUN apt-get install perl -y
 RUN <<EOF
 mamba install -y -n base "python=${PYTHON_VER}"
 mamba update --all -y -n base
-mamba install -y -n base
-"raft-ann-bench-cpu=${RAPIDS_VER}.*" \
-"python=${PYTHON_VER}"
+mamba install -y -n base \
+  "raft-ann-bench-cpu=${RAPIDS_VER}.*" \
+  "python=${PYTHON_VER}"
 conda clean -afy
 chmod -R 777 /opt/conda
 EOF
