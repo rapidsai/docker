@@ -17,6 +17,8 @@ ARG DASK_SQL_VER
 
 ARG RAPIDS_BRANCH="branch-${RAPIDS_VER}"
 
+SHELL ["/bin/bash", "-euo", "pipefail", "-c"]
+
 RUN pip install --upgrade conda-merge rapids-dependency-file-generator
 
 COPY condarc /condarc
@@ -41,13 +43,15 @@ WORKDIR /home/rapids
 
 COPY condarc /opt/conda/.condarc
 
-RUN mamba install -y -n base \
-        "rapids=${RAPIDS_VER}.*" \
-        "dask-sql=${DASK_SQL_VER%.*}.*" \
-        "python=${PYTHON_VER}.*" \
-        "cuda-version=${CUDA_VER%.*}.*" \
-        ipython \
-    && conda clean -afy
+RUN <<EOF
+mamba install -y -n base \
+    "rapids=${RAPIDS_VER}.*" \
+    "dask-sql=${DASK_SQL_VER%.*}.*" \
+    "python=${PYTHON_VER}.*" \
+    "cuda-version=${CUDA_VER%.*}.*" \
+    ipython
+conda clean -afy
+EOF
 
 COPY entrypoint.sh /home/rapids/entrypoint.sh
 
@@ -67,15 +71,19 @@ COPY --from=dependencies --chown=rapids /test_notebooks_dependencies.yaml test_n
 
 COPY --from=dependencies --chown=rapids /notebooks /home/rapids/notebooks
 
-RUN mamba env update -n base -f test_notebooks_dependencies.yaml \
-    && conda clean -afy
+RUN <<EOF
+mamba env update -n base -f test_notebooks_dependencies.yaml
+conda clean -afy
+EOF
 
-RUN mamba install -y -n base \
+RUN <<EOF
+mamba install -y -n base \
         "jupyterlab=3" \
-        dask-labextension \
-    && pip install jupyterlab-nvdashboard \
-    && conda clean -afy \
-    && pip cache purge
+        dask-labextension
+pip install jupyterlab-nvdashboard
+conda clean -afy
+pip cache purge
+EOF
 
 ENV DASK_LABEXTENSION__FACTORY__MODULE="dask_cuda"
 ENV DASK_LABEXTENSION__FACTORY__CLASS="LocalCUDACluster"
