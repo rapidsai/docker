@@ -35,6 +35,8 @@ ARG PYTHON_VER
 ARG RAPIDS_VER
 ARG DASK_SQL_VER
 
+SHELL ["/bin/bash", "-euo", "pipefail", "-c"]
+
 RUN useradd -rm -d /home/rapids -s /bin/bash -g conda -u 1001 rapids
 
 USER rapids
@@ -62,6 +64,8 @@ CMD ["ipython"]
 
 # Notebooks image
 FROM base as notebooks
+
+SHELL ["/bin/bash", "-euo", "pipefail", "-c"]
 
 USER rapids
 
