@@ -5,7 +5,7 @@ ARG PYTHON_VER=3.10
 ARG LINUX_VER=ubuntu22.04
 
 ARG RAPIDS_VER=24.02
-ARG DASK_SQL_VER=2023.10.0
+ARG DASK_SQL_VER=2023.11.0
 
 # Gather dependency information
 FROM rapidsai/ci-conda:latest AS dependencies
@@ -35,6 +35,8 @@ ARG PYTHON_VER
 ARG RAPIDS_VER
 ARG DASK_SQL_VER
 
+SHELL ["/bin/bash", "-euo", "pipefail", "-c"]
+
 RUN useradd -rm -d /home/rapids -s /bin/bash -g conda -u 1001 rapids
 
 USER rapids
@@ -62,6 +64,8 @@ CMD ["ipython"]
 
 # Notebooks image
 FROM base as notebooks
+
+SHELL ["/bin/bash", "-euo", "pipefail", "-c"]
 
 USER rapids
 
