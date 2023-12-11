@@ -49,6 +49,8 @@ ENTRYPOINT ["/bin/bash", "/data/scripts/run_benchmark.sh"]
 
 FROM bench-base as raft-ann-bench-cpu-datasets
 
+SHELL ["/bin/bash", "-euo", "pipefail", "-c"]
+
 COPY raft-ann-bench/get_datasets.sh /home/rapids/raftannbench/get_datasets.sh
 
 COPY raft-ann-bench/run_benchmark.sh /data/scripts/run_benchmark_preloaded_datasets.sh
