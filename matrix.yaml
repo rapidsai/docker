@@ -1,5 +1,4 @@
 CUDA_VER: # Should be `<major>.<minor>.<patch>` (e.g. `11.2.2`)
-  - "11.2.2"
   - "11.8.0"
   - "12.0.1"
 PYTHON_VER:
