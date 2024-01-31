@@ -50,6 +50,7 @@ mamba install -y -n base \
     "rapids=${RAPIDS_VER}.*" \
     "dask-sql=${DASK_SQL_VER%.*}.*" \
     "python=${PYTHON_VER}.*" \
+    # cuda-python pin required for CUDA 12. See https://github.com/conda-forge/cuda-python-feedstock/issues/66
     "cuda-python=${CUDA_VER%.*}.*" \
     "cuda-version=${CUDA_VER%.*}.*" \
     ipython
