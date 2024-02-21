@@ -44,7 +44,7 @@ def get_notebooks(directory: str) -> Iterable[str]:
                     any(match_ignored_file in file for match_ignored_file in ignored_filenames)
                 )
                 and "MNMG" not in file.upper()
-                and not (any(file in ignored_notebook for ignored_notebook in ignored_notebooks))
+                and not any(file in ignored_notebook for ignored_notebook in ignored_notebooks)
             ):
                 path = os.path.join(root.replace(directory, ''), file)
                 if path.startswith('/'):
