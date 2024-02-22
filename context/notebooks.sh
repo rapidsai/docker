@@ -23,13 +23,12 @@ for REPO in "${NOTEBOOK_REPOS[@]}"; do
         EXCLUDE_LIST=$(mktemp)
         mkdir -p $DESTINATION
         find "$SOURCE" -type f -name "SKIP_CI_TESTING" -printf "%h\n" | sed "s|^$SOURCE/||" > "$EXCLUDE_LIST"
-        rsync -avL --exclude-from="$EXCLUDE_LIST" "$SOURCE"/ "$DESTINATION"/
+        rsync -avL --exclude-from="$EXCLUDE_LIST" "$SOURCE"/ "$DESTINATION"
         rm "$EXCLUDE_LIST"
     else
         cp -rL "$SOURCE" "$DESTINATION"
     fi
-    
-    cp -rL "$REPO"/notebooks /notebooks/"$REPO"
+
     if [ -f "$REPO/dependencies.yaml" ] && yq -e '.files.test_notebooks' "$REPO/dependencies.yaml" >/dev/null; then
         echo "Running dfg on $REPO"
         rapids-dependency-file-generator \
