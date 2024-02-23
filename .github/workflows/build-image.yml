@@ -142,7 +142,7 @@ jobs:
             RAPIDS_VER=${{ inputs.RAPIDS_VER }}
           tags: ${{ inputs.RAFT_ANN_BENCH_DATASETS_TAG }}-${{ matrix.ARCH }}
       - name: Build RAFT ANN Benchmarks CPU image
-        if: inputs.CUDA_VER == '12.0.1' || inputs.CUDA_VER == '12.2.2' # we don't need to build CPU packages for different CUDA versions.
+        if: inputs.CUDA_VER == '12.2.2' # we don't need to build CPU packages for different CUDA versions.
         uses: docker/build-push-action@v4
         with:
           context: context
