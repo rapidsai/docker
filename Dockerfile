@@ -24,7 +24,13 @@ RUN pip install --upgrade conda-merge rapids-dependency-file-generator
 COPY condarc /condarc
 COPY notebooks.sh /notebooks.sh
 
-RUN /notebooks.sh
+RUN <<EOF
+apt-get update
+apt-get install -y rsync
+/notebooks.sh
+apt-get purge -y --auto-remove rsync
+rm -rf /var/lib/apt/lists/*
+EOF
 
 
 # Base image
