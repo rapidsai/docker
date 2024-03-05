@@ -5,5 +5,6 @@ CUDA_VER: # Should be `<major>.<minor>.<patch>` (e.g. `11.2.2`)
 PYTHON_VER:
   - "3.9"
   - "3.10"
+  - "3.11"
 DASK_SQL_VER:
   - "2024.1.0"
