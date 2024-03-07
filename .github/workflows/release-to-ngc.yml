@@ -2,9 +2,6 @@ name: Publish release images to NGC
 
 on:
   workflow_dispatch:
-  push:
-    branches:
-      - "pull-request/[0-9]+"
 
 jobs:
   compute-matrix:
@@ -19,11 +16,11 @@ jobs:
         id: generate-matrix
         run: |
           #!/bin/bash
-          matrix=$(yq 'del(.DASK_SQL_VER)' matrix.yaml | yq -o json)
-          echo "matrix=$matrix" >> $GITHUB_OUTPUT
+          matrix=$(yq 'del(.DASK_SQL_VER)' matrix.yaml | yq -o json | jq -c)
+          echo "matrix=${matrix}" | tee -a ${GITHUB_OUTPUT}
 
   copy-images:
-    name: Copy (${{ matrix.CUDA_VER }}, ${{ matrix.PYTHON_VER }})
+    name: copy (${{ matrix.CUDA_VER }}, ${{ matrix.PYTHON_VER }})
     needs: compute-matrix
     runs-on: ubuntu-latest
     strategy:
@@ -51,11 +48,12 @@ jobs:
           set -e
 
           CUDA_VER=${{ matrix.CUDA_VER }}
+          CUDA_VER_SHORT=${CUDA_VER%.*}
           PYTHON_VER=${{ matrix.PYTHON_VER }}
 
           for type in base notebooks; do
-            source="rapidsai/$type:24.02-cuda$CUDA_VER-py$PYTHON_VER"
-            target="nvcr.io/nvidia/rapidsai/$type:23.08-cuda$CUDA_VER-py$PYTHON_VER"
+            source="rapidsai/$type:24.02-cuda$CUDA_VER_SHORT-py$PYTHON_VER"
+            target="nvcr.io/nvidia/rapidsai/$type:23.08-cuda$CUDA_VER_SHORT-py$PYTHON_VER"
             echo "$source => $target"
-            # docker run -v ~/.docker/config.json:/config.json quay.io/skopeo/stable:latest copy --multi-arch all --dest-authfile=/config.json docker://$source docker://$target
+            docker run -v ~/.docker/config.json:/config.json quay.io/skopeo/stable:latest copy --multi-arch all --dest-authfile=/config.json docker://$source docker://$target
           done
