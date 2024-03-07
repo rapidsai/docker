@@ -1,11 +1,11 @@
 # syntax=docker/dockerfile:1
 
 ARG CUDA_VER=12.0.1
-ARG PYTHON_VER=3.10
+ARG PYTHON_VER=3.11
 ARG LINUX_VER=ubuntu22.04
 
-ARG RAPIDS_VER=23.12
-ARG DASK_SQL_VER=2023.11.0
+ARG RAPIDS_VER=24.04
+ARG DASK_SQL_VER=2024.1.0
 
 # Gather dependency information
 FROM rapidsai/ci-conda:latest AS dependencies
@@ -24,7 +24,13 @@ RUN pip install --upgrade conda-merge rapids-dependency-file-generator
 COPY condarc /condarc
 COPY notebooks.sh /notebooks.sh
 
-RUN /notebooks.sh
+RUN <<EOF
+apt-get update
+apt-get install -y rsync
+/notebooks.sh
+apt-get purge -y --auto-remove rsync
+rm -rf /var/lib/apt/lists/*
+EOF
 
 
 # Base image

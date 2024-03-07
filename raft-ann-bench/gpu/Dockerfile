@@ -1,10 +1,10 @@
 # syntax=docker/dockerfile:1
 
 ARG CUDA_VER=12.0.1
-ARG PYTHON_VER=3.10
+ARG PYTHON_VER=3.11
 ARG LINUX_VER=ubuntu22.04
 
-ARG RAPIDS_VER=23.12
+ARG RAPIDS_VER=24.04
 
 FROM rapidsai/miniforge-cuda:cuda${CUDA_VER}-base-${LINUX_VER}-py${PYTHON_VER} as raft-ann-bench
 ARG CUDA_VER
