@@ -4,38 +4,54 @@ on:
   workflow_dispatch:
 
 jobs:
-  cleanup:
+  compute-matrix:
     runs-on: ubuntu-latest
-
+    outputs:
+      matrix: ${{ steps.generate-matrix.outputs.matrix }}
     steps:
-    - name: Checkout code
-      uses: actions/checkout@v3
-    
-    - name: Login to DockerHub
-      uses: docker/login-action@v3
-      with:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Compute matrix
+        id: generate-matrix
+        run: |
+          #!/bin/bash
+          matrix=$(yq 'del(.DASK_SQL_VER)' matrix.yaml | yq -o json)
+          echo "matrix=$matrix" >> $GITHUB_OUTPUT
+
+  copy-images:
+    needs: compute-matrix
+    runs-on: ubuntu-latest
+    strategy:
+      matrix: ${{fromJson(needs.compute-matrix.outputs.matrix)}}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Login to DockerHub
+        uses: docker/login-action@v3
+        with:
           username: ${{ secrets.GPUCIBOT_DOCKERHUB_USER }}
           password: ${{ secrets.GPUCIBOT_DOCKERHUB_TOKEN }}
 
-    - name: Login to NGC
-      uses: docker/login-action@v3
-      with:
-        registry: nvcr.io
-        username: ${{ secrets.NGC_DOCKER_USER }}
-        password: ${{ secrets.NGC_DOCKER_PASSWORD }}
+      - name: Login to NGC
+        uses: docker/login-action@v3
+        with:
+          registry: nvcr.io
+          username: ${{ secrets.NGC_DOCKER_USER }}
+          password: ${{ secrets.NGC_DOCKER_PASSWORD }}
 
-    - name: Run With DockerHub Token
-      run: |
-        #!/usr/bin/env bash
-        set -e
-        
-        for CUDA in 11.2 11.8 12.0; do
-            for PY in 3.9 3.10; do
-            for type in base notebooks; do
-                source="rapidsai/$type:23.08-cuda$CUDA-py$PY"
-                target="nvcr.io/nvidia/rapidsai/$type:23.08-cuda$CUDA-py$PY"
-                echo "$source => $target"
-                docker run -v ~/.docker/config.json:/config.json quay.io/skopeo/stable:latest copy --multi-arch all --dest-authfile=/config.json docker://$source docker://$target
-                done
-            done
-        done
+      - name: Release to NGC
+        run: |
+          #!/bin/bash
+          set -e
+
+          CUDA_VER=${{ matrix.CUDA_VER }}
+          PYTHON_VER=${{ matrix.PYTHON_VER }}
+
+          for type in base notebooks; do
+            source="rapidsai/$type:23.08-cuda$CUDA_VER-py$PYTHON_VER"
+            target="nvcr.io/nvidia/rapidsai/$type:23.08-cuda$CUDA_VER-py$PYTHON_VER"
+            echo "$source => $target"
+            docker run -v ~/.docker/config.json:/config.json quay.io/skopeo/stable:latest copy --multi-arch all --dest-authfile=/config.json docker://$source docker://$target
+          done
