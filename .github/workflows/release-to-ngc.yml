@@ -2,6 +2,9 @@ name: Publish release images to NGC
 
 on:
   workflow_dispatch:
+  push:
+    branches:
+      - "pull-request/[0-9]+"
 
 jobs:
   compute-matrix:
@@ -51,8 +54,8 @@ jobs:
           PYTHON_VER=${{ matrix.PYTHON_VER }}
 
           for type in base notebooks; do
-            source="rapidsai/$type:23.08-cuda$CUDA_VER-py$PYTHON_VER"
+            source="rapidsai/$type:24.02-cuda$CUDA_VER-py$PYTHON_VER"
             target="nvcr.io/nvidia/rapidsai/$type:23.08-cuda$CUDA_VER-py$PYTHON_VER"
             echo "$source => $target"
-            docker run -v ~/.docker/config.json:/config.json quay.io/skopeo/stable:latest copy --multi-arch all --dest-authfile=/config.json docker://$source docker://$target
+            # docker run -v ~/.docker/config.json:/config.json quay.io/skopeo/stable:latest copy --multi-arch all --dest-authfile=/config.json docker://$source docker://$target
           done
