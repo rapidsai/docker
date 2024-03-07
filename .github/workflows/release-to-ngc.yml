@@ -20,6 +20,7 @@ jobs:
           echo "matrix=$matrix" >> $GITHUB_OUTPUT
 
   copy-images:
+    name: Copy (${{ matrix.CUDA_VER }}, ${{ matrix.PYTHON_VER }})
     needs: compute-matrix
     runs-on: ubuntu-latest
     strategy:
