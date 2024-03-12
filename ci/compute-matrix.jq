@@ -13,11 +13,11 @@ def compute_ubuntu_version($x):
   if
     $x.CUDA_VER >= "11.7" # Ubuntu 22.04 nvidia/cuda images were added starting with CUDA 11.7
   then
-    "ubuntu22.04"
+    ["ubuntu", "22.04"]
   else
-    "ubuntu20.04"
+    ["ubuntu", "20.04"]
   end |
-  $x + {LINUX_VER: .};
+  $x + {LINUX_VER: (.[0]+.[1]), LINUX_DISTRO: .[0], LINUX_DISTRO_VER: .[1]};
 
 def compute_cuda_tag($x):
   $x + {CUDA_TAG: $x.CUDA_VER | split(".") | [.[0], .[1]] | join(".") };
