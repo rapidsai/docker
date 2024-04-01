@@ -52,7 +52,7 @@ jobs:
       ALPHA_TAG: ${{ steps.compute-rapids-ver.outputs.ALPHA_TAG }}
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           fetch-depth: 0
       - name: Compute matrix
@@ -197,7 +197,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           fetch-depth: 0
       - name: Login to DockerHub
