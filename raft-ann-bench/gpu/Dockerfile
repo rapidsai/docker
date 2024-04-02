@@ -29,8 +29,8 @@ RUN apt-get install perl -y
 # temporarily downgrade conda from 23.9.0 due to https://github.com/mamba-org/mamba/issues/2882
 # after the mamba update step
 RUN <<EOF
-mamba update --all -y -n base
-mamba install -y -n base \
+conda update --all -y -n base
+conda install -y -n base \
     "raft-ann-bench=${RAPIDS_VER}.*" \
     "cuda-version=${CUDA_VER%.*}.*"
 conda clean -afy

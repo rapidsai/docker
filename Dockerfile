@@ -52,7 +52,7 @@ WORKDIR /home/rapids
 COPY condarc /opt/conda/.condarc
 
 RUN <<EOF
-mamba install -y -n base \
+conda install -y -n base \
     "rapids=${RAPIDS_VER}.*" \
     "dask-sql=${DASK_SQL_VER%.*}.*" \
     "python=${PYTHON_VER}.*" \
@@ -82,12 +82,12 @@ COPY --from=dependencies --chown=rapids /test_notebooks_dependencies.yaml test_n
 COPY --from=dependencies --chown=rapids /notebooks /home/rapids/notebooks
 
 RUN <<EOF
-mamba env update -n base -f test_notebooks_dependencies.yaml
+conda env update -n base -f test_notebooks_dependencies.yaml
 conda clean -afy
 EOF
 
 RUN <<EOF
-mamba install -y -n base \
+conda install -y -n base \
         "jupyterlab=3" \
         dask-labextension
 pip install jupyterlab-nvdashboard

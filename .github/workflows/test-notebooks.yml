@@ -67,7 +67,7 @@ jobs:
     steps:
       - name: Install required tools
         run: |
-          mamba install -n base --freeze-installed \
+          conda install -n base --freeze-installed \
             curl \
             git
       - name: Install gha-tools
@@ -93,7 +93,7 @@ jobs:
         if: '!cancelled()'
         run: |
           PATH="$PATH:$GHA_TOOLS_DIR"
-          rapids-mamba-retry install -n base awscli
+          rapids-conda-retry install -n base awscli
       - uses: aws-actions/configure-aws-credentials@v2
         if: '!cancelled()'
         with:
