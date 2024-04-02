@@ -5,3 +5,4 @@ channels:
   - pytorch
   - conda-forge
   - nvidia
+remote_max_retries: 3
