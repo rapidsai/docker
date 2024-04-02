@@ -27,7 +27,7 @@ RUN apt-get install perl -y
 # runs into a solver conflict with truststore 0.8.0. This avoids the environment installing
 # packages incompatible with python version needed before python itself is pinned to the correct version.
 RUN <<EOF
-MAMBA_NO_LOW_SPEED_LIMIT=1
+export MAMBA_NO_LOW_SPEED_LIMIT=1
 mamba install -y -n base "python=${PYTHON_VER}"
 mamba update --all -y -n base
 mamba install -y -n base \
