@@ -102,7 +102,7 @@ pip cache purge
 EOF
 
 # Disable the JupyterLab announcements
-RUN /opt/conda/bin/jupyter labextension disable "@jyupyterlab/apputils-extension:announcements"
+RUN /opt/conda/bin/jupyter labextension disable "@jupyterlab/apputils-extension:announcements"
 
 ENV DASK_LABEXTENSION__FACTORY__MODULE="dask_cuda"
 ENV DASK_LABEXTENSION__FACTORY__CLASS="LocalCUDACluster"
