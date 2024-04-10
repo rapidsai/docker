@@ -90,7 +90,7 @@ RUN <<EOF
 mamba install -y -n base \
         "jupyterlab=3" \
         dask-labextension
-pip install jupyterlab-nvdashboard
+pip install "jupyterlab-nvdashboard==0.9.*"
 conda clean -afy
 pip cache purge
 EOF
