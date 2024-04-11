@@ -24,7 +24,8 @@ ignored_subdirectory_names = [
 ]
 ignored_filenames = ["-csv", "benchmark", "target", "performance"]
 ignored_notebooks = [
-    'cusignal/api_guide/io_examples.ipynb' # 26gb data download
+    'cusignal/api_guide/io_examples.ipynb', # 26gb data download
+    'cugraph/algorithms/layout/Force-Atlas2.ipynb' # marked as skipped
 ]
 
 
@@ -43,7 +44,7 @@ def get_notebooks(directory: str) -> Iterable[str]:
                     any(match_ignored_file in file for match_ignored_file in ignored_filenames)
                 )
                 and "MNMG" not in file.upper()
-                and file not in ignored_notebooks
+                and not any(file in ignored_notebook for ignored_notebook in ignored_notebooks)
             ):
                 path = os.path.join(root.replace(directory, ''), file)
                 if path.startswith('/'):
