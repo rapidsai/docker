@@ -15,6 +15,7 @@ RAPIDS Libraries included in the images:
 - `cuDF`
 - `cuML`
 - `cuGraph`
+- `cuVS`
 - `RMM`
 - `RAFT`
 - `cuSpatial`
