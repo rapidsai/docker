@@ -5,7 +5,7 @@ ARG PYTHON_VER=3.11
 ARG LINUX_VER=ubuntu22.04
 
 ARG RAPIDS_VER=24.06
-ARG DASK_SQL_VER=2024.1.0
+ARG DASK_SQL_VER=2024.3.0
 
 # Gather dependency information
 FROM rapidsai/ci-conda:latest AS dependencies
@@ -90,7 +90,7 @@ RUN <<EOF
 mamba install -y -n base \
         "jupyterlab=3" \
         dask-labextension
-pip install jupyterlab-nvdashboard
+pip install "jupyterlab-nvdashboard==0.9.*"
 conda clean -afy
 pip cache purge
 EOF
