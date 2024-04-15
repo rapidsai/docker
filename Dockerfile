@@ -2,7 +2,9 @@
 
 ARG CUDA_VER=12.0.1
 ARG PYTHON_VER=3.11
-ARG LINUX_VER=ubuntu22.04
+ARG LINUX_DISTRO=ubuntu
+ARG LINUX_DISTRO_VER=22.04
+ARG LINUX_VER=${LINUX_DISTRO}${LINUX_DISTRO_VER}
 
 ARG RAPIDS_VER=24.04
 ARG DASK_SQL_VER=2024.3.0
@@ -71,6 +73,10 @@ CMD ["ipython"]
 # Notebooks image
 FROM base as notebooks
 
+ARG CUDA_VER
+ARG LINUX_DISTRO
+ARG LINUX_DISTRO_VER
+
 SHELL ["/bin/bash", "-euo", "pipefail", "-c"]
 
 USER rapids
@@ -95,6 +101,9 @@ conda clean -afy
 pip cache purge
 EOF
 
+# Disable the JupyterLab announcements
+RUN /opt/conda/bin/jupyter labextension disable "@jupyterlab/apputils-extension:announcements"
+
 ENV DASK_LABEXTENSION__FACTORY__MODULE="dask_cuda"
 ENV DASK_LABEXTENSION__FACTORY__CLASS="LocalCUDACluster"
 
@@ -105,3 +114,35 @@ EXPOSE 8888
 ENTRYPOINT ["/home/rapids/entrypoint.sh"]
 
 CMD [ "sh", "-c", "jupyter-lab --notebook-dir=/home/rapids/notebooks --ip=0.0.0.0 --no-browser --NotebookApp.token='' --NotebookApp.allow_origin='*' --NotebookApp.base_url=\"${NB_PREFIX:-/}\"" ]
+
+# Labels for NVIDIA AI Workbench
+LABEL com.nvidia.workbench.application.jupyterlab.class="webapp"
+LABEL com.nvidia.workbench.application.jupyterlab.health-check-cmd="[ \\$(echo url=\\$(jupyter lab list | head -n 2 | tail -n 1 | cut -f1 -d' ' | grep -v 'Currently' | sed \"s@/?@/lab?@g\") | curl -o /dev/null -s -w '%{http_code}' --config -) == '200' ]"
+LABEL com.nvidia.workbench.application.jupyterlab.start-cmd="jupyter lab --allow-root --port 8888 --ip 0.0.0.0 --no-browser --NotebookApp.base_url=\\\$PROXY_PREFIX --NotebookApp.default_url=/lab --NotebookApp.allow_origin='*'"
+LABEL com.nvidia.workbench.application.jupyterlab.stop-cmd="jupyter lab stop 8888"
+LABEL com.nvidia.workbench.application.jupyterlab.type="jupyterlab"
+LABEL com.nvidia.workbench.application.jupyterlab.webapp.autolaunch="true"
+LABEL com.nvidia.workbench.application.jupyterlab.webapp.port="8888"
+LABEL com.nvidia.workbench.application.jupyterlab.webapp.url-cmd="jupyter lab list | head -n 2 | tail -n 1 | cut -f1 -d' ' | grep -v 'Currently'"
+LABEL com.nvidia.workbench.cuda-version="$CUDA_VER"
+LABEL com.nvidia.workbench.description="RAPIDS with CUDA ${CUDA_VER}"
+LABEL com.nvidia.workbench.entrypoint-script="/home/rapids/entrypoint.sh"
+LABEL com.nvidia.workbench.image-version="24.04.00"
+LABEL com.nvidia.workbench.labels="cuda${CUDA_VER}"
+LABEL com.nvidia.workbench.name="RAPIDS with CUDA ${CUDA_VER}"
+LABEL com.nvidia.workbench.os-distro-release="$LINUX_DISTRO_VER"
+LABEL com.nvidia.workbench.os-distro="$LINUX_DISTRO"
+LABEL com.nvidia.workbench.os="linux"
+LABEL com.nvidia.workbench.package-manager-environment.target="/opt/conda"
+LABEL com.nvidia.workbench.package-manager-environment.type="conda"
+LABEL com.nvidia.workbench.package-manager.apt.binary="/usr/bin/apt"
+LABEL com.nvidia.workbench.package-manager.apt.installed-packages=""
+LABEL com.nvidia.workbench.package-manager.conda3.binary="/opt/conda/bin/conda"
+LABEL com.nvidia.workbench.package-manager.conda3.installed-packages="rapids cudf cuml cugraph rmm pylibraft cuspatial cuxfilter cucim xgboost dask-sql jupyterlab"
+LABEL com.nvidia.workbench.package-manager.pip.binary="/opt/conda/bin/pip"
+LABEL com.nvidia.workbench.package-manager.pip.installed-packages="jupyterlab-nvdashboard"
+LABEL com.nvidia.workbench.programming-languages="python3"
+LABEL com.nvidia.workbench.schema-version="v2"
+LABEL com.nvidia.workbench.user.gid="1000"
+LABEL com.nvidia.workbench.user.uid="1001"
+LABEL com.nvidia.workbench.user.username="rapids"
