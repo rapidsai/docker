@@ -3,7 +3,7 @@
 ARG PYTHON_VER=3.11
 ARG RAPIDS_VER=24.06
 
-FROM condaforge/mambaforge:23.3.1-0 as raft-ann-bench-cpu
+FROM condaforge/miniforge3:24.3.0-0 as raft-ann-bench-cpu
 ARG RAPIDS_VER
 ARG PYTHON_VER
 
