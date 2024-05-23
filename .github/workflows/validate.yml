@@ -68,7 +68,7 @@ jobs:
       - name: Install container-canary
         run: |
           RELEASE_URI=https://api.github.com/repos/NVIDIA/container-canary/releases/${{ inputs.CONTAINER_CANARY_VERSION }}
-          BINARY_URI=$(curl --retry 6 --retry-delay 10 -s ${RELEASE_URI} | jq -r ".assets[] | select(.name | test(\"canary_linux_${{ inputs.ARCH }$\")) | .browser_download_url")
+          BINARY_URI=$(curl --retry 6 --retry-delay 10 -s ${RELEASE_URI} | jq -r ".assets[] | select(.name | test(\"canary_linux_${{ inputs.ARCH }}$\")) | .browser_download_url")
           curl --retry 6 --retry-delay 10 -sSL ${BINARY_URI} > /usr/local/bin/canary
           chmod +x /usr/local/bin/canary
           canary version
