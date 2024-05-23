@@ -1,0 +1,87 @@
+name: Validate images
+
+on:
+  workflow_call:
+    inputs:
+      ARCH:
+        required: true
+        type: string
+      # a tag from https://github.com/NVIDIA/container-canary/releases
+      CONTAINER_CANARY_VERSION:
+        required: true
+        type: string
+      CUDA_VER:
+        required: true
+        type: string
+      DRIVER:
+        required: true
+        type: string
+      GPU:
+        required: true
+        type: string
+      PYTHON_VER:
+        required: true
+        type: string
+      BASE_TAG:
+        required: true
+        type: string
+      NOTEBOOKS_TAG:
+        required: true
+        type: string
+
+defaults:
+  run:
+    shell: bash
+
+permissions:
+  actions: read
+  checks: none
+  contents: read
+  deployments: none
+  discussions: none
+  id-token: write
+  issues: none
+  packages: read
+  pages: none
+  pull-requests: read
+  repository-projects: none
+  security-events: none
+  statuses: none
+
+jobs:
+  test:
+    strategy:
+      matrix:
+        ARCH: ["${{ inputs.ARCH }}"]
+        CUDA_VER: ["${{ inputs.CUDA_VER }}"]
+        PYTHON_VER: ["${{ inputs.PYTHON_VER }}"]
+        GPU: ["${{ inputs.GPU }}"]
+        DRIVER: ["${{ inputs.DRIVER }}"]
+        IMAGE_REPO: ["base", "notebooks"]
+      fail-fast: false
+    runs-on: "linux-${{ inputs.ARCH }}-gpu-${{ inputs.GPU }}-${{ inputs.DRIVER }}-1"
+    steps:
+      - name: Install required tools
+        run: |
+          mamba install -n base --freeze-installed \
+            curl
+      - name: Install container-canary
+        run: |
+          RELEASE_URI=https://api.github.com/repos/NVIDIA/container-canary/releases/${{ inputs.CONTAINER_CANARY_VERSION }}
+          BINARY_URI=$(curl --retry 6 --retry-delay 10 -s ${RELEASE_URI} | jq -r ".assets[] | select(.name | test(\"canary_linux_${{ inputs.ARCH }$\")) | .browser_download_url")
+          curl --retry 6 --retry-delay 10 -sSL ${BINARY_URI} > /usr/local/bin/canary
+          chmod +x /usr/local/bin/canary
+          canary version
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Print environment
+        run: |
+          nvidia-smi
+      - name: (base) container-canary checks
+        run: |
+          ./ci/container-canary/run-checks.sh ${{ inputs.BASE_TAG }}
+      - name: (notebooks) container-canary checks
+        run: |
+          ./ci/container-canary/run-checks.sh ${{ inputs.NOTEBOOK_TAG }}
