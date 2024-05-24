@@ -77,10 +77,10 @@ jobs:
       - name: Checkout code
         uses: actions/checkout@v4
         with:
-          fetch-depth: 0
+          fetch-depth: 1
       - name: (base) container-canary checks
         run: |
-          ./ci/container-canary/run-checks.sh ${{ inputs.BASE_TAG }}
+          bash ./ci/container-canary/run-checks.sh ${{ inputs.BASE_TAG }}
       - name: (notebooks) container-canary checks
         run: |
-          ./ci/container-canary/run-checks.sh ${{ inputs.NOTEBOOK_TAG }}
+          bash ./ci/container-canary/run-checks.sh ${{ inputs.NOTEBOOK_TAG }}
