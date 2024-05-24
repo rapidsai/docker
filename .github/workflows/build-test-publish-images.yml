@@ -223,7 +223,7 @@ jobs:
         ${{ matrix.ARCH }}"
   build-multiarch-manifest:
     if: inputs.build_type == 'branch'
-    needs: [build, compute-matrix]
+    needs: [build, compute-matrix, validate]
     strategy:
       matrix: ${{ fromJSON(needs.compute-matrix.outputs.MATRIX) }}
     runs-on: ubuntu-latest

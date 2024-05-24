@@ -8,6 +8,7 @@ on:
         type: string
       # a tag from https://github.com/NVIDIA/container-canary/releases
       CONTAINER_CANARY_VERSION:
+        description: 'tag from https://github.com/NVIDIA/container-canary/releases'
         required: true
         type: string
       CUDA_VER:
@@ -49,7 +50,7 @@ permissions:
   statuses: none
 
 jobs:
-  test:
+  validate:
     strategy:
       matrix:
         ARCH: ["${{ inputs.ARCH }}"]
@@ -60,6 +61,12 @@ jobs:
         IMAGE_REPO: ["base", "notebooks"]
       fail-fast: false
     runs-on: "linux-${{ inputs.ARCH }}-gpu-${{ inputs.GPU }}-${{ inputs.DRIVER }}-1"
+    container:
+      image:
+        name: docker:dind
+        options: --privileged
+      env:
+        NVIDIA_VISIBLE_DEVICES: ${{ env.NVIDIA_VISIBLE_DEVICES }}
     steps:
       - name: Install required tools
         run: |
@@ -67,9 +74,8 @@ jobs:
             curl
       - name: Install container-canary
         run: |
-          RELEASE_URI=https://api.github.com/repos/NVIDIA/container-canary/releases/${{ inputs.CONTAINER_CANARY_VERSION }}
-          BINARY_URI=$(curl --retry 6 --retry-delay 10 -s ${RELEASE_URI} | jq -r ".assets[] | select(.name | test(\"canary_linux_${{ inputs.ARCH }}$\")) | .browser_download_url")
-          curl --retry 6 --retry-delay 10 -sSL ${BINARY_URI} > /usr/local/bin/canary
+          BINARY_URI=https://github.com/NVIDIA/container-canary/releases/download/${{ inputs.CONTAINER_CANARY_VERSION}}/canary_linux_${{ inputs.ARCH }}
+          curl --retry 3 --retry-delay 10 -sSL ${BINARY_URI} > /usr/local/bin/canary
           chmod +x /usr/local/bin/canary
           canary version
       - name: Checkout code
