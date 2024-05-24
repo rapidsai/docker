@@ -69,8 +69,7 @@ jobs:
     steps:
       - name: Install required tools
         run: |
-          mamba install -n base --freeze-installed \
-            curl
+          apk add curl
       - name: Install container-canary
         run: |
           BINARY_URI=https://github.com/NVIDIA/container-canary/releases/download/${{ inputs.CONTAINER_CANARY_VERSION}}/canary_linux_${{ inputs.ARCH }}

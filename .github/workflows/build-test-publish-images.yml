@@ -177,7 +177,7 @@ jobs:
     uses: ./.github/workflows/validate.yml
     with:
       ARCH: ${{ matrix.ARCH }}
-      CONTAINER_CANARY_VERSION: '0.3.0'
+      CONTAINER_CANARY_VERSION: '0.3.1'
       CUDA_VER: ${{ matrix.CUDA_VER }}
       GPU: ${{ matrix.GPU }}
       DRIVER: ${{ matrix.DRIVER }}
