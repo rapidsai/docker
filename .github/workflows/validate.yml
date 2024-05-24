@@ -80,7 +80,7 @@ jobs:
           fetch-depth: 1
       - name: (base) container-canary checks
         run: |
-          bash ./ci/container-canary/run-checks.sh ${{ inputs.BASE_TAG }}
+          sh ./ci/container-canary/run-checks.sh ${{ inputs.BASE_TAG }}
       - name: (notebooks) container-canary checks
         run: |
-          bash ./ci/container-canary/run-checks.sh ${{ inputs.NOTEBOOK_TAG }}
+          sh ./ci/container-canary/run-checks.sh ${{ inputs.NOTEBOOK_TAG }}
