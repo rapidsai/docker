@@ -69,13 +69,11 @@ jobs:
     steps:
       - name: Install required tools
         run: |
-          apk add curl
+          apk add go
       - name: Install container-canary
         run: |
-          BINARY_URI=https://github.com/NVIDIA/container-canary/releases/download/${{ inputs.CONTAINER_CANARY_VERSION}}/canary_linux_${{ inputs.ARCH }}
-          curl --retry 3 --retry-delay 10 -sSL ${BINARY_URI} > /usr/local/bin/canary
-          chmod +x /usr/local/bin/canary
-          canary version
+          GOBIN=/usr/local/bin go install github.com/nvidia/container-canary@${{ inputs.CONTAINER_CANARY_VERSION}}
+          container-canary version
       - name: Checkout code
         uses: actions/checkout@v4
         with:
