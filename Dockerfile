@@ -55,7 +55,6 @@ COPY condarc /opt/conda/.condarc
 
 RUN <<EOF
 mamba install -y -n base \
-    "rapids=${RAPIDS_VER}.*" \
     "dask-sql=${DASK_SQL_VER%.*}.*" \
     "python=${PYTHON_VER}.*" \
     "cuda-version=${CUDA_VER%.*}.*" \
