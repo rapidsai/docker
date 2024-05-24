@@ -62,9 +62,8 @@ jobs:
       fail-fast: false
     runs-on: "linux-${{ inputs.ARCH }}-gpu-${{ inputs.GPU }}-${{ inputs.DRIVER }}-1"
     container:
-      image:
-        name: docker:dind
-        options: --privileged
+      image: 'docker:dind'
+      options: --privileged
       env:
         NVIDIA_VISIBLE_DEVICES: ${{ env.NVIDIA_VISIBLE_DEVICES }}
     steps:
