@@ -32,7 +32,7 @@ on:
 
 defaults:
   run:
-    shell: bash
+    shell: sh
 
 permissions:
   actions: read
