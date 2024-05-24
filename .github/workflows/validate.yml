@@ -58,7 +58,6 @@ jobs:
         PYTHON_VER: ["${{ inputs.PYTHON_VER }}"]
         GPU: ["${{ inputs.GPU }}"]
         DRIVER: ["${{ inputs.DRIVER }}"]
-        IMAGE_REPO: ["base", "notebooks"]
       fail-fast: false
     runs-on: "linux-${{ inputs.ARCH }}-gpu-${{ inputs.GPU }}-${{ inputs.DRIVER }}-1"
     container:
