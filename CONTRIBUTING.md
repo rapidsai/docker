@@ -6,9 +6,9 @@ Building the images requires `docker` `>=18.09` with [`buildkit`](https://docs.d
 
 ## Building
 
-To build the `notebooks` image with default arguments: `docker buildx build --pull -f Dockerfile -t rapidsai/rapidsai-notebooks context/`
+To build the `notebooks` image with default arguments: `docker buildx build --pull -f Dockerfile -t rapidsai/notebooks context/`
 
-To build just the `base` image with default arguments: `docker buildx build --pull -f Dockerfile -t rapidsai/rapidsai --target=base context/`
+To build just the `base` image with default arguments: `docker buildx build --pull -f Dockerfile -t rapidsai/base --target=base context/`
 
 ### Build arguments
 
