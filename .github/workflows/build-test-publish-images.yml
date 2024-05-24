@@ -189,7 +189,7 @@ jobs:
         ${{ needs.compute-matrix.outputs.RAPIDS_VER }}\
         ${{ needs.compute-matrix.outputs.ALPHA_TAG }}-\
         cuda${{ matrix.CUDA_VER }}-\
-        py${{ matrix.PYTHON_VER }}"-\
+        py${{ matrix.PYTHON_VER }}-\
         ${{ matrix.ARCH }}"
       NOTEBOOKS_TAG:
         "rapidsai/${{ needs.compute-matrix.outputs.NOTEBOOKS_IMAGE_REPO }}:\
