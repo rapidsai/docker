@@ -4,6 +4,10 @@ name: rapids
 description: |
   Tests characteristics that the general-purpose RAPIDS images expected to have.
 documentation: https://github.com/rapidsai/docker
+command:
+  - /bin/sh
+  - -c
+  - "sleep 9999"
 checks:
   - name: tool-conda
     description: conda can be executed
