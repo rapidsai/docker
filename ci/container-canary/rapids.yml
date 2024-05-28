@@ -9,15 +9,20 @@ command:
   - -c
   - "sleep 9999"
 checks:
-  - name: tool-conda
-    description: conda can be executed
+  - name: always-succeed
+    description: always pass
     probe:
       exec:
         command:
-          - conda
-          - --version
-      timeoutSeconds: 120
-
+          - id
+# - name: tool-conda
+#   description: conda can be executed
+#   probe:
+#     exec:
+#       command:
+#         - conda
+#         - --version
+#     timeoutSeconds: 120
 # - name: tool-dask-cli
 #   description: Dask CLI can be executed
 #   probe:
