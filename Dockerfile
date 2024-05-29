@@ -7,7 +7,7 @@ ARG LINUX_DISTRO_VER=22.04
 ARG LINUX_VER=${LINUX_DISTRO}${LINUX_DISTRO_VER}
 
 ARG RAPIDS_VER=24.06
-ARG DASK_SQL_VER=2024.3.0
+ARG DASK_SQL_VER=2024.5.0
 
 # Gather dependency information
 FROM rapidsai/ci-conda:latest AS dependencies
