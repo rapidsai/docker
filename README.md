@@ -5,17 +5,17 @@ This repository contains the end-user docker images for [RAPIDS](https://rapids.
 
 ## Image types
 
-There are two image types: `base` ([`rapidsai/rapidsai`](https://hub.docker.com/r/rapidsai/rapidsai)) and `notebooks` ([`rapidsai/rapidsai-notebooks`](https://hub.docker.com/r/rapidsai/rapidsai-notebooks)).
+There are two image types: `base` ([`rapidsai/base`](https://hub.docker.com/r/rapidsai/base)) and `notebooks` ([`rapidsai/notebooks`](https://hub.docker.com/r/rapidsai/notebooks)).
 
 ### Base image
 
-This image can be found here: https://hub.docker.com/r/rapidsai/rapidsai
+This image can be found here: https://hub.docker.com/r/rapidsai/base
 
 It contains the basic installation of RAPIDS and [`dask-sql`](https://github.com/dask-contrib/dask-sql). By default it starts an `ipython` REPL.
 
 ### Notebooks image
 
-This image can be found here: https://hub.docker.com/r/rapidsai/rapidsai-notebooks
+This image can be found here: https://hub.docker.com/r/rapidsai/notebooks
 
 It extends the `base` images to include RAPIDS notebooks and a [`jupyterlab` server](https://jupyter.org/) which starts automatically.
 
