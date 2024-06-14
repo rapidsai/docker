@@ -76,7 +76,7 @@ jobs:
             rapids-logger "Most recent tag is an alpha. Build will use nightly channels."
           fi
       - name: Login to DockerHub
-        uses: docker/login-action@v2
+        uses: docker/login-action@v3
         with:
           username: ${{ secrets.GPUCIBOT_DOCKERHUB_USER }}
           password: ${{ secrets.GPUCIBOT_DOCKERHUB_TOKEN }}
