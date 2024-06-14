@@ -33,7 +33,7 @@ for REPO in "${NOTEBOOK_REPOS[@]}"; do
         echo "Running dfg on $REPO"
         rapids-dependency-file-generator \
             --config "$REPO/dependencies.yaml" \
-            --file_key test_notebooks \
+            --file-key test_notebooks \
             --matrix "cuda=${CUDA_VER%.*};arch=$(arch);py=${PYTHON_VER}" \
             --output conda >"/dependencies/${REPO}_notebooks_tests_dependencies.yaml"
     fi
