@@ -53,15 +53,14 @@ WORKDIR /home/rapids
 
 COPY condarc /opt/conda/.condarc
 
-RUN <<EOF
-mamba install -y -n base \
-    "rapids=${RAPIDS_VER}.*" \
-    "dask-sql=${DASK_SQL_VER%.*}.*" \
-    "python=${PYTHON_VER}.*" \
-    "cuda-version=${CUDA_VER%.*}.*" \
-    ipython
-conda clean -afy
-EOF
+# RUN <<EOF
+# mamba install -y -n base \
+#     "dask-sql=${DASK_SQL_VER%.*}.*" \
+#     "python=${PYTHON_VER}.*" \
+#     "cuda-version=${CUDA_VER%.*}.*" \
+#     ipython
+# conda clean -afy
+# EOF
 
 COPY entrypoint.sh /home/rapids/entrypoint.sh
 
@@ -87,22 +86,22 @@ COPY --from=dependencies --chown=rapids /test_notebooks_dependencies.yaml test_n
 
 COPY --from=dependencies --chown=rapids /notebooks /home/rapids/notebooks
 
-RUN <<EOF
-mamba env update -n base -f test_notebooks_dependencies.yaml
-conda clean -afy
-EOF
+# RUN <<EOF
+# mamba env update -n base -f test_notebooks_dependencies.yaml
+# conda clean -afy
+# EOF
 
-RUN <<EOF
-mamba install -y -n base \
-        "jupyterlab=3" \
-        dask-labextension
-pip install "jupyterlab-nvdashboard==0.9.*"
-conda clean -afy
-pip cache purge
-EOF
+# RUN <<EOF
+# mamba install -y -n base \
+#         "jupyterlab=3" \
+#         dask-labextension
+# pip install "jupyterlab-nvdashboard==0.9.*"
+# conda clean -afy
+# pip cache purge
+# EOF
 
 # Disable the JupyterLab announcements
-RUN /opt/conda/bin/jupyter labextension disable "@jupyterlab/apputils-extension:announcements"
+#RUN /opt/conda/bin/jupyter labextension disable "@jupyterlab/apputils-extension:announcements"
 
 ENV DASK_LABEXTENSION__FACTORY__MODULE="dask_cuda"
 ENV DASK_LABEXTENSION__FACTORY__CLASS="LocalCUDACluster"
