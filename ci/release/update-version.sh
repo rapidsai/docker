@@ -30,6 +30,8 @@ for FILE in $(find . -name Dockerfile); do
   sed_runner "s/ARG RAPIDS_VER=.*/ARG RAPIDS_VER=${NEXT_SHORT_TAG}/g" "${FILE}"
 done
 
+sed_runner "s/com\.nvidia\.workbench\.image-version=.*/com.nvidia.workbench.image-version=\"${NEXT_FULL_TAG}\"/g" Dockerfile
+
 # CI files
 for FILE in .github/workflows/*.yml; do
   sed_runner "/shared-workflows/ s/@.*/@branch-${NEXT_SHORT_TAG}/g" "${FILE}"
