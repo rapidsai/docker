@@ -94,11 +94,10 @@ EOF
 
 RUN <<EOF
 mamba install -y -n base \
-        "jupyterlab=3" \
-        dask-labextension
-pip install "jupyterlab-nvdashboard==0.9.*"
+    "jupyterlab=4" \
+    dask-labextension \
+    jupyterlab-nvdashboard
 conda clean -afy
-pip cache purge
 EOF
 
 # Disable the JupyterLab announcements
