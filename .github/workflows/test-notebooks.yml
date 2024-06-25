@@ -75,7 +75,7 @@ jobs:
           mkdir -p "$GHA_TOOLS_DIR"
           curl -s -L 'https://github.com/rapidsai/gha-tools/releases/latest/download/tools.tar.gz' | tar -xz -C "$GHA_TOOLS_DIR"
       - name: Checkout code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
         with:
           fetch-depth: 0
       - name: Get RAPIDS GitHub Info
@@ -94,7 +94,7 @@ jobs:
         run: |
           PATH="$PATH:$GHA_TOOLS_DIR"
           rapids-mamba-retry install -n base awscli
-      - uses: aws-actions/configure-aws-credentials@v2
+      - uses: aws-actions/configure-aws-credentials@v4
         if: '!cancelled()'
         with:
           role-to-assume: ${{ vars.AWS_ROLE_ARN }}

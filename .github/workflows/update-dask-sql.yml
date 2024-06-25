@@ -16,7 +16,7 @@ jobs:
     if: github.repository == 'rapidsai/docker'
 
     steps:
-      - uses: actions/checkout@v3
+      - uses: actions/checkout@v4
 
       - name: Get current dask-sql version
         id: current_version
@@ -53,7 +53,7 @@ jobs:
           replace: ${{ env.SHORT_NEW_VER }}
 
       - name: Create pull request with changes
-        uses: peter-evans/create-pull-request@v3
+        uses: peter-evans/create-pull-request@v6
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           commit-message: Update `DASK_SQL_VERSION` to `${{ steps.new_version.outputs.version }}`

@@ -25,7 +25,11 @@ ignored_subdirectory_names = [
 ignored_filenames = ["-csv", "benchmark", "target", "performance"]
 ignored_notebooks = [
     'cusignal/api_guide/io_examples.ipynb', # 26gb data download
-    'cugraph/algorithms/layout/Force-Atlas2.ipynb' # marked as skipped
+
+    # following nbs are marked as skipped
+    'cugraph/algorithms/layout/Force-Atlas2.ipynb',
+    'cuspatial/binary_predicates.ipynb',
+    'cuspatial/cuproj_benchmark.ipynb'
 ]
 
 
