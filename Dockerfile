@@ -7,7 +7,6 @@ ARG LINUX_DISTRO_VER=22.04
 ARG LINUX_VER=${LINUX_DISTRO}${LINUX_DISTRO_VER}
 
 ARG RAPIDS_VER=24.08
-ARG DASK_SQL_VER=2024.5.0
 
 # Gather dependency information
 FROM rapidsai/ci-conda:latest AS dependencies
@@ -15,7 +14,6 @@ ARG CUDA_VER
 ARG PYTHON_VER
 
 ARG RAPIDS_VER
-ARG DASK_SQL_VER
 
 ARG RAPIDS_BRANCH="branch-${RAPIDS_VER}"
 
@@ -41,7 +39,6 @@ ARG CUDA_VER
 ARG PYTHON_VER
 
 ARG RAPIDS_VER
-ARG DASK_SQL_VER
 
 SHELL ["/bin/bash", "-euo", "pipefail", "-c"]
 
@@ -56,7 +53,6 @@ COPY condarc /opt/conda/.condarc
 RUN <<EOF
 mamba install -y -n base \
     "rapids=${RAPIDS_VER}.*" \
-    "dask-sql=${DASK_SQL_VER%.*}.*" \
     "python=${PYTHON_VER}.*" \
     "cuda-version=${CUDA_VER%.*}.*" \
     ipython
@@ -137,7 +133,7 @@ LABEL com.nvidia.workbench.package-manager-environment.type="conda"
 LABEL com.nvidia.workbench.package-manager.apt.binary="/usr/bin/apt"
 LABEL com.nvidia.workbench.package-manager.apt.installed-packages=""
 LABEL com.nvidia.workbench.package-manager.conda3.binary="/opt/conda/bin/conda"
-LABEL com.nvidia.workbench.package-manager.conda3.installed-packages="rapids cudf cuml cugraph rmm pylibraft cuspatial cuxfilter cucim xgboost dask-sql jupyterlab"
+LABEL com.nvidia.workbench.package-manager.conda3.installed-packages="rapids cudf cuml cugraph rmm pylibraft cuspatial cuxfilter cucim xgboost jupyterlab"
 LABEL com.nvidia.workbench.package-manager.pip.binary="/opt/conda/bin/pip"
 LABEL com.nvidia.workbench.package-manager.pip.installed-packages="jupyterlab-nvdashboard"
 LABEL com.nvidia.workbench.programming-languages="python3"

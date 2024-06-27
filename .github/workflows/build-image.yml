@@ -24,9 +24,6 @@ on:
       RAPIDS_VER:
         required: true
         type: string
-      DASK_SQL_VER:
-        required: true
-        type: string
       BASE_TAG:
         required: true
         type: string
@@ -52,7 +49,6 @@ jobs:
         LINUX_VER: ["${{ inputs.LINUX_VER }}"]
         PYTHON_VER: ["${{ inputs.PYTHON_VER }}"]
         RAPIDS_VER: ["${{ inputs.RAPIDS_VER }}"]
-        DASK_SQL_VER: ["${{ inputs.DASK_SQL_VER }}"]
       fail-fast: false
     runs-on: "linux-${{ matrix.ARCH }}-cpu4"
     steps:
@@ -104,7 +100,6 @@ jobs:
             LINUX_VER=${{ inputs.LINUX_VER }}
             PYTHON_VER=${{ inputs.PYTHON_VER }}
             RAPIDS_VER=${{ inputs.RAPIDS_VER }}
-            DASK_SQL_VER=${{ inputs.DASK_SQL_VER }}
           tags: ${{ inputs.BASE_TAG }}-${{ matrix.ARCH }}
       - name: Build notebooks image
         uses: docker/build-push-action@v5
@@ -121,7 +116,6 @@ jobs:
             LINUX_VER=${{ inputs.LINUX_VER }}
             PYTHON_VER=${{ inputs.PYTHON_VER }}
             RAPIDS_VER=${{ inputs.RAPIDS_VER }}
-            DASK_SQL_VER=${{ inputs.DASK_SQL_VER }}
           tags: ${{ inputs.NOTEBOOKS_TAG }}-${{ matrix.ARCH }}
       - name: Build RAFT ANN Benchmarks GPU image
         uses: docker/build-push-action@v5

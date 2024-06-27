@@ -15,4 +15,3 @@ To build just the `base` image with default arguments: `docker buildx build --pu
 - `CUDA_VER` - Version of CUDA to use. Should be `major.minor.patch`
 - `PYTHON_VER` - Version of Python to use. Should be `major.minor`
 - `RAPIDS_VER` - Version of RAPIDS to use. Should be `YY.MM`
-- `DASK_SQL_VER` - Version of `dask-sql` to use. Should be `YYYY.M.P`
