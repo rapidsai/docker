@@ -11,4 +11,4 @@ branch:
   - { CUDA_VER: '12.0', ARCH: 'amd64', PYTHON_VER: '3.10', GPU: 'v100', DRIVER: 'latest' }
   - { CUDA_VER: '12.0', ARCH: 'arm64', PYTHON_VER: '3.10', GPU: 'a100', DRIVER: 'latest' }
   - { CUDA_VER: '12.2', ARCH: 'amd64', PYTHON_VER: '3.11', GPU: 'v100', DRIVER: 'latest' }
-  - { CUDA_VER: '12.5', ARCH: 'arm64', PYTHON_VER: '3.11', GPU: 'v100', DRIVER: 'latest' }
+  - { CUDA_VER: '12.5', ARCH: 'arm64', PYTHON_VER: '3.11', GPU: 'a100', DRIVER: 'latest' }
