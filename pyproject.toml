@@ -1,0 +1,40 @@
+[tool.ruff]
+target-version = "py310"
+
+[tool.ruff.lint]
+ignore = [
+    # (flake8) line too long
+    "E501",
+    # (pylint) too many branches
+    "PLR0912",
+]
+select = [
+    # flake8-builtins
+    "A",
+    # flake8-bugbear
+    "B",
+    # flake8-comprehensions
+    "C4",
+    # pycodestyle
+    "E",
+    # eradicate
+    "ERA",
+    # pyflakes
+    "F",
+    # flynt
+    "FLY",
+    # perflint
+    "PERF",
+    # pygrep-hooks
+    "PGH",
+    # pylint
+    "PL",
+    # flake8-pyi
+    "PYI",
+    # flake8-return
+    "RET",
+    # ruff-exclusive checks
+    "RUF",
+    # flake8-bandit
+    "S",
+]
