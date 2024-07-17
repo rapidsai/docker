@@ -68,15 +68,16 @@ def test_notebook(notebook_file, executed_nb_file):
         errors = []
         warnings = []
         outputs = []
+        
 
         # use nbconvert to run the notebook natively
         ep = ExecutePreprocessor(timeout=600, kernel_name="python3", allow_errors=True)
+        task_init = timeit.default_timer()
         try:
-            task_init = timeit.default_timer()
-            nb, nb_resources = ep.preprocess(nb, {"metadata": {"path": ""}})
-            execution_time = timeit.default_timer() - task_init
+            nb, _ = ep.preprocess(nb, {"metadata": {"path": ""}})
         except Exception as e:
             errors.append(e)
+        execution_time = timeit.default_timer() - task_init
 
         with open(executed_nb_file, "w", encoding="utf-8") as f:
             nbformat.write(nb, f)
