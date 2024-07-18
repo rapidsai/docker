@@ -34,7 +34,7 @@ EOF
 
 
 # Base image
-FROM rapidsai/miniforge-cuda:cuda${CUDA_VER}-base-${LINUX_VER}-py${PYTHON_VER} as base
+FROM rapidsai/miniforge-cuda:cuda${CUDA_VER}-base-${LINUX_VER}-py${PYTHON_VER} AS base
 ARG CUDA_VER
 ARG PYTHON_VER
 
@@ -67,7 +67,7 @@ CMD ["ipython"]
 
 
 # Notebooks image
-FROM base as notebooks
+FROM base AS notebooks
 
 ARG CUDA_VER
 ARG LINUX_DISTRO
