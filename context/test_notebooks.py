@@ -27,7 +27,10 @@ ignored_notebooks = [
     # following nbs are marked as skipped
     'cugraph/algorithms/layout/Force-Atlas2.ipynb',
     'cuspatial/binary_predicates.ipynb',
-    'cuspatial/cuproj_benchmark.ipynb'
+    'cuspatial/cuproj_benchmark.ipynb',
+    # context on these being skipped: https://github.com/rapidsai/cuspatial/pull/1407
+    'cuspatial/cuspatial_api_examples.ipynb',
+    'cuspatial/nyc_taxi_years_correlation.ipynb'
 ]
 
 
