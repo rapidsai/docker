@@ -9,7 +9,7 @@ The RAPIDS suite of software libraries gives you the freedom to execute end-to-e
 **NOTE:** Review our [system requirements](https://docs.rapids.ai/install#system-req) to ensure you have a compatible system!
 
 
-### Current Version - RAPIDS v24.08
+### Current Version - RAPIDS v24.10
 
 RAPIDS Libraries included in the images:
 - `cuDF`
@@ -39,7 +39,7 @@ There are two types:
 
 The tag naming scheme for RAPIDS images incorporates key platform details into the tag as shown below:
 ```
-24.08-cuda11.8-py3.11
+24.10-cuda11.8-py3.11
  ^        ^      ^
  |        |      Python version
  |        |
@@ -48,7 +48,7 @@ The tag naming scheme for RAPIDS images incorporates key platform details into t
  RAPIDS version
 ```
 
-**Note: Nightly builds of the images have the RAPIDS version appended with an `a` (ie `24.08a-cuda11.8-py3.11`)**
+**Note: Nightly builds of the images have the RAPIDS version appended with an `a` (ie `24.10a-cuda11.8-py3.11`)**
 
 ## Usage
 
@@ -81,7 +81,7 @@ $ docker run \
     -e EXTRA_CONDA_PACKAGES="jq" \
     -e EXTRA_PIP_PACKAGES="beautifulsoup4" \
     -p 8888:8888 \
-    rapidsai/notebooks:24.08-cuda11.8-py3.11
+    rapidsai/notebooks:24.10-cuda11.8-py3.11
 ```
 
 ### Bind Mounts
@@ -106,7 +106,7 @@ $ docker run \
     --gpus all \
     -shm-size=1g --ulimit memlock=-1 --ulimit stack=67108864 \
     -v $(pwd)/environment.yml:/home/rapids/environment.yml \
-    rapidsai/base:24.08-cuda11.8-py3.11
+    rapidsai/base:24.10-cuda11.8-py3.11
 ```
 
 ### Use JupyterLab to Explore the Notebooks
