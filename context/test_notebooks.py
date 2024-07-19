@@ -70,6 +70,7 @@ def test_notebook(notebook_file, executed_nb_file):
         warnings = []
         outputs = []
 
+
         # use nbconvert to run the notebook natively
         ep = ExecutePreprocessor(timeout=600, kernel_name="python3", allow_errors=True)
         task_init = timeit.default_timer()
