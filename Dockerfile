@@ -14,7 +14,6 @@ ARG CUDA_VER
 ARG PYTHON_VER
 
 ARG RAPIDS_VER
-
 ARG RAPIDS_BRANCH="branch-${RAPIDS_VER}"
 
 SHELL ["/bin/bash", "-euo", "pipefail", "-c"]
