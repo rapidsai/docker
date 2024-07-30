@@ -60,4 +60,3 @@ RUN /home/rapids/raftannbench/get_datasets.sh
 CMD ["--dataset fashion-mnist-784-euclidean", "", "--algorithms hnswlib"]
 
 ENTRYPOINT ["/bin/bash", "/data/scripts/run_benchmark_preloaded_datasets.sh"]
-

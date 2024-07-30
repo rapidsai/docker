@@ -133,7 +133,6 @@ jobs:
       LINUX_VER: ${{ matrix.LINUX_VER }}
       PYTHON_VER: ${{ matrix.PYTHON_VER }}
       RAPIDS_VER: ${{ needs.compute-matrix.outputs.RAPIDS_VER }}
-      DASK_SQL_VER: ${{ matrix.DASK_SQL_VER }}
       BASE_TAG:
         "rapidsai/${{ needs.compute-matrix.outputs.BASE_IMAGE_REPO }}:\
         ${{ needs.compute-matrix.outputs.BASE_TAG_PREFIX }}\

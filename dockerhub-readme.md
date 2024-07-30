@@ -22,7 +22,6 @@ RAPIDS Libraries included in the images:
 - `cuxfilter`
 - `cuCIM`
 - `xgboost`
-- `dask-sql`
 
 
 ### Image Types
