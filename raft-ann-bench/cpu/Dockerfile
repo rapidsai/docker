@@ -3,10 +3,23 @@
 ARG PYTHON_VER=3.11
 ARG RAPIDS_VER=24.08
 
-FROM condaforge/miniforge3:24.3.0-0 as raft-ann-bench-cpu
+FROM condaforge/miniforge3:24.3.0-0 as conda-env-create
 ARG RAPIDS_VER
 ARG PYTHON_VER
 
+RUN <<EOF
+mamba create -y -p /opt/conda-base-env \
+  "python=${PYTHON_VER}"
+  "raft-ann-bench-cpu=${RAPIDS_VER}.*" \
+  "conda"
+chmod -R 777 /opt/conda-base-env
+EOF
+
+FROM ubuntu:latest as raft-ann-bench-cpu
+ARG RAPIDS_VER
+ARG PYTHON_VER
+
+COPY --from=conda-env-create --chown=1001 /opt/conda-base-env /opt/conda
 COPY condarc /opt/conda/.condarc
 
 SHELL ["/bin/bash", "-euo", "pipefail", "-c"]
@@ -21,20 +34,7 @@ echo ". /opt/conda/etc/profile.d/conda.sh; conda activate base" >> /etc/bash.bas
 EOF
 
 # we need perl temporarily for the remaining benchmark perl scripts
-RUN apt-get install perl -y
-
-# Install python before updating environment, otherwise Python 3.9 image
-# runs into a solver conflict with truststore 0.8.0. This avoids the environment installing
-# packages incompatible with python version needed before python itself is pinned to the correct version.
-RUN <<EOF
-mamba install -y -n base "python=${PYTHON_VER}"
-mamba update --all -y -n base
-mamba install -y -n base \
-  "raft-ann-bench-cpu=${RAPIDS_VER}.*" \
-  "python=${PYTHON_VER}"
-conda clean -afy
-chmod -R 777 /opt/conda
-EOF
+RUN apt-get update -y && apt-get install perl-base -y
 
 RUN useradd -rm -d /home/rapids -s /bin/bash -u 1001 rapids
 USER rapids
