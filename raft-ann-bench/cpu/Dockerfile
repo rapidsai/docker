@@ -3,20 +3,16 @@
 ARG PYTHON_VER=3.11
 ARG RAPIDS_VER=24.08
 
-FROM mambaorg/micromamba:1.5.8 AS conda-env-create
+FROM mambaorg/micromamba:1.5.8 AS raft-ann-bench-cpu
 ARG RAPIDS_VER
 ARG PYTHON_VER
 
 RUN micromamba install -y -n base \
   "python=${PYTHON_VER}" \
   "raft-ann-bench-cpu=${RAPIDS_VER}.*" \
-  "conda"
+  "conda" && \
+  micromamba clean --all --yes
 
-FROM debian:stable-slim AS raft-ann-bench-cpu
-ARG RAPIDS_VER
-ARG PYTHON_VER
-
-COPY --from=conda-env-create --chown=1001 /opt/conda /opt/conda
 COPY condarc /opt/conda/.condarc
 
 SHELL ["/bin/bash", "-euo", "pipefail", "-c"]
@@ -34,6 +30,7 @@ EOF
 RUN apt-get update -y && apt-get install perl-base -y
 
 RUN useradd -rm -d /home/rapids -s /bin/bash -u 1001 rapids
+RUN chown -r rapids /opt/conda
 USER rapids
 WORKDIR /data/benchmarks
 
