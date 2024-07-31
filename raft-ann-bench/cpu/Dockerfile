@@ -3,23 +3,20 @@
 ARG PYTHON_VER=3.11
 ARG RAPIDS_VER=24.08
 
-FROM condaforge/miniforge3:24.3.0-0 as conda-env-create
+FROM mambaorg/micromamba:1.5.8 AS conda-env-create
 ARG RAPIDS_VER
 ARG PYTHON_VER
 
-RUN <<EOF
-mamba create -y -p /opt/conda-base-env \
-  "python=${PYTHON_VER}"
+RUN micromamba install -y -n base \
+  "python=${PYTHON_VER}" \
   "raft-ann-bench-cpu=${RAPIDS_VER}.*" \
   "conda"
-chmod -R 777 /opt/conda-base-env
-EOF
 
-FROM ubuntu:latest as raft-ann-bench-cpu
+FROM debian:stable-slim AS raft-ann-bench-cpu
 ARG RAPIDS_VER
 ARG PYTHON_VER
 
-COPY --from=conda-env-create --chown=1001 /opt/conda-base-env /opt/conda
+COPY --from=conda-env-create --chown=1001 /opt/conda /opt/conda
 COPY condarc /opt/conda/.condarc
 
 SHELL ["/bin/bash", "-euo", "pipefail", "-c"]
