@@ -11,6 +11,7 @@ docker pull "${IMAGE_URI}"
 # using a config checked in here
 container-canary validate \
     --file ./ci/container-canary/rapids.yml \
+    --startup-timeout 60 \
     "${IMAGE_URI}"
 
 # # usage a config from the container-canary repo
