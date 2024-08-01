@@ -52,7 +52,7 @@ COPY condarc /opt/conda/.condarc
 
 RUN <<EOF
 mamba install -y -n base \
-    "rapids=${RAPIDS_VER}.*" \
+    "cugraph=${RAPIDS_VER}.*" \
     "python=${PYTHON_VER}.*" \
     "cuda-version=${CUDA_VER%.*}.*" \
     ipython
