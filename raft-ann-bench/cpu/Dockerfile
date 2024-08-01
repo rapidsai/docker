@@ -7,13 +7,14 @@ FROM mambaorg/micromamba:1.5.8 AS raft-ann-bench-cpu
 ARG RAPIDS_VER
 ARG PYTHON_VER
 
+COPY condarc /opt/conda/.condarc
+
 RUN micromamba install -y -n base \
   "python=${PYTHON_VER}" \
   "raft-ann-bench-cpu=${RAPIDS_VER}.*" \
   "conda" && \
   micromamba clean --all --yes
 
-COPY condarc /opt/conda/.condarc
 
 SHELL ["/bin/bash", "-euo", "pipefail", "-c"]
 
