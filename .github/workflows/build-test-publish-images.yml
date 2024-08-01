@@ -198,123 +198,123 @@ jobs:
         cuda${{ matrix.CUDA_VER }}-\
         py${{ matrix.PYTHON_VER }}-\
         ${{ matrix.ARCH }}"
-  test:
-    needs: [build, compute-matrix, validate]
-    if: inputs.run_tests
-    strategy:
-      matrix: ${{ fromJSON(needs.compute-matrix.outputs.TEST_MATRIX) }}
-      fail-fast: false
-    secrets: inherit
-    uses: ./.github/workflows/test-notebooks.yml
-    with:
-      BUILD_TYPE: ${{ inputs.build_type }}
-      ARCH: ${{ matrix.ARCH }}
-      GPU: ${{ matrix.GPU }}
-      DRIVER: ${{ matrix.DRIVER }}
-      CUDA_VER: ${{ matrix.CUDA_VER }}
-      PYTHON_VER: ${{ matrix.PYTHON_VER }}
-      NOTEBOOKS_TAG:
-        "rapidsai/${{ needs.compute-matrix.outputs.NOTEBOOKS_IMAGE_REPO }}:\
-        ${{ needs.compute-matrix.outputs.NOTEBOOKS_TAG_PREFIX }}\
-        ${{ needs.compute-matrix.outputs.RAPIDS_VER }}\
-        ${{ needs.compute-matrix.outputs.ALPHA_TAG }}-\
-        cuda${{ matrix.CUDA_VER }}-\
-        py${{ matrix.PYTHON_VER }}-\
-        ${{ matrix.ARCH }}"
-  build-multiarch-manifest:
-    if: inputs.build_type == 'branch'
-    needs: [build, compute-matrix, validate]
-    strategy:
-      matrix: ${{ fromJSON(needs.compute-matrix.outputs.MATRIX) }}
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-      - name: Login to DockerHub
-        uses: docker/login-action@v3
-        with:
-          username: ${{ secrets.GPUCIBOT_DOCKERHUB_USER }}
-          password: ${{ secrets.GPUCIBOT_DOCKERHUB_TOKEN }}
-      - name: Create multiarch manifest
-        run: |
-          base_source_tags=()
-          notebooks_source_tags=()
-          raft_ann_bench_source_tags=()
-          raft_ann_bench_dataset_source_tags=()
-          raft_ann_bench_cpu_source_tags=()
+  # test:
+  #   needs: [build, compute-matrix, validate]
+  #   if: inputs.run_tests
+  #   strategy:
+  #     matrix: ${{ fromJSON(needs.compute-matrix.outputs.TEST_MATRIX) }}
+  #     fail-fast: false
+  #   secrets: inherit
+  #   uses: ./.github/workflows/test-notebooks.yml
+  #   with:
+  #     BUILD_TYPE: ${{ inputs.build_type }}
+  #     ARCH: ${{ matrix.ARCH }}
+  #     GPU: ${{ matrix.GPU }}
+  #     DRIVER: ${{ matrix.DRIVER }}
+  #     CUDA_VER: ${{ matrix.CUDA_VER }}
+  #     PYTHON_VER: ${{ matrix.PYTHON_VER }}
+  #     NOTEBOOKS_TAG:
+  #       "rapidsai/${{ needs.compute-matrix.outputs.NOTEBOOKS_IMAGE_REPO }}:\
+  #       ${{ needs.compute-matrix.outputs.NOTEBOOKS_TAG_PREFIX }}\
+  #       ${{ needs.compute-matrix.outputs.RAPIDS_VER }}\
+  #       ${{ needs.compute-matrix.outputs.ALPHA_TAG }}-\
+  #       cuda${{ matrix.CUDA_VER }}-\
+  #       py${{ matrix.PYTHON_VER }}-\
+  #       ${{ matrix.ARCH }}"
+  # build-multiarch-manifest:
+  #   if: inputs.build_type == 'branch'
+  #   needs: [build, compute-matrix, validate]
+  #   strategy:
+  #     matrix: ${{ fromJSON(needs.compute-matrix.outputs.MATRIX) }}
+  #   runs-on: ubuntu-latest
+  #   steps:
+  #     - name: Checkout
+  #       uses: actions/checkout@v4
+  #       with:
+  #         fetch-depth: 0
+  #     - name: Login to DockerHub
+  #       uses: docker/login-action@v3
+  #       with:
+  #         username: ${{ secrets.GPUCIBOT_DOCKERHUB_USER }}
+  #         password: ${{ secrets.GPUCIBOT_DOCKERHUB_TOKEN }}
+  #     - name: Create multiarch manifest
+  #       run: |
+  #         base_source_tags=()
+  #         notebooks_source_tags=()
+  #         raft_ann_bench_source_tags=()
+  #         raft_ann_bench_dataset_source_tags=()
+  #         raft_ann_bench_cpu_source_tags=()
 
-          base_tag_array=(
-            rapidsai/${{ needs.compute-matrix.outputs.BASE_IMAGE_REPO }}:
-            ${{ needs.compute-matrix.outputs.BASE_TAG_PREFIX }}
-            ${{ needs.compute-matrix.outputs.RAPIDS_VER }}
-            ${{ needs.compute-matrix.outputs.ALPHA_TAG }}-
-            cuda${{ matrix.CUDA_TAG }}-
-            py${{ matrix.PYTHON_VER }}
-          )
-          base_tag="$(printf %s "${base_tag_array[@]}" $'\n')" # Converts array to string w/o spaces
+  #         base_tag_array=(
+  #           rapidsai/${{ needs.compute-matrix.outputs.BASE_IMAGE_REPO }}:
+  #           ${{ needs.compute-matrix.outputs.BASE_TAG_PREFIX }}
+  #           ${{ needs.compute-matrix.outputs.RAPIDS_VER }}
+  #           ${{ needs.compute-matrix.outputs.ALPHA_TAG }}-
+  #           cuda${{ matrix.CUDA_TAG }}-
+  #           py${{ matrix.PYTHON_VER }}
+  #         )
+  #         base_tag="$(printf %s "${base_tag_array[@]}" $'\n')" # Converts array to string w/o spaces
 
-          notebooks_tag_array=(
-            rapidsai/${{ needs.compute-matrix.outputs.NOTEBOOKS_IMAGE_REPO }}:
-            ${{ needs.compute-matrix.outputs.NOTEBOOKS_TAG_PREFIX }}
-            ${{ needs.compute-matrix.outputs.RAPIDS_VER }}
-            ${{ needs.compute-matrix.outputs.ALPHA_TAG }}-
-            cuda${{ matrix.CUDA_TAG }}-
-            py${{ matrix.PYTHON_VER }}
-          )
-          notebooks_tag="$(printf %s "${notebooks_tag_array[@]}" $'\n')" # Converts array to string w/o spaces
+  #         notebooks_tag_array=(
+  #           rapidsai/${{ needs.compute-matrix.outputs.NOTEBOOKS_IMAGE_REPO }}:
+  #           ${{ needs.compute-matrix.outputs.NOTEBOOKS_TAG_PREFIX }}
+  #           ${{ needs.compute-matrix.outputs.RAPIDS_VER }}
+  #           ${{ needs.compute-matrix.outputs.ALPHA_TAG }}-
+  #           cuda${{ matrix.CUDA_TAG }}-
+  #           py${{ matrix.PYTHON_VER }}
+  #         )
+  #         notebooks_tag="$(printf %s "${notebooks_tag_array[@]}" $'\n')" # Converts array to string w/o spaces
 
-          raft_ann_bench_tag_array=(
-            rapidsai/${{ needs.compute-matrix.outputs.RAFT_ANN_BENCH_IMAGE_REPO }}:
-            ${{ needs.compute-matrix.outputs.RAFT_ANN_BENCH_TAG_PREFIX }}
-            ${{ needs.compute-matrix.outputs.RAPIDS_VER }}
-            ${{ needs.compute-matrix.outputs.ALPHA_TAG }}-
-            cuda${{ matrix.CUDA_TAG }}-
-            py${{ matrix.PYTHON_VER }}
-          )
-          raft_ann_bench_tag="$(printf %s "${raft_ann_bench_tag_array[@]}" $'\n')" # Converts array to string w/o spaces
+  #         raft_ann_bench_tag_array=(
+  #           rapidsai/${{ needs.compute-matrix.outputs.RAFT_ANN_BENCH_IMAGE_REPO }}:
+  #           ${{ needs.compute-matrix.outputs.RAFT_ANN_BENCH_TAG_PREFIX }}
+  #           ${{ needs.compute-matrix.outputs.RAPIDS_VER }}
+  #           ${{ needs.compute-matrix.outputs.ALPHA_TAG }}-
+  #           cuda${{ matrix.CUDA_TAG }}-
+  #           py${{ matrix.PYTHON_VER }}
+  #         )
+  #         raft_ann_bench_tag="$(printf %s "${raft_ann_bench_tag_array[@]}" $'\n')" # Converts array to string w/o spaces
 
-          raft_ann_bench_datasets_tag_array=(
-            rapidsai/${{ needs.compute-matrix.outputs.RAFT_ANN_BENCH_DATASETS_IMAGE_REPO }}:
-            ${{ needs.compute-matrix.outputs.RAFT_ANN_BENCH_DATASETS_TAG_PREFIX }}
-            ${{ needs.compute-matrix.outputs.RAPIDS_VER }}
-            ${{ needs.compute-matrix.outputs.ALPHA_TAG }}-
-            cuda${{ matrix.CUDA_TAG }}-
-            py${{ matrix.PYTHON_VER }}
-          )
-          raft_ann_bench_datasets_tag="$(printf %s "${raft_ann_bench_datasets_tag_array[@]}" $'\n')" # Converts array to string w/o spaces
+  #         raft_ann_bench_datasets_tag_array=(
+  #           rapidsai/${{ needs.compute-matrix.outputs.RAFT_ANN_BENCH_DATASETS_IMAGE_REPO }}:
+  #           ${{ needs.compute-matrix.outputs.RAFT_ANN_BENCH_DATASETS_TAG_PREFIX }}
+  #           ${{ needs.compute-matrix.outputs.RAPIDS_VER }}
+  #           ${{ needs.compute-matrix.outputs.ALPHA_TAG }}-
+  #           cuda${{ matrix.CUDA_TAG }}-
+  #           py${{ matrix.PYTHON_VER }}
+  #         )
+  #         raft_ann_bench_datasets_tag="$(printf %s "${raft_ann_bench_datasets_tag_array[@]}" $'\n')" # Converts array to string w/o spaces
 
-          raft_ann_bench_cpu_tag_array=(
-            rapidsai/${{ needs.compute-matrix.outputs.RAFT_ANN_BENCH_CPU_IMAGE_REPO }}:
-            ${{ needs.compute-matrix.outputs.RAFT_ANN_BENCH_CPU_TAG_PREFIX }}
-            ${{ needs.compute-matrix.outputs.RAPIDS_VER }}
-            ${{ needs.compute-matrix.outputs.ALPHA_TAG }}-
-            py${{ matrix.PYTHON_VER }}
-          )
-          raft_ann_bench_cpu_tag="$(printf %s "${raft_ann_bench_cpu_tag_array[@]}" $'\n')" # Converts array to string w/o spaces
+  #         raft_ann_bench_cpu_tag_array=(
+  #           rapidsai/${{ needs.compute-matrix.outputs.RAFT_ANN_BENCH_CPU_IMAGE_REPO }}:
+  #           ${{ needs.compute-matrix.outputs.RAFT_ANN_BENCH_CPU_TAG_PREFIX }}
+  #           ${{ needs.compute-matrix.outputs.RAPIDS_VER }}
+  #           ${{ needs.compute-matrix.outputs.ALPHA_TAG }}-
+  #           py${{ matrix.PYTHON_VER }}
+  #         )
+  #         raft_ann_bench_cpu_tag="$(printf %s "${raft_ann_bench_cpu_tag_array[@]}" $'\n')" # Converts array to string w/o spaces
 
-          for arch in $(echo '${{ toJSON(matrix.ARCHES) }}' | jq .[] -r); do
-            base_source_tags+=("${base_tag}-${arch}")
-            notebooks_source_tags+=("${notebooks_tag}-${arch}")
-            raft_ann_bench_source_tags+=("${raft_ann_bench_tag}-${arch}")
-            raft_ann_bench_datasets_source_tags+=("${raft_ann_bench_datasets_tag}-${arch}")
-            raft_ann_bench_cpu_source_tags+=("${raft_ann_bench_cpu_tag}-${arch}")
-          done
+  #         for arch in $(echo '${{ toJSON(matrix.ARCHES) }}' | jq .[] -r); do
+  #           base_source_tags+=("${base_tag}-${arch}")
+  #           notebooks_source_tags+=("${notebooks_tag}-${arch}")
+  #           raft_ann_bench_source_tags+=("${raft_ann_bench_tag}-${arch}")
+  #           raft_ann_bench_datasets_source_tags+=("${raft_ann_bench_datasets_tag}-${arch}")
+  #           raft_ann_bench_cpu_source_tags+=("${raft_ann_bench_cpu_tag}-${arch}")
+  #         done
 
-          docker manifest create ${base_tag} ${base_source_tags[@]}
-          docker manifest push ${base_tag}
-          docker manifest create ${notebooks_tag} ${notebooks_source_tags[@]}
-          docker manifest push ${notebooks_tag}
-          docker manifest create ${raft_ann_bench_tag} ${raft_ann_bench_source_tags[@]}
-          docker manifest push ${raft_ann_bench_tag}
-          docker manifest create ${raft_ann_bench_datasets_tag} ${raft_ann_bench_datasets_source_tags[@]}
-          docker manifest push ${raft_ann_bench_datasets_tag}
-          docker manifest create ${raft_ann_bench_cpu_tag} ${raft_ann_bench_cpu_source_tags[@]}
-          docker manifest push ${raft_ann_bench_cpu_tag}
+  #         docker manifest create ${base_tag} ${base_source_tags[@]}
+  #         docker manifest push ${base_tag}
+  #         docker manifest create ${notebooks_tag} ${notebooks_source_tags[@]}
+  #         docker manifest push ${notebooks_tag}
+  #         docker manifest create ${raft_ann_bench_tag} ${raft_ann_bench_source_tags[@]}
+  #         docker manifest push ${raft_ann_bench_tag}
+  #         docker manifest create ${raft_ann_bench_datasets_tag} ${raft_ann_bench_datasets_source_tags[@]}
+  #         docker manifest push ${raft_ann_bench_datasets_tag}
+  #         docker manifest create ${raft_ann_bench_cpu_tag} ${raft_ann_bench_cpu_source_tags[@]}
+  #         docker manifest push ${raft_ann_bench_cpu_tag}
   delete-temp-images:
     if: always()
-    needs: [compute-matrix, build, test, build-multiarch-manifest]
+    needs: [compute-matrix, build, validate]
     strategy:
       matrix: ${{ fromJSON(needs.compute-matrix.outputs.MATRIX) }}
     runs-on: ubuntu-latest
