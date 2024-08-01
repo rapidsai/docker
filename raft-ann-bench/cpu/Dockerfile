@@ -32,7 +32,7 @@ EOF
 RUN apt-get update -y && apt-get install perl-base -y
 
 RUN useradd -rm -d /home/rapids -s /bin/bash -u 1001 rapids
-RUN chown -r rapids /opt/conda
+RUN chown -R rapids /opt/conda
 USER rapids
 WORKDIR /data/benchmarks
 
@@ -43,7 +43,7 @@ CMD ["--dataset fashion-mnist-784-euclidean", "", "--algorithms hnswlib"]
 ENTRYPOINT ["/bin/bash", "/data/scripts/run_benchmark.sh"]
 
 
-FROM bench-base as raft-ann-bench-cpu-datasets
+FROM bench-base AS raft-ann-bench-cpu-datasets
 
 SHELL ["/bin/bash", "-euo", "pipefail", "-c"]
 
