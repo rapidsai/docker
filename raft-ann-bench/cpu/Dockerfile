@@ -17,6 +17,7 @@ RUN micromamba install -y -n base \
 
 
 SHELL ["/bin/bash", "-euo", "pipefail", "-c"]
+USER root
 
 # Create a data folder accessible by any user so mounted volumes under it can be accessible
 # when the user passes their uid to docker run with -u $(id -u)
