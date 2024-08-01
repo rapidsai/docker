@@ -11,7 +11,7 @@ There are two image types: `base` ([`rapidsai/base`](https://hub.docker.com/r/ra
 
 This image can be found here: https://hub.docker.com/r/rapidsai/base
 
-It contains the basic installation of RAPIDS and [`dask-sql`](https://github.com/dask-contrib/dask-sql). By default it starts an `ipython` REPL.
+It contains the basic installation of RAPIDS. By default it starts an `ipython` REPL.
 
 ### Notebooks image
 

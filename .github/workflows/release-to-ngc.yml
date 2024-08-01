@@ -20,7 +20,7 @@ jobs:
         id: generate-matrix
         run: |
           #!/bin/bash
-          matrix=$(yq 'del(.DASK_SQL_VER)' matrix.yaml | yq -o json | jq -c)
+          matrix=$(yq '.' matrix.yaml | yq -o json | jq -c)
           echo "matrix=${matrix}" | tee -a ${GITHUB_OUTPUT}
 
   copy-images:

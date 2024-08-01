@@ -1,13 +1,12 @@
 # syntax=docker/dockerfile:1
 
-ARG CUDA_VER=12.0.1
-ARG PYTHON_VER=3.11
+ARG CUDA_VER=unset
+ARG PYTHON_VER=unset
 ARG LINUX_DISTRO=ubuntu
 ARG LINUX_DISTRO_VER=22.04
 ARG LINUX_VER=${LINUX_DISTRO}${LINUX_DISTRO_VER}
 
-ARG RAPIDS_VER=24.08
-ARG DASK_SQL_VER=2024.3.0
+ARG RAPIDS_VER=24.10
 
 # Gather dependency information
 FROM rapidsai/ci-conda:latest AS dependencies
@@ -15,7 +14,6 @@ ARG CUDA_VER
 ARG PYTHON_VER
 
 ARG RAPIDS_VER
-ARG DASK_SQL_VER
 
 ARG RAPIDS_BRANCH="branch-${RAPIDS_VER}"
 
@@ -36,12 +34,11 @@ EOF
 
 
 # Base image
-FROM rapidsai/miniforge-cuda:cuda${CUDA_VER}-base-${LINUX_VER}-py${PYTHON_VER} as base
+FROM rapidsai/miniforge-cuda:cuda${CUDA_VER}-base-${LINUX_VER}-py${PYTHON_VER} AS base
 ARG CUDA_VER
 ARG PYTHON_VER
 
 ARG RAPIDS_VER
-ARG DASK_SQL_VER
 
 SHELL ["/bin/bash", "-euo", "pipefail", "-c"]
 
@@ -53,14 +50,14 @@ WORKDIR /home/rapids
 
 COPY condarc /opt/conda/.condarc
 
-# RUN <<EOF
-# mamba install -y -n base \
-#     "dask-sql=${DASK_SQL_VER%.*}.*" \
-#     "python=${PYTHON_VER}.*" \
-#     "cuda-version=${CUDA_VER%.*}.*" \
-#     ipython
-# conda clean -afy
-# EOF
+RUN <<EOF
+mamba install -y -n base \
+    "rapids=${RAPIDS_VER}.*" \
+    "python=${PYTHON_VER}.*" \
+    "cuda-version=${CUDA_VER%.*}.*" \
+    ipython
+conda clean -afy
+EOF
 
 COPY entrypoint.sh /home/rapids/entrypoint.sh
 
@@ -70,7 +67,7 @@ CMD ["ipython"]
 
 
 # Notebooks image
-FROM base as notebooks
+FROM base AS notebooks
 
 ARG CUDA_VER
 ARG LINUX_DISTRO
@@ -86,22 +83,21 @@ COPY --from=dependencies --chown=rapids /test_notebooks_dependencies.yaml test_n
 
 COPY --from=dependencies --chown=rapids /notebooks /home/rapids/notebooks
 
-# RUN <<EOF
-# mamba env update -n base -f test_notebooks_dependencies.yaml
-# conda clean -afy
-# EOF
+RUN <<EOF
+mamba env update -n base -f test_notebooks_dependencies.yaml
+conda clean -afy
+EOF
 
-# RUN <<EOF
-# mamba install -y -n base \
-#         "jupyterlab=3" \
-#         dask-labextension
-# pip install "jupyterlab-nvdashboard==0.9.*"
-# conda clean -afy
-# pip cache purge
-# EOF
+RUN <<EOF
+mamba install -y -n base \
+    "jupyterlab=4" \
+    dask-labextension \
+    jupyterlab-nvdashboard
+conda clean -afy
+EOF
 
 # Disable the JupyterLab announcements
-#RUN /opt/conda/bin/jupyter labextension disable "@jupyterlab/apputils-extension:announcements"
+RUN /opt/conda/bin/jupyter labextension disable "@jupyterlab/apputils-extension:announcements"
 
 ENV DASK_LABEXTENSION__FACTORY__MODULE="dask_cuda"
 ENV DASK_LABEXTENSION__FACTORY__CLASS="LocalCUDACluster"
@@ -126,7 +122,7 @@ LABEL com.nvidia.workbench.application.jupyterlab.webapp.url-cmd="jupyter lab li
 LABEL com.nvidia.workbench.cuda-version="$CUDA_VER"
 LABEL com.nvidia.workbench.description="RAPIDS with CUDA ${CUDA_VER}"
 LABEL com.nvidia.workbench.entrypoint-script="/home/rapids/entrypoint.sh"
-LABEL com.nvidia.workbench.image-version="24.08.00"
+LABEL com.nvidia.workbench.image-version="24.10.00"
 LABEL com.nvidia.workbench.labels="cuda${CUDA_VER}"
 LABEL com.nvidia.workbench.name="RAPIDS with CUDA ${CUDA_VER}"
 LABEL com.nvidia.workbench.os-distro-release="$LINUX_DISTRO_VER"
@@ -137,7 +133,7 @@ LABEL com.nvidia.workbench.package-manager-environment.type="conda"
 LABEL com.nvidia.workbench.package-manager.apt.binary="/usr/bin/apt"
 LABEL com.nvidia.workbench.package-manager.apt.installed-packages=""
 LABEL com.nvidia.workbench.package-manager.conda3.binary="/opt/conda/bin/conda"
-LABEL com.nvidia.workbench.package-manager.conda3.installed-packages="rapids cudf cuml cugraph rmm pylibraft cuspatial cuxfilter cucim xgboost dask-sql jupyterlab"
+LABEL com.nvidia.workbench.package-manager.conda3.installed-packages="rapids cudf cuml cugraph rmm pylibraft cuspatial cuxfilter cucim xgboost jupyterlab"
 LABEL com.nvidia.workbench.package-manager.pip.binary="/opt/conda/bin/pip"
 LABEL com.nvidia.workbench.package-manager.pip.installed-packages="jupyterlab-nvdashboard"
 LABEL com.nvidia.workbench.programming-languages="python3"

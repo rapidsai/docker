@@ -21,7 +21,7 @@ A clear and concise description of what you expected to happen.
  - Method of cuDF install: [conda, Docker, or from source]
    - If method of install is [Docker], provide `docker pull` & `docker run` commands used
  - Please run and attach the output of the `cudf/print_env.sh` script to gather relevant environment details
- 
+
 
 **Additional context**
 Add any other context about the problem here.
