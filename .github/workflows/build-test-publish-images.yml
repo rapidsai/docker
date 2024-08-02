@@ -176,7 +176,7 @@ jobs:
     uses: ./.github/workflows/validate.yml
     with:
       ARCH: ${{ matrix.ARCH }}
-      CONTAINER_CANARY_VERSION: 'configurable-timeout'
+      CONTAINER_CANARY_VERSION: main
       CUDA_VER: ${{ matrix.CUDA_VER }}
       GPU: ${{ matrix.GPU }}
       DRIVER: ${{ matrix.DRIVER }}
