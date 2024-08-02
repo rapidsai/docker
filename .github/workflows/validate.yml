@@ -66,9 +66,10 @@ jobs:
     #   env:
     #     NVIDIA_VISIBLE_DEVICES: ${{ env.NVIDIA_VISIBLE_DEVICES }}
     steps:
-      # - name: Install required tools
-      #   run: |
-      #     apk add go
+      - name: Install Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: '1.22.x'
       - name: Install container-canary
         run: |
           GOBIN=/usr/local/bin go install github.com/nvidia/container-canary@${{ inputs.CONTAINER_CANARY_VERSION }}
