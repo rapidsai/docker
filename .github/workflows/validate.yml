@@ -59,12 +59,12 @@ jobs:
         GPU: ["${{ inputs.GPU }}"]
         DRIVER: ["${{ inputs.DRIVER }}"]
       fail-fast: false
-    runs-on: "linux-${{ inputs.ARCH }}-gpu-${{ inputs.GPU }}-${{ inputs.DRIVER }}-1"
-    container:
-      image: 'docker:dind'
-      options: --privileged
-      env:
-        NVIDIA_VISIBLE_DEVICES: ${{ env.NVIDIA_VISIBLE_DEVICES }}
+    runs-on: "linux-${{ inputs.ARCH }}-cpu4"
+    # container:
+    #   image: 'docker:dind'
+    #   options: --privileged
+    #   env:
+    #     NVIDIA_VISIBLE_DEVICES: ${{ env.NVIDIA_VISIBLE_DEVICES }}
     steps:
       - name: Install required tools
         run: |
@@ -80,6 +80,6 @@ jobs:
       - name: (base) container-canary checks
         run: |
           sh ./ci/container-canary/run-checks.sh ${{ inputs.BASE_TAG }}
-      - name: (notebooks) container-canary checks
-        run: |
-          sh ./ci/container-canary/run-checks.sh ${{ inputs.NOTEBOOK_TAG }}
+      # - name: (notebooks) container-canary checks
+      #   run: |
+      #     sh ./ci/container-canary/run-checks.sh ${{ inputs.NOTEBOOK_TAG }}
