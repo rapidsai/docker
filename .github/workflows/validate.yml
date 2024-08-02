@@ -71,7 +71,7 @@ jobs:
           apk add go
       - name: Install container-canary
         run: |
-          GOBIN=/usr/local/bin go install github.com/NVIDIA/container-canary@${{ inputs.CONTAINER_CANARY_VERSION }}
+          GOBIN=/usr/local/bin go install github.com/nvidia/container-canary@${{ inputs.CONTAINER_CANARY_VERSION }}
           container-canary version
       - name: Checkout code
         uses: actions/checkout@v4
