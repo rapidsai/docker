@@ -226,94 +226,35 @@ jobs:
           RAFT_ANN_BENCH_CPU_TAG_PREFIX: ${{ needs.compute-matrix.outputs.RAFT_ANN_BENCH_CPU_TAG_PREFIX }}
           GPUCIBOT_DOCKERHUB_USER: ${{ secrets.GPUCIBOT_DOCKERHUB_USER }}
           GPUCIBOT_DOCKERHUB_TOKEN: ${{ secrets.GPUCIBOT_DOCKERHUB_TOKEN }}
+          ARCHES: ${{ toJSON(matrix.ARCHES) }}
         run: ci/create-multiarch-manifest.sh
 
   delete-temp-images:
-    needs: [compute-matrix, build, test, build-multiarch-manifest]
+    if: '!cancelled()'
+    needs: [compute-matrix, build-multiarch-manifest]
     strategy:
       matrix: ${{ fromJSON(needs.compute-matrix.outputs.MATRIX) }}
+      fail-fast: false
     runs-on: ubuntu-latest
     steps:
       - name: Remove temporary images
-        run: |
-          HUB_TOKEN=$(
-            curl -s -H "Content-Type: application/json" \
-              -X POST \
-              -d "{\"username\": \"${{ secrets.GPUCIBOT_DOCKERHUB_USER }}\", \"password\": \"${{ secrets.GPUCIBOT_DOCKERHUB_TOKEN }}\"}" \
-              https://hub.docker.com/v2/users/login/ | jq -r .token \
-          )
-          echo "::add-mask::${HUB_TOKEN}"
-
-          org="rapidsai"
-          base_repo="${{ needs.compute-matrix.outputs.BASE_IMAGE_REPO }}"
-          base_tag_array=(
-            ${{ needs.compute-matrix.outputs.BASE_TAG_PREFIX }}
-            ${{ needs.compute-matrix.outputs.RAPIDS_VER }}
-            ${{ needs.compute-matrix.outputs.ALPHA_TAG }}-
-            cuda${{ matrix.CUDA_TAG }}-
-            py${{ matrix.PYTHON_VER }}
-          )
-          base_tag="$(printf %s "${base_tag_array[@]}" $'\n')" # Converts array to string w/o spaces
-
-
-          notebooks_repo="${{ needs.compute-matrix.outputs.NOTEBOOKS_IMAGE_REPO }}"
-          notebooks_tag_array=(
-            ${{ needs.compute-matrix.outputs.NOTEBOOKS_TAG_PREFIX }}
-            ${{ needs.compute-matrix.outputs.RAPIDS_VER }}
-            ${{ needs.compute-matrix.outputs.ALPHA_TAG }}-
-            cuda${{ matrix.CUDA_TAG }}-
-            py${{ matrix.PYTHON_VER }}
-          )
-          notebooks_tag="$(printf %s "${notebooks_tag_array[@]}" $'\n')" # Converts array to string w/o spaces
-
-          raft_ann_bench_repo="${{ needs.compute-matrix.outputs.RAFT_ANN_BENCH_IMAGE_REPO }}"
-          raft_ann_bench_tag_array=(
-            ${{ needs.compute-matrix.outputs.RAFT_ANN_BENCH_TAG_PREFIX }}
-            ${{ needs.compute-matrix.outputs.RAPIDS_VER }}
-            ${{ needs.compute-matrix.outputs.ALPHA_TAG }}-
-            cuda${{ matrix.CUDA_TAG }}-
-            py${{ matrix.PYTHON_VER }}
-          )
-          raft_ann_bench_tag="$(printf %s "${raft_ann_bench_tag_array[@]}" $'\n')" # Converts array to string w/o spaces
-
-          raft_ann_bench_datasets_repo="${{ needs.compute-matrix.outputs.RAFT_ANN_BENCH_DATASETS_IMAGE_REPO }}"
-          raft_ann_bench_datasets_tag_array=(
-            ${{ needs.compute-matrix.outputs.RAFT_ANN_BENCH_DATASETS_TAG_PREFIX }}
-            ${{ needs.compute-matrix.outputs.RAPIDS_VER }}
-            ${{ needs.compute-matrix.outputs.ALPHA_TAG }}-
-            cuda${{ matrix.CUDA_TAG }}-
-            py${{ matrix.PYTHON_VER }}
-          )
-          raft_ann_bench_datasets_tag="$(printf %s "${raft_ann_bench_datasets_tag_array[@]}" $'\n')" # Converts array to string w/o spaces
-
-          raft_ann_bench_cpu_repo="${{ needs.compute-matrix.outputs.RAFT_ANN_BENCH_CPU_IMAGE_REPO }}"
-          raft_ann_bench_cpu_tag_array=(
-            ${{ needs.compute-matrix.outputs.RAFT_ANN_BENCH_CPU_TAG_PREFIX }}
-            ${{ needs.compute-matrix.outputs.RAPIDS_VER }}
-            ${{ needs.compute-matrix.outputs.ALPHA_TAG }}-
-            py${{ matrix.PYTHON_VER }}
-          )
-          raft_ann_bench_cpu_tag="$(printf %s "${raft_ann_bench_cpu_tag_array[@]}" $'\n')" # Converts array to string w/o spaces
-
-          for arch in $(echo '${{ toJSON(matrix.ARCHES) }}' | jq .[] -r); do
-            curl -i -X DELETE \
-              -H "Accept: application/json" \
-              -H "Authorization: JWT $HUB_TOKEN" \
-              "https://hub.docker.com/v2/repositories/$org/$base_repo/tags/$base_tag-$arch/"
-            curl -i -X DELETE \
-              -H "Accept: application/json" \
-              -H "Authorization: JWT $HUB_TOKEN" \
-              "https://hub.docker.com/v2/repositories/$org/$notebooks_repo/tags/$notebooks_tag-$arch/"
-            curl -i -X DELETE \
-              -H "Accept: application/json" \
-              -H "Authorization: JWT $HUB_TOKEN" \
-              "https://hub.docker.com/v2/repositories/$org/$raft_ann_bench_repo/tags/$raft_ann_bench_tag-$arch/"
-            curl -i -X DELETE \
-              -H "Accept: application/json" \
-              -H "Authorization: JWT $HUB_TOKEN" \
-              "https://hub.docker.com/v2/repositories/$org/$raft_ann_bench_datasets_repo/tags/$raft_ann_bench_datasets_tag-$arch/"
-            curl -i -X DELETE \
-              -H "Accept: application/json" \
-              -H "Authorization: JWT $HUB_TOKEN" \
-              "https://hub.docker.com/v2/repositories/$org/$raft_ann_bench_cpu_repo/tags/$raft_ann_bench_cpu_tag-$arch/"
-          done
+        shell: bash
+        env:
+          BASE_IMAGE_REPO: ${{ needs.compute-matrix.outputs.BASE_IMAGE_REPO }}
+          BASE_TAG_PREFIX: ${{ needs.compute-matrix.outputs.BASE_TAG_PREFIX }}
+          RAPIDS_VER: ${{ needs.compute-matrix.outputs.RAPIDS_VER }}
+          ALPHA_TAG: ${{ needs.compute-matrix.outputs.ALPHA_TAG }}
+          CUDA_TAG: ${{ matrix.CUDA_TAG }}
+          PYTHON_VER: ${{ matrix.PYTHON_VER }}
+          NOTEBOOKS_IMAGE_REPO: ${{ needs.compute-matrix.outputs.NOTEBOOKS_IMAGE_REPO }}
+          NOTEBOOKS_TAG_PREFIX: ${{ needs.compute-matrix.outputs.NOTEBOOKS_TAG_PREFIX }}
+          RAFT_ANN_BENCH_IMAGE_REPO: ${{ needs.compute-matrix.outputs.RAFT_ANN_BENCH_IMAGE_REPO }}
+          RAFT_ANN_BENCH_TAG_PREFIX: ${{ needs.compute-matrix.outputs.RAFT_ANN_BENCH_TAG_PREFIX }}
+          RAFT_ANN_BENCH_DATASETS_IMAGE_REPO: ${{ needs.compute-matrix.outputs.RAFT_ANN_BENCH_DATASETS_IMAGE_REPO }}
+          RAFT_ANN_BENCH_DATASETS_TAG_PREFIX: ${{ needs.compute-matrix.outputs.RAFT_ANN_BENCH_DATASETS_TAG_PREFIX }}
+          RAFT_ANN_BENCH_CPU_IMAGE_REPO: ${{ needs.compute-matrix.outputs.RAFT_ANN_BENCH_CPU_IMAGE_REPO }}
+          RAFT_ANN_BENCH_CPU_TAG_PREFIX: ${{ needs.compute-matrix.outputs.RAFT_ANN_BENCH_CPU_TAG_PREFIX }}
+          GPUCIBOT_DOCKERHUB_USER: ${{ secrets.GPUCIBOT_DOCKERHUB_USER }}
+          GPUCIBOT_DOCKERHUB_TOKEN: ${{ secrets.GPUCIBOT_DOCKERHUB_TOKEN }}
+          ARCHES: ${{ toJSON(matrix.ARCHES) }}
+        run: ci/delete-temp-images.sh
