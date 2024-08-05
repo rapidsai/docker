@@ -230,7 +230,7 @@ jobs:
         run: ci/create-multiarch-manifest.sh
 
   delete-temp-images:
-    if: '!cancelled()'
+    if: ${{ !cancelled() && needs.test.result == 'success' }}
     needs: [compute-matrix, test, build-multiarch-manifest]
     strategy:
       matrix: ${{ fromJSON(needs.compute-matrix.outputs.MATRIX) }}
