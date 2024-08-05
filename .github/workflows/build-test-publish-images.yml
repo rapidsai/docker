@@ -231,7 +231,7 @@ jobs:
 
   delete-temp-images:
     if: '!cancelled()'
-    needs: [compute-matrix, build-multiarch-manifest]
+    needs: [compute-matrix, test, build-multiarch-manifest]
     strategy:
       matrix: ${{ fromJSON(needs.compute-matrix.outputs.MATRIX) }}
       fail-fast: false
