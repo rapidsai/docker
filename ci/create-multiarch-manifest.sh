@@ -1,5 +1,3 @@
-set -x
-
 # Authenticate and retrieve DockerHub token
 HUB_TOKEN=$(
 curl -s -H "Content-Type: application/json" \
