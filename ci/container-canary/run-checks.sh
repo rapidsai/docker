@@ -2,8 +2,7 @@
 
 set -e -u
 
-#IMAGE_URI="${1}"
-IMAGE_URI='ubuntu:latest'
+IMAGE_URI="${1}"
 
 # pre-pull
 docker pull "${IMAGE_URI}"
