@@ -33,6 +33,8 @@ ignored_notebooks = [
     'cuspatial/nyc_taxi_years_correlation.ipynb',
     # context on skip zipcodes: https://github.com/rapidsai/cuspatial/issues/1426
     'cuspatial/ZipCodes_Stops_PiP_cuSpatial.ipynb',
+    # context on skip forest inference: https://github.com/rapidsai/cuml/issues/6008
+    'cuml/forest_inference_demo.ipynb',
 ]
 
 
