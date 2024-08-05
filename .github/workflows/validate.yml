@@ -66,20 +66,21 @@ jobs:
     #   env:
     #     NVIDIA_VISIBLE_DEVICES: ${{ env.NVIDIA_VISIBLE_DEVICES }}
     steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
       - name: Install Go
         uses: actions/setup-go@v5
         with:
           go-version: '1.22.x'
       - name: Install container-canary
         run: |
-          GOBIN=/usr/local/bin go install github.com/nvidia/container-canary@${{ inputs.CONTAINER_CANARY_VERSION }}
+          GOBIN=/tmp/canary-bin go install github.com/nvidia/container-canary@${{ inputs.CONTAINER_CANARY_VERSION }}
           container-canary version
-      - name: Checkout code
-        uses: actions/checkout@v4
-        with:
-          fetch-depth: 1
       - name: (base) container-canary checks
         run: |
+          export PATH="/tmp/canary-bin:${PATH}"
           sh ./ci/container-canary/run-checks.sh ${{ inputs.BASE_TAG }}
       # - name: (notebooks) container-canary checks
       #   run: |
