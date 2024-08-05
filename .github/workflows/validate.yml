@@ -82,6 +82,7 @@ jobs:
         run: |
           export PATH="/tmp/canary-bin:${PATH}"
           sh ./ci/container-canary/run-checks.sh ${{ inputs.BASE_TAG }}
-      # - name: (notebooks) container-canary checks
-      #   run: |
-      #     sh ./ci/container-canary/run-checks.sh ${{ inputs.NOTEBOOK_TAG }}
+      - name: (notebooks) container-canary checks
+        run: |
+          export PATH="/tmp/canary-bin:${PATH}"
+          sh ./ci/container-canary/run-checks.sh ${{ inputs.NOTEBOOK_TAG }}
