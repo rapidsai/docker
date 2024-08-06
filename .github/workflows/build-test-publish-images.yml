@@ -167,29 +167,6 @@ jobs:
         ${{ needs.compute-matrix.outputs.RAPIDS_VER }}\
         ${{ needs.compute-matrix.outputs.ALPHA_TAG }}-\
         py${{ matrix.PYTHON_VER }}"
-  test:
-    needs: [build, compute-matrix]
-    if: inputs.run_tests
-    strategy:
-      matrix: ${{ fromJSON(needs.compute-matrix.outputs.TEST_MATRIX) }}
-      fail-fast: false
-    secrets: inherit
-    uses: ./.github/workflows/test-notebooks.yml
-    with:
-      BUILD_TYPE: ${{ inputs.build_type }}
-      ARCH: ${{ matrix.ARCH }}
-      GPU: ${{ matrix.GPU }}
-      DRIVER: ${{ matrix.DRIVER }}
-      CUDA_VER: ${{ matrix.CUDA_VER }}
-      PYTHON_VER: ${{ matrix.PYTHON_VER }}
-      NOTEBOOKS_TAG:
-        "rapidsai/${{ needs.compute-matrix.outputs.NOTEBOOKS_IMAGE_REPO }}:\
-        ${{ needs.compute-matrix.outputs.NOTEBOOKS_TAG_PREFIX }}\
-        ${{ needs.compute-matrix.outputs.RAPIDS_VER }}\
-        ${{ needs.compute-matrix.outputs.ALPHA_TAG }}-\
-        cuda${{ matrix.CUDA_VER }}-\
-        py${{ matrix.PYTHON_VER }}-\
-        ${{ matrix.ARCH }}"
   build-multiarch-manifest:
     if: '!cancelled()'
     needs: [build, compute-matrix]
@@ -228,10 +205,31 @@ jobs:
           GPUCIBOT_DOCKERHUB_TOKEN: ${{ secrets.GPUCIBOT_DOCKERHUB_TOKEN }}
           ARCHES: ${{ toJSON(matrix.ARCHES) }}
         run: ci/create-multiarch-manifest.sh
-
+  test:
+    needs: [compute-matrix, build, build-multiarch-manifest]
+    if: inputs.run_tests
+    strategy:
+      matrix: ${{ fromJSON(needs.compute-matrix.outputs.TEST_MATRIX) }}
+      fail-fast: false
+    secrets: inherit
+    uses: ./.github/workflows/test-notebooks.yml
+    with:
+      BUILD_TYPE: ${{ inputs.build_type }}
+      ARCH: ${{ matrix.ARCH }}
+      GPU: ${{ matrix.GPU }}
+      DRIVER: ${{ matrix.DRIVER }}
+      CUDA_VER: ${{ matrix.CUDA_VER }}
+      PYTHON_VER: ${{ matrix.PYTHON_VER }}
+      NOTEBOOKS_TAG:
+        "rapidsai/${{ needs.compute-matrix.outputs.NOTEBOOKS_IMAGE_REPO }}:\
+        ${{ needs.compute-matrix.outputs.NOTEBOOKS_TAG_PREFIX }}\
+        ${{ needs.compute-matrix.outputs.RAPIDS_VER }}\
+        ${{ needs.compute-matrix.outputs.ALPHA_TAG }}-\
+        cuda${{ matrix.CUDA_VER }}-\
+        py${{ matrix.PYTHON_VER }}"
   delete-temp-images:
-    if: ${{ !cancelled() && needs.test.result == 'success' }}
-    needs: [compute-matrix, test, build-multiarch-manifest]
+    if: '!cancelled()'
+    needs: [compute-matrix, build-multiarch-manifest]
     strategy:
       matrix: ${{ fromJSON(needs.compute-matrix.outputs.MATRIX) }}
       fail-fast: false
