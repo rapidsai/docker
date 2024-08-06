@@ -1,20 +1,16 @@
 apiVersion: container-canary.nvidia.com/v1
 kind: Validator
-name: rapids
+name: rapids-base
 description: |
   Tests characteristics that the general-purpose RAPIDS images expected to have.
 documentation: https://github.com/rapidsai/docker
+# This command just ensures the container stays up long enough for
+# all checks to complete.
 command:
   - /bin/sh
   - -c
-  - "sleep 9999"
+  - "sleep 600"
 checks:
-  # - name: always-succeed
-  #   description: always pass
-  #   probe:
-  #     exec:
-  #       command:
-  #         - id
   - name: tool-conda
     description: conda can be executed
     probe:
@@ -28,8 +24,10 @@ checks:
       exec:
         command:
           - python
-          - -m dask
+          - -m
+          - dask
           - --version
+      timeoutSeconds: 10
   # ref: https://github.com/rapidsai/docker/issues/668
   - name: tool-distributed-spec-cli
     description: Distributed dask_spec CLI can be executed
@@ -37,15 +35,8 @@ checks:
       exec:
         command:
           - python
-          - "-m distributed.cli.dask_spec"
-          - --version
-  - name: tool-jupyter-lab
-    description: jupyter lab can be executed
-    probe:
-      exec:
-        command:
-          - jupyter
-          - lab
+          - -m
+          - distributed.cli.dask_spec
           - --version
   - name: user-is-rapids
     description: Default user is rapids (uid=1001)
