@@ -60,9 +60,11 @@ for arch in $(echo "${ARCHES}" | jq .[] -r); do
         -H "Authorization: JWT $HUB_TOKEN" \
         "https://hub.docker.com/v2/repositories/$org/$RAFT_ANN_BENCH_DATASETS_IMAGE_REPO/tags/$raft_ann_bench_datasets_tag-$arch/"
 
-    check_tag_exists "$RAFT_ANN_BENCH_CPU_IMAGE_REPO" "$full_raft_ann_bench_cpu_tag"
-    curl -i -X DELETE \
-        -H "Accept: application/json" \
-        -H "Authorization: JWT $HUB_TOKEN" \
-        "https://hub.docker.com/v2/repositories/$org/$RAFT_ANN_BENCH_CPU_IMAGE_REPO/tags/$raft_ann_bench_cpu_tag-$arch/"
+    if [ "$RAFT_ANN_BENCH_CPU_IMAGE_BUILT" = "true" ]; then
+        check_tag_exists "$RAFT_ANN_BENCH_CPU_IMAGE_REPO" "$full_raft_ann_bench_cpu_tag"
+        curl -i -X DELETE \
+            -H "Accept: application/json" \
+            -H "Authorization: JWT $HUB_TOKEN" \
+            "https://hub.docker.com/v2/repositories/$org/$RAFT_ANN_BENCH_CPU_IMAGE_REPO/tags/$raft_ann_bench_cpu_tag-$arch/"
+    fi
 done
