@@ -228,7 +228,7 @@ jobs:
         cuda${{ matrix.CUDA_VER }}-\
         py${{ matrix.PYTHON_VER }}"
   delete-temp-images:
-    if: ${{ !cancelled() && needs.build-multiarch-manifest.result == 'success' }}
+    if: ${{ !cancelled() && needs.test.result == 'success' }}
     needs: [compute-matrix, build-multiarch-manifest, test]
     strategy:
       matrix: ${{ fromJSON(needs.compute-matrix.outputs.MATRIX) }}
