@@ -1,3 +1,7 @@
+#!/bin/bash
+
+set -eEuo pipefail
+
 # Authenticate and retrieve DockerHub token
 HUB_TOKEN=$(
 curl -s -H "Content-Type: application/json" \
