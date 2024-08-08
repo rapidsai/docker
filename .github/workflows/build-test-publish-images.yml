@@ -168,7 +168,7 @@ jobs:
         ${{ needs.compute-matrix.outputs.ALPHA_TAG }}-\
         py${{ matrix.PYTHON_VER }}"
   build-multiarch-manifest:
-    if: '!cancelled()'
+    if: ${{ !cancelled() && inputs.build_type == 'branch' }}
     needs: [build, compute-matrix]
     strategy:
       matrix: ${{ fromJSON(needs.compute-matrix.outputs.MATRIX) }}
