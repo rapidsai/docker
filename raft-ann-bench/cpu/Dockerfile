@@ -1,7 +1,7 @@
 # syntax=docker/dockerfile:1
 
 ARG PYTHON_VER=3.11
-ARG RAPIDS_VER=24.06
+ARG RAPIDS_VER=24.08
 
 FROM condaforge/mambaforge:23.3.1-0 as raft-ann-bench-cpu
 ARG RAPIDS_VER
@@ -60,4 +60,3 @@ RUN /home/rapids/raftannbench/get_datasets.sh
 CMD ["--dataset fashion-mnist-784-euclidean", "", "--algorithms hnswlib"]
 
 ENTRYPOINT ["/bin/bash", "/data/scripts/run_benchmark_preloaded_datasets.sh"]
-
