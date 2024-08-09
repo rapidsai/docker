@@ -3,7 +3,7 @@
 ARG PYTHON_VER=3.11
 ARG RAPIDS_VER=24.10
 
-FROM condaforge/mambaforge:23.3.1-0 as raft-ann-bench-cpu
+FROM condaforge/mambaforge:23.3.1-0 AS raft-ann-bench-cpu
 ARG RAPIDS_VER
 ARG PYTHON_VER
 
@@ -47,7 +47,7 @@ CMD ["--dataset fashion-mnist-784-euclidean", "", "--algorithms hnswlib"]
 ENTRYPOINT ["/bin/bash", "/data/scripts/run_benchmark.sh"]
 
 
-FROM bench-base as raft-ann-bench-cpu-datasets
+FROM bench-base AS raft-ann-bench-cpu-datasets
 
 SHELL ["/bin/bash", "-euo", "pipefail", "-c"]
 
