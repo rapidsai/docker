@@ -14,6 +14,9 @@ def compute_ubuntu_version($x):
 def compute_cuda_tag($x):
   $x + {CUDA_TAG: $x.CUDA_VER | split(".") | [.[0], .[1]] | join(".") };
 
+def compute_build_raft_ann_bench_cpu_image($x):
+  $x + {BUILD_RAFT_ANN_BENCH_CPU_IMAGE: ($x.CUDA_VER == "12.5.1")}; # we don't need to build CPU packages for different CUDA versions.
+
 # Checks the current entry to see if it matches the given exclude
 def matches($entry; $exclude):
   all($exclude | to_entries | .[]; $entry[.key] == .value);
@@ -37,6 +40,7 @@ def compute_matrix($input):
     lists2dict($matrix_keys; .) |
     compute_ubuntu_version(.) |
     compute_cuda_tag(.) |
+    compute_build_raft_ann_bench_cpu_image(.) |
     filter_excludes(.; $excludes) |
     compute_arch(.)
   ] |

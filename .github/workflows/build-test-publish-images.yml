@@ -133,6 +133,7 @@ jobs:
       LINUX_VER: ${{ matrix.LINUX_VER }}
       PYTHON_VER: ${{ matrix.PYTHON_VER }}
       RAPIDS_VER: ${{ needs.compute-matrix.outputs.RAPIDS_VER }}
+      BUILD_RAFT_ANN_BENCH_CPU_IMAGE: ${{ matrix.BUILD_RAFT_ANN_BENCH_CPU_IMAGE }}
       BASE_TAG:
         "rapidsai/${{ needs.compute-matrix.outputs.BASE_IMAGE_REPO }}:\
         ${{ needs.compute-matrix.outputs.BASE_TAG_PREFIX }}\
@@ -187,7 +188,7 @@ jobs:
       - name: Create multiarch manifest
         shell: bash
         env:
-          RAFT_ANN_BENCH_CPU_IMAGE_BUILT: ${{ matrix.CUDA_TAG == '12.5.1' }}
+          RAFT_ANN_BENCH_CPU_IMAGE_BUILT: ${{ matrix.BUILD_RAFT_ANN_BENCH_CPU_IMAGE }}
           BASE_IMAGE_REPO: ${{ needs.compute-matrix.outputs.BASE_IMAGE_REPO }}
           BASE_TAG_PREFIX: ${{ needs.compute-matrix.outputs.BASE_TAG_PREFIX }}
           RAPIDS_VER: ${{ needs.compute-matrix.outputs.RAPIDS_VER }}
@@ -243,7 +244,7 @@ jobs:
       - name: Remove temporary images
         shell: bash
         env:
-          RAFT_ANN_BENCH_CPU_IMAGE_BUILT: ${{ matrix.CUDA_TAG == '12.5.1' }}
+          RAFT_ANN_BENCH_CPU_IMAGE_BUILT: ${{ matrix.BUILD_RAFT_ANN_BENCH_CPU_IMAGE }}
           BASE_IMAGE_REPO: ${{ needs.compute-matrix.outputs.BASE_IMAGE_REPO }}
           BASE_TAG_PREFIX: ${{ needs.compute-matrix.outputs.BASE_TAG_PREFIX }}
           RAPIDS_VER: ${{ needs.compute-matrix.outputs.RAPIDS_VER }}
