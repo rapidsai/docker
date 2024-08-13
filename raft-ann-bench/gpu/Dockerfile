@@ -6,7 +6,7 @@ ARG LINUX_VER=ubuntu22.04
 
 ARG RAPIDS_VER=24.10
 
-FROM rapidsai/miniforge-cuda:cuda${CUDA_VER}-base-${LINUX_VER}-py${PYTHON_VER} as raft-ann-bench
+FROM rapidsai/miniforge-cuda:cuda${CUDA_VER}-base-${LINUX_VER}-py${PYTHON_VER} AS raft-ann-bench
 ARG CUDA_VER
 ARG RAPIDS_VER
 
@@ -50,7 +50,7 @@ CMD ["--dataset fashion-mnist-784-euclidean", "", "--algorithms raft_cagra", ""]
 ENTRYPOINT ["/bin/bash", "/data/scripts/run_benchmark.sh"]
 
 
-FROM raft-ann-bench as raft-ann-bench-datasets
+FROM raft-ann-bench AS raft-ann-bench-datasets
 
 SHELL ["/bin/bash", "-euo", "pipefail", "-c"]
 
