@@ -61,8 +61,10 @@ for arch in $(echo "${ARCHES}" | jq .[] -r); do
     check_tag_exists "$RAFT_ANN_BENCH_DATASETS_IMAGE_REPO" "$full_raft_ann_bench_datasets_tag"
     raft_ann_bench_datasets_source_tags+=("${org}/${RAFT_ANN_BENCH_DATASETS_IMAGE_REPO}:$full_raft_ann_bench_datasets_tag")
 
-    check_tag_exists "$RAFT_ANN_BENCH_CPU_IMAGE_REPO" "$full_raft_ann_bench_cpu_tag"
-    raft_ann_bench_cpu_source_tags+=("${org}/${RAFT_ANN_BENCH_CPU_IMAGE_REPO}:$full_raft_ann_bench_cpu_tag")
+    if [ "$RAFT_ANN_BENCH_CPU_IMAGE_BUILT" = "true" ]; then
+        check_tag_exists "$RAFT_ANN_BENCH_CPU_IMAGE_REPO" "$full_raft_ann_bench_cpu_tag"
+        raft_ann_bench_cpu_source_tags+=("${org}/${RAFT_ANN_BENCH_CPU_IMAGE_REPO}:$full_raft_ann_bench_cpu_tag")
+    fi
 done
 
 # Create and push Docker multi-arch manifests
@@ -78,5 +80,7 @@ docker manifest push "${org}/${RAFT_ANN_BENCH_IMAGE_REPO}:${raft_ann_bench_tag}"
 docker manifest create "${org}/${RAFT_ANN_BENCH_DATASETS_IMAGE_REPO}:${raft_ann_bench_datasets_tag}" "${raft_ann_bench_datasets_source_tags[@]}"
 docker manifest push "${org}/${RAFT_ANN_BENCH_DATASETS_IMAGE_REPO}:${raft_ann_bench_datasets_tag}"
 
-docker manifest create "${org}/${RAFT_ANN_BENCH_CPU_IMAGE_REPO}:${raft_ann_bench_cpu_tag}" "${raft_ann_bench_cpu_source_tags[@]}"
-docker manifest push "${org}/${RAFT_ANN_BENCH_CPU_IMAGE_REPO}:${raft_ann_bench_cpu_tag}"
+if [ "$RAFT_ANN_BENCH_CPU_IMAGE_BUILT" = "true" ]; then
+    docker manifest create "${org}/${RAFT_ANN_BENCH_CPU_IMAGE_REPO}:${raft_ann_bench_cpu_tag}" "${raft_ann_bench_cpu_source_tags[@]}"
+    docker manifest push "${org}/${RAFT_ANN_BENCH_CPU_IMAGE_REPO}:${raft_ann_bench_cpu_tag}"
+fi
