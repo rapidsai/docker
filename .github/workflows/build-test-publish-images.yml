@@ -31,6 +31,13 @@ permissions:
   statuses: none
 
 jobs:
+  pr-builder:
+    needs:
+      - compute-matrix
+      - build
+      - test
+    secrets: inherit
+    uses: rapidsai/shared-workflows/.github/workflows/pr-builder.yaml@branch-24.10
   compute-matrix:
     runs-on: ubuntu-latest
     container:
@@ -208,7 +215,7 @@ jobs:
           ARCHES: ${{ toJSON(matrix.ARCHES) }}
         run: ci/create-multiarch-manifest.sh
   test:
-    needs: [compute-matrix, build, build-multiarch-manifest]
+    needs: [compute-matrix, build]
     if: inputs.run_tests
     strategy:
       matrix: ${{ fromJSON(needs.compute-matrix.outputs.TEST_MATRIX) }}
@@ -231,7 +238,7 @@ jobs:
         py${{ matrix.PYTHON_VER }}"
   delete-temp-images:
     if: ${{ !cancelled() && needs.test.result == 'success' }}
-    needs: [compute-matrix, build-multiarch-manifest, test]
+    needs: [compute-matrix, build, test]
     strategy:
       matrix: ${{ fromJSON(needs.compute-matrix.outputs.MATRIX) }}
       fail-fast: false
