@@ -38,6 +38,7 @@ jobs:
       - compute-matrix
       - build
       - test
+      - delete-temp-images
     secrets: inherit
     uses: rapidsai/shared-workflows/.github/workflows/pr-builder.yaml@branch-24.10
   checks:
@@ -249,7 +250,8 @@ jobs:
         ${{ needs.compute-matrix.outputs.RAPIDS_VER }}\
         ${{ needs.compute-matrix.outputs.ALPHA_TAG }}-\
         cuda${{ matrix.CUDA_VER }}-\
-        py${{ matrix.PYTHON_VER }}"
+        py${{ matrix.PYTHON_VER }}"-\
+        ${{ matrix.ARCH }}
   delete-temp-images:
     if: ${{ !cancelled() && needs.test.result == 'success' }}
     needs: [compute-matrix, build, test]
