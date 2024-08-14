@@ -250,8 +250,8 @@ jobs:
         ${{ needs.compute-matrix.outputs.RAPIDS_VER }}\
         ${{ needs.compute-matrix.outputs.ALPHA_TAG }}-\
         cuda${{ matrix.CUDA_VER }}-\
-        py${{ matrix.PYTHON_VER }}"-\
-        ${{ matrix.ARCH }}
+        py${{ matrix.PYTHON_VER }}-\
+        ${{ matrix.ARCH }}"
   delete-temp-images:
     if: ${{ !cancelled() && needs.test.result == 'success' }}
     needs: [compute-matrix, build, test]
