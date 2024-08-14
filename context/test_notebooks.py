@@ -30,7 +30,9 @@ ignored_notebooks = [
     'cuspatial/cuproj_benchmark.ipynb',
     # context on these being skipped: https://github.com/rapidsai/cuspatial/pull/1407
     'cuspatial/cuspatial_api_examples.ipynb',
-    'cuspatial/nyc_taxi_years_correlation.ipynb'
+    'cuspatial/nyc_taxi_years_correlation.ipynb',
+    # context on skip zipcodes: https://github.com/rapidsai/cuspatial/issues/1426
+    'cuspatial/ZipCodes_Stops_PiP_cuSpatial.ipynb',
 ]
 
 
