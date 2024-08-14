@@ -32,12 +32,26 @@ permissions:
 
 jobs:
   pr-builder:
+    if: ${{ !cancelled() && inputs.build_type == 'pull-request' }}
     needs:
+      - checks
       - compute-matrix
       - build
       - test
     secrets: inherit
     uses: rapidsai/shared-workflows/.github/workflows/pr-builder.yaml@branch-24.10
+  checks:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.10"
+      - name: Run pre-commit
+        run: |
+          pip install pre-commit
+          pre-commit run --all-files
   compute-matrix:
     runs-on: ubuntu-latest
     container:
@@ -126,7 +140,7 @@ jobs:
 
           echo "TEST_MATRIX=$(yq -n -o json 'env(TEST_MATRIX)' | jq -c '{include: .}')" | tee --append "${GITHUB_OUTPUT}"
   build:
-    needs: compute-matrix
+    needs: [checks, compute-matrix]
     strategy:
       matrix: ${{ fromJSON(needs.compute-matrix.outputs.MATRIX) }}
       fail-fast: false
