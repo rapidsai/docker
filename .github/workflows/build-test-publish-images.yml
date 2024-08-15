@@ -37,6 +37,7 @@ jobs:
       - checks
       - compute-matrix
       - build
+      - build-multiarch-manifest
       - test
       - delete-temp-images
     secrets: inherit
@@ -46,9 +47,6 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
-        with:
-          python-version: "3.10"
       - name: Run pre-commit
         run: |
           pip install pre-commit
@@ -191,7 +189,6 @@ jobs:
         ${{ needs.compute-matrix.outputs.ALPHA_TAG }}-\
         py${{ matrix.PYTHON_VER }}"
   build-multiarch-manifest:
-    if: ${{ !cancelled() && inputs.build_type == 'branch' }}
     needs: [build, compute-matrix]
     strategy:
       matrix: ${{ fromJSON(needs.compute-matrix.outputs.MATRIX) }}
@@ -253,8 +250,8 @@ jobs:
         py${{ matrix.PYTHON_VER }}-\
         ${{ matrix.ARCH }}"
   delete-temp-images:
-    if: ${{ !cancelled() && needs.test.result == 'success' }}
-    needs: [compute-matrix, build, test]
+    if: ${{ !cancelled() && (needs.test.result == 'success' || needs.test.result == 'skipped') }}
+    needs: [compute-matrix, build, build-multiarch-manifest, test]
     strategy:
       matrix: ${{ fromJSON(needs.compute-matrix.outputs.MATRIX) }}
       fail-fast: false
