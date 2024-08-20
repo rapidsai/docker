@@ -31,6 +31,26 @@ permissions:
   statuses: none
 
 jobs:
+  pr-builder:
+    if: ${{ !cancelled() && inputs.build_type == 'pull-request' }}
+    needs:
+      - checks
+      - compute-matrix
+      - build
+      - build-multiarch-manifest
+      - test
+      - delete-temp-images
+    secrets: inherit
+    uses: rapidsai/shared-workflows/.github/workflows/pr-builder.yaml@branch-24.10
+  checks:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Run pre-commit
+        run: |
+          pip install pre-commit
+          pre-commit run --all-files
   compute-matrix:
     runs-on: ubuntu-latest
     container:
@@ -119,7 +139,7 @@ jobs:
 
           echo "TEST_MATRIX=$(yq -n -o json 'env(TEST_MATRIX)' | jq -c '{include: .}')" | tee --append "${GITHUB_OUTPUT}"
   build:
-    needs: compute-matrix
+    needs: [checks, compute-matrix]
     strategy:
       matrix: ${{ fromJSON(needs.compute-matrix.outputs.MATRIX) }}
       fail-fast: false
@@ -169,7 +189,6 @@ jobs:
         ${{ needs.compute-matrix.outputs.ALPHA_TAG }}-\
         py${{ matrix.PYTHON_VER }}"
   build-multiarch-manifest:
-    if: ${{ !cancelled() && inputs.build_type == 'branch' }}
     needs: [build, compute-matrix]
     strategy:
       matrix: ${{ fromJSON(needs.compute-matrix.outputs.MATRIX) }}
@@ -208,7 +227,7 @@ jobs:
           ARCHES: ${{ toJSON(matrix.ARCHES) }}
         run: ci/create-multiarch-manifest.sh
   test:
-    needs: [compute-matrix, build, build-multiarch-manifest]
+    needs: [compute-matrix, build]
     if: inputs.run_tests
     strategy:
       matrix: ${{ fromJSON(needs.compute-matrix.outputs.TEST_MATRIX) }}
@@ -228,10 +247,11 @@ jobs:
         ${{ needs.compute-matrix.outputs.RAPIDS_VER }}\
         ${{ needs.compute-matrix.outputs.ALPHA_TAG }}-\
         cuda${{ matrix.CUDA_VER }}-\
-        py${{ matrix.PYTHON_VER }}"
+        py${{ matrix.PYTHON_VER }}-\
+        ${{ matrix.ARCH }}"
   delete-temp-images:
-    if: ${{ !cancelled() && needs.test.result == 'success' }}
-    needs: [compute-matrix, build-multiarch-manifest, test]
+    if: ${{ !cancelled() && (needs.test.result == 'success' || needs.test.result == 'skipped') }}
+    needs: [compute-matrix, build, build-multiarch-manifest, test]
     strategy:
       matrix: ${{ fromJSON(needs.compute-matrix.outputs.MATRIX) }}
       fail-fast: false
