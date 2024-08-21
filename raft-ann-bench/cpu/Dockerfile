@@ -23,7 +23,7 @@ EOF
 # we need perl temporarily for the remaining benchmark perl scripts
 RUN apt-get install perl -y
 
-# Install python before updating environment, otherwise Python 3.9 image
+# Install python before updating environment, otherwise Python 3 image
 # runs into a solver conflict with truststore 0.8.0. This avoids the environment installing
 # packages incompatible with python version needed before python itself is pinned to the correct version.
 RUN <<EOF
