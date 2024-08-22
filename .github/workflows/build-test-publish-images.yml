@@ -39,7 +39,6 @@ jobs:
       - build
       - build-multiarch-manifest
       - test
-      - delete-temp-images
     secrets: inherit
     uses: rapidsai/shared-workflows/.github/workflows/pr-builder.yaml@branch-24.10
   checks:
@@ -249,37 +248,3 @@ jobs:
         cuda${{ matrix.CUDA_VER }}-\
         py${{ matrix.PYTHON_VER }}-\
         ${{ matrix.ARCH }}"
-  delete-temp-images:
-    if: ${{ !cancelled() && (needs.test.result == 'success' || needs.test.result == 'skipped') }}
-    needs: [compute-matrix, build, build-multiarch-manifest, test]
-    strategy:
-      matrix: ${{ fromJSON(needs.compute-matrix.outputs.MATRIX) }}
-      fail-fast: false
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-        with:
-          fetch-depth: 0
-      - name: Remove temporary images
-        shell: bash
-        env:
-          RAFT_ANN_BENCH_CPU_IMAGE_BUILT: ${{ matrix.BUILD_RAFT_ANN_BENCH_CPU_IMAGE }}
-          BASE_IMAGE_REPO: ${{ needs.compute-matrix.outputs.BASE_IMAGE_REPO }}
-          BASE_TAG_PREFIX: ${{ needs.compute-matrix.outputs.BASE_TAG_PREFIX }}
-          RAPIDS_VER: ${{ needs.compute-matrix.outputs.RAPIDS_VER }}
-          ALPHA_TAG: ${{ needs.compute-matrix.outputs.ALPHA_TAG }}
-          CUDA_TAG: ${{ matrix.CUDA_TAG }}
-          PYTHON_VER: ${{ matrix.PYTHON_VER }}
-          NOTEBOOKS_IMAGE_REPO: ${{ needs.compute-matrix.outputs.NOTEBOOKS_IMAGE_REPO }}
-          NOTEBOOKS_TAG_PREFIX: ${{ needs.compute-matrix.outputs.NOTEBOOKS_TAG_PREFIX }}
-          RAFT_ANN_BENCH_IMAGE_REPO: ${{ needs.compute-matrix.outputs.RAFT_ANN_BENCH_IMAGE_REPO }}
-          RAFT_ANN_BENCH_TAG_PREFIX: ${{ needs.compute-matrix.outputs.RAFT_ANN_BENCH_TAG_PREFIX }}
-          RAFT_ANN_BENCH_DATASETS_IMAGE_REPO: ${{ needs.compute-matrix.outputs.RAFT_ANN_BENCH_DATASETS_IMAGE_REPO }}
-          RAFT_ANN_BENCH_DATASETS_TAG_PREFIX: ${{ needs.compute-matrix.outputs.RAFT_ANN_BENCH_DATASETS_TAG_PREFIX }}
-          RAFT_ANN_BENCH_CPU_IMAGE_REPO: ${{ needs.compute-matrix.outputs.RAFT_ANN_BENCH_CPU_IMAGE_REPO }}
-          RAFT_ANN_BENCH_CPU_TAG_PREFIX: ${{ needs.compute-matrix.outputs.RAFT_ANN_BENCH_CPU_TAG_PREFIX }}
-          GPUCIBOT_DOCKERHUB_USER: ${{ secrets.GPUCIBOT_DOCKERHUB_USER }}
-          GPUCIBOT_DOCKERHUB_TOKEN: ${{ secrets.GPUCIBOT_DOCKERHUB_TOKEN }}
-          ARCHES: ${{ toJSON(matrix.ARCHES) }}
-        run: ci/delete-temp-images.sh
