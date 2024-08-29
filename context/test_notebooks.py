@@ -5,9 +5,7 @@ import os
 import sys
 import timeit
 from typing import Iterable
-import nbconvert
 import nbformat
-from datetime import datetime
 from nbconvert.preprocessors import ExecutePreprocessor
 import yaml
 
@@ -29,12 +27,17 @@ ignored_notebooks = [
     # following nbs are marked as skipped
     'cugraph/algorithms/layout/Force-Atlas2.ipynb',
     'cuspatial/binary_predicates.ipynb',
-    'cuspatial/cuproj_benchmark.ipynb'
+    'cuspatial/cuproj_benchmark.ipynb',
+    # context on these being skipped: https://github.com/rapidsai/cuspatial/pull/1407
+    'cuspatial/cuspatial_api_examples.ipynb',
+    'cuspatial/nyc_taxi_years_correlation.ipynb',
+    # context on skip zipcodes: https://github.com/rapidsai/cuspatial/issues/1426
+    'cuspatial/ZipCodes_Stops_PiP_cuSpatial.ipynb',
 ]
 
 
 def get_notebooks(directory: str) -> Iterable[str]:
-    for root, dirs, files in os.walk(directory):
+    for root, _, files in os.walk(directory):
         for file in files:
             if (
                 file.endswith(".ipynb")
@@ -69,14 +72,15 @@ def test_notebook(notebook_file, executed_nb_file):
         warnings = []
         outputs = []
 
+
         # use nbconvert to run the notebook natively
         ep = ExecutePreprocessor(timeout=600, kernel_name="python3", allow_errors=True)
+        task_init = timeit.default_timer()
         try:
-            task_init = timeit.default_timer()
-            nb, nb_resources = ep.preprocess(nb, {"metadata": {"path": ""}})
-            execution_time = timeit.default_timer() - task_init
+            nb, _ = ep.preprocess(nb, {"metadata": {"path": ""}})
         except Exception as e:
             errors.append(e)
+        execution_time = timeit.default_timer() - task_init
 
         with open(executed_nb_file, "w", encoding="utf-8") as f:
             nbformat.write(nb, f)
@@ -152,7 +156,7 @@ if __name__ == "__main__":
         print(f"Input must be a directory. Got: {ns.input}")
         sys.exit(1)
 
-    notebooks = sorted(list(get_notebooks(ns.input)))
+    notebooks = sorted(get_notebooks(ns.input))
     print(f"{len(notebooks)} Notebooks to be tested:")
     for notebook in notebooks:
         print(notebook)

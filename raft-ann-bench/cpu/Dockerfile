@@ -1,9 +1,9 @@
 # syntax=docker/dockerfile:1
 
 ARG PYTHON_VER=3.11
-ARG RAPIDS_VER=24.08
+ARG RAPIDS_VER=24.10
 
-FROM condaforge/mambaforge:23.3.1-0 as raft-ann-bench-cpu
+FROM condaforge/mambaforge:23.3.1-0 AS raft-ann-bench-cpu
 ARG RAPIDS_VER
 ARG PYTHON_VER
 
@@ -23,7 +23,7 @@ EOF
 # we need perl temporarily for the remaining benchmark perl scripts
 RUN apt-get install perl -y
 
-# Install python before updating environment, otherwise Python 3.9 image
+# Install python before updating environment, otherwise Python 3 image
 # runs into a solver conflict with truststore 0.8.0. This avoids the environment installing
 # packages incompatible with python version needed before python itself is pinned to the correct version.
 RUN <<EOF
@@ -47,7 +47,7 @@ CMD ["--dataset fashion-mnist-784-euclidean", "", "--algorithms hnswlib"]
 ENTRYPOINT ["/bin/bash", "/data/scripts/run_benchmark.sh"]
 
 
-FROM bench-base as raft-ann-bench-cpu-datasets
+FROM bench-base AS raft-ann-bench-cpu-datasets
 
 SHELL ["/bin/bash", "-euo", "pipefail", "-c"]
 
@@ -60,4 +60,3 @@ RUN /home/rapids/raftannbench/get_datasets.sh
 CMD ["--dataset fashion-mnist-784-euclidean", "", "--algorithms hnswlib"]
 
 ENTRYPOINT ["/bin/bash", "/data/scripts/run_benchmark_preloaded_datasets.sh"]
-
