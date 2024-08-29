@@ -57,9 +57,6 @@ RUN <<EOF
 conda info
 conda config --show-sources
 conda list --show-channel-urls
-EOF
-
-RUN <<EOF
 mamba install -y -n base \
     "rapids=${RAPIDS_VER}.*" \
     "dask-sql=${DASK_SQL_VER%.*}.*" \
