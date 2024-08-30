@@ -51,6 +51,12 @@ WORKDIR /home/rapids
 COPY condarc /opt/conda/.condarc
 
 RUN <<EOF
+# Include common diagnostic info
+conda info
+conda config --show-sources
+conda list --show-channel-urls
+
+# Install RAPIDS
 mamba install -y -n base \
     "rapids=${RAPIDS_VER}.*" \
     "python=${PYTHON_VER}.*" \
