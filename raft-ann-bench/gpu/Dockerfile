@@ -26,8 +26,6 @@ EOF
 # we need perl temporarily for the remaining benchmark perl scripts
 RUN apt-get install perl -y
 
-# temporarily downgrade conda from 23.9.0 due to https://github.com/mamba-org/mamba/issues/2882
-# after the mamba update step
 RUN <<EOF
 mamba update --all -y -n base
 mamba install -y -n base \
