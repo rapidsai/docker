@@ -23,10 +23,11 @@ EOF
 # we need perl temporarily for the remaining benchmark perl scripts
 RUN apt-get install perl -y
 
-# Install python before updating environment, otherwise Python 3 image
-# runs into a solver conflict with truststore 0.8.0. This avoids the environment installing
-# packages incompatible with python version needed before python itself is pinned to the correct version.
+# update everything before other environment changes, to ensure mixing
+# an older conda with newer packages still works well
+# ref: https://github.com/rapidsai/ci-imgs/issues/185
 RUN <<EOF
+mamba update --all -y -n base
 mamba install -y -n base "python=${PYTHON_VER}"
 mamba update --all -y -n base
 mamba install -y -n base \
