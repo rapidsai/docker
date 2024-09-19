@@ -4,7 +4,7 @@ ARG CUDA_VER=unset
 ARG PYTHON_VER=unset
 ARG LINUX_VER=unset
 
-ARG RAPIDS_VER=unset
+ARG RAPIDS_VER=24.12
 
 FROM rapidsai/miniforge-cuda:cuda${CUDA_VER}-base-${LINUX_VER}-py${PYTHON_VER} AS raft-ann-bench
 ARG CUDA_VER

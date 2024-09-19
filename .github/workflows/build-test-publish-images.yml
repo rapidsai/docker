@@ -40,7 +40,7 @@ jobs:
       - build-multiarch-manifest
       - test
     secrets: inherit
-    uses: rapidsai/shared-workflows/.github/workflows/pr-builder.yaml@branch-24.10
+    uses: rapidsai/shared-workflows/.github/workflows/pr-builder.yaml@branch-24.12
   checks:
     runs-on: ubuntu-latest
     steps:

@@ -1,7 +1,7 @@
 # syntax=docker/dockerfile:1
 
 ARG PYTHON_VER=unset
-ARG RAPIDS_VER=unset
+ARG RAPIDS_VER=24.12
 
 FROM condaforge/mambaforge:23.3.1-0 AS raft-ann-bench-cpu
 ARG RAPIDS_VER
