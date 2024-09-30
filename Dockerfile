@@ -57,7 +57,7 @@ conda config --show-sources
 conda list --show-channel-urls
 
 # Install RAPIDS
-mamba install -y -n base \
+conda install -y -n base \
     "rapids=${RAPIDS_VER}.*" \
     "python=${PYTHON_VER}.*" \
     "cuda-version=${CUDA_VER%.*}.*" \
@@ -90,12 +90,12 @@ COPY --from=dependencies --chown=rapids /test_notebooks_dependencies.yaml test_n
 COPY --from=dependencies --chown=rapids /notebooks /home/rapids/notebooks
 
 RUN <<EOF
-mamba env update -n base -f test_notebooks_dependencies.yaml
+conda env update -n base -f test_notebooks_dependencies.yaml
 conda clean -afy
 EOF
 
 RUN <<EOF
-mamba install -y -n base \
+conda install -y -n base \
     "jupyterlab=4" \
     dask-labextension \
     jupyterlab-nvdashboard
