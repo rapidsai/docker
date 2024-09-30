@@ -56,6 +56,13 @@ conda info
 conda config --show-sources
 conda list --show-channel-urls
 
+# force newer fmt/spdlog into the environment... it's a direct dependency of mamba,
+# and therefore updating it in the base environment needs to be explicitly requested
+# TODO: remove this in 24.12
+conda install -y -n base \
+    "fmt>=11.0.2,<12" \
+    "spdlog>=1.14.1,<1.15"
+
 # Install RAPIDS
 conda install -y -n base \
     "rapids=${RAPIDS_VER}.*" \
