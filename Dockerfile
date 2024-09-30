@@ -56,6 +56,8 @@ conda info
 conda config --show-sources
 conda list --show-channel-urls
 
+conda update --all --yes
+
 # force newer fmt/spdlog into the environment... it's a direct dependency of mamba,
 # and therefore updating it in the base environment needs to be explicitly requested
 # TODO: remove this in 24.12
