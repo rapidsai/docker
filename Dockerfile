@@ -58,18 +58,13 @@ conda list --show-channel-urls
 
 conda update --all --yes
 
-# force newer fmt/spdlog into the environment... it's a direct dependency of mamba,
-# and therefore updating it in the base environment needs to be explicitly requested
-# TODO: remove this in 24.12
-conda install -y -n base \
-    "fmt>=11.0.2,<12" \
-    "spdlog>=1.14.1,<1.15"
-
 # Install RAPIDS
+# TODO: remove the libraft-headers pin before merging (just adding that to test)
 conda install -y -n base \
     "rapids=${RAPIDS_VER}.*" \
     "python=${PYTHON_VER}.*" \
     "cuda-version=${CUDA_VER%.*}.*" \
+    "libraft-headers-only>=24.10.00a48" \
     ipython
 conda clean -afy
 EOF
