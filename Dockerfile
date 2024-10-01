@@ -103,7 +103,7 @@ conda clean -afy
 EOF
 
 # Disable the JupyterLab announcements
-RUN /opt/conda/bin/jupyter labextension disable "@jupyterlab/apputils-extension:announcements"
+RUN /opt/conda/envs/rapids/bin/jupyter labextension disable "@jupyterlab/apputils-extension:announcements"
 
 ENV DASK_LABEXTENSION__FACTORY__MODULE="dask_cuda"
 ENV DASK_LABEXTENSION__FACTORY__CLASS="LocalCUDACluster"
@@ -140,7 +140,7 @@ LABEL com.nvidia.workbench.package-manager.apt.binary="/usr/bin/apt"
 LABEL com.nvidia.workbench.package-manager.apt.installed-packages=""
 LABEL com.nvidia.workbench.package-manager.conda3.binary="/opt/conda/bin/conda"
 LABEL com.nvidia.workbench.package-manager.conda3.installed-packages="rapids cudf cuml cugraph rmm pylibraft cuspatial cuxfilter cucim xgboost jupyterlab"
-LABEL com.nvidia.workbench.package-manager.pip.binary="/opt/conda/bin/pip"
+LABEL com.nvidia.workbench.package-manager.pip.binary="/opt/conda/envs/rapids/bin/pip"
 LABEL com.nvidia.workbench.package-manager.pip.installed-packages="jupyterlab-nvdashboard"
 LABEL com.nvidia.workbench.programming-languages="python3"
 LABEL com.nvidia.workbench.schema-version="v2"

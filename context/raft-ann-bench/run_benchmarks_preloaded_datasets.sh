@@ -14,7 +14,7 @@ function hasArg {
     (( ${NUMARGS} != 0 )) && (echo " ${ARGS} " | grep -q " $1 ")
 }
 
-export CONDA_PREFIX=/opt/conda
+export CONDA_PREFIX=/opt/conda/envs/rapids
 export DATASET_ARG=$1
 export GET_DATASET_ARGS=$2
 export RUN_ARGS=$3

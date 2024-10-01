@@ -3,7 +3,7 @@
 
 set -eo pipefail
 
-export CONDA_PREFIX=/opt/conda
+export CONDA_PREFIX=/opt/conda/envs/rapids
 
 python -m raft_ann_bench.get_dataset --dataset deep-image-96-angular --normalize --dataset-path /home/rapids/preloaded_datasets
 python -m raft_ann_bench.get_dataset --dataset fashion-mnist-784-euclidean --dataset-path /home/rapids/preloaded_datasets
