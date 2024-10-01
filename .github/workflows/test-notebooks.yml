@@ -67,12 +67,11 @@ jobs:
     steps:
       - name: Install required tools
         run: |
-          mamba install -n rapids --freeze-installed \
+          mamba install -n base --freeze-installed \
             curl \
             git
       - name: Install gha-tools
         run: |
-          . /opt/conda/etc/profile.d/conda.sh; conda activate rapids
           mkdir -p "$GHA_TOOLS_DIR"
           curl -s -L 'https://github.com/rapidsai/gha-tools/releases/latest/download/tools.tar.gz' | tar -xz -C "$GHA_TOOLS_DIR"
       - name: Checkout code
@@ -96,7 +95,7 @@ jobs:
         if: '!cancelled()'
         run: |
           PATH="$PATH:$GHA_TOOLS_DIR"
-          rapids-mamba-retry install -n rapids awscli
+          rapids-mamba-retry install -n base awscli
       - uses: aws-actions/configure-aws-credentials@v4
         if: '!cancelled()'
         with:
