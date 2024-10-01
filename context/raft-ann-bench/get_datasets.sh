@@ -3,6 +3,8 @@
 
 set -eo pipefail
 
+. /opt/conda/etc/profile.d/conda.sh; conda activate rapids
+
 export CONDA_PREFIX=/opt/conda/envs/rapids
 
 python -m raft_ann_bench.get_dataset --dataset deep-image-96-angular --normalize --dataset-path /home/rapids/preloaded_datasets
