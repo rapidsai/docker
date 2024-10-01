@@ -56,15 +56,11 @@ conda info
 conda config --show-sources
 conda list --show-channel-urls
 
-conda update --all --yes
-
 # Install RAPIDS
-# TODO: remove the libraft-headers pin before merging (just adding that to test)
-conda install -y -n base \
+mamba install -y -n base \
     "rapids=${RAPIDS_VER}.*" \
     "python=${PYTHON_VER}.*" \
     "cuda-version=${CUDA_VER%.*}.*" \
-    "libraft-headers-only>=24.10.00a48" \
     ipython
 conda clean -afy
 EOF
@@ -94,12 +90,12 @@ COPY --from=dependencies --chown=rapids /test_notebooks_dependencies.yaml test_n
 COPY --from=dependencies --chown=rapids /notebooks /home/rapids/notebooks
 
 RUN <<EOF
-conda env update -n base -f test_notebooks_dependencies.yaml
+mamba env update -n base -f test_notebooks_dependencies.yaml
 conda clean -afy
 EOF
 
 RUN <<EOF
-conda install -y -n base \
+mamba install -y -n base \
     "jupyterlab=4" \
     dask-labextension \
     jupyterlab-nvdashboard

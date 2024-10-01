@@ -3,9 +3,5 @@ channels:
   - rapidsai-nightly
   - dask/label/dev
   - pytorch
-  # installing RAPIDS libraries in the base environment
-  # requires libmamba>=2, because as of 24.10 those libraries require fmt>=11
-  # ref for this label: https://medium.com/@QuantStack/introducing-mamba-2-0-0e8d5c6d1d0c
-  - conda-forge/label/mamba_dev
   - conda-forge
   - nvidia
