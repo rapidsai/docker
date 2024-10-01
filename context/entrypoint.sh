@@ -10,18 +10,20 @@ EOF
 
 if [ -e "/home/rapids/environment.yml" ]; then
     echo "environment.yml found. Installing packages."
-    timeout ${CONDA_TIMEOUT:-600} mamba env update -n base -f /home/rapids/environment.yml || exit $?
+    timeout ${CONDA_TIMEOUT:-600} mamba env update -n rapids -f /home/rapids/environment.yml || exit $?
 fi
 
 if [ "$EXTRA_CONDA_PACKAGES" ]; then
     echo "EXTRA_CONDA_PACKAGES environment variable found. Installing packages."
-    timeout ${CONDA_TIMEOUT:-600} mamba install -n base -y $EXTRA_CONDA_PACKAGES || exit $?
+    timeout ${CONDA_TIMEOUT:-600} mamba install -n rapids -y $EXTRA_CONDA_PACKAGES || exit $?
 fi
 
 if [ "$EXTRA_PIP_PACKAGES" ]; then
     echo "EXTRA_PIP_PACKAGES environment variable found. Installing packages.".
     timeout ${PIP_TIMEOUT:-600} pip install $EXTRA_PIP_PACKAGES || exit $?
 fi
+
+. /opt/conda/etc/profile.d/conda.sh; conda activate rapids
 
 # Run whatever the user wants.
 if [ "${UNQUOTE}" = "true" ]; then

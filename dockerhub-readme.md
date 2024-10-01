@@ -115,7 +115,7 @@ The `rapidsai/notebooks` container has notebooks for the RAPIDS libraries in `/h
 
 ### Extending RAPIDS Images
 
-All RAPIDS images use `conda` as their package manager, and all RAPIDS packages are available in the `base` conda environment. These image run as the `rapids` user.
+All RAPIDS images use `conda` as their package manager, and all RAPIDS packages are available in the `rapids` conda environment. These image run as the `rapids` user.
 
 ### Access Documentation within Notebooks
 

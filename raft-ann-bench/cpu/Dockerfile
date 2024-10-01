@@ -17,7 +17,7 @@ SHELL ["/bin/bash", "-euo", "pipefail", "-c"]
 RUN <<EOF
 mkdir /data
 chmod 777 /data
-echo ". /opt/conda/etc/profile.d/conda.sh; conda activate base" >> /etc/bash.bashrc
+echo ". /opt/conda/etc/profile.d/conda.sh; conda activate rapids" >> /etc/bash.bashrc
 EOF
 
 # we need perl temporarily for the remaining benchmark perl scripts
@@ -27,10 +27,7 @@ RUN apt-get install perl -y
 # an older conda with newer packages still works well
 # ref: https://github.com/rapidsai/ci-imgs/issues/185
 RUN <<EOF
-mamba update --all -y -n base
-mamba install -y -n base "python=${PYTHON_VER}"
-mamba update --all -y -n base
-mamba install -y -n base \
+mamba env create -y -n rapids \
   "raft-ann-bench-cpu=${RAPIDS_VER}.*" \
   "python=${PYTHON_VER}"
 conda clean -afy

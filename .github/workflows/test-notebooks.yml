@@ -67,7 +67,7 @@ jobs:
     steps:
       - name: Install required tools
         run: |
-          mamba install -n base --freeze-installed \
+          mamba install -n rapids --freeze-installed \
             curl \
             git
       - name: Install gha-tools
@@ -88,12 +88,14 @@ jobs:
           rapids-logger "nvidia-smi"
           nvidia-smi
       - name: Test notebooks
-        run: /home/rapids/test_notebooks.py -i /home/rapids/notebooks -o /home/rapids/notebooks_output
+        run: |
+          . /opt/conda/etc/profile.d/conda.sh; conda activate rapids
+          /home/rapids/test_notebooks.py -i /home/rapids/notebooks -o /home/rapids/notebooks_output
       - name: Install awscli
         if: '!cancelled()'
         run: |
           PATH="$PATH:$GHA_TOOLS_DIR"
-          rapids-mamba-retry install -n base awscli
+          rapids-mamba-retry install -n rapids awscli
       - uses: aws-actions/configure-aws-credentials@v4
         if: '!cancelled()'
         with:

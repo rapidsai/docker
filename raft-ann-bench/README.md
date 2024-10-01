@@ -84,7 +84,7 @@ docker run --gpus all --rm -it \
 This will drop you into a command line in the container, with RAFT and the `raft_ann_benchmarks` python package ready to use:
 
 ```
-(base) root@00b068fbb862:/home/rapids#
+(rapids) root@00b068fbb862:/home/rapids#
 ```
 
 Additionally, the containers could be run in dettached form without any issue.
