@@ -27,7 +27,7 @@ RUN apt-get install perl -y
 # an older conda with newer packages still works well
 # ref: https://github.com/rapidsai/ci-imgs/issues/185
 RUN <<EOF
-mamba env create -y -n rapids \
+mamba create -y -n rapids \
   "raft-ann-bench-cpu=${RAPIDS_VER}.*" \
   "python=${PYTHON_VER}"
 conda clean -afy

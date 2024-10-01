@@ -27,7 +27,7 @@ EOF
 RUN apt-get install perl -y
 
 RUN <<EOF
-mamba env create -y -n rapids \
+mamba create -y -n rapids \
     "raft-ann-bench=${RAPIDS_VER}.*" \
     "cuda-version=${CUDA_VER%.*}.*"
 conda clean -afy
