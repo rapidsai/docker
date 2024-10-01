@@ -14,6 +14,8 @@ function hasArg {
     (( ${NUMARGS} != 0 )) && (echo " ${ARGS} " | grep -q " $1 ")
 }
 
+. /opt/conda/etc/profile.d/conda.sh; conda activate rapids
+
 export CONDA_PREFIX=/opt/conda/envs/rapids
 export DATASET_ARG=$1
 export GET_DATASET_ARGS=$2
