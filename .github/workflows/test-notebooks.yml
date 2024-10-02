@@ -89,7 +89,6 @@ jobs:
           nvidia-smi
       - name: Test notebooks
         run: |
-          . /opt/conda/etc/profile.d/conda.sh; conda activate rapids
           /home/rapids/test_notebooks.py -i /home/rapids/notebooks -o /home/rapids/notebooks_output
       - name: Install awscli
         if: '!cancelled()'
