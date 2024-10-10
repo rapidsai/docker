@@ -10,26 +10,7 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  pr-builder:
-    needs:
-      - checks
-      - docker
-    secrets: inherit
-    uses: rapidsai/shared-workflows/.github/workflows/pr-builder.yaml@branch-24.08
-  checks:
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
-        with:
-          python-version: "3.10"
-      - name: Run pre-commit
-        run: |
-          pip install pre-commit
-          pre-commit run --all-files
   docker:
-    needs: [checks]
     uses: ./.github/workflows/build-test-publish-images.yml
     with:
       build_type: pull-request

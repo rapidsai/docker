@@ -1,12 +1,12 @@
 # syntax=docker/dockerfile:1
 
-ARG CUDA_VER=12.0.1
-ARG PYTHON_VER=3.11
-ARG LINUX_VER=ubuntu22.04
+ARG CUDA_VER=unset
+ARG PYTHON_VER=unset
+ARG LINUX_VER=unset
 
-ARG RAPIDS_VER=24.08
+ARG RAPIDS_VER=unset
 
-FROM rapidsai/miniforge-cuda:cuda${CUDA_VER}-base-${LINUX_VER}-py${PYTHON_VER} as raft-ann-bench
+FROM rapidsai/miniforge-cuda:cuda${CUDA_VER}-base-${LINUX_VER}-py${PYTHON_VER} AS raft-ann-bench
 ARG CUDA_VER
 ARG RAPIDS_VER
 
@@ -26,8 +26,6 @@ EOF
 # we need perl temporarily for the remaining benchmark perl scripts
 RUN apt-get install perl -y
 
-# temporarily downgrade conda from 23.9.0 due to https://github.com/mamba-org/mamba/issues/2882
-# after the mamba update step
 RUN <<EOF
 mamba update --all -y -n base
 mamba install -y -n base \
@@ -50,7 +48,7 @@ CMD ["--dataset fashion-mnist-784-euclidean", "", "--algorithms raft_cagra", ""]
 ENTRYPOINT ["/bin/bash", "/data/scripts/run_benchmark.sh"]
 
 
-FROM raft-ann-bench as raft-ann-bench-datasets
+FROM raft-ann-bench AS raft-ann-bench-datasets
 
 SHELL ["/bin/bash", "-euo", "pipefail", "-c"]
 
