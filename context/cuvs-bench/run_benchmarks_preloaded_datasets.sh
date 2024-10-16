@@ -40,7 +40,7 @@ fi
 python -m cuvs_bench.run  ${DATASET_ARG} --dataset-path $DATASET_PATH ${RUN_ARGS}
 
 # (3) export data
-python -m cuvs_bench.data_export  ${DATASET_ARG} --dataset-path $DATASET_PATH
+python -m cuvs_bench.run  ${DATASET_ARG} --dataset-path $DATASET_PATH --data-export
 
 # Extract the algorithms from the run command to use in the plot command
 ALGOS=$(grep -oP "algorithms\s+\K(\w+,?\w+)" <<< "$RUN_ARGS")
