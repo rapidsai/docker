@@ -16,16 +16,16 @@ org="rapidsai"
 # Initialize arrays to store source tags for each image
 base_source_tags=()
 notebooks_source_tags=()
-raft_ann_bench_source_tags=()
-raft_ann_bench_datasets_source_tags=()
-raft_ann_bench_cpu_source_tags=()
+cuvs_bench_source_tags=()
+cuvs_bench_datasets_source_tags=()
+cuvs_bench_cpu_source_tags=()
 
 # Define tag arrays for different images
 base_tag="${BASE_TAG_PREFIX}${RAPIDS_VER}${ALPHA_TAG}-cuda${CUDA_TAG}-py${PYTHON_VER}"
 notebooks_tag="${NOTEBOOKS_TAG_PREFIX}${RAPIDS_VER}${ALPHA_TAG}-cuda${CUDA_TAG}-py${PYTHON_VER}"
-raft_ann_bench_tag="${RAFT_ANN_BENCH_TAG_PREFIX}${RAPIDS_VER}${ALPHA_TAG}-cuda${CUDA_TAG}-py${PYTHON_VER}"
-raft_ann_bench_datasets_tag="${RAFT_ANN_BENCH_DATASETS_TAG_PREFIX}${RAPIDS_VER}${ALPHA_TAG}-cuda${CUDA_TAG}-py${PYTHON_VER}"
-raft_ann_bench_cpu_tag="${RAFT_ANN_BENCH_CPU_TAG_PREFIX}${RAPIDS_VER}${ALPHA_TAG}-py${PYTHON_VER}"
+cuvs_bench_tag="${CUVS_BENCH_TAG_PREFIX}${RAPIDS_VER}${ALPHA_TAG}-cuda${CUDA_TAG}-py${PYTHON_VER}"
+cuvs_bench_datasets_tag="${CUVS_BENCH_DATASETS_TAG_PREFIX}${RAPIDS_VER}${ALPHA_TAG}-cuda${CUDA_TAG}-py${PYTHON_VER}"
+cuvs_bench_cpu_tag="${CUVS_BENCH_CPU_TAG_PREFIX}${RAPIDS_VER}${ALPHA_TAG}-py${PYTHON_VER}"
 
 # Function to check if a Docker tag exists
 check_tag_exists() {
@@ -45,9 +45,9 @@ check_tag_exists() {
 for arch in $(echo "${ARCHES}" | jq .[] -r); do
     full_base_tag="${base_tag}-${arch}"
     full_notebooks_tag="${notebooks_tag}-${arch}"
-    full_raft_ann_bench_tag="${raft_ann_bench_tag}-${arch}"
-    full_raft_ann_bench_datasets_tag="${raft_ann_bench_datasets_tag}-${arch}"
-    full_raft_ann_bench_cpu_tag="${raft_ann_bench_cpu_tag}-${arch}"
+    full_cuvs_bench_tag="${cuvs_bench_tag}-${arch}"
+    full_cuvs_bench_datasets_tag="${cuvs_bench_datasets_tag}-${arch}"
+    full_cuvs_bench_cpu_tag="${cuvs_bench_cpu_tag}-${arch}"
 
     check_tag_exists "$BASE_IMAGE_REPO" "$full_base_tag"
     base_source_tags+=("${org}/${BASE_IMAGE_REPO}:$full_base_tag")
@@ -55,15 +55,15 @@ for arch in $(echo "${ARCHES}" | jq .[] -r); do
     check_tag_exists "$NOTEBOOKS_IMAGE_REPO" "$full_notebooks_tag"
     notebooks_source_tags+=("${org}/${NOTEBOOKS_IMAGE_REPO}:$full_notebooks_tag")
 
-    check_tag_exists "$RAFT_ANN_BENCH_IMAGE_REPO" "$full_raft_ann_bench_tag"
-    raft_ann_bench_source_tags+=("${org}/${RAFT_ANN_BENCH_IMAGE_REPO}:$full_raft_ann_bench_tag")
+    check_tag_exists "$CUVS_BENCH_IMAGE_REPO" "$full_cuvs_bench_tag"
+    cuvs_bench_source_tags+=("${org}/${CUVS_BENCH_IMAGE_REPO}:$full_cuvs_bench_tag")
 
-    check_tag_exists "$RAFT_ANN_BENCH_DATASETS_IMAGE_REPO" "$full_raft_ann_bench_datasets_tag"
-    raft_ann_bench_datasets_source_tags+=("${org}/${RAFT_ANN_BENCH_DATASETS_IMAGE_REPO}:$full_raft_ann_bench_datasets_tag")
+    check_tag_exists "$CUVS_BENCH_DATASETS_IMAGE_REPO" "$full_cuvs_bench_datasets_tag"
+    cuvs_bench_datasets_source_tags+=("${org}/${CUVS_BENCH_DATASETS_IMAGE_REPO}:$full_cuvs_bench_datasets_tag")
 
-    if [ "$RAFT_ANN_BENCH_CPU_IMAGE_BUILT" = "true" ]; then
-        check_tag_exists "$RAFT_ANN_BENCH_CPU_IMAGE_REPO" "$full_raft_ann_bench_cpu_tag"
-        raft_ann_bench_cpu_source_tags+=("${org}/${RAFT_ANN_BENCH_CPU_IMAGE_REPO}:$full_raft_ann_bench_cpu_tag")
+    if [ "$CUVS_BENCH_CPU_IMAGE_BUILT" = "true" ]; then
+        check_tag_exists "$CUVS_BENCH_CPU_IMAGE_REPO" "$full_cuvs_bench_cpu_tag"
+        cuvs_bench_cpu_source_tags+=("${org}/${CUVS_BENCH_CPU_IMAGE_REPO}:$full_cuvs_bench_cpu_tag")
     fi
 done
 
@@ -74,13 +74,13 @@ docker manifest push "${org}/${BASE_IMAGE_REPO}:${base_tag}"
 docker manifest create "${org}/${NOTEBOOKS_IMAGE_REPO}:${notebooks_tag}" "${notebooks_source_tags[@]}"
 docker manifest push "${org}/${NOTEBOOKS_IMAGE_REPO}:${notebooks_tag}"
 
-docker manifest create "${org}/${RAFT_ANN_BENCH_IMAGE_REPO}:${raft_ann_bench_tag}" "${raft_ann_bench_source_tags[@]}"
-docker manifest push "${org}/${RAFT_ANN_BENCH_IMAGE_REPO}:${raft_ann_bench_tag}"
+cuvsanifest create "${org}/${CUVS_BENCH_IMAGE_REPO}:${cuvs_bench_tag}" "${cuvs_bench_source_tags[@]}"
+docker manifest push "${org}/${CUVS_BENCH_IMAGE_REPO}:${cuvs_bench_tag}"
 
-docker manifest create "${org}/${RAFT_ANN_BENCH_DATASETS_IMAGE_REPO}:${raft_ann_bench_datasets_tag}" "${raft_ann_bench_datasets_source_tags[@]}"
-docker manifest push "${org}/${RAFT_ANN_BENCH_DATASETS_IMAGE_REPO}:${raft_ann_bench_datasets_tag}"
+cuvsanifest create "${org}/${CUVS_BENCH_DATASETS_IMAGE_REPO}:${cuvs_bench_datasets_tag}" "${cuvs_bench_datasets_source_tags[@]}"
+docker manifest push "${org}/${CUVS_BENCH_DATASETS_IMAGE_REPO}:${cuvs_bench_datasets_tag}"
 
-if [ "$RAFT_ANN_BENCH_CPU_IMAGE_BUILT" = "true" ]; then
-    docker manifest create "${org}/${RAFT_ANN_BENCH_CPU_IMAGE_REPO}:${raft_ann_bench_cpu_tag}" "${raft_ann_bench_cpu_source_tags[@]}"
-    docker manifest push "${org}/${RAFT_ANN_BENCH_CPU_IMAGE_REPO}:${raft_ann_bench_cpu_tag}"
+if [ "$CUVS_BENCH_CPU_IMAGE_BUILT" = "true" ]; then
+    docker manifest create "${org}/${CUVS_BENCH_CPU_IMAGE_REPO}:${cuvs_bench_cpu_tag}" "${cuvs_bench_cpu_source_tags[@]}"
+    docker manifest push "${org}/${CUVS_BENCH_CPU_IMAGE_REPO}:${cuvs_bench_cpu_tag}"
 fi

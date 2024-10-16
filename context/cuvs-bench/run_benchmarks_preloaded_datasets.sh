@@ -27,7 +27,7 @@ case $DATASET_ARG in
     export DATASET_PATH=/home/rapids/preloaded_datasets ;;
    *)
     export DATASET_PATH=/data/benchmarks/datasets
-    python -m raft_ann_bench.get_dataset ${DATASET_ARG} ${GET_DATASET_ARGS} --dataset-path $DATASET_PATH ;;
+    python -m cuvs_bench.get_dataset ${DATASET_ARG} ${GET_DATASET_ARGS} --dataset-path $DATASET_PATH ;;
 esac
 
 if [[ "$DATASET_ARG" == *"angular"* ]]; then
@@ -37,10 +37,10 @@ if [[ "$DATASET_ARG" == *"angular"* ]]; then
 fi
 
 # (2) build and search index
-python -m raft_ann_bench.run  ${DATASET_ARG} --dataset-path $DATASET_PATH ${RUN_ARGS}
+python -m cuvs_bench.run  ${DATASET_ARG} --dataset-path $DATASET_PATH ${RUN_ARGS}
 
 # (3) export data
-python -m raft_ann_bench.data_export  ${DATASET_ARG} --dataset-path $DATASET_PATH
+python -m cuvs_bench.data_export  ${DATASET_ARG} --dataset-path $DATASET_PATH
 
 # Extract the algorithms from the run command to use in the plot command
 ALGOS=$(grep -oP "algorithms\s+\K(\w+,?\w+)" <<< "$RUN_ARGS")
@@ -51,4 +51,4 @@ fi
 # (4) plot results
 mkdir -p $DATASET_PATH/result
 cd $DATASET_PATH/result
-python -m raft_ann_bench.plot  ${DATASET_ARG} ${ALGOS} ${PLOT_ARGS} --dataset-path $DATASET_PATH
+python -m cuvs_bench.plot  ${DATASET_ARG} ${ALGOS} ${PLOT_ARGS} --dataset-path $DATASET_PATH
