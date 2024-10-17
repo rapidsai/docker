@@ -74,10 +74,10 @@ docker manifest push "${org}/${BASE_IMAGE_REPO}:${base_tag}"
 docker manifest create "${org}/${NOTEBOOKS_IMAGE_REPO}:${notebooks_tag}" "${notebooks_source_tags[@]}"
 docker manifest push "${org}/${NOTEBOOKS_IMAGE_REPO}:${notebooks_tag}"
 
-cuvsanifest create "${org}/${CUVS_BENCH_IMAGE_REPO}:${cuvs_bench_tag}" "${cuvs_bench_source_tags[@]}"
+docker create "${org}/${CUVS_BENCH_IMAGE_REPO}:${cuvs_bench_tag}" "${cuvs_bench_source_tags[@]}"
 docker manifest push "${org}/${CUVS_BENCH_IMAGE_REPO}:${cuvs_bench_tag}"
 
-cuvsanifest create "${org}/${CUVS_BENCH_DATASETS_IMAGE_REPO}:${cuvs_bench_datasets_tag}" "${cuvs_bench_datasets_source_tags[@]}"
+docker create "${org}/${CUVS_BENCH_DATASETS_IMAGE_REPO}:${cuvs_bench_datasets_tag}" "${cuvs_bench_datasets_source_tags[@]}"
 docker manifest push "${org}/${CUVS_BENCH_DATASETS_IMAGE_REPO}:${cuvs_bench_datasets_tag}"
 
 if [ "$CUVS_BENCH_CPU_IMAGE_BUILT" = "true" ]; then
