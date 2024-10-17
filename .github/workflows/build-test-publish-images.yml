@@ -101,7 +101,7 @@ jobs:
         run: |
           base_repo="base"
           notebooks_repo="notebooks"
-          CUVS_bench_repo="cuvs-bench"
+          cuvs_bench_repo="cuvs-bench"
           CUVS_bench_datasets_repo="cuvs-bench-datasets"
           CUVS_bench_cpu_repo="cuvs-bench-cpu"
           if [ "${{ inputs.build_type }}" = "pull-request" ]; then

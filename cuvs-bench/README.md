@@ -1,8 +1,8 @@
-# cuvs ANN Benchmarks docker
+# cuVS Benchmarks Docker Images
 
-This folder contains the dockerfiles for generating GPU and CPU cuvs ANN benchmark images.
+This folder contains the Dockerfiles for generating GPU and CPU cuVS benchmark images.
 
-These images are meant to enable end users of cuvs's ANN algorithms to easily run and reproduce benchmarks and comparisons between cuvs and third party libraries.
+These images are meant to enable end users of cuVS ANN algorithms to easily run and reproduce benchmarks and comparisons between cuVS and third party libraries.
 
 # Image types:
 
@@ -13,7 +13,7 @@ There are two image types:
 
 # Running the Containers
 
-For complete details, refer to cuVS's documentation https://docs.rapids.ai/api/cuvs/nightly/cuvs_bench/#installing-the-benchmarks.
+For complete details, refer to the cuVS documentation: https://docs.rapids.ai/api/cuvs/nightly/cuvs_bench/#installing-the-benchmarks
 
 We provide images for GPU enabled systems, as well as systems without a GPU. The following images are available:
 
@@ -21,7 +21,7 @@ We provide images for GPU enabled systems, as well as systems without a GPU. The
 - `cuvs-bench-datasets`: Contains the GPU and CPU benchmarks with million-scale datasets already included in the container. Best suited for users that want to run multiple million scale datasets already included in the image.
 - `cuvs-bench-cpu`: Contains only CPU benchmarks with minimal size. Best suited for users that want the smallest containers to reproduce benchmarks on systems without a GPU.
 
-Nightly images are located in [dockerhub](https://hub.docker.com/r/rapidsai/cuvs-bench), meanwhile release (stable) versions are located in [NGC](https://hub.docker.com/r/rapidsai/cuvs-bench), starting with release 23.12.
+Nightly images are located in [DockerHub](https://hub.docker.com/r/rapidsai/cuvs-bench), meanwhile release (stable) versions are located in [NGC](https://hub.docker.com/r/rapidsai/cuvs-bench).
 
 ## Container Usage
 
