@@ -3,8 +3,6 @@
 
 set -eo pipefail
 
-export CONDA_PREFIX=/opt/conda
-
 python -m cuvs_bench.get_dataset --dataset deep-image-96-angular --normalize --dataset-path /home/rapids/preloaded_datasets
 python -m cuvs_bench.get_dataset --dataset fashion-mnist-784-euclidean --dataset-path /home/rapids/preloaded_datasets
 python -m cuvs_bench.get_dataset --dataset glove-50-angular --normalize --dataset-path /home/rapids/preloaded_datasets
