@@ -34,7 +34,7 @@ For GPU systems, where $DATA_FOLDER is a local folder where you want datasets st
 ```bash
 export DATA_FOLDER=path/to/store/results/and/data
 docker run --gpus all --rm -it \
-    -v $DATA_FOLDER:/home/rapids/benchmarks  \
+    -v $DATA_FOLDER:/home/rapids/benchmarks \
     -u $(id -u) \
     rapidsai/cuvs-bench:24.12a-cuda12.5-py3.12 \
     "--dataset deep-image-96-angular" \
@@ -48,7 +48,7 @@ Where:
 ```bash
 export DATA_FOLDER=path/to/store/results/and/data # <- Results and datasets will be written to this host folder.
 docker run --gpus all --rm -it \
-    -v $DATA_FOLDER:/home/rapids/benchmarks  \ # <- local folder to store datasets and results
+    -v $DATA_FOLDER:/home/rapids/benchmarks \ # <- local folder to store datasets and results
     -u $(id -u) \ # <- this flag allows the container to use the host user for permissions
     rapidsai/cuvs-bench:24.12a-cuda12.5-py3.12 \ # <- image to use, either `cuvs-bench` or `cuvs-bench-datasets`
     "--dataset deep-image-96-angular" \ # <- dataset name
@@ -61,8 +61,8 @@ For CPU systems the same interface applies, except for not needing the gpus argu
 ```bash
 export DATA_FOLDER=path/to/store/results/and/data
 docker run  all --rm -it \
-    -v $DATA_FOLDER:/home/rapids/benchmarks  \
-    -u $(id -u) \ # <- this flag allows the container to use the host user for permissions
+    -v $DATA_FOLDER:/home/rapids/benchmarks \
+    -u $(id -u) \
     rapidsai/cuvs-bench-cpu:24.12a-py3.12 \
      "--dataset deep-image-96-angular" \
      "--normalize" \
@@ -75,7 +75,7 @@ docker run  all --rm -it \
 ```bash
 export DATA_FOLDER=path/to/store/results/and/data
 docker run --gpus all --rm -it \
-    -v $DATA_FOLDER:/home/rapids/benchmarks  \
+    -v $DATA_FOLDER:/home/rapids/benchmarks \
     -u $(id -u) \
     rapidsai/cuvs-bench:24.12a-cuda12.5-py3.12 \
     --entrypoint /bin/bash
@@ -87,4 +87,4 @@ This will drop you into a command line in the container, with cuVS and the `cuvs
 (base) root@00b068fbb862:/home/rapids#
 ```
 
-Additionally, the containers could be run in dettached form without any issue.
+Additionally, the containers could be run in detached form without any issue.

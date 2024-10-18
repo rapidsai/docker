@@ -31,7 +31,7 @@ mamba update --all -y -n base
 mamba install -y -n base "python=${PYTHON_VER}"
 mamba update --all -y -n base
 mamba install -y -n base \
-  "cuvs_bench_cpu=${RAPIDS_VER}.*" \
+  "cuvs-bench-cpu=${RAPIDS_VER}.*" \
   "python=${PYTHON_VER}"
 conda clean -afy
 chmod -R 777 /opt/conda
@@ -52,11 +52,11 @@ FROM bench-base AS cuvs-bench-cpu-datasets
 
 SHELL ["/bin/bash", "-euo", "pipefail", "-c"]
 
-COPY cuvs-bench/get_datasets.sh /home/rapids/cuvsbench/get_datasets.sh
+COPY cuvs-bench/get_datasets.sh /home/rapids/cuvs-bench/get_datasets.sh
 
 COPY cuvs-bench/run_benchmark.sh /data/scripts/run_benchmark_preloaded_datasets.sh
 
-RUN /home/rapids/cuvsbench/get_datasets.sh
+RUN /home/rapids/cuvs-bench/get_datasets.sh
 
 CMD ["--dataset fashion-mnist-784-euclidean", "", "--algorithms hnswlib"]
 
