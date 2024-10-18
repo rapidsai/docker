@@ -34,7 +34,7 @@ For GPU systems, where $DATA_FOLDER is a local folder where you want datasets st
 ```bash
 export DATA_FOLDER=path/to/store/results/and/data
 docker run --gpus all --rm -it \
-    -v $DATA_FOLDER:/home/rapids/benchmarks  \
+    -v $DATA_FOLDER:/home/rapids/benchmarks \
     -u $(id -u) \
     rapidsai/cuvs-bench:24.12a-cuda12.5-py3.12 \
     "--dataset deep-image-96-angular" \
@@ -46,21 +46,19 @@ docker run --gpus all --rm -it \
 Where:
 
 - `DATA_FOLDER=path/to/store/results/and/data`: Results and datasets will be written to this host folder.
-- `$DATA_FOLDER:/home/rapids/benchmarks`: Local folder to store datasets and results
 - `-u $(id -u)`: This flag allows the container to use the host user for permissions
 - `rapidsai/cuvs-bench:24.12a-cuda12.5-py3.12`: Image to use, either `cuvs-bench` or `cuvs-bench-datasets`, cuVS version, CUDA version, and Python version.
 - "--dataset deep-image-96-angular": Dataset name(s). See https://docs.rapids.ai/api/cuvs/nightly/cuvs_bench for more details.
 - "--normalize": Whether to normalize the dataset, leave string empty ("") to not normalize.
 - "--algorithms cuvs_cagra" \ # <- what algorithm(s) to use as a ; separated list, as well as any other argument to pass to `cuvs_bench.run`.
-- "" # optional argumetns to pass to `cuvs_benchmarks.plot`
-```
+- Last line, (""): optional argumetns to pass to `cuvs-bench.plot`, pass an empty string if no parameters to plot are needed.
 
 For CPU systems the same interface applies, except for not needing the gpus argument and using the cpu images:
 
 ```bash
 export DATA_FOLDER=path/to/store/results/and/data
 docker run  all --rm -it \
-    -v $DATA_FOLDER:/home/rapids/benchmarks  \
+    -v $DATA_FOLDER:/home/rapids/benchmarks \
     -u $(id -u) \
     rapidsai/cuvs-bench-cpu:24.12a-py3.12 \
      "--dataset deep-image-96-angular" \
@@ -74,7 +72,7 @@ docker run  all --rm -it \
 ```bash
 export DATA_FOLDER=path/to/store/results/and/data
 docker run --gpus all --rm -it \
-    -v $DATA_FOLDER:/home/rapids/benchmarks  \
+    -v $DATA_FOLDER:/home/rapids/benchmarks \
     -u $(id -u) \
     rapidsai/cuvs-bench:24.12a-cuda12.5-py3.12 \
     --entrypoint /bin/bash
@@ -86,4 +84,4 @@ This will drop you into a command line in the container, with cuVS and the `cuvs
 (base) root@00b068fbb862:/home/rapids#
 ```
 
-Additionally, the containers could be run in dettached form without any issue.
+Additionally, the containers could be run in detached form without any issue.
