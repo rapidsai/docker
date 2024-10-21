@@ -3,6 +3,10 @@ def compute_arch($x):
 
 def compute_ubuntu_version($x):
   if
+    $x.CUDA_VER >= "12.5" # Ubuntu 24.04 nvidia/cuda images were added starting with CUDA 12.5
+  then
+    ["ubuntu", "24.04"]
+  elif
     $x.CUDA_VER >= "11.7" # Ubuntu 22.04 nvidia/cuda images were added starting with CUDA 11.7
   then
     ["ubuntu", "22.04"]
