@@ -50,7 +50,7 @@ Where:
 - `rapidsai/cuvs-bench:24.12a-cuda12.5-py3.12`: Image to use, either `cuvs-bench` or `cuvs-bench-datasets`, cuVS version, CUDA version, and Python version.
 - "--dataset deep-image-96-angular": Dataset name(s). See https://docs.rapids.ai/api/cuvs/nightly/cuvs_bench for more details.
 - "--normalize": Whether to normalize the dataset, leave string empty ("") to not normalize.
-- "--algorithms cuvs_cagra" \ # <- what algorithm(s) to use as a ; separated list, as well as any other argument to pass to `cuvs_bench.run`.
+- "--algorithms cuvs_cagra": What algorithm(s) to use as a ; separated list, as well as any other argument to pass to `cuvs_bench.run`.
 - Last line, (""): optional arguments to pass to `cuvs_bench.plot`, pass an empty string if no parameters to plot are needed.
 
 For CPU systems the same interface applies, except for not needing the gpus argument and using the cpu images:
