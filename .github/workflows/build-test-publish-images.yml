@@ -107,7 +107,7 @@ jobs:
           if [ "${{ inputs.build_type }}" = "pull-request" ]; then
             base_repo="staging"
             notebooks_repo="staging"
-            CUVS_bench_repo="staging"
+            cuvs_bench_repo="staging"
             cuvs_bench_datasets_repo="staging"
             cuvs_bench_cpu_repo="staging"
           fi
