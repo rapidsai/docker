@@ -77,7 +77,7 @@ $ docker run \
     -it \
     --pull always \
     --gpus all \
-    -shm-size=1g --ulimit memlock=-1 --ulimit stack=67108864 \
+    --shm-size=1g --ulimit memlock=-1 --ulimit stack=67108864 \
     -e EXTRA_CONDA_PACKAGES="jq" \
     -e EXTRA_PIP_PACKAGES="beautifulsoup4" \
     -p 8888:8888 \
@@ -104,7 +104,7 @@ $ docker run \
     -it \
     --pull always \
     --gpus all \
-    -shm-size=1g --ulimit memlock=-1 --ulimit stack=67108864 \
+    --shm-size=1g --ulimit memlock=-1 --ulimit stack=67108864 \
     -v $(pwd)/environment.yml:/home/rapids/environment.yml \
     rapidsai/base:24.12-cuda12.5-py3.12
 ```
