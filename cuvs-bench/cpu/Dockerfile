@@ -1,9 +1,9 @@
 # syntax=docker/dockerfile:1
 
 ARG PYTHON_VER=unset
-ARG RAPIDS_VER=24.10
+ARG RAPIDS_VER=24.12
 
-FROM condaforge/mambaforge:23.3.1-0 AS raft-ann-bench-cpu
+FROM condaforge/miniforge3:24.7.1-2 AS cuvs-bench-cpu
 ARG RAPIDS_VER
 ARG PYTHON_VER
 
@@ -31,7 +31,7 @@ mamba update --all -y -n base
 mamba install -y -n base "python=${PYTHON_VER}"
 mamba update --all -y -n base
 mamba install -y -n base \
-  "raft-ann-bench-cpu=${RAPIDS_VER}.*" \
+  "cuvs-bench-cpu=${RAPIDS_VER}.*" \
   "python=${PYTHON_VER}"
 conda clean -afy
 chmod -R 777 /opt/conda
@@ -41,22 +41,22 @@ RUN useradd -rm -d /home/rapids -s /bin/bash -u 1001 rapids
 USER rapids
 WORKDIR /data/benchmarks
 
-COPY raft-ann-bench/run_benchmark.sh /data/scripts/run_benchmark.sh
+COPY cuvs-bench/run_benchmark.sh /data/scripts/run_benchmark.sh
 
 CMD ["--dataset fashion-mnist-784-euclidean", "", "--algorithms hnswlib"]
 
 ENTRYPOINT ["/bin/bash", "/data/scripts/run_benchmark.sh"]
 
 
-FROM bench-base AS raft-ann-bench-cpu-datasets
+FROM bench-base AS cuvs-bench-cpu-datasets
 
 SHELL ["/bin/bash", "-euo", "pipefail", "-c"]
 
-COPY raft-ann-bench/get_datasets.sh /home/rapids/raftannbench/get_datasets.sh
+COPY cuvs-bench/get_datasets.sh /home/rapids/cuvs-bench/get_datasets.sh
 
-COPY raft-ann-bench/run_benchmark.sh /data/scripts/run_benchmark_preloaded_datasets.sh
+COPY cuvs-bench/run_benchmark.sh /data/scripts/run_benchmark_preloaded_datasets.sh
 
-RUN /home/rapids/raftannbench/get_datasets.sh
+RUN /home/rapids/cuvs-bench/get_datasets.sh
 
 CMD ["--dataset fashion-mnist-784-euclidean", "", "--algorithms hnswlib"]
 

@@ -30,16 +30,16 @@ on:
       NOTEBOOKS_TAG:
         required: true
         type: string
-      RAFT_ANN_BENCH_TAG:
+      CUVS_BENCH_TAG:
         required: true
         type: string
-      RAFT_ANN_BENCH_DATASETS_TAG:
+      CUVS_BENCH_DATASETS_TAG:
         required: true
         type: string
-      RAFT_ANN_BENCH_CPU_TAG:
+      CUVS_BENCH_CPU_TAG:
         required: true
         type: string
-      BUILD_RAFT_ANN_BENCH_CPU_IMAGE:
+      BUILD_CUVS_BENCH_CPU_IMAGE:
         required: true
         type: boolean
 
@@ -120,12 +120,12 @@ jobs:
             PYTHON_VER=${{ inputs.PYTHON_VER }}
             RAPIDS_VER=${{ inputs.RAPIDS_VER }}
           tags: ${{ inputs.NOTEBOOKS_TAG }}-${{ matrix.ARCH }}
-      - name: Build RAFT ANN Benchmarks GPU image
+      - name: Build cuVS Benchmarks GPU image
         uses: docker/build-push-action@v6
         with:
           context: context
-          file: raft-ann-bench/gpu/Dockerfile
-          target: raft-ann-bench
+          file: cuvs-bench/gpu/Dockerfile
+          target: cuvs-bench
           push: true
           pull: true
           build-args: |
@@ -133,13 +133,13 @@ jobs:
             LINUX_VER=${{ inputs.LINUX_VER }}
             PYTHON_VER=${{ inputs.PYTHON_VER }}
             RAPIDS_VER=${{ inputs.RAPIDS_VER }}
-          tags: ${{ inputs.RAFT_ANN_BENCH_TAG }}-${{ matrix.ARCH }}
-      - name: Build RAFT ANN Benchmarks GPU with datasets image
+          tags: ${{ inputs.CUVS_BENCH_TAG }}-${{ matrix.ARCH }}
+      - name: Build cuVS Benchmarks GPU with datasets image
         uses: docker/build-push-action@v6
         with:
           context: context
-          file: raft-ann-bench/gpu/Dockerfile
-          target: raft-ann-bench-datasets
+          file: cuvs-bench/gpu/Dockerfile
+          target: cuvs-bench-datasets
           push: true
           pull: true
           build-args: |
@@ -147,14 +147,14 @@ jobs:
             LINUX_VER=${{ inputs.LINUX_VER }}
             PYTHON_VER=${{ inputs.PYTHON_VER }}
             RAPIDS_VER=${{ inputs.RAPIDS_VER }}
-          tags: ${{ inputs.RAFT_ANN_BENCH_DATASETS_TAG }}-${{ matrix.ARCH }}
-      - name: Build RAFT ANN Benchmarks CPU image
-        if: inputs.BUILD_RAFT_ANN_BENCH_CPU_IMAGE
+          tags: ${{ inputs.CUVS_BENCH_DATASETS_TAG }}-${{ matrix.ARCH }}
+      - name: Build cuVS Benchmarks CPU image
+        if: inputs.BUILD_CUVS_BENCH_CPU_IMAGE
         uses: docker/build-push-action@v6
         with:
           context: context
-          file: raft-ann-bench/cpu/Dockerfile
-          target: raft-ann-bench-cpu
+          file: cuvs-bench/cpu/Dockerfile
+          target: cuvs-bench-cpu
           push: true
           pull: true
           build-args: |
@@ -162,4 +162,4 @@ jobs:
             LINUX_VER=${{ inputs.LINUX_VER }}
             PYTHON_VER=${{ inputs.PYTHON_VER }}
             RAPIDS_VER=${{ inputs.RAPIDS_VER }}
-          tags: ${{ inputs.RAFT_ANN_BENCH_CPU_TAG }}-${{ matrix.ARCH }}
+          tags: ${{ inputs.CUVS_BENCH_CPU_TAG }}-${{ matrix.ARCH }}
