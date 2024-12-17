@@ -8,8 +8,8 @@ index a6b154ef..b023fcbd 100644
  import sys
 -from urllib.request import urlretrieve
 +import requests
- 
- 
+
+
  def get_dataset_path(name, ann_bench_data_path):
 @@ -29,7 +29,12 @@ def get_dataset_path(name, ann_bench_data_path):
  def download_dataset(url, path):
@@ -22,6 +22,6 @@ index a6b154ef..b023fcbd 100644
 +                for chunk in r.iter_content(chunk_size=8192):
 +                    if chunk:
 +                        f.write(chunk)
- 
- 
+
+
  def convert_hdf5_to_fbin(path, normalize):
