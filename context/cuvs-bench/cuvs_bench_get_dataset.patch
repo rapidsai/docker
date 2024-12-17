@@ -1,0 +1,27 @@
+diff --git a/python/cuvs_bench/cuvs_bench/get_dataset/__main__.py b/python/cuvs_bench/cuvs_bench/get_dataset/__main__.py
+index a6b154ef..b023fcbd 100644
+--- a/python/cuvs_bench/cuvs_bench/get_dataset/__main__.py
++++ b/python/cuvs_bench/cuvs_bench/get_dataset/__main__.py
+@@ -17,7 +17,7 @@ import argparse
+ import os
+ import subprocess
+ import sys
+-from urllib.request import urlretrieve
++import requests
+ 
+ 
+ def get_dataset_path(name, ann_bench_data_path):
+@@ -29,7 +29,12 @@ def get_dataset_path(name, ann_bench_data_path):
+ def download_dataset(url, path):
+     if not os.path.exists(path):
+         print(f"downloading {url} -> {path}...")
+-        urlretrieve(url, path)
++        with requests.get(url, stream=True) as r:
++            r.raise_for_status()
++            with open(path, "wb") as f:
++                for chunk in r.iter_content(chunk_size=8192):
++                    if chunk:
++                        f.write(chunk)
+ 
+ 
+ def convert_hdf5_to_fbin(path, normalize):
