@@ -24,13 +24,16 @@ echo ". /opt/conda/etc/profile.d/conda.sh; conda activate base" >> /etc/bash.bas
 EOF
 
 # we need perl temporarily for the remaining benchmark perl scripts
-RUN apt-get install perl -y
+RUN apt-get update
+
+RUN apt-get install perl patch -y
 
 RUN <<EOF
 mamba update --all -y -n base
 mamba install -y -n base \
     "cuvs-bench=${RAPIDS_VER}.*" \
-    "cuda-version=${CUDA_VER%.*}.*"
+    "cuda-version=${CUDA_VER%.*}.*" \
+    "requests"
 conda clean -afy
 chmod -R 777 /opt/conda
 EOF
@@ -51,6 +54,8 @@ ENTRYPOINT ["/bin/bash", "/data/scripts/run_benchmark.sh"]
 FROM cuvs-bench AS cuvs-bench-datasets
 
 SHELL ["/bin/bash", "-euo", "pipefail", "-c"]
+
+COPY cuvs-bench/cuvs_bench_get_dataset.patch /home/rapids/cuvs-bench/cuvs_bench_get_dataset.patch
 
 COPY cuvs-bench/get_datasets.sh /home/rapids/cuvs-bench/get_datasets.sh
 
