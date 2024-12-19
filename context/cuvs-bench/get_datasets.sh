@@ -3,12 +3,12 @@
 
 set -eo pipefail
 
-# find cuVS in the environment
-PACKAGE_FILE_PATH=$(python -c "import cuvs_bench; print(cuvs_bench.__file__)")
-PACKAGE_DIR=$(dirname "$PACKAGE_FILE_PATH")
+# find cuVS-bench in the environment
+# __file__ is empty, so we use __path__
+PACKAGE_FILE_PATH=$(python -c "import cuvs_bench; print(list(cuvs_bench.__path__)[0])")
 
 # Apply the patch
-patch "$PACKAGE_DIR/get_dataset/__main__.py" < /home/rapids/cuvs-bench/cuvs_bench_get_dataset.patch
+patch "$PACKAGE_FILE_PATH/get_dataset/__main__.py" < /home/rapids/cuvs-bench/cuvs_bench_get_dataset.patch
 
 python -m cuvs_bench.get_dataset --dataset deep-image-96-angular --normalize --dataset-path /home/rapids/preloaded_datasets
 python -m cuvs_bench.get_dataset --dataset fashion-mnist-784-euclidean --dataset-path /home/rapids/preloaded_datasets
