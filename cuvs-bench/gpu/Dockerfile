@@ -24,9 +24,13 @@ echo ". /opt/conda/etc/profile.d/conda.sh; conda activate base" >> /etc/bash.bas
 EOF
 
 # we need perl temporarily for the remaining benchmark perl scripts
-RUN apt-get update
-
-RUN apt-get install perl patch -y
+RUN <<EOF
+  apt-get update
+  apt-get install -y \
+    patch \
+    perl
+  rm -rf /var/cache/apt/archives /var/lib/apt/lists/*
+EOF
 
 RUN <<EOF
 mamba update --all -y -n base

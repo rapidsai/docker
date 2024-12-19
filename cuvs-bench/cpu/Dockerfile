@@ -21,9 +21,13 @@ echo ". /opt/conda/etc/profile.d/conda.sh; conda activate base" >> /etc/bash.bas
 EOF
 
 # we need perl temporarily for the remaining benchmark perl scripts
-RUN apt-get update
-
-RUN apt-get install perl patch -y
+RUN <<EOF
+  apt-get update
+  apt-get install -y \
+    patch \
+    perl
+  rm -rf /var/cache/apt/archives /var/lib/apt/lists/*
+EOF
 
 # update everything before other environment changes, to ensure mixing
 # an older conda with newer packages still works well
