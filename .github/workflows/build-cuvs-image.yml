@@ -24,12 +24,6 @@ on:
       RAPIDS_VER:
         required: true
         type: string
-      BASE_TAG:
-        required: true
-        type: string
-      NOTEBOOKS_TAG:
-        required: true
-        type: string
       CUVS_BENCH_TAG:
         required: true
         type: string
@@ -88,38 +82,6 @@ jobs:
         with:
           driver: docker
           endpoint: builders
-      - name: Build base image
-        uses: docker/build-push-action@v6
-        with:
-          context: context
-          file: Dockerfile
-          target: base
-          push: true
-          pull: true
-          build-args: |
-            CUDA_VER=${{ inputs.CUDA_VER }}
-            LINUX_DISTRO=${{ inputs.LINUX_DISTRO }}
-            LINUX_DISTRO_VER=${{ inputs.LINUX_DISTRO_VER }}
-            LINUX_VER=${{ inputs.LINUX_VER }}
-            PYTHON_VER=${{ inputs.PYTHON_VER }}
-            RAPIDS_VER=${{ inputs.RAPIDS_VER }}
-          tags: ${{ inputs.BASE_TAG }}-${{ matrix.ARCH }}
-      - name: Build notebooks image
-        uses: docker/build-push-action@v6
-        with:
-          context: context
-          file: Dockerfile
-          target: notebooks
-          push: true
-          pull: true
-          build-args: |
-            CUDA_VER=${{ inputs.CUDA_VER }}
-            LINUX_DISTRO=${{ inputs.LINUX_DISTRO }}
-            LINUX_DISTRO_VER=${{ inputs.LINUX_DISTRO_VER }}
-            LINUX_VER=${{ inputs.LINUX_VER }}
-            PYTHON_VER=${{ inputs.PYTHON_VER }}
-            RAPIDS_VER=${{ inputs.RAPIDS_VER }}
-          tags: ${{ inputs.NOTEBOOKS_TAG }}-${{ matrix.ARCH }}
       - name: Build cuVS Benchmarks GPU image
         uses: docker/build-push-action@v6
         with:

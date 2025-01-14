@@ -2,6 +2,13 @@
 
 set -eEuo pipefail
 
+if [ -n "$BASE_IMAGE_REPO" ] || [ -n "$NOTEBOOKS_IMAGE_REPO" ]; then
+    RAPIDS_MANIFEST=true
+fi
+if [ -n "$CUVS_BENCH_IMAGE_REPO" ] || [ -n "$CUVS_BENCH_DATASETS_IMAGE_REPO" ] || [ -n "$CUVS_BENCH_CPU_IMAGE_REPO" ]; then
+    CUVS_MANIFEST=true
+fi
+
 # Authenticate and retrieve DockerHub token
 HUB_TOKEN=$(
 curl -s -H "Content-Type: application/json" \
@@ -49,38 +56,46 @@ for arch in $(echo "${ARCHES}" | jq .[] -r); do
     full_cuvs_bench_datasets_tag="${cuvs_bench_datasets_tag}-${arch}"
     full_cuvs_bench_cpu_tag="${cuvs_bench_cpu_tag}-${arch}"
 
-    check_tag_exists "$BASE_IMAGE_REPO" "$full_base_tag"
-    base_source_tags+=("${org}/${BASE_IMAGE_REPO}:$full_base_tag")
+    if [ "$RAPIDS_MANIFEST" == "true" ]; then
+        check_tag_exists "$BASE_IMAGE_REPO" "$full_base_tag"
+        base_source_tags+=("${org}/${BASE_IMAGE_REPO}:$full_base_tag")
 
-    check_tag_exists "$NOTEBOOKS_IMAGE_REPO" "$full_notebooks_tag"
-    notebooks_source_tags+=("${org}/${NOTEBOOKS_IMAGE_REPO}:$full_notebooks_tag")
+        check_tag_exists "$NOTEBOOKS_IMAGE_REPO" "$full_notebooks_tag"
+        notebooks_source_tags+=("${org}/${NOTEBOOKS_IMAGE_REPO}:$full_notebooks_tag")
+    fi
 
-    check_tag_exists "$CUVS_BENCH_IMAGE_REPO" "$full_cuvs_bench_tag"
-    cuvs_bench_source_tags+=("${org}/${CUVS_BENCH_IMAGE_REPO}:$full_cuvs_bench_tag")
+    if [ "$CUVS_MANIFEST" == "true" ]; then
+        check_tag_exists "$CUVS_BENCH_IMAGE_REPO" "$full_cuvs_bench_tag"
+        cuvs_bench_source_tags+=("${org}/${CUVS_BENCH_IMAGE_REPO}:$full_cuvs_bench_tag")
 
-    check_tag_exists "$CUVS_BENCH_DATASETS_IMAGE_REPO" "$full_cuvs_bench_datasets_tag"
-    cuvs_bench_datasets_source_tags+=("${org}/${CUVS_BENCH_DATASETS_IMAGE_REPO}:$full_cuvs_bench_datasets_tag")
+        check_tag_exists "$CUVS_BENCH_DATASETS_IMAGE_REPO" "$full_cuvs_bench_datasets_tag"
+        cuvs_bench_datasets_source_tags+=("${org}/${CUVS_BENCH_DATASETS_IMAGE_REPO}:$full_cuvs_bench_datasets_tag")
 
-    if [ "$CUVS_BENCH_CPU_IMAGE_BUILT" = "true" ]; then
-        check_tag_exists "$CUVS_BENCH_CPU_IMAGE_REPO" "$full_cuvs_bench_cpu_tag"
-        cuvs_bench_cpu_source_tags+=("${org}/${CUVS_BENCH_CPU_IMAGE_REPO}:$full_cuvs_bench_cpu_tag")
+        if [ "$CUVS_BENCH_CPU_IMAGE_BUILT" = "true" ]; then
+            check_tag_exists "$CUVS_BENCH_CPU_IMAGE_REPO" "$full_cuvs_bench_cpu_tag"
+            cuvs_bench_cpu_source_tags+=("${org}/${CUVS_BENCH_CPU_IMAGE_REPO}:$full_cuvs_bench_cpu_tag")
+        fi
     fi
 done
 
 # Create and push Docker multi-arch manifests
-docker manifest create "${org}/${BASE_IMAGE_REPO}:${base_tag}" "${base_source_tags[@]}"
-docker manifest push "${org}/${BASE_IMAGE_REPO}:${base_tag}"
+if [ "$RAPIDS_MANIFEST" == "true" ]; then
+    docker manifest create "${org}/${BASE_IMAGE_REPO}:${base_tag}" "${base_source_tags[@]}"
+    docker manifest push "${org}/${BASE_IMAGE_REPO}:${base_tag}"
 
-docker manifest create "${org}/${NOTEBOOKS_IMAGE_REPO}:${notebooks_tag}" "${notebooks_source_tags[@]}"
-docker manifest push "${org}/${NOTEBOOKS_IMAGE_REPO}:${notebooks_tag}"
+    docker manifest create "${org}/${NOTEBOOKS_IMAGE_REPO}:${notebooks_tag}" "${notebooks_source_tags[@]}"
+    docker manifest push "${org}/${NOTEBOOKS_IMAGE_REPO}:${notebooks_tag}"
+fi
 
-docker manifest create "${org}/${CUVS_BENCH_IMAGE_REPO}:${cuvs_bench_tag}" "${cuvs_bench_source_tags[@]}"
-docker manifest push "${org}/${CUVS_BENCH_IMAGE_REPO}:${cuvs_bench_tag}"
+if [ "$CUVS_MANIFEST" == "true" ]; then
+    docker manifest create "${org}/${CUVS_BENCH_IMAGE_REPO}:${cuvs_bench_tag}" "${cuvs_bench_source_tags[@]}"
+    docker manifest push "${org}/${CUVS_BENCH_IMAGE_REPO}:${cuvs_bench_tag}"
 
-docker manifest create "${org}/${CUVS_BENCH_DATASETS_IMAGE_REPO}:${cuvs_bench_datasets_tag}" "${cuvs_bench_datasets_source_tags[@]}"
-docker manifest push "${org}/${CUVS_BENCH_DATASETS_IMAGE_REPO}:${cuvs_bench_datasets_tag}"
+    docker manifest create "${org}/${CUVS_BENCH_DATASETS_IMAGE_REPO}:${cuvs_bench_datasets_tag}" "${cuvs_bench_datasets_source_tags[@]}"
+    docker manifest push "${org}/${CUVS_BENCH_DATASETS_IMAGE_REPO}:${cuvs_bench_datasets_tag}"
 
-if [ "$CUVS_BENCH_CPU_IMAGE_BUILT" = "true" ]; then
-    docker manifest create "${org}/${CUVS_BENCH_CPU_IMAGE_REPO}:${cuvs_bench_cpu_tag}" "${cuvs_bench_cpu_source_tags[@]}"
-    docker manifest push "${org}/${CUVS_BENCH_CPU_IMAGE_REPO}:${cuvs_bench_cpu_tag}"
+    if [ "$CUVS_BENCH_CPU_IMAGE_BUILT" = "true" ]; then
+        docker manifest create "${org}/${CUVS_BENCH_CPU_IMAGE_REPO}:${cuvs_bench_cpu_tag}" "${cuvs_bench_cpu_source_tags[@]}"
+        docker manifest push "${org}/${CUVS_BENCH_CPU_IMAGE_REPO}:${cuvs_bench_cpu_tag}"
+    fi
 fi

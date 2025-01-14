@@ -36,8 +36,10 @@ jobs:
     needs:
       - checks
       - compute-matrix
-      - build
-      - build-multiarch-manifest
+      - build-rapids
+      - build-rapids-multiarch-manifest
+      - build-cuvs
+      - build-cuvs-multiarch-manifest
       - test
     secrets: inherit
     uses: rapidsai/shared-workflows/.github/workflows/pr-builder.yaml@branch-25.02
@@ -137,13 +139,13 @@ jobs:
           export TEST_MATRIX
 
           echo "TEST_MATRIX=$(yq -n -o json 'env(TEST_MATRIX)' | jq -c '{include: .}')" | tee --append "${GITHUB_OUTPUT}"
-  build:
+  build-rapids:
     needs: [checks, compute-matrix]
     strategy:
       matrix: ${{ fromJSON(needs.compute-matrix.outputs.MATRIX) }}
       fail-fast: false
     secrets: inherit
-    uses: ./.github/workflows/build-image.yml
+    uses: ./.github/workflows/build-rapids-image.yml
     with:
       ARCHES: ${{ toJSON(matrix.ARCHES) }}
       CUDA_VER: ${{ matrix.CUDA_VER }}
@@ -152,7 +154,6 @@ jobs:
       LINUX_VER: ${{ matrix.LINUX_VER }}
       PYTHON_VER: ${{ matrix.PYTHON_VER }}
       RAPIDS_VER: ${{ needs.compute-matrix.outputs.RAPIDS_VER }}
-      BUILD_CUVS_BENCH_CPU_IMAGE: ${{ matrix.BUILD_CUVS_BENCH_CPU_IMAGE }}
       BASE_TAG:
         "rapidsai/${{ needs.compute-matrix.outputs.BASE_IMAGE_REPO }}:\
         ${{ needs.compute-matrix.outputs.BASE_TAG_PREFIX }}\
@@ -167,6 +168,22 @@ jobs:
         ${{ needs.compute-matrix.outputs.ALPHA_TAG }}-\
         cuda${{ matrix.CUDA_TAG }}-\
         py${{ matrix.PYTHON_VER }}"
+  build-cuvs:
+    needs: [checks, compute-matrix]
+    strategy:
+      matrix: ${{ fromJSON(needs.compute-matrix.outputs.MATRIX) }}
+      fail-fast: false
+    secrets: inherit
+    uses: ./.github/workflows/build-cuvs-image.yml
+    with:
+      ARCHES: ${{ toJSON(matrix.ARCHES) }}
+      CUDA_VER: ${{ matrix.CUDA_VER }}
+      LINUX_DISTRO: ${{ matrix.LINUX_DISTRO }}
+      LINUX_DISTRO_VER: ${{ matrix.LINUX_DISTRO_VER }}
+      LINUX_VER: ${{ matrix.LINUX_VER }}
+      PYTHON_VER: ${{ matrix.PYTHON_VER }}
+      RAPIDS_VER: ${{ needs.compute-matrix.outputs.RAPIDS_VER }}
+      BUILD_CUVS_BENCH_CPU_IMAGE: ${{ matrix.BUILD_CUVS_BENCH_CPU_IMAGE }}
       CUVS_BENCH_TAG:
         "rapidsai/${{ needs.compute-matrix.outputs.CUVS_BENCH_IMAGE_REPO }}:\
         ${{ needs.compute-matrix.outputs.CUVS_BENCH_TAG_PREFIX }}\
@@ -187,8 +204,8 @@ jobs:
         ${{ needs.compute-matrix.outputs.RAPIDS_VER }}\
         ${{ needs.compute-matrix.outputs.ALPHA_TAG }}-\
         py${{ matrix.PYTHON_VER }}"
-  build-multiarch-manifest:
-    needs: [build, compute-matrix]
+  build-rapids-multiarch-manifest:
+    needs: [build-rapids, compute-matrix]
     strategy:
       matrix: ${{ fromJSON(needs.compute-matrix.outputs.MATRIX) }}
       fail-fast: false
@@ -206,7 +223,6 @@ jobs:
       - name: Create multiarch manifest
         shell: bash
         env:
-          CUVS_BENCH_CPU_IMAGE_BUILT: ${{ matrix.BUILD_CUVS_BENCH_CPU_IMAGE }}
           BASE_IMAGE_REPO: ${{ needs.compute-matrix.outputs.BASE_IMAGE_REPO }}
           BASE_TAG_PREFIX: ${{ needs.compute-matrix.outputs.BASE_TAG_PREFIX }}
           RAPIDS_VER: ${{ needs.compute-matrix.outputs.RAPIDS_VER }}
@@ -215,6 +231,34 @@ jobs:
           PYTHON_VER: ${{ matrix.PYTHON_VER }}
           NOTEBOOKS_IMAGE_REPO: ${{ needs.compute-matrix.outputs.NOTEBOOKS_IMAGE_REPO }}
           NOTEBOOKS_TAG_PREFIX: ${{ needs.compute-matrix.outputs.NOTEBOOKS_TAG_PREFIX }}
+          GPUCIBOT_DOCKERHUB_USER: ${{ secrets.GPUCIBOT_DOCKERHUB_USER }}
+          GPUCIBOT_DOCKERHUB_TOKEN: ${{ secrets.GPUCIBOT_DOCKERHUB_TOKEN }}
+          ARCHES: ${{ toJSON(matrix.ARCHES) }}
+        run: ci/create-multiarch-manifest.sh
+  build-cuvs-multiarch-manifest:
+    needs: [build-cuvs, compute-matrix]
+    strategy:
+      matrix: ${{ fromJSON(needs.compute-matrix.outputs.MATRIX) }}
+      fail-fast: false
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Login to DockerHub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.GPUCIBOT_DOCKERHUB_USER }}
+          password: ${{ secrets.GPUCIBOT_DOCKERHUB_TOKEN }}
+      - name: Create multiarch manifest
+        shell: bash
+        env:
+          RAPIDS_VER: ${{ needs.compute-matrix.outputs.RAPIDS_VER }}
+          ALPHA_TAG: ${{ needs.compute-matrix.outputs.ALPHA_TAG }}
+          CUDA_TAG: ${{ matrix.CUDA_TAG }}
+          PYTHON_VER: ${{ matrix.PYTHON_VER }}
+          CUVS_BENCH_CPU_IMAGE_BUILT: ${{ matrix.BUILD_CUVS_BENCH_CPU_IMAGE }}
           CUVS_BENCH_IMAGE_REPO: ${{ needs.compute-matrix.outputs.CUVS_BENCH_IMAGE_REPO }}
           CUVS_BENCH_TAG_PREFIX: ${{ needs.compute-matrix.outputs.CUVS_BENCH_TAG_PREFIX }}
           CUVS_BENCH_DATASETS_IMAGE_REPO: ${{ needs.compute-matrix.outputs.CUVS_BENCH_DATASETS_IMAGE_REPO }}
@@ -226,7 +270,7 @@ jobs:
           ARCHES: ${{ toJSON(matrix.ARCHES) }}
         run: ci/create-multiarch-manifest.sh
   test:
-    needs: [compute-matrix, build]
+    needs: [compute-matrix, build-rapids]
     if: inputs.run_tests
     strategy:
       matrix: ${{ fromJSON(needs.compute-matrix.outputs.TEST_MATRIX) }}
