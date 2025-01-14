@@ -96,20 +96,20 @@ jobs:
             PYTHON_VER=${{ inputs.PYTHON_VER }}
             RAPIDS_VER=${{ inputs.RAPIDS_VER }}
           tags: ${{ inputs.CUVS_BENCH_TAG }}-${{ matrix.ARCH }}
-      - name: Build cuVS Benchmarks GPU with datasets image
-        uses: docker/build-push-action@v6
-        with:
-          context: context
-          file: cuvs-bench/gpu/Dockerfile
-          target: cuvs-bench-datasets
-          push: true
-          pull: true
-          build-args: |
-            CUDA_VER=${{ inputs.CUDA_VER }}
-            LINUX_VER=${{ inputs.LINUX_VER }}
-            PYTHON_VER=${{ inputs.PYTHON_VER }}
-            RAPIDS_VER=${{ inputs.RAPIDS_VER }}
-          tags: ${{ inputs.CUVS_BENCH_DATASETS_TAG }}-${{ matrix.ARCH }}
+      # - name: Build cuVS Benchmarks GPU with datasets image
+      #   uses: docker/build-push-action@v6
+      #   with:
+      #     context: context
+      #     file: cuvs-bench/gpu/Dockerfile
+      #     target: cuvs-bench-datasets
+      #     push: true
+      #     pull: true
+      #     build-args: |
+      #       CUDA_VER=${{ inputs.CUDA_VER }}
+      #       LINUX_VER=${{ inputs.LINUX_VER }}
+      #       PYTHON_VER=${{ inputs.PYTHON_VER }}
+      #       RAPIDS_VER=${{ inputs.RAPIDS_VER }}
+      #     tags: ${{ inputs.CUVS_BENCH_DATASETS_TAG }}-${{ matrix.ARCH }}
       - name: Build cuVS Benchmarks CPU image
         if: inputs.BUILD_CUVS_BENCH_CPU_IMAGE
         uses: docker/build-push-action@v6

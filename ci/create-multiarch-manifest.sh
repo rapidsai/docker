@@ -68,8 +68,8 @@ for arch in $(echo "${ARCHES}" | jq .[] -r); do
         check_tag_exists "$CUVS_BENCH_IMAGE_REPO" "$full_cuvs_bench_tag"
         cuvs_bench_source_tags+=("${org}/${CUVS_BENCH_IMAGE_REPO}:$full_cuvs_bench_tag")
 
-        check_tag_exists "$CUVS_BENCH_DATASETS_IMAGE_REPO" "$full_cuvs_bench_datasets_tag"
-        cuvs_bench_datasets_source_tags+=("${org}/${CUVS_BENCH_DATASETS_IMAGE_REPO}:$full_cuvs_bench_datasets_tag")
+        # check_tag_exists "$CUVS_BENCH_DATASETS_IMAGE_REPO" "$full_cuvs_bench_datasets_tag"
+        # cuvs_bench_datasets_source_tags+=("${org}/${CUVS_BENCH_DATASETS_IMAGE_REPO}:$full_cuvs_bench_datasets_tag")
 
         if [ "$CUVS_BENCH_CPU_IMAGE_BUILT" = "true" ]; then
             check_tag_exists "$CUVS_BENCH_CPU_IMAGE_REPO" "$full_cuvs_bench_cpu_tag"
