@@ -234,7 +234,7 @@ jobs:
           GPUCIBOT_DOCKERHUB_USER: ${{ secrets.GPUCIBOT_DOCKERHUB_USER }}
           GPUCIBOT_DOCKERHUB_TOKEN: ${{ secrets.GPUCIBOT_DOCKERHUB_TOKEN }}
           ARCHES: ${{ toJSON(matrix.ARCHES) }}
-        run: ci/create-multiarch-manifest.sh
+        run: ci/create-rapids-multiarch-manifest.sh
   build-cuvs-multiarch-manifest:
     needs: [build-cuvs, compute-matrix]
     strategy:
@@ -268,7 +268,7 @@ jobs:
           GPUCIBOT_DOCKERHUB_USER: ${{ secrets.GPUCIBOT_DOCKERHUB_USER }}
           GPUCIBOT_DOCKERHUB_TOKEN: ${{ secrets.GPUCIBOT_DOCKERHUB_TOKEN }}
           ARCHES: ${{ toJSON(matrix.ARCHES) }}
-        run: ci/create-multiarch-manifest.sh
+        run: ci/create-cuvs-multiarch-manifest.sh
   test:
     needs: [compute-matrix, build-rapids]
     if: inputs.run_tests
