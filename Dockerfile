@@ -42,6 +42,13 @@ ARG RAPIDS_VER
 
 SHELL ["/bin/bash", "-euo", "pipefail", "-c"]
 
+RUN <<EOF
+apt-get update
+apt-get install -y wget
+wget https://github.com/rapidsai/gha-tools/releases/latest/download/tools.tar.gz -O - | tar -xz -C /usr/local/bin
+apt-get purge -y --auto-remove wget
+rm -rf /var/lib/apt/lists/*
+EOF
 RUN useradd -rm -d /home/rapids -s /bin/bash -g conda -u 1001 rapids
 
 USER rapids
@@ -57,7 +64,7 @@ conda config --show-sources
 conda list --show-channel-urls
 
 # Install RAPIDS
-mamba install -y -n base \
+rapids-mamba-retry install -y -n base \
     "rapids=${RAPIDS_VER}.*" \
     "python=${PYTHON_VER}.*" \
     "cuda-version=${CUDA_VER%.*}.*" \
@@ -90,12 +97,12 @@ COPY --from=dependencies --chown=rapids /test_notebooks_dependencies.yaml test_n
 COPY --from=dependencies --chown=rapids /notebooks /home/rapids/notebooks
 
 RUN <<EOF
-mamba env update -n base -f test_notebooks_dependencies.yaml
+rapids-mamba-retry env update -n base -f test_notebooks_dependencies.yaml
 conda clean -afy
 EOF
 
 RUN <<EOF
-mamba install -y -n base \
+rapids-mamba-retry install -y -n base \
     "jupyterlab=4" \
     dask-labextension \
     jupyterlab-nvdashboard
