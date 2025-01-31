@@ -22,17 +22,11 @@ ignored_subdirectory_names = [
 ]
 ignored_filenames = ["-csv", "benchmark", "target", "performance"]
 ignored_notebooks = [
-    'cusignal/api_guide/io_examples.ipynb', # 26gb data download
-
-    # following nbs are marked as skipped
     'cugraph/algorithms/layout/Force-Atlas2.ipynb',
+
+    # cuspatial skips should generally follow the list in 'ci/test_notebooks.sh' in https://github.com/rapidsai/cuspatial
     'cuspatial/binary_predicates.ipynb',
     'cuspatial/cuproj_benchmark.ipynb',
-    # context on these being skipped: https://github.com/rapidsai/cuspatial/pull/1407
-    'cuspatial/cuspatial_api_examples.ipynb',
-    'cuspatial/nyc_taxi_years_correlation.ipynb',
-    # context on skip zipcodes: https://github.com/rapidsai/cuspatial/issues/1426
-    'cuspatial/ZipCodes_Stops_PiP_cuSpatial.ipynb',
 ]
 
 
