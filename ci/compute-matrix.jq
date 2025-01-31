@@ -3,6 +3,10 @@ def compute_arch($x):
 
 def compute_ubuntu_version($x):
   if
+    $x.CUDA_VER >= "12.5" # Ubuntu 24.04 nvidia/cuda images were added starting with CUDA 12.5
+  then
+    ["ubuntu", "24.04"]
+  elif
     $x.CUDA_VER >= "11.7" # Ubuntu 22.04 nvidia/cuda images were added starting with CUDA 11.7
   then
     ["ubuntu", "22.04"]
@@ -17,8 +21,8 @@ def compute_cuda_tag($x):
 def latest_cuda_version($cuda_versions):
   $cuda_versions | max_by(. | split(".") | map(tonumber));
 
-def compute_build_raft_ann_bench_cpu_image($x; $latest_cuda_version):
-  $x + {BUILD_RAFT_ANN_BENCH_CPU_IMAGE: ($x.CUDA_VER == $latest_cuda_version)}; # we don't need to build CPU packages for different CUDA versions
+def compute_build_cuvs_bench_cpu_image($x; $latest_cuda_version):
+  $x + {BUILD_CUVS_BENCH_CPU_IMAGE: ($x.CUDA_VER == $latest_cuda_version)}; # we don't need to build CPU packages for different CUDA versions
 
 # Checks the current entry to see if it matches the given exclude
 def matches($entry; $exclude):
@@ -44,7 +48,7 @@ def compute_matrix($input):
     lists2dict($matrix_keys; .) |
     compute_ubuntu_version(.) |
     compute_cuda_tag(.) |
-    compute_build_raft_ann_bench_cpu_image(.; $latest_cuda_version) |
+    compute_build_cuvs_bench_cpu_image(.; $latest_cuda_version) |
     filter_excludes(.; $excludes) |
     compute_arch(.)
   ] |
