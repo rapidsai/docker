@@ -39,7 +39,7 @@ There are two types:
 
 The tag naming scheme for RAPIDS images incorporates key platform details into the tag as shown below:
 ```
-25.02-cuda12.5-py3.12
+25.02-cuda12.8-py3.12
  ^        ^      ^
  |        |      Python version
  |        |
@@ -48,7 +48,7 @@ The tag naming scheme for RAPIDS images incorporates key platform details into t
  RAPIDS version
 ```
 
-**Note: Nightly builds of the images have the RAPIDS version appended with an `a` (ie `25.02a-cuda12.5-py3.12`)**
+**Note: Nightly builds of the images have the RAPIDS version appended with an `a` (ie `25.02a-cuda12.8-py3.12`)**
 
 ## Usage
 
@@ -81,7 +81,7 @@ $ docker run \
     -e EXTRA_CONDA_PACKAGES="jq" \
     -e EXTRA_PIP_PACKAGES="beautifulsoup4" \
     -p 8888:8888 \
-    rapidsai/notebooks:25.02-cuda12.5-py3.12
+    rapidsai/notebooks:25.02-cuda12.8-py3.12
 ```
 
 ### Bind Mounts
@@ -106,7 +106,7 @@ $ docker run \
     --gpus all \
     --shm-size=1g --ulimit memlock=-1 --ulimit stack=67108864 \
     -v $(pwd)/environment.yml:/home/rapids/environment.yml \
-    rapidsai/base:25.02-cuda12.5-py3.12
+    rapidsai/base:25.02-cuda12.8-py3.12
 ```
 
 ### Use JupyterLab to Explore the Notebooks
