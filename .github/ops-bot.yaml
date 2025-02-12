@@ -4,3 +4,4 @@
 auto_merger: true
 branch_checker: true
 forward_merger: true
+label_checker: true
