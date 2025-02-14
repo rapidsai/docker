@@ -10,7 +10,7 @@ EOF
 
 if [ -e "/home/rapids/environment.yml" ]; then
     echo "environment.yml found. Installing packages."
-    timeout ${CONDA_TIMEOUT:-600} mamba env update -n base -f /home/rapids/environment.yml || exit $?
+    timeout ${CONDA_TIMEOUT:-600} mamba env update -n base -y -f /home/rapids/environment.yml || exit $?
 fi
 
 if [ "$EXTRA_CONDA_PACKAGES" ]; then

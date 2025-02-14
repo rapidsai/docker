@@ -1,0 +1,110 @@
+name: Build and push image variant
+
+on:
+  workflow_call:
+    inputs:
+      ARCHES:
+        required: true
+        type: string
+      CUDA_VER:
+        required: true
+        type: string
+      LINUX_DISTRO:
+        required: true
+        type: string
+      LINUX_DISTRO_VER:
+        required: true
+        type: string
+      LINUX_VER:
+        required: true
+        type: string
+      PYTHON_VER:
+        required: true
+        type: string
+      RAPIDS_VER:
+        required: true
+        type: string
+      BASE_TAG:
+        required: true
+        type: string
+      NOTEBOOKS_TAG:
+        required: true
+        type: string
+
+jobs:
+  build:
+    strategy:
+      matrix:
+        ARCH: ${{ fromJSON(inputs.ARCHES) }}
+        CUDA_VER: ["${{ inputs.CUDA_VER }}"]
+        LINUX_VER: ["${{ inputs.LINUX_VER }}"]
+        PYTHON_VER: ["${{ inputs.PYTHON_VER }}"]
+        RAPIDS_VER: ["${{ inputs.RAPIDS_VER }}"]
+      fail-fast: false
+    runs-on: "linux-${{ matrix.ARCH }}-cpu4"
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Install gha-tools
+        run: |
+          mkdir -p /tmp/gha-tools
+          curl -s -L 'https://github.com/rapidsai/gha-tools/releases/latest/download/tools.tar.gz' | tar -xz -C /tmp/gha-tools
+          echo "/tmp/gha-tools" >> "${GITHUB_PATH}"
+      - name: Clean up condarc for release builds
+        run: |
+          GIT_DESCRIBE_TAG="$(git describe --tags --abbrev=0)"
+          GIT_DESCRIBE_TAG="${GIT_DESCRIBE_TAG:1}" # remove leading 'v'
+          if [[ ! $GIT_DESCRIBE_TAG =~ [a-z] ]]; then
+            rapids-logger "Most recent tag is for release, adding `rapidsai` channel and removing `rapidsai-nightly` and `dask/label/dev` channels."
+            sed -i 's|rapidsai-nightly|rapidsai|;\|dask/label/dev|d' context/condarc
+          else
+            rapids-logger "Most recent tag is an alpha. Build will use nightly channels."
+          fi
+      - name: Login to DockerHub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.GPUCIBOT_DOCKERHUB_USER }}
+          password: ${{ secrets.GPUCIBOT_DOCKERHUB_TOKEN }}
+      - name: Set up Docker Context for Buildx
+        id: buildx-context
+        run: |
+          docker context create builders
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+        with:
+          driver: docker
+          endpoint: builders
+      - name: Build base image
+        uses: docker/build-push-action@v6
+        with:
+          context: context
+          file: Dockerfile
+          target: base
+          push: true
+          pull: true
+          build-args: |
+            CUDA_VER=${{ inputs.CUDA_VER }}
+            LINUX_DISTRO=${{ inputs.LINUX_DISTRO }}
+            LINUX_DISTRO_VER=${{ inputs.LINUX_DISTRO_VER }}
+            LINUX_VER=${{ inputs.LINUX_VER }}
+            PYTHON_VER=${{ inputs.PYTHON_VER }}
+            RAPIDS_VER=${{ inputs.RAPIDS_VER }}
+          tags: ${{ inputs.BASE_TAG }}-${{ matrix.ARCH }}
+      - name: Build notebooks image
+        uses: docker/build-push-action@v6
+        with:
+          context: context
+          file: Dockerfile
+          target: notebooks
+          push: true
+          pull: true
+          build-args: |
+            CUDA_VER=${{ inputs.CUDA_VER }}
+            LINUX_DISTRO=${{ inputs.LINUX_DISTRO }}
+            LINUX_DISTRO_VER=${{ inputs.LINUX_DISTRO_VER }}
+            LINUX_VER=${{ inputs.LINUX_VER }}
+            PYTHON_VER=${{ inputs.PYTHON_VER }}
+            RAPIDS_VER=${{ inputs.RAPIDS_VER }}
+          tags: ${{ inputs.NOTEBOOKS_TAG }}-${{ matrix.ARCH }}

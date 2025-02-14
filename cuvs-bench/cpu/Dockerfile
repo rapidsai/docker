@@ -1,7 +1,7 @@
 # syntax=docker/dockerfile:1
 
 ARG PYTHON_VER=unset
-ARG RAPIDS_VER=24.12
+ARG RAPIDS_VER=25.02
 
 FROM condaforge/miniforge3:24.7.1-2 AS cuvs-bench-cpu
 ARG RAPIDS_VER
@@ -21,16 +21,23 @@ echo ". /opt/conda/etc/profile.d/conda.sh; conda activate base" >> /etc/bash.bas
 EOF
 
 # we need perl temporarily for the remaining benchmark perl scripts
-RUN apt-get install perl -y
+RUN <<EOF
+apt-get update
+apt-get install -y \
+  perl \
+  wget
+wget https://github.com/rapidsai/gha-tools/releases/latest/download/tools.tar.gz -O - | tar -xz -C /usr/local/bin
+rm -rf /var/lib/apt/lists/*
+EOF
 
 # update everything before other environment changes, to ensure mixing
 # an older conda with newer packages still works well
 # ref: https://github.com/rapidsai/ci-imgs/issues/185
 RUN <<EOF
-mamba update --all -y -n base
-mamba install -y -n base "python=${PYTHON_VER}"
-mamba update --all -y -n base
-mamba install -y -n base \
+rapids-mamba-retry update --all -y -n base
+rapids-mamba-retry install -y -n base "python=${PYTHON_VER}"
+rapids-mamba-retry update --all -y -n base
+rapids-mamba-retry install -y -n base \
   "cuvs-bench-cpu=${RAPIDS_VER}.*" \
   "python=${PYTHON_VER}"
 conda clean -afy
