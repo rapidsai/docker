@@ -25,7 +25,7 @@ fi
 
 if [ "$(uname -m)" = "aarch64" ]; then
     # Check if the CUDA version is 12.8
-    if nvcc --version | grep -q "CUDA 12.8"; then
+    if [[ "$CUDA_VERSION" = 12.8* ]]; then
         export NCCL_CUMEM_HOST_ENABLE=0
         echo "Set NCCL_CUMEM_HOST_ENABLE=0 for ARM with CUDA 12.8"
     fi
