@@ -23,6 +23,14 @@ if [ "$EXTRA_PIP_PACKAGES" ]; then
     timeout ${PIP_TIMEOUT:-600} pip install $EXTRA_PIP_PACKAGES || exit $?
 fi
 
+if [ "$(uname -m)" = "aarch64" ]; then
+    # Check if the CUDA version is 12.8
+    if [[ "$CUDA_VERSION" = 12.8* ]]; then
+        export NCCL_CUMEM_HOST_ENABLE=0
+        echo "Set NCCL_CUMEM_HOST_ENABLE=0 for ARM with CUDA 12.8"
+    fi
+fi
+
 # Run whatever the user wants.
 if [ "${UNQUOTE}" = "true" ]; then
     exec $@
