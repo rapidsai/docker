@@ -46,12 +46,8 @@ jobs:
   checks:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-      - name: Run pre-commit
-        run: |
-          pip install pre-commit
-          pre-commit run --all-files
+      - uses: actions/checkout@v4
+      - uses: pre-commit/action@v3.0.1
   compute-matrix:
     runs-on: ubuntu-latest
     container:

@@ -1,4 +1,7 @@
 #!/usr/bin/env bash
+
+# Copyright (c) 2023-2025, NVIDIA CORPORATION.
+
 set -eo pipefail
 
 cat << EOF
@@ -33,6 +36,7 @@ fi
 
 # Run whatever the user wants.
 if [ "${UNQUOTE}" = "true" ]; then
+    # shellcheck disable=SC2068
     exec $@
 else
     exec "$@"
