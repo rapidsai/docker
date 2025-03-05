@@ -1,0 +1,72 @@
+apiVersion: container-canary.nvidia.com/v1
+kind: Validator
+name: rapids-base
+description: |
+  Tests characteristics that the general-purpose RAPIDS images expected to have.
+documentation: https://github.com/rapidsai/docker
+# This command just ensures the container stays up long enough for
+# all checks to complete.
+command:
+  - /bin/sh
+  - -c
+  - "sleep 600"
+checks:
+  - name: tool-conda
+    description: conda can be executed
+    probe:
+      exec:
+        command:
+          - conda
+          - --version
+  - name: tool-dask-cli
+    description: Dask CLI can be executed
+    probe:
+      exec:
+        command:
+          - python
+          - -m
+          - dask
+          - --version
+      timeoutSeconds: 10
+  # ref: https://github.com/rapidsai/docker/issues/668
+  - name: tool-distributed-spec-cli
+    description: Distributed dask_spec CLI can be executed
+    probe:
+      exec:
+        command:
+          - python
+          - -m
+          - distributed.cli.dask_spec
+          - --version
+  - name: user-is-rapids
+    description: Default user is rapids (uid=1001)
+    probe:
+      exec:
+        command:
+          - /bin/sh
+          - -c
+          - 'test "$(id)" = "uid=1001(rapids) gid=1000(conda) groups=1000(conda)"'
+  - name: home-directory
+    description: $HOME is "/home/rapids"
+    probe:
+      exec:
+        command:
+          - /bin/sh
+          - -c
+          - 'test "$HOME" = "/home/rapids"'
+  - name: working-directory
+    description: Working directory is /home/rapids
+    probe:
+      exec:
+        command:
+          - /bin/sh
+          - -c
+          - 'test "$(pwd)" = "/home/rapids"'
+  - name: conda-only-base-env
+    description: The only defined conda env is "base"
+    probe:
+      exec:
+        command:
+          - /bin/bash
+          - -c
+          - "[[ $(conda env list --quiet | grep --count -E '^[A-Za-z]+') == 1 ]];"
