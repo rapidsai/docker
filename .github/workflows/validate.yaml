@@ -1,0 +1,93 @@
+name: Validate images
+
+on:
+  workflow_call:
+    inputs:
+      ARCH:
+        required: true
+        type: string
+      # a tag from https://github.com/NVIDIA/container-canary/releases
+      CONTAINER_CANARY_VERSION:
+        description: 'tag from https://github.com/NVIDIA/container-canary/releases'
+        required: true
+        type: string
+      CUDA_VER:
+        required: true
+        type: string
+      DRIVER:
+        required: true
+        type: string
+      GPU:
+        required: true
+        type: string
+      PYTHON_VER:
+        required: true
+        type: string
+      BASE_TAG:
+        required: true
+        type: string
+      NOTEBOOKS_TAG:
+        required: true
+        type: string
+
+defaults:
+  run:
+    shell: sh
+
+permissions:
+  actions: read
+  checks: none
+  contents: read
+  deployments: none
+  discussions: none
+  id-token: write
+  issues: none
+  packages: read
+  pages: none
+  pull-requests: read
+  repository-projects: none
+  security-events: none
+  statuses: none
+
+jobs:
+  validate:
+    strategy:
+      matrix:
+        ARCH: ["${{ inputs.ARCH }}"]
+        CUDA_VER: ["${{ inputs.CUDA_VER }}"]
+        PYTHON_VER: ["${{ inputs.PYTHON_VER }}"]
+        GPU: ["${{ inputs.GPU }}"]
+        DRIVER: ["${{ inputs.DRIVER }}"]
+      fail-fast: false
+    runs-on: "linux-${{ inputs.ARCH }}-cpu4"
+    # container:
+    #   image: 'docker:dind'
+    #   options: --privileged
+    #   env:
+    #     NVIDIA_VISIBLE_DEVICES: ${{ env.NVIDIA_VISIBLE_DEVICES }}
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+      - name: Install Go
+        uses: actions/setup-go@v5
+        with:
+          go-version: '1.22.x'
+      - name: Install container-canary
+        run: |
+          GOBIN=/tmp/canary-bin go install github.com/nvidia/container-canary@${{ inputs.CONTAINER_CANARY_VERSION }}
+          /tmp/canary-bin/container-canary version
+      - name: (base) container-canary checks
+        run: |
+          export PATH="/tmp/canary-bin:${PATH}"
+          sh ./ci/container-canary/run-checks.sh \
+            --dask-scheduler \
+            ${{ inputs.BASE_TAG }}
+      - name: (notebooks) container-canary checks
+        run: |
+          export PATH="/tmp/canary-bin:${PATH}"
+          sh ./ci/container-canary/run-checks.sh \
+            --dask-scheduler \
+            --notebooks \
+            ${{ inputs.NOTEBOOK_TAG }}
