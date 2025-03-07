@@ -1,5 +1,7 @@
 #!/usr/bin/env python
 
+# Copyright (c) 2023-2025, NVIDIA CORPORATION.
+
 import argparse
 import os
 import sys
@@ -35,6 +37,8 @@ ignored_notebooks = [
     'cuspatial/ZipCodes_Stops_PiP_cuSpatial.ipynb',
     # context on this being skipped: https://github.com/rapidsai/docker/issues/726
     'cuspatial/trajectory_clustering.ipynb',
+    # context on this being skipped: https://github.com/rapidsai/docker/issues/740
+    'cuspatial/Taxi_Dropoff_Reverse_Geocoding.ipynb',
 ]
 
 
@@ -197,7 +201,7 @@ if __name__ == "__main__":
 
     if found_errors:
         print("Error during notebook tests!")
-        for notebook in nb_errors.keys():
-            if nb_errors[notebook]:
-                print(f'Errors during {notebook}')
+        for notebook_id, errors in nb_errors.items():
+            if errors:
+                print(f"Errors during '{notebook_id}'")
         sys.exit(2)
