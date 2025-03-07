@@ -37,6 +37,8 @@ ignored_notebooks = [
     'cuspatial/ZipCodes_Stops_PiP_cuSpatial.ipynb',
     # context on this being skipped: https://github.com/rapidsai/docker/issues/726
     'cuspatial/trajectory_clustering.ipynb',
+    # context on this being skipped: https://github.com/rapidsai/docker/issues/740
+    'cuspatial/Taxi_Dropoff_Reverse_Geocoding.ipynb',
 ]
 
 
