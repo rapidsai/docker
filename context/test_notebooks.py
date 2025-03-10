@@ -21,7 +21,10 @@ ignored_subdirectory_names = [
     "demo",
 ]
 ignored_filenames = ["-csv", "benchmark", "target", "performance"]
-ignored_notebooks = []
+ignored_notebooks = [
+    # The following notebooks are skipped in tests
+    'cugraph/algorithms/layout/Force-Atlas2.ipynb',
+]
 
 
 def get_notebooks(directory: str) -> Iterable[str]:
