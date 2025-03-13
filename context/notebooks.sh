@@ -8,7 +8,7 @@
 
 set -euo pipefail
 
-NOTEBOOK_REPOS=(cudf cuml cugraph cuspatial)
+NOTEBOOK_REPOS=(cudf cuml cugraph)
 
 mkdir -p /notebooks /dependencies
 for REPO in "${NOTEBOOK_REPOS[@]}"; do
