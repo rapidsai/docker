@@ -35,6 +35,8 @@ fi
 
 # Run whatever the user wants.
 if [ "${UNQUOTE}" = "true" ]; then
+    # splitting elements without quoting is intentional here,
+    # to make it possible to tightly control the quoting of arguments
     # shellcheck disable=SC2068
     exec $@
 else
