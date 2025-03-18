@@ -1,5 +1,4 @@
 #!/usr/bin/env python
-
 # Copyright (c) 2023-2025, NVIDIA CORPORATION.
 
 import argparse
