@@ -1,5 +1,4 @@
 #!/bin/bash
-
 # Copyright (c) 2023-2025, NVIDIA CORPORATION.
 
 ## Usage
