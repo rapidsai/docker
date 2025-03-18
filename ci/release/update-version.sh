@@ -31,7 +31,7 @@ done
 sed_runner "s/com\.nvidia\.workbench\.image-version=.*/com.nvidia.workbench.image-version=\"${NEXT_FULL_TAG}\"/g" Dockerfile
 
 # CI files
-for FILE in .github/workflows/*.yml; do
+for FILE in .github/workflows/*.yaml .github/workflows/*.yml; do
   sed_runner "/shared-workflows/ s/@.*/@branch-${NEXT_SHORT_TAG}/g" "${FILE}"
 done
 
