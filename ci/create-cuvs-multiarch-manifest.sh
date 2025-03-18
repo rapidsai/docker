@@ -38,6 +38,8 @@ done
 docker manifest create "${org}/${CUVS_BENCH_IMAGE_REPO}:${cuvs_bench_tag}" "${cuvs_bench_source_tags[@]}"
 docker manifest push "${org}/${CUVS_BENCH_IMAGE_REPO}:${cuvs_bench_tag}"
 
+# this and everything above that it uses can be uncommented once the issues with cuVS datasets are fixed
+# ref: https://github.com/rapidsai/docker/issues/724
 # docker manifest create "${org}/${CUVS_BENCH_DATASETS_IMAGE_REPO}:${cuvs_bench_datasets_tag}" "${cuvs_bench_datasets_source_tags[@]}"
 # docker manifest push "${org}/${CUVS_BENCH_DATASETS_IMAGE_REPO}:${cuvs_bench_datasets_tag}"
 
