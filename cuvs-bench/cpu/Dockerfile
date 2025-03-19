@@ -1,4 +1,5 @@
 # syntax=docker/dockerfile:1
+# Copyright (c) 2024-2025, NVIDIA CORPORATION.
 
 ARG PYTHON_VER=unset
 ARG RAPIDS_VER=25.06
