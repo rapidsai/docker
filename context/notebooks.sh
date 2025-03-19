@@ -1,4 +1,5 @@
 #!/usr/bin/env bash
+# Copyright (c) 2023-2025, NVIDIA CORPORATION.
 
 # Clones repos with notebooks & compiles notebook test dependencies
 # Requires environment variables:
