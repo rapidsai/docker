@@ -3,7 +3,8 @@
 
 set -e -E -u -o pipefail
 
-IMAGE_URI="${1}"
+# expect the image URI to be the final argument
+IMAGE_URI="${*: -1}"
 
 NUMARGS=$#
 ARGS=$*
@@ -36,8 +37,3 @@ for check_config in "${check_configs[@]}"; do
 done
 
 echo "done checking '${IMAGE_URI}' with container-canary"
-
-# usage a config from the container-canary repo
-canary validate \
-    --file https://raw.githubusercontent.com/NVIDIA/container-canary/main/examples/dask-scheduler.yaml \
-    "rapidsai/notebooks:24.10a-cuda12.2-py3.11"

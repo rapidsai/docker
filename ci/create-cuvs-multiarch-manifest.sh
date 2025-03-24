@@ -2,7 +2,7 @@
 # Copyright (c) 2025, NVIDIA CORPORATION.
 
 set -eEuo pipefail
-
+exit 0
 common_path="$(dirname "$(realpath "$0")")/common.sh"
 # shellcheck source=common.sh
 source "$common_path"
