@@ -268,7 +268,7 @@ jobs:
           ARCHES: ${{ toJSON(matrix.ARCHES) }}
         run: ci/create-cuvs-multiarch-manifest.sh
   validate:
-    needs: [build, build-multiarch-manifest]
+    needs: [compute-matrix, build-rapids, build-rapids-multiarch-manifest]
     strategy:
       matrix: ${{ fromJSON(needs.compute-matrix.outputs.TEST_MATRIX) }}
       fail-fast: false

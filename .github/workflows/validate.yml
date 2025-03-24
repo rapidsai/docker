@@ -1,3 +1,4 @@
+# Copyright (c) 2025, NVIDIA CORPORATION.
 name: Validate images
 
 on:
@@ -90,4 +91,4 @@ jobs:
           sh ./ci/container-canary/run-checks.sh \
             --dask-scheduler \
             --notebooks \
-            ${{ inputs.NOTEBOOK_TAG }}
+            ${{ inputs.NOTEBOOKS_TAG }}
