@@ -6,12 +6,20 @@ Configurations for testing images built from this repo with `container-canary` (
 
 Install `container-canary` following the instructions in that project's repo.
 
-Run the tests against a built image.
-For example:
+Run the tests against a built image, the same way they're run in CI.
 
 ```shell
 IMAGE_URI="rapidsai/notebooks:25.06a-cuda12.8-py3.12"
 
+ci/container-canary/run-checks.sh \
+    --dask-scheduler \
+    --notebooks \
+    "${IMAGE_URI}"
+```
+
+Or try invoking individual sets of `container-canary` checks.
+
+```shell
 # using a config checked in here
 container-canary validate \
     --file ./ci/container-canary/base.yml \
