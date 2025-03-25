@@ -30,7 +30,7 @@ fi
 
 for check_config in "${check_configs[@]}"; do
     echo "checking '${IMAGE_URI}' with '${check_config}'"
-    canary validate \
+    container-canary validate \
         --file "${check_config}" \
         --startup-timeout 60 \
         "${IMAGE_URI}"
