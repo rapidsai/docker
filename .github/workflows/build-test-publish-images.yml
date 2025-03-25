@@ -276,7 +276,7 @@ jobs:
     uses: ./.github/workflows/validate.yml
     with:
       ARCH: ${{ matrix.ARCH }}
-      CONTAINER_CANARY_VERSION: main
+      CONTAINER_CANARY_VERSION: 42e3d1186c7750a863321adebeedc2e607e0992a # latest main
       CUDA_VER: ${{ matrix.CUDA_VER }}
       GPU: ${{ matrix.GPU }}
       DRIVER: ${{ matrix.DRIVER }}
@@ -298,26 +298,26 @@ jobs:
         cuda${{ matrix.CUDA_VER }}-\
         py${{ matrix.PYTHON_VER }}-\
         ${{ matrix.ARCH }}"
-  # test:
-  #   needs: [compute-matrix, build-rapids]
-  #   if: inputs.run_tests
-  #   strategy:
-  #     matrix: ${{ fromJSON(needs.compute-matrix.outputs.TEST_MATRIX) }}
-  #     fail-fast: false
-  #   secrets: inherit
-  #   uses: ./.github/workflows/test-notebooks.yml
-  #   with:
-  #     BUILD_TYPE: ${{ inputs.build_type }}
-  #     ARCH: ${{ matrix.ARCH }}
-  #     GPU: ${{ matrix.GPU }}
-  #     DRIVER: ${{ matrix.DRIVER }}
-  #     CUDA_VER: ${{ matrix.CUDA_VER }}
-  #     PYTHON_VER: ${{ matrix.PYTHON_VER }}
-  #     NOTEBOOKS_TAG:
-  #       "rapidsai/${{ needs.compute-matrix.outputs.NOTEBOOKS_IMAGE_REPO }}:\
-  #       ${{ needs.compute-matrix.outputs.NOTEBOOKS_TAG_PREFIX }}\
-  #       ${{ needs.compute-matrix.outputs.RAPIDS_VER }}\
-  #       ${{ needs.compute-matrix.outputs.ALPHA_TAG }}-\
-  #       cuda${{ matrix.CUDA_VER }}-\
-  #       py${{ matrix.PYTHON_VER }}-\
-  #       ${{ matrix.ARCH }}"
+  test:
+    needs: [compute-matrix, build-rapids]
+    if: inputs.run_tests
+    strategy:
+      matrix: ${{ fromJSON(needs.compute-matrix.outputs.TEST_MATRIX) }}
+      fail-fast: false
+    secrets: inherit
+    uses: ./.github/workflows/test-notebooks.yml
+    with:
+      BUILD_TYPE: ${{ inputs.build_type }}
+      ARCH: ${{ matrix.ARCH }}
+      GPU: ${{ matrix.GPU }}
+      DRIVER: ${{ matrix.DRIVER }}
+      CUDA_VER: ${{ matrix.CUDA_VER }}
+      PYTHON_VER: ${{ matrix.PYTHON_VER }}
+      NOTEBOOKS_TAG:
+        "rapidsai/${{ needs.compute-matrix.outputs.NOTEBOOKS_IMAGE_REPO }}:\
+        ${{ needs.compute-matrix.outputs.NOTEBOOKS_TAG_PREFIX }}\
+        ${{ needs.compute-matrix.outputs.RAPIDS_VER }}\
+        ${{ needs.compute-matrix.outputs.ALPHA_TAG }}-\
+        cuda${{ matrix.CUDA_VER }}-\
+        py${{ matrix.PYTHON_VER }}-\
+        ${{ matrix.ARCH }}"

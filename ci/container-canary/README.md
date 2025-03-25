@@ -10,15 +10,15 @@ Run the tests against a built image.
 For example:
 
 ```shell
-IMAGE_URI="rapidsai/notebooks:24.06a-cuda11.8-py3.11"
+IMAGE_URI="rapidsai/notebooks:25.06a-cuda12.8-py3.12"
 
 # using a config checked in here
-canary validate \
-    --file ./ci/container-canary/rapids.yml \
+container-canary validate \
+    --file ./ci/container-canary/base.yml \
     "${IMAGE_URI}"
 
 # usage a config from the container-canary repo
-canary validate \
+container-canary validate \
     --file https://raw.githubusercontent.com/NVIDIA/container-canary/main/examples/databricks.yaml \
     "${IMAGE_URI}"
 ```

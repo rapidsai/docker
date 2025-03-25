@@ -61,11 +61,6 @@ jobs:
         DRIVER: ["${{ inputs.DRIVER }}"]
       fail-fast: false
     runs-on: "linux-${{ inputs.ARCH }}-cpu4"
-    # container:
-    #   image: 'docker:dind'
-    #   options: --privileged
-    #   env:
-    #     NVIDIA_VISIBLE_DEVICES: ${{ env.NVIDIA_VISIBLE_DEVICES }}
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
