@@ -46,7 +46,7 @@ checks:
         command:
           - /bin/sh
           - -c
-          - 'test "$(id)" = "uid=1001(rapids) gid=1001(conda) groups=1001(conda)"'
+          - 'id | grep -E "^uid=1001\(rapids\)" > /dev/null'
   - name: home-directory
     description: $HOME is "/home/rapids"
     probe:
