@@ -77,13 +77,13 @@ jobs:
       - name: (base) container-canary checks
         run: |
           export PATH="/tmp/canary-bin:${PATH}"
-          ./ci/container-canary/run-checks.sh \
+          ./ci/run-validation-checks.sh \
             --dask-scheduler \
             ${{ inputs.BASE_TAG }}
       - name: (notebooks) container-canary checks
         run: |
           export PATH="/tmp/canary-bin:${PATH}"
-          ./ci/container-canary/run-checks.sh \
+          ./ci/run-validation-checks.sh \
             --dask-scheduler \
             --notebooks \
             ${{ inputs.NOTEBOOKS_TAG }}

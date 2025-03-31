@@ -11,7 +11,7 @@ Run the tests against a built image, the same way they're run in CI.
 ```shell
 IMAGE_URI="rapidsai/notebooks:25.06a-cuda12.8-py3.12"
 
-ci/container-canary/run-checks.sh \
+ci/run-validation-checks.sh \
     --dask-scheduler \
     --notebooks \
     "${IMAGE_URI}"
@@ -22,7 +22,7 @@ Or try invoking individual sets of `container-canary` checks.
 ```shell
 # using a config checked in here
 container-canary validate \
-    --file ./ci/container-canary/base.yml \
+    --file ./tests/container-canary/base.yml \
     "${IMAGE_URI}"
 
 # usage a config from the container-canary repo

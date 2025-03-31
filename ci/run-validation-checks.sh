@@ -17,11 +17,11 @@ function hasArg {
 docker pull "${IMAGE_URI}"
 
 check_configs=(
-    ./ci/container-canary/base.yml
+    ./tests/container-canary/base.yml
 )
 
 if hasArg '--notebooks'; then
-    check_configs+=(./ci/container-canary/notebooks.yml)
+    check_configs+=(./tests/container-canary/notebooks.yml)
 fi
 
 if hasArg '--dask-scheduler'; then
