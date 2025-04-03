@@ -4,7 +4,7 @@
 ARG PYTHON_VER=unset
 ARG RAPIDS_VER=25.06
 
-FROM condaforge/miniforge3:24.7.1-2 AS cuvs-bench-cpu
+FROM condaforge/miniforge3:24.11.3-2 AS cuvs-bench-cpu
 ARG RAPIDS_VER
 ARG PYTHON_VER
 
