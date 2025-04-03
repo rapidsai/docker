@@ -267,6 +267,37 @@ jobs:
           GPUCIBOT_DOCKERHUB_TOKEN: ${{ secrets.GPUCIBOT_DOCKERHUB_TOKEN }}
           ARCHES: ${{ toJSON(matrix.ARCHES) }}
         run: ci/create-cuvs-multiarch-manifest.sh
+  validate:
+    needs: [compute-matrix, build-rapids, build-rapids-multiarch-manifest]
+    strategy:
+      matrix: ${{ fromJSON(needs.compute-matrix.outputs.TEST_MATRIX) }}
+      fail-fast: false
+    secrets: inherit
+    uses: ./.github/workflows/validate.yml
+    with:
+      ARCH: ${{ matrix.ARCH }}
+      CONTAINER_CANARY_VERSION: 'v0.5.0'
+      CUDA_VER: ${{ matrix.CUDA_VER }}
+      GPU: ${{ matrix.GPU }}
+      DRIVER: ${{ matrix.DRIVER }}
+      PYTHON_VER: ${{ matrix.PYTHON_VER }}
+      # images to test
+      BASE_TAG:
+        "docker.io/rapidsai/${{ needs.compute-matrix.outputs.BASE_IMAGE_REPO }}:\
+        ${{ needs.compute-matrix.outputs.BASE_TAG_PREFIX }}\
+        ${{ needs.compute-matrix.outputs.RAPIDS_VER }}\
+        ${{ needs.compute-matrix.outputs.ALPHA_TAG }}-\
+        cuda${{ matrix.CUDA_VER }}-\
+        py${{ matrix.PYTHON_VER }}-\
+        ${{ matrix.ARCH }}"
+      NOTEBOOKS_TAG:
+        "docker.io/rapidsai/${{ needs.compute-matrix.outputs.NOTEBOOKS_IMAGE_REPO }}:\
+        ${{ needs.compute-matrix.outputs.NOTEBOOKS_TAG_PREFIX }}\
+        ${{ needs.compute-matrix.outputs.RAPIDS_VER }}\
+        ${{ needs.compute-matrix.outputs.ALPHA_TAG }}-\
+        cuda${{ matrix.CUDA_VER }}-\
+        py${{ matrix.PYTHON_VER }}-\
+        ${{ matrix.ARCH }}"
   test:
     needs: [compute-matrix, build-rapids]
     if: inputs.run_tests

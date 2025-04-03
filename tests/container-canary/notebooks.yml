@@ -1,0 +1,17 @@
+# Copyright (c) 2025, NVIDIA CORPORATION.
+apiVersion: container-canary.nvidia.com/v1
+kind: Validator
+name: rapids-notebooks
+description: |
+  Tests characteristics that any RAPIDS images shipping Jupyter
+  are expected to have.
+documentation: https://github.com/rapidsai/docker
+checks:
+  - name: tool-jupyter-lab
+    description: jupyter lab can be executed
+    probe:
+      exec:
+        command:
+          - jupyter
+          - lab
+          - --version
