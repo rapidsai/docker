@@ -1,4 +1,5 @@
 #!/usr/bin/env python
+# Copyright (c) 2023-2025, NVIDIA CORPORATION.
 
 import argparse
 import os
@@ -22,19 +23,8 @@ ignored_subdirectory_names = [
 ]
 ignored_filenames = ["-csv", "benchmark", "target", "performance"]
 ignored_notebooks = [
-    'cusignal/api_guide/io_examples.ipynb', # 26gb data download
-
-    # following nbs are marked as skipped
+    # The following notebooks are skipped in tests
     'cugraph/algorithms/layout/Force-Atlas2.ipynb',
-    'cuspatial/binary_predicates.ipynb',
-    'cuspatial/cuproj_benchmark.ipynb',
-    # context on these being skipped: https://github.com/rapidsai/cuspatial/pull/1407
-    'cuspatial/cuspatial_api_examples.ipynb',
-    'cuspatial/nyc_taxi_years_correlation.ipynb',
-    # context on skip zipcodes: https://github.com/rapidsai/cuspatial/issues/1426
-    'cuspatial/ZipCodes_Stops_PiP_cuSpatial.ipynb',
-    # context on this being skipped: https://github.com/rapidsai/docker/issues/726
-    'cuspatial/trajectory_clustering.ipynb',
 ]
 
 
@@ -197,7 +187,7 @@ if __name__ == "__main__":
 
     if found_errors:
         print("Error during notebook tests!")
-        for notebook in nb_errors.keys():
-            if nb_errors[notebook]:
-                print(f'Errors during {notebook}')
+        for notebook_id, errors in nb_errors.items():
+            if errors:
+                print(f"Errors during '{notebook_id}'")
         sys.exit(2)

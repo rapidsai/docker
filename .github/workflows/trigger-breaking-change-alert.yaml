@@ -1,3 +1,4 @@
+# Copyright (c) 2024-2025, NVIDIA CORPORATION.
 name: Trigger Breaking Change Notifications
 
 on:
@@ -12,7 +13,7 @@ jobs:
   trigger-notifier:
     if: contains(github.event.pull_request.labels.*.name, 'breaking')
     secrets: inherit
-    uses: rapidsai/shared-workflows/.github/workflows/breaking-change-alert.yaml@branch-25.02
+    uses: rapidsai/shared-workflows/.github/workflows/breaking-change-alert.yaml@branch-25.04
     with:
       sender_login: ${{ github.event.sender.login }}
       sender_avatar: ${{ github.event.sender.avatar_url }}

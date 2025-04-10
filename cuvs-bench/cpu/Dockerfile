@@ -1,7 +1,8 @@
 # syntax=docker/dockerfile:1
+# Copyright (c) 2024-2025, NVIDIA CORPORATION.
 
 ARG PYTHON_VER=unset
-ARG RAPIDS_VER=25.02
+ARG RAPIDS_VER=25.04
 
 FROM condaforge/miniforge3:24.7.1-2 AS cuvs-bench-cpu
 ARG RAPIDS_VER

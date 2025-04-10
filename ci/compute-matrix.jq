@@ -1,3 +1,5 @@
+# Copyright (c) 2023-2025, NVIDIA CORPORATION.
+
 def compute_arch($x):
   $x + {ARCHES: ["amd64", "arm64"]};
 

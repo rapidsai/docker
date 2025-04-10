@@ -1,3 +1,5 @@
+# Copyright (c) 2024-2025, NVIDIA CORPORATION.
+
 [tool.ruff]
 target-version = "py310"
 

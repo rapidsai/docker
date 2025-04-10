@@ -1,3 +1,4 @@
+# Copyright (c) 2023-2025, NVIDIA CORPORATION.
 name: build and publish imgs workflow
 
 on:
@@ -42,16 +43,13 @@ jobs:
       - build-cuvs-multiarch-manifest
       - test
     secrets: inherit
-    uses: rapidsai/shared-workflows/.github/workflows/pr-builder.yaml@branch-25.02
+    uses: rapidsai/shared-workflows/.github/workflows/pr-builder.yaml@branch-25.04
   checks:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
+      - uses: actions/checkout@v4
       - name: Run pre-commit
-        run: |
-          pip install pre-commit
-          pre-commit run --all-files
+        uses: pre-commit/action@v3.0.1
   compute-matrix:
     runs-on: ubuntu-latest
     container:

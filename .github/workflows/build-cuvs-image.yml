@@ -1,3 +1,4 @@
+# Copyright (c) 2025, NVIDIA CORPORATION.
 name: Build and push image variant
 
 on:
