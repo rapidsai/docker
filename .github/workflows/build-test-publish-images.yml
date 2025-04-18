@@ -50,6 +50,9 @@ jobs:
       - uses: actions/checkout@v4
       - name: Run pre-commit
         uses: pre-commit/action@v3.0.1
+      - name: Run hadolint
+        run: |
+          ci/lint-dockerfiles.sh
   compute-matrix:
     runs-on: ubuntu-latest
     container:
