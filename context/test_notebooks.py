@@ -7,6 +7,7 @@ import sys
 import timeit
 from typing import Iterable
 import nbformat
+from nbconvert.filters.ansi import strip_ansi
 from nbconvert.preprocessors import ExecutePreprocessor
 import yaml
 
@@ -112,13 +113,15 @@ def test_notebook(notebook_file, executed_nb_file):
                     else:
                         outputs.append(str(ec) + "\n" + str(output["data"]))
                 elif output["output_type"] == "error":
+                    err_name = str(output["ename"])
+                    traceback_str = "\n".join(strip_ansi(line) for line in output["traceback"])
                     errors.append(
                         [
-                            str(output["ename"]),
-                            str(ec + 1) + "\n" + str(output["traceback"]),
+                            err_name,
+                            str(ec + 1) + "\n" + traceback_str,
                         ]
                     )
-                    print(str(output["ename"]), str(output["traceback"]))
+                    print(err_name, traceback_str)
                 else:
                     print(f'Unknown output type: {output["output_type"]}')
 
