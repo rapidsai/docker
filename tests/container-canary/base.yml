@@ -39,6 +39,14 @@ checks:
           - -m
           - distributed.cli.dask_spec
           - --version
+  # ref: https://github.com/rapidsai/docker/pull/750
+  - name: tool-curl
+    description: curl can be executed
+    probe:
+      exec:
+        command:
+          - curl
+          - --version
   - name: user-is-rapids
     description: Default user is rapids (uid=1001)
     probe:
