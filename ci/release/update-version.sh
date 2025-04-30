@@ -23,7 +23,7 @@ function sed_runner() {
     sed -i.bak ''"$1"'' $2 && rm -f ${2}.bak
 }
 
-find . -name Dockerfile | while IFS= read -r -d '' FILE; do
+find . -name Dockerfile -print0 | while IFS= read -r -d '' FILE; do
   sed_runner "s/ARG RAPIDS_VER=.*/ARG RAPIDS_VER=${NEXT_SHORT_TAG}/g" "${FILE}"
 done
 
@@ -42,3 +42,5 @@ sed_runner "s/v[[:digit:]]\+\.[[:digit:]]\+/v${NEXT_SHORT_TAG}/g" cuvs-bench/REA
 sed_runner "s/[[:digit:]]\+\.[[:digit:]]\+-cuda/${NEXT_SHORT_TAG}-cuda/g" cuvs-bench/README.md
 sed_runner "s/[[:digit:]]\+\.[[:digit:]]\+a-py/${NEXT_SHORT_TAG}a-py/g" cuvs-bench/README.md
 sed_runner "s/[[:digit:]]\+\.[[:digit:]]\+a-cuda/${NEXT_SHORT_TAG}a-cuda/g" cuvs-bench/README.md
+
+sed_runner "s/[[:digit:]]\+\.[[:digit:]]\+a-cuda/${NEXT_SHORT_TAG}a-cuda/g" tests/container-canary/README.md
