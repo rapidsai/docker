@@ -1,6 +1,5 @@
 #!/usr/bin/env python3
-# NGC Publishing Pipeline Script
-# This script generates NGC publishing configuration file and creates a GitLab MR
+# Copyright (c) 2024-2025, NVIDIA CORPORATION.
 
 import argparse
 import os
@@ -8,8 +7,10 @@ import sys
 import yaml
 import logging
 import subprocess
+import tempfile
 from datetime import datetime
 from typing import Dict, Any
+from pathlib import Path  # noqa: F401
 
 # Configure logging
 logging.basicConfig(
@@ -20,6 +21,11 @@ logger = logging.getLogger("ngc_publish")
 
 # GitLab constants
 NGC_PUBLISHING_REPO = "ngc/publishing/ngc-publishing-configs"
+
+# Executable paths
+GIT_PATH = "/usr/bin/git"
+CP_PATH = "/bin/cp"
+GLAB_PATH = "/usr/local/bin/glab"
 
 def parse_args():
     """Parse command line arguments"""
@@ -58,9 +64,9 @@ def load_matrix_yaml(matrix_yaml_path):
     try:
         with open(matrix_yaml_path, 'r') as f:
             matrix_data = yaml.safe_load(f)
-        return matrix_data
+        return matrix_data  # noqa: RET504
     except Exception as e:
-        logger.error(f"Error loading matrix YAML: {str(e)}")
+        logger.error(f"Error loading matrix YAML: {str(e)}")  # noqa: RUF010
         raise
 
 def generate_artifacts_from_matrix(rapids_version, matrix_data):
@@ -128,7 +134,7 @@ def generate_config(args, matrix_data=None) -> Dict[str, Any]:
         }
     }
 
-    return config
+    return config  # noqa: RET504
 
 def write_config_file(config: Dict[str, Any], args) -> str:
     """Write config to a YAML file and return the file path"""
@@ -148,19 +154,18 @@ def write_config_file(config: Dict[str, Any], args) -> str:
 
 def clone_repository(gitlab_token: str) -> str:
     """Clone the NGC publishing repository and return the local path"""
-    # Create a unique temporary directory in /tmp
-    timestamp = datetime.now().strftime("%Y%m%d%H%M%S")
-    temp_dir = os.path.join("/tmp", f"ngc-publishing-{timestamp}")
+    # Create a secure temporary directory
+    temp_dir = tempfile.mkdtemp(prefix="ngc-publishing-")
 
     # Format repository URL with token
     repo_url = f"https://oauth2:{gitlab_token}@gitlab-master.nvidia.com/{NGC_PUBLISHING_REPO}.git"
 
     try:
-        subprocess.run(["git", "clone", repo_url, temp_dir], check=True)
-        logger.info(f"Cloned repository to {temp_dir}")
+        subprocess.run([GIT_PATH, "clone", repo_url, temp_dir], check=True)  # noqa: S603
+        logger.info("Cloned repository to %s", temp_dir)
         return temp_dir
     except subprocess.CalledProcessError as e:
-        logger.error(f"Failed to clone repository: {str(e)}")
+        logger.error("Failed to clone repository: %s", str(e))
         raise
 
 def create_and_checkout_branch(repo_path: str) -> str:
@@ -169,11 +174,11 @@ def create_and_checkout_branch(repo_path: str) -> str:
     branch_name = f"rapids-{timestamp}"
 
     try:
-        subprocess.run(["git", "checkout", "-b", branch_name], cwd=repo_path, check=True)
-        logger.info(f"Created and checked out branch: {branch_name}")
+        subprocess.run([GIT_PATH, "checkout", "-b", branch_name], cwd=repo_path, check=True)  # noqa: S603
+        logger.info("Created and checked out branch: %s", branch_name)
         return branch_name
     except subprocess.CalledProcessError as e:
-        logger.error(f"Failed to create branch: {str(e)}")
+        logger.error("Failed to create branch: %s", str(e))
         raise
 
 def add_file_to_repo(repo_path: str, file_path: str, rapids_version: str) -> None:
@@ -183,41 +188,46 @@ def add_file_to_repo(repo_path: str, file_path: str, rapids_version: str) -> Non
 
     try:
         # Copy the file to the repository
-        subprocess.run(["cp", file_path, dest_path], check=True)
+        subprocess.run([CP_PATH, file_path, dest_path], check=True)  # noqa: S603
 
         # Add and commit the file
-        subprocess.run(["git", "add", dest_path], cwd=repo_path, check=True)
-        subprocess.run(
-            ["git", "commit", "-m", f"Add RAPIDS {rapids_version} docker images to NGC"],
+        subprocess.run([GIT_PATH, "add", dest_path], cwd=repo_path, check=True)  # noqa: S603
+        subprocess.run(  # noqa: S603
+            [GIT_PATH, "commit", "-m", f"Add RAPIDS {rapids_version} publishing configuration"],
             cwd=repo_path,
             check=True
         )
-        logger.info(f"Added and committed file to repository")
+        logger.info("Added and committed file to repository")
     except subprocess.CalledProcessError as e:
-        logger.error(f"Failed to add file to repository: {str(e)}")
+        logger.error("Failed to add file to repository: %s", str(e))
         raise
 
 def push_and_create_mr(repo_path: str, branch_name: str, rapids_version: str, gitlab_token: str) -> str:
     """Push the branch and create a merge request"""
     try:
         # Configure git to use the token for pushing
-        subprocess.run(["git", "config", "--local", "http.extraHeader", f"Authorization: Bearer {gitlab_token}"],
-                      cwd=repo_path, check=True)
+        subprocess.run(  # noqa: S603
+            [GIT_PATH, "config", "--local", "http.extraHeader", f"Authorization: Bearer {gitlab_token}"],
+            cwd=repo_path,
+            check=True
+        )
 
         # Push the branch
-        subprocess.run(["git", "push", "-u", "origin", branch_name], cwd=repo_path, check=True)
+        subprocess.run([GIT_PATH, "push", "-u", "origin", branch_name], cwd=repo_path, check=True)  # noqa: S603
 
         # Create merge request using GitLab CLI
         mr_title = f"Add RAPIDS {rapids_version} publishing configuration"
         mr_description = f"""
-This MR adds publishing configuration for RAPIDS {rapids_version} docker images to NGC.
+This MR adds publishing configuration for RAPIDS {rapids_version}.
+
+Generated by RAPIDS NGC publishing pipeline scripts.
         """
 
         # Configure glab to use the token
-        subprocess.run(["glab", "auth", "login", "--token", gitlab_token], check=True)
+        subprocess.run([GLAB_PATH, "auth", "login", "--token", gitlab_token], check=True)  # noqa: S603
 
-        result = subprocess.run(
-            ["glab", "mr", "create", "--title", mr_title, "--description", mr_description, "--target-branch", "jawe/fake-main"],
+        result = subprocess.run(  # noqa: S603
+            [GLAB_PATH, "mr", "create", "--title", mr_title, "--description", mr_description, "--target-branch", "jawe/fake-main"],
             cwd=repo_path,
             capture_output=True,
             text=True,
@@ -226,10 +236,10 @@ This MR adds publishing configuration for RAPIDS {rapids_version} docker images 
 
         # Extract MR URL from the output
         mr_url = result.stdout.strip()
-        logger.info(f"Created merge request: {mr_url}")
+        logger.info("Created merge request: %s", mr_url)
         return mr_url
     except subprocess.CalledProcessError as e:
-        logger.error(f"Failed to push branch or create merge request: {str(e)}")
+        logger.error("Failed to push branch or create merge request: %s", str(e))
         raise
 
 def main():
@@ -249,7 +259,7 @@ def main():
 
         if args.dry_run:
             logger.info("Dry run mode - skipping GitLab MR creation")
-            logger.info(f"Generated config file: {config_file}")
+            logger.info("Generated config file: %s", config_file)
             sys.exit(0)
 
         # Clone repository and create MR
@@ -260,10 +270,10 @@ def main():
 
         # Output MR URL for tracking
         print(f"GitLab MR created: {mr_url}")
-        print(f"Please track the MR status and ensure it is approved.")
+        print("Please track the MR status and ensure it is approved.")
 
     except Exception as e:
-        logger.error(f"Error: {str(e)}")
+        logger.error("Error: %s", str(e))
         sys.exit(1)
 
 if __name__ == "__main__":

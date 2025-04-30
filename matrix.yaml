@@ -1,3 +1,4 @@
+# Copyright (c) 2023-2025, NVIDIA CORPORATION.
 CUDA_VER: # Should be `<major>.<minor>.<patch>` (e.g. `12.8.0`)
   - "11.8.0"
   - "12.0.1"
