@@ -1,4 +1,5 @@
 # Copyright (c) 2024-2025, NVIDIA CORPORATION.
+
 name: Publish release images to NGC
 
 on:
@@ -58,7 +59,7 @@ jobs:
 
           for type in base notebooks; do
             source="rapidsai/$type:${{ inputs.RAPIDS_VER }}-cuda$CUDA_VER_SHORT-py$PYTHON_VER"
-            target="nvcr.io/nvidia/rapidsai/$type:${{ inputs.RAPIDS_VER }}-cuda$CUDA_VER_SHORT-py$PYTHON_VER"
+            target="nvcr.io/nvstaging/rapids/$type:${{ inputs.RAPIDS_VER }}-cuda$CUDA_VER_SHORT-py$PYTHON_VER"
             echo "$source => $target"
             docker run -v ~/.docker/config.json:/config.json quay.io/skopeo/stable:latest copy --multi-arch all --dest-authfile=/config.json docker://$source docker://$target
           done

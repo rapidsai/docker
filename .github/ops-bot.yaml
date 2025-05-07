@@ -1,5 +1,6 @@
 # This file controls which features from the `ops-bot` repository below are enabled.
 # - https://github.com/rapidsai/ops-bot
+# Copyright (c) 2023-2025, NVIDIA CORPORATION.
 
 auto_merger: true
 branch_checker: true
