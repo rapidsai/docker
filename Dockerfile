@@ -50,7 +50,10 @@ SHELL ["/bin/bash", "-euo", "pipefail", "-c"]
 
 RUN <<EOF
 apt-get update
-apt-get install -y --no-install-recommends curl
+apt-get install -y --no-install-recommends \
+    curl \
+    git \
+    wget
 curl --silent --show-error -L https://github.com/rapidsai/gha-tools/releases/latest/download/tools.tar.gz | tar -xz -C /usr/local/bin
 rm -rf /var/lib/apt/lists/*
 EOF

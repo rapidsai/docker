@@ -47,6 +47,24 @@ checks:
         command:
           - curl
           - --version
+  # some use-cases with these images expect 'git' to be present,
+  # e.g. to clone repos in startup scripts
+  - name: tool-git
+    description: git can be executed
+    probe:
+      exec:
+        command:
+          - git
+          - --version
+  # some use-cases with these images expect 'wget' to be present,
+  # e.g. to download datasets
+  - name: tool-wget
+    description: wget can be executed
+    probe:
+      exec:
+        command:
+          - wget
+          - --version
   - name: user-is-rapids
     description: Default user is rapids (uid=1001)
     probe:
