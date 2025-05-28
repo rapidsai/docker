@@ -65,6 +65,29 @@ checks:
         command:
           - wget
           - --version
+  # some use-cases install new packages using 'pip', requiring a build
+  # So check that compilers are available
+  - name: tool-gcc
+    description: gcc can be executed
+    probe:
+      exec:
+        command:
+          - gcc
+          - --version
+  - name: tool-g++
+    description: g++ can be executed
+    probe:
+      exec:
+        command:
+          - g++
+          - --version
+  - name: tool-gfortran
+    description: gfortran can be executed
+    probe:
+      exec:
+        command:
+          - gfortran
+          - --version
   - name: user-is-rapids
     description: Default user is rapids (uid=1001)
     probe:

@@ -77,6 +77,7 @@ rapids-mamba-retry install -y -n base \
     "rapids=${RAPIDS_VER}.*" \
     "python=${PYTHON_VER}.*" \
     "cuda-version=${CUDA_VER%.*}.*" \
+    compilers \
     ipython
 conda clean -afy
 EOF
