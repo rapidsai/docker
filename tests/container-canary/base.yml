@@ -56,6 +56,16 @@ checks:
         command:
           - git
           - --version
+  # some use-cases with these images expect 'git' to be present,
+  # e.g. to clone repos in startup scripts
+  - name: tool-rapids-cli
+    description: rapids doctor should work
+    probe:
+      exec:
+        command:
+          - rapids
+          - doctor
+          - --help
   # some use-cases with these images expect 'wget' to be present,
   # e.g. to download datasets
   - name: tool-wget
