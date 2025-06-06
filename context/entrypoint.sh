@@ -26,10 +26,10 @@ if [ "$EXTRA_PIP_PACKAGES" ]; then
 fi
 
 if [ "$(uname -m)" = "aarch64" ]; then
-    # Check if the CUDA version is 12.8
-    if [[ "$CUDA_VERSION" = 12.8* ]]; then
+    # Check if the CUDA version is 12.9
+    if [[ "$CUDA_VERSION" = 12.9* ]]; then
         export NCCL_CUMEM_HOST_ENABLE=0
-        echo "Set NCCL_CUMEM_HOST_ENABLE=0 for ARM with CUDA 12.8"
+        echo "Set NCCL_CUMEM_HOST_ENABLE=0 for ARM with CUDA 12.9"
     fi
 fi
 
