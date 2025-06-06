@@ -7,9 +7,14 @@ ARG LINUX_DISTRO=ubuntu
 ARG LINUX_DISTRO_VER=22.04
 ARG LINUX_VER=${LINUX_DISTRO}${LINUX_DISTRO_VER}
 
-ARG RAPIDS_VER=25.04
+ARG RAPIDS_VER=25.06
 
 # Gather dependency information
+
+# ignore hadolint DL3007... we really do always want the latest 'rapidsai/ci-conda',
+# and don't want to have to push new commits to update to it
+#
+# hadolint ignore=DL3007
 FROM rapidsai/ci-conda:latest AS dependencies
 ARG CUDA_VER
 ARG PYTHON_VER
@@ -27,7 +32,7 @@ COPY notebooks.sh /notebooks.sh
 
 RUN <<EOF
 apt-get update
-apt-get install -y rsync
+apt-get install -y --no-install-recommends rsync
 /notebooks.sh
 apt-get purge -y --auto-remove rsync
 rm -rf /var/lib/apt/lists/*
@@ -45,11 +50,14 @@ SHELL ["/bin/bash", "-euo", "pipefail", "-c"]
 
 RUN <<EOF
 apt-get update
-apt-get install -y wget
-wget https://github.com/rapidsai/gha-tools/releases/latest/download/tools.tar.gz -O - | tar -xz -C /usr/local/bin
-apt-get purge -y --auto-remove wget
+apt-get install -y --no-install-recommends \
+    curl \
+    git \
+    wget
+curl --silent --show-error -L https://github.com/rapidsai/gha-tools/releases/latest/download/tools.tar.gz | tar -xz -C /usr/local/bin
 rm -rf /var/lib/apt/lists/*
 EOF
+
 RUN useradd -rm -d /home/rapids -s /bin/bash -g conda -u 1001 rapids
 
 USER rapids
@@ -69,7 +77,8 @@ rapids-mamba-retry install -y -n base \
     "rapids=${RAPIDS_VER}.*" \
     "python=${PYTHON_VER}.*" \
     "cuda-version=${CUDA_VER%.*}.*" \
-    ipython
+    ipython \
+    'rapids-cli==0.1.*'
 conda clean -afy
 EOF
 
@@ -136,7 +145,7 @@ LABEL com.nvidia.workbench.application.jupyterlab.webapp.url-cmd="jupyter lab li
 LABEL com.nvidia.workbench.cuda-version="$CUDA_VER"
 LABEL com.nvidia.workbench.description="RAPIDS with CUDA ${CUDA_VER}"
 LABEL com.nvidia.workbench.entrypoint-script="/home/rapids/entrypoint.sh"
-LABEL com.nvidia.workbench.image-version="25.04.00"
+LABEL com.nvidia.workbench.image-version="25.06.00"
 LABEL com.nvidia.workbench.labels="cuda${CUDA_VER}"
 LABEL com.nvidia.workbench.name="RAPIDS with CUDA ${CUDA_VER}"
 LABEL com.nvidia.workbench.os-distro-release="$LINUX_DISTRO_VER"

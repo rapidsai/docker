@@ -1,0 +1,9 @@
+# Copyright (c) 2025, NVIDIA CORPORATION.
+
+ignored:
+  # warning: Pin versions in apt get install.
+  - DL3008
+  # warning: Pin versions in pip.
+  - DL3013
+  # warning: Avoid use of cache directory with pip.
+  - DL3042

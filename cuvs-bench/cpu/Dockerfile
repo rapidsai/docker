@@ -2,9 +2,9 @@
 # Copyright (c) 2024-2025, NVIDIA CORPORATION.
 
 ARG PYTHON_VER=unset
-ARG RAPIDS_VER=25.04
+ARG RAPIDS_VER=25.06
 
-FROM condaforge/miniforge3:24.7.1-2 AS cuvs-bench-cpu
+FROM condaforge/miniforge3:24.11.3-2 AS cuvs-bench-cpu
 ARG RAPIDS_VER
 ARG PYTHON_VER
 
@@ -24,10 +24,10 @@ EOF
 # we need perl temporarily for the remaining benchmark perl scripts
 RUN <<EOF
 apt-get update
-apt-get install -y \
+apt-get install -y --no-install-recommends \
   perl \
   wget
-wget https://github.com/rapidsai/gha-tools/releases/latest/download/tools.tar.gz -O - | tar -xz -C /usr/local/bin
+wget --quiet https://github.com/rapidsai/gha-tools/releases/latest/download/tools.tar.gz -O - | tar -xz -C /usr/local/bin
 rm -rf /var/lib/apt/lists/*
 EOF
 
@@ -55,8 +55,7 @@ CMD ["--dataset fashion-mnist-784-euclidean", "", "--algorithms hnswlib"]
 
 ENTRYPOINT ["/bin/bash", "/data/scripts/run_benchmark.sh"]
 
-
-FROM bench-base AS cuvs-bench-cpu-datasets
+FROM cuvs-bench-cpu AS cuvs-bench-cpu-datasets
 
 SHELL ["/bin/bash", "-euo", "pipefail", "-c"]
 

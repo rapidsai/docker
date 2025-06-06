@@ -5,7 +5,7 @@ ARG CUDA_VER=unset
 ARG PYTHON_VER=unset
 ARG LINUX_VER=unset
 
-ARG RAPIDS_VER=25.04
+ARG RAPIDS_VER=25.06
 
 FROM rapidsai/miniforge-cuda:cuda${CUDA_VER}-base-${LINUX_VER}-py${PYTHON_VER} AS cuvs-bench
 ARG CUDA_VER
@@ -27,10 +27,10 @@ EOF
 # we need perl temporarily for the remaining benchmark perl scripts
 RUN <<EOF
 apt-get update
-apt-get install -y \
+apt-get install -y --no-install-recommends \
   perl \
   wget
-wget https://github.com/rapidsai/gha-tools/releases/latest/download/tools.tar.gz -O - | tar -xz -C /usr/local/bin
+wget --quiet https://github.com/rapidsai/gha-tools/releases/latest/download/tools.tar.gz -O - | tar -xz -C /usr/local/bin
 rm -rf /var/lib/apt/lists/*
 EOF
 
