@@ -58,8 +58,8 @@ jobs:
           GIT_DESCRIBE_TAG="$(git describe --tags --abbrev=0)"
           GIT_DESCRIBE_TAG="${GIT_DESCRIBE_TAG:1}" # remove leading 'v'
           if [[ ! $GIT_DESCRIBE_TAG =~ [a-z] ]]; then
-            rapids-logger "Most recent tag is for release, adding `rapidsai` channel and removing `rapidsai-nightly` and `dask/label/dev` channels."
-            sed -i 's|rapidsai-nightly|rapidsai|;\|dask/label/dev|d' context/condarc
+            rapids-logger "Most recent tag is for release, adding the `rapidsai` channel and removing the `rapidsai-nightly` channel."
+            sed -i 's|rapidsai-nightly|rapidsai|d' context/condarc
           else
             rapids-logger "Most recent tag is an alpha. Build will use nightly channels."
           fi
