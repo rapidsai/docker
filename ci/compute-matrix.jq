@@ -8,12 +8,8 @@ def compute_ubuntu_version($x):
     $x.CUDA_VER >= "12.5" # Ubuntu 24.04 nvidia/cuda images were added starting with CUDA 12.5
   then
     ["ubuntu", "24.04"]
-  elif
-    $x.CUDA_VER >= "11.7" # Ubuntu 22.04 nvidia/cuda images were added starting with CUDA 11.7
-  then
-    ["ubuntu", "22.04"]
   else
-    ["ubuntu", "20.04"]
+    ["ubuntu", "22.04"]
   end |
   $x + {LINUX_VER: (.[0]+.[1]), LINUX_DISTRO: .[0], LINUX_DISTRO_VER: .[1]};
 
