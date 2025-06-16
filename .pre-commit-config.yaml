@@ -17,7 +17,7 @@ repos:
       - id: shellcheck
         args: ["--severity=warning"]
   - repo: https://github.com/rapidsai/pre-commit-hooks
-    rev: v0.6.0
+    rev: v0.7.0
     hooks:
       - id: verify-copyright
         files: |
