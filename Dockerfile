@@ -15,7 +15,7 @@ ARG RAPIDS_VER=25.08
 # and don't want to have to push new commits to update to it
 #
 # hadolint ignore=DL3007
-FROM rapidsai/ci-conda:latest AS dependencies
+FROM rapidsai/ci-conda:${RAPIDS_VER}-latest AS dependencies
 ARG CUDA_VER
 ARG PYTHON_VER
 
