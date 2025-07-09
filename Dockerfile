@@ -40,7 +40,7 @@ EOF
 
 
 # Base image
-FROM rapidsai/miniforge-cuda:cuda${CUDA_VER}-base-${LINUX_VER}-py${PYTHON_VER} AS base
+FROM rapidsai/miniforge-cuda:${RAPIDS_VER}-cuda${CUDA_VER}-base-${LINUX_VER}-py${PYTHON_VER} AS base
 ARG CUDA_VER
 ARG PYTHON_VER
 
