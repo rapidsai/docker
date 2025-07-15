@@ -2,34 +2,32 @@
 
 ## What is RAPIDS?
 
-Visit [rapids.ai](https://rapids.ai) for more information.
-
 The RAPIDS suite of software libraries gives you the freedom to execute end-to-end data science and analytics pipelines entirely on GPUs. It relies on NVIDIA® CUDA® primitives for low-level compute optimization, but exposes GPU parallelism and high-bandwidth memory speed through user-friendly Python interfaces.
 
-**NOTE:** Review our [system requirements](https://docs.rapids.ai/install#system-req) to ensure you have a compatible system!
+Visit [rapids.ai](https://rapids.ai) for more information.
 
+**NOTE:** Review our [system requirements](https://docs.rapids.ai/install#system-req) to ensure you have a compatible system!
 
 ### Current Version - RAPIDS v25.08
 
 RAPIDS Libraries included in the images:
+
 - `cuDF`
 - `cuML`
 - `cuGraph`
 - `cuVS`
 - `RMM`
 - `RAFT`
-- `cuSpatial`
 - `cuxfilter`
 - `cuCIM`
 - `xgboost`
-
 
 ### Image Types
 
 The RAPIDS images are based on [`nvidia/cuda`](https://hub.docker.com/r/nvidia/cuda) and [`rapidsai/miniforge-cuda`](https://hub.docker.com/r/rapidsai/miniforge-cuda). The RAPIDS images provide `amd64` & `arm64` architectures [where supported](https://docs.rapids.ai/install#system-req).
 
-
 There are two types:
+
 - `rapidsai/base` - contains a RAPIDS environment ready for use.
   - **TIP: Use this image if you want to use RAPIDS as a part of your pipeline.**
 - `rapidsai/notebooks` - extends the `rapidsai/base` image by adding a [`jupyterlab` server](https://jupyter.org/), example notebooks, and dependencies.
@@ -38,7 +36,8 @@ There are two types:
 ### Image Tag Naming Scheme
 
 The tag naming scheme for RAPIDS images incorporates key platform details into the tag as shown below:
-```
+
+```text
 25.08-cuda12.9-py3.13
  ^        ^      ^
  |        |      Python version
