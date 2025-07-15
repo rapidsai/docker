@@ -2,7 +2,6 @@
 
 This repository contains the end-user docker images for [RAPIDS](https://rapids.ai).
 
-
 ## Image types
 
 There are two image types: `base` ([`rapidsai/base`](https://hub.docker.com/r/rapidsai/base)) and `notebooks` ([`rapidsai/notebooks`](https://hub.docker.com/r/rapidsai/notebooks)).
