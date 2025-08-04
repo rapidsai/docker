@@ -1,5 +1,5 @@
 # Copyright (c) 2025, NVIDIA CORPORATION.
-name: Build and push image variant
+name: build-cuvs
 
 on:
   workflow_call:
@@ -48,8 +48,11 @@ jobs:
         PYTHON_VER: ["${{ inputs.PYTHON_VER }}"]
         RAPIDS_VER: ["${{ inputs.RAPIDS_VER }}"]
       fail-fast: false
-    # CUDA version is added to the name by build-test-publish-images.yaml, so omitted here
-    name: build-cuvs (${{ matrix.PYTHON_VER }}, ${{ matrix.LINUX_VER }}, ${{ matrix.ARCH }}, build_cpu=${{ inputs.BUILD_CUVS_BENCH_CPU_IMAGE }})
+    # Referencing something from the 'matrix' context prevents GitHub auto-generating
+    # a hard-to-read name with all the matrix input values.
+    #
+    # All other inputs should be added to the full job name by the calling workflow.
+    name: build (${{ matrix.ARCH }})
     runs-on: "linux-${{ matrix.ARCH }}-cpu4"
     steps:
       - name: Checkout
