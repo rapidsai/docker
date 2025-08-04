@@ -52,7 +52,8 @@ jobs:
     # a hard-to-read name with all the matrix input values.
     #
     # All other inputs should be added to the full job name by the calling workflow.
-    name: build (${{ matrix.ARCH }})
+    #name: build (${{ matrix.ARCH }})
+    name: build-cuvs-sparkle ${{}}
     runs-on: "linux-${{ matrix.ARCH }}-cpu4"
     steps:
       - name: Checkout
