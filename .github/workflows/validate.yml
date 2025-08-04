@@ -55,6 +55,7 @@ jobs:
         GPU: ["${{ inputs.GPU }}"]
         DRIVER: ["${{ inputs.DRIVER }}"]
       fail-fast: false
+    name: validate (CUDA ${{ matrix.CUDA_VER }}, ${{ matrix.PYTHON_VER }}, ${{ matrix.ARCH }}, ${{ matrix.GPU}}, $${{ matrix.DRIVER }})
     runs-on: "linux-${{ inputs.ARCH }}-cpu4"
     steps:
       - name: Checkout code

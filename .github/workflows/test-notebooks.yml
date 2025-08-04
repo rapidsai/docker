@@ -58,6 +58,7 @@ jobs:
         GPU: ["${{ inputs.GPU }}"]
         DRIVER: ["${{ inputs.DRIVER }}"]
       fail-fast: false
+    name: test (CUDA ${{ matrix.CUDA_VER }}, ${{ matrix.PYTHON_VER }}, ${{ matrix.ARCH }}, ${{ matrix.GPU}}, ${{ matrix.DRIVER }})
     runs-on: "linux-${{ inputs.ARCH }}-gpu-${{ inputs.GPU }}-${{ inputs.DRIVER }}-1"
     container:
       image: ${{ inputs.NOTEBOOKS_TAG }}
