@@ -48,7 +48,7 @@ jobs:
         PYTHON_VER: ["${{ inputs.PYTHON_VER }}"]
         RAPIDS_VER: ["${{ inputs.RAPIDS_VER }}"]
       fail-fast: false
-    name: build-cuvs (CUDA ${{ matrix.CUDA_VER }}, ${{ matrix.PYTHON_VER }}, ${{ matrix.LINUX_VER }}, ${{ matrix.ARCH }})
+    name: build-cuvs-beep (CUDA ${{ matrix.CUDA_VER }}, ${{ matrix.PYTHON_VER }}, ${{ matrix.LINUX_VER }}, ${{ matrix.ARCH }})
     runs-on: "linux-${{ matrix.ARCH }}-cpu4"
     steps:
       - name: Checkout
