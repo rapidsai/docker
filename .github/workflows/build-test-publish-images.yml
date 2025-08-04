@@ -176,6 +176,8 @@ jobs:
       fail-fast: false
     secrets: inherit
     uses: ./.github/workflows/build-cuvs-image.yml
+    # more specific naming is deferred to build-cuvs-image.yml
+    name: build-cuvs
     with:
       ARCHES: ${{ toJSON(matrix.ARCHES) }}
       CUDA_VER: ${{ matrix.CUDA_VER }}
