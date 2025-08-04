@@ -150,8 +150,8 @@ jobs:
     # Referencing something from the 'matrix' context prevents GitHub auto-generating
     # a hard-to-read name with all the matrix input values.
     #
-    # CPU architecture is added to the full name by build-cuvs-image.yml
-    name: build-rapids (CUDA ${{ matrix.CUDA_VER }}, py${{ matrix.PYTHON_VER }}, ${{ matrix.LINUX_VER }})
+    # Otherwise, more-detailed naming is deferred to 'build-rapids-image.yaml'.
+    name: build-rapids (${{ matrix.CUDA_VER }})
     with:
       ARCHES: ${{ toJSON(matrix.ARCHES) }}
       CUDA_VER: ${{ matrix.CUDA_VER }}
@@ -185,7 +185,7 @@ jobs:
     # a hard-to-read name with all the matrix input values.
     #
     # Otherwise, more-detailed naming is deferred to 'build-cuvs-image.yaml'.
-    name: build-cuvs-beep (${{ matrix.CUDA_VER }})
+    name: build-cuvs (${{ matrix.CUDA_VER }})
     with:
       ARCHES: ${{ toJSON(matrix.ARCHES) }}
       CUDA_VER: ${{ matrix.CUDA_VER }}

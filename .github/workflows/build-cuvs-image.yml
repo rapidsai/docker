@@ -53,7 +53,7 @@ jobs:
     #
     # The 'name:' in this file also becomes the name in the left-hand navigation list
     # on the 'Summary' page, so should be more specific than the one in the calling workflow.
-    name: build-cuvs-sparkle (${{ matrix.CUDA_VER }}, py${{ matrix.PYTHON_VER }}, ${{ matrix.ARCH }}, ${{ matrix.LINUX_VER }}, build_cpu=${{ inputs.BUILD_CUVS_BENCH_CPU_IMAGE }})
+    name: build-cuvs (${{ matrix.CUDA_VER }}, py${{ matrix.PYTHON_VER }}, ${{ matrix.ARCH }}, ${{ matrix.LINUX_VER }}, build_cpu=${{ inputs.BUILD_CUVS_BENCH_CPU_IMAGE }})
     runs-on: "linux-${{ matrix.ARCH }}-cpu4"
     steps:
       - name: Checkout
