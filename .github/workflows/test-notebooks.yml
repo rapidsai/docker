@@ -58,7 +58,12 @@ jobs:
         GPU: ["${{ inputs.GPU }}"]
         DRIVER: ["${{ inputs.DRIVER }}"]
       fail-fast: false
-    name: test (CUDA ${{ matrix.CUDA_VER }}, ${{ matrix.PYTHON_VER }}, ${{ matrix.ARCH }}, ${{ matrix.GPU}}, ${{ matrix.DRIVER }})
+    # Referencing something from the 'matrix' context prevents GitHub auto-generating
+    # a hard-to-read name with all the matrix input values.
+    #
+    # The 'name:' in this file also becomes the name in the left-hand navigation list
+    # on the 'Summary' page, so should be more specific than the one in the calling workflow.
+    name: test (${{ matrix.CUDA_VER }}, py${{ matrix.PYTHON_VER }}, ${{ matrix.ARCH }}, ${{ matrix.GPU}}, ${{ matrix.DRIVER }})
     runs-on: "linux-${{ inputs.ARCH }}-gpu-${{ inputs.GPU }}-${{ inputs.DRIVER }}-1"
     container:
       image: ${{ inputs.NOTEBOOKS_TAG }}
