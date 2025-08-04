@@ -177,7 +177,7 @@ jobs:
     secrets: inherit
     uses: ./.github/workflows/build-cuvs-image.yml
     # more specific naming is deferred to build-cuvs-image.yml
-    name: build-cuvs-boop
+    name: build-cuvs-boop (sparkles ${{ matrix.CUDA_VER }})
     with:
       ARCHES: ${{ toJSON(matrix.ARCHES) }}
       CUDA_VER: ${{ matrix.CUDA_VER }}
