@@ -1,5 +1,5 @@
 # Copyright (c) 2025, NVIDIA CORPORATION.
-name: Build and push image variant
+name: Build cuVS images
 
 on:
   workflow_call:
@@ -8,12 +8,6 @@ on:
         required: true
         type: string
       CUDA_VER:
-        required: true
-        type: string
-      LINUX_DISTRO:
-        required: true
-        type: string
-      LINUX_DISTRO_VER:
         required: true
         type: string
       LINUX_VER:
