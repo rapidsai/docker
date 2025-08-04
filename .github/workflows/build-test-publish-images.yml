@@ -147,6 +147,11 @@ jobs:
       fail-fast: false
     secrets: inherit
     uses: ./.github/workflows/build-rapids-image.yml
+    # More specific naming is deferred to build-rapids-image.yml
+    #
+    # Referencing something from the 'matrix' context prevents GitHub auto-generating
+    # a hard-to-read name with all the matrix input values.
+    name: build-rapids (CUDA ${{ matrix.CUDA_VER }})
     with:
       ARCHES: ${{ toJSON(matrix.ARCHES) }}
       CUDA_VER: ${{ matrix.CUDA_VER }}
@@ -176,8 +181,11 @@ jobs:
       fail-fast: false
     secrets: inherit
     uses: ./.github/workflows/build-cuvs-image.yml
-    # more specific naming is deferred to build-cuvs-image.yml
-    name: build-cuvs-boop (build_cpu=${{ matrix.BUILD_CUVS_BENCH_CPU_IMAGE}})
+    # More specific naming is deferred to build-cuvs-image.yml
+    #
+    # Referencing something from the 'matrix' context prevents GitHub auto-generating
+    # a hard-to-read name with all the matrix input values.
+    name: build-cuvs (CUDA ${{ matrix.CUDA_VER }}})
     with:
       ARCHES: ${{ toJSON(matrix.ARCHES) }}
       CUDA_VER: ${{ matrix.CUDA_VER }}

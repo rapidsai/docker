@@ -48,7 +48,8 @@ jobs:
         PYTHON_VER: ["${{ inputs.PYTHON_VER }}"]
         RAPIDS_VER: ["${{ inputs.RAPIDS_VER }}"]
       fail-fast: false
-    name: build-cuvs (CUDA ${{ matrix.CUDA_VER }}, ${{ matrix.PYTHON_VER }}, ${{ matrix.LINUX_VER }}, ${{ matrix.ARCH }})
+    # CUDA version is added to the name by build-test-publish-images.yaml, so omitted here
+    name: build-cuvs (${{ matrix.PYTHON_VER }}, ${{ matrix.LINUX_VER }}, ${{ matrix.ARCH }}, build_cpu=${{ inputs.BUILD_CUVS_BENCH_CPU_IMAGE }})
     runs-on: "linux-${{ matrix.ARCH }}-cpu4"
     steps:
       - name: Checkout
