@@ -48,8 +48,7 @@ jobs:
         PYTHON_VER: ["${{ inputs.PYTHON_VER }}"]
         RAPIDS_VER: ["${{ inputs.RAPIDS_VER }}"]
       fail-fast: false
-    # all other parts of the name come from the calling workflow(s)
-    name: build (${{ matrix.ARCH }})
+    name: build-cuvs (CUDA ${{ matrix.CUDA_VER }}, ${{ matrix.PYTHON_VER }}, ${{ matrix.LINUX_VER }}, ${{ matrix.ARCH }})
     runs-on: "linux-${{ matrix.ARCH }}-cpu4"
     steps:
       - name: Checkout
