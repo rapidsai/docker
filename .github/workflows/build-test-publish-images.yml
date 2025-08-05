@@ -220,6 +220,7 @@ jobs:
     strategy:
       matrix: ${{ fromJSON(needs.compute-matrix.outputs.MATRIX) }}
       fail-fast: false
+    name: build-rapids-manifest (${{ needs.compute-matrix.outputs.RAPIDS_VER }}${{ needs.compute-matrix.outputs.ALPHA_TAG }}-cuda${{ matrix.CUDA_VER }}-py${{ matrix.PYTHON_VER }})
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -251,7 +252,7 @@ jobs:
     strategy:
       matrix: ${{ fromJSON(needs.compute-matrix.outputs.MATRIX) }}
       fail-fast: false
-    name: build-cuvs-manifest (${{ matrix.RAPIDS_VER }}-${{ needs.compute-matrix.outputs.RAPIDS_VER }}${{ needs.compute-matrix.outputs.ALPHA_TAG }}-cuda${{ matrix.CUDA_VER }}-py${{ matrix.PYTHON_VER }})
+    name: build-cuvs-manifest (${{ needs.compute-matrix.outputs.RAPIDS_VER }}${{ needs.compute-matrix.outputs.ALPHA_TAG }}-cuda${{ matrix.CUDA_VER }}-py${{ matrix.PYTHON_VER }}, build_cpu=${{ matrix.BUILD_CUVS_BENCH_CPU_IMAGE }})
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
