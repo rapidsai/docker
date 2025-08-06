@@ -189,8 +189,6 @@ jobs:
     with:
       ARCHES: ${{ toJSON(matrix.ARCHES) }}
       CUDA_VER: ${{ matrix.CUDA_VER }}
-      LINUX_DISTRO: ${{ matrix.LINUX_DISTRO }}
-      LINUX_DISTRO_VER: ${{ matrix.LINUX_DISTRO_VER }}
       LINUX_VER: ${{ matrix.LINUX_VER }}
       PYTHON_VER: ${{ matrix.PYTHON_VER }}
       RAPIDS_VER: ${{ needs.compute-matrix.outputs.RAPIDS_VER }}

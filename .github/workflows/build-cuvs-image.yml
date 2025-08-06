@@ -10,12 +10,6 @@ on:
       CUDA_VER:
         required: true
         type: string
-      LINUX_DISTRO:
-        required: true
-        type: string
-      LINUX_DISTRO_VER:
-        required: true
-        type: string
       LINUX_VER:
         required: true
         type: string
