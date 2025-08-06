@@ -147,6 +147,11 @@ jobs:
       fail-fast: false
     secrets: inherit
     uses: ./.github/workflows/build-rapids-image.yml
+    # Referencing something from the 'matrix' context prevents GitHub auto-generating
+    # a hard-to-read name with all the matrix input values.
+    #
+    # Otherwise, more-detailed naming is deferred to 'build-rapids-image.yml'.
+    name: build-rapids (${{ matrix.CUDA_VER }})
     with:
       ARCHES: ${{ toJSON(matrix.ARCHES) }}
       CUDA_VER: ${{ matrix.CUDA_VER }}
@@ -176,6 +181,11 @@ jobs:
       fail-fast: false
     secrets: inherit
     uses: ./.github/workflows/build-cuvs-image.yml
+    # Referencing something from the 'matrix' context prevents GitHub auto-generating
+    # a hard-to-read name with all the matrix input values.
+    #
+    # Otherwise, more-detailed naming is deferred to 'build-cuvs-image.yml'.
+    name: build-cuvs (${{ matrix.CUDA_VER }})
     with:
       ARCHES: ${{ toJSON(matrix.ARCHES) }}
       CUDA_VER: ${{ matrix.CUDA_VER }}
@@ -210,6 +220,7 @@ jobs:
     strategy:
       matrix: ${{ fromJSON(needs.compute-matrix.outputs.MATRIX) }}
       fail-fast: false
+    name: build-rapids-manifest (${{ needs.compute-matrix.outputs.RAPIDS_VER }}${{ needs.compute-matrix.outputs.ALPHA_TAG }}-cuda${{ matrix.CUDA_VER }}-py${{ matrix.PYTHON_VER }})
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -241,6 +252,7 @@ jobs:
     strategy:
       matrix: ${{ fromJSON(needs.compute-matrix.outputs.MATRIX) }}
       fail-fast: false
+    name: build-cuvs-manifest (${{ needs.compute-matrix.outputs.RAPIDS_VER }}${{ needs.compute-matrix.outputs.ALPHA_TAG }}-cuda${{ matrix.CUDA_VER }}-py${{ matrix.PYTHON_VER }}, build_cpu=${{ matrix.BUILD_CUVS_BENCH_CPU_IMAGE }})
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -277,6 +289,11 @@ jobs:
       fail-fast: false
     secrets: inherit
     uses: ./.github/workflows/validate.yml
+    # Referencing something from the 'matrix' context prevents GitHub auto-generating
+    # a hard-to-read name with all the matrix input values.
+    #
+    # Otherwise, more-detailed naming is deferred to 'validate.yml'.
+    name: validate (${{ matrix.CUDA_VER }})
     with:
       ARCH: ${{ matrix.ARCH }}
       CONTAINER_CANARY_VERSION: 'v0.5.0'
@@ -309,6 +326,11 @@ jobs:
       fail-fast: false
     secrets: inherit
     uses: ./.github/workflows/test-notebooks.yml
+    # Referencing something from the 'matrix' context prevents GitHub auto-generating
+    # a hard-to-read name with all the matrix input values.
+    #
+    # Otherwise, more-detailed naming is deferred to 'test-notebooks.yml'.
+    name: test (${{ matrix.CUDA_VER }})
     with:
       BUILD_TYPE: ${{ inputs.build_type }}
       ARCH: ${{ matrix.ARCH }}
