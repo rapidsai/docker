@@ -7,7 +7,7 @@ ARG LINUX_DISTRO=ubuntu
 ARG LINUX_DISTRO_VER=22.04
 ARG LINUX_VER=${LINUX_DISTRO}${LINUX_DISTRO_VER}
 
-ARG RAPIDS_VER=25.06
+ARG RAPIDS_VER=25.08
 
 # Gather dependency information
 
@@ -15,7 +15,7 @@ ARG RAPIDS_VER=25.06
 # and don't want to have to push new commits to update to it
 #
 # hadolint ignore=DL3007
-FROM rapidsai/ci-conda:latest AS dependencies
+FROM rapidsai/ci-conda:${RAPIDS_VER}-latest AS dependencies
 ARG CUDA_VER
 ARG PYTHON_VER
 
@@ -40,7 +40,7 @@ EOF
 
 
 # Base image
-FROM rapidsai/miniforge-cuda:cuda${CUDA_VER}-base-${LINUX_VER}-py${PYTHON_VER} AS base
+FROM rapidsai/miniforge-cuda:${RAPIDS_VER}-cuda${CUDA_VER}-base-${LINUX_VER}-py${PYTHON_VER} AS base
 ARG CUDA_VER
 ARG PYTHON_VER
 
@@ -145,7 +145,7 @@ LABEL com.nvidia.workbench.application.jupyterlab.webapp.url-cmd="jupyter lab li
 LABEL com.nvidia.workbench.cuda-version="$CUDA_VER"
 LABEL com.nvidia.workbench.description="RAPIDS with CUDA ${CUDA_VER}"
 LABEL com.nvidia.workbench.entrypoint-script="/home/rapids/entrypoint.sh"
-LABEL com.nvidia.workbench.image-version="25.06.00"
+LABEL com.nvidia.workbench.image-version="25.08.00"
 LABEL com.nvidia.workbench.labels="cuda${CUDA_VER}"
 LABEL com.nvidia.workbench.name="RAPIDS with CUDA ${CUDA_VER}"
 LABEL com.nvidia.workbench.os-distro-release="$LINUX_DISTRO_VER"
@@ -156,7 +156,7 @@ LABEL com.nvidia.workbench.package-manager-environment.type="conda"
 LABEL com.nvidia.workbench.package-manager.apt.binary="/usr/bin/apt"
 LABEL com.nvidia.workbench.package-manager.apt.installed-packages=""
 LABEL com.nvidia.workbench.package-manager.conda3.binary="/opt/conda/bin/conda"
-LABEL com.nvidia.workbench.package-manager.conda3.installed-packages="rapids cudf cuml cugraph rmm pylibraft cuspatial cuxfilter cucim xgboost jupyterlab"
+LABEL com.nvidia.workbench.package-manager.conda3.installed-packages="rapids cudf cuml cugraph rmm pylibraft cuxfilter cucim xgboost jupyterlab"
 LABEL com.nvidia.workbench.package-manager.pip.binary="/opt/conda/bin/pip"
 LABEL com.nvidia.workbench.package-manager.pip.installed-packages="jupyterlab-nvdashboard"
 LABEL com.nvidia.workbench.programming-languages="python3"

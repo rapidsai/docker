@@ -2,34 +2,32 @@
 
 ## What is RAPIDS?
 
-Visit [rapids.ai](https://rapids.ai) for more information.
-
 The RAPIDS suite of software libraries gives you the freedom to execute end-to-end data science and analytics pipelines entirely on GPUs. It relies on NVIDIA® CUDA® primitives for low-level compute optimization, but exposes GPU parallelism and high-bandwidth memory speed through user-friendly Python interfaces.
+
+Visit [rapids.ai](https://rapids.ai) for more information.
 
 **NOTE:** Review our [system requirements](https://docs.rapids.ai/install#system-req) to ensure you have a compatible system!
 
-
-### Current Version - RAPIDS v25.06
+### Current Version - RAPIDS v25.08
 
 RAPIDS Libraries included in the images:
+
 - `cuDF`
 - `cuML`
 - `cuGraph`
 - `cuVS`
 - `RMM`
 - `RAFT`
-- `cuSpatial`
 - `cuxfilter`
 - `cuCIM`
 - `xgboost`
-
 
 ### Image Types
 
 The RAPIDS images are based on [`nvidia/cuda`](https://hub.docker.com/r/nvidia/cuda) and [`rapidsai/miniforge-cuda`](https://hub.docker.com/r/rapidsai/miniforge-cuda). The RAPIDS images provide `amd64` & `arm64` architectures [where supported](https://docs.rapids.ai/install#system-req).
 
-
 There are two types:
+
 - `rapidsai/base` - contains a RAPIDS environment ready for use.
   - **TIP: Use this image if you want to use RAPIDS as a part of your pipeline.**
 - `rapidsai/notebooks` - extends the `rapidsai/base` image by adding a [`jupyterlab` server](https://jupyter.org/), example notebooks, and dependencies.
@@ -38,8 +36,9 @@ There are two types:
 ### Image Tag Naming Scheme
 
 The tag naming scheme for RAPIDS images incorporates key platform details into the tag as shown below:
-```
-25.06-cuda12.8-py3.13
+
+```text
+25.08-cuda12.9-py3.13
  ^        ^      ^
  |        |      Python version
  |        |
@@ -48,7 +47,7 @@ The tag naming scheme for RAPIDS images incorporates key platform details into t
  RAPIDS version
 ```
 
-**Note: Nightly builds of the images have the RAPIDS version appended with an `a` (ie `25.06a-cuda12.8-py3.13`)**
+**Note: Nightly builds of the images have the RAPIDS version appended with an `a` (ie `25.08a-cuda12.9-py3.13`)**
 
 ## Usage
 
@@ -81,7 +80,7 @@ $ docker run \
     -e EXTRA_CONDA_PACKAGES="jq" \
     -e EXTRA_PIP_PACKAGES="beautifulsoup4" \
     -p 8888:8888 \
-    rapidsai/notebooks:25.06-cuda12.8-py3.13
+    rapidsai/notebooks:25.08-cuda12.9-py3.13
 ```
 
 ### Bind Mounts
@@ -106,7 +105,7 @@ $ docker run \
     --gpus all \
     --shm-size=1g --ulimit memlock=-1 --ulimit stack=67108864 \
     -v $(pwd)/environment.yml:/home/rapids/environment.yml \
-    rapidsai/base:25.06-cuda12.8-py3.13
+    rapidsai/base:25.08-cuda12.9-py3.13
 ```
 
 ### Use JupyterLab to Explore the Notebooks
