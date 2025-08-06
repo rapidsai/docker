@@ -1,5 +1,5 @@
 # Copyright (c) 2025, NVIDIA CORPORATION.
-name: Build cuVS images
+name: build-cuvs
 
 on:
   workflow_call:

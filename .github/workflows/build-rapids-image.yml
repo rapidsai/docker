@@ -1,5 +1,5 @@
 # Copyright (c) 2025, NVIDIA CORPORATION.
-name: Build RAPIDS images
+name: build-rapids
 
 on:
   workflow_call:
