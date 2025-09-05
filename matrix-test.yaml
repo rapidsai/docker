@@ -7,8 +7,7 @@ pull-request:
   - { CUDA_VER: '13.0', ARCH: 'arm64', PYTHON_VER: '3.13', GPU: 'a100', DRIVER: 'latest'   }
   - { CUDA_VER: '13.0', ARCH: 'amd64', PYTHON_VER: '3.13', GPU: 'l4',   DRIVER: 'latest'   }
 branch:
-  - { CUDA_VER: '12.0', ARCH: 'amd64', PYTHON_VER: '3.10', GPU: 'l4',   DRIVER: 'earliest' }
-  - { CUDA_VER: '12.0', ARCH: 'amd64', PYTHON_VER: '3.10', GPU: 'l4',   DRIVER: 'latest'   }
+  - { CUDA_VER: '12.0', ARCH: 'arm64', PYTHON_VER: '3.11', GPU: 'a100', DRIVER: 'earliest' }
   - { CUDA_VER: '12.9', ARCH: 'amd64', PYTHON_VER: '3.11', GPU: 'l4',   DRIVER: 'latest'   }
   - { CUDA_VER: '12.9', ARCH: 'arm64', PYTHON_VER: '3.13', GPU: 'a100', DRIVER: 'latest'   }
   - { CUDA_VER: '13.0', ARCH: 'amd64', PYTHON_VER: '3.11', GPU: 'l4',   DRIVER: 'latest'   }
