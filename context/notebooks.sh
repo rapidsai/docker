@@ -9,7 +9,13 @@
 
 set -euo pipefail
 
-NOTEBOOK_REPOS=(cudf cuml cugraph)
+# TODO: restore cuml notebook testing on CUDA 13 once there are CUDA 13 xgboost packages and 'rapids' depends on them
+#  ref: https://github.com/rapidsai/integration/issues/798
+if [[ "${CUDA_VER%%.*}" == "12" ]]; then
+    NOTEBOOK_REPOS=(cudf cuml cugraph)
+else
+    NOTEBOOK_REPOS=(cudf cugraph)
+fi
 
 mkdir -p /notebooks /dependencies
 for REPO in "${NOTEBOOK_REPOS[@]}"; do

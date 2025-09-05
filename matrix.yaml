@@ -1,8 +1,9 @@
 # Copyright (c) 2023-2025, NVIDIA CORPORATION.
 
-CUDA_VER: # Should be `<major>.<minor>.<patch>` (e.g. `12.9.0`)
+CUDA_VER: # Should be `<major>.<minor>.<patch>` (e.g. `13.0.0`)
   - "12.0.1"
   - "12.9.1"
+  - "13.0.0"
 PYTHON_VER:
   - "3.10"
   - "3.11"
