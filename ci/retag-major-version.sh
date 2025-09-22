@@ -12,6 +12,7 @@ retag_major_version() {
     local source_tag="$1"
     local target_tag="$2"
     local image_repo="$3"
+    local org="${org}"
 
     echo "Retagging ${org}/${image_repo}:${source_tag} to ${org}/${image_repo}:${target_tag}"
 
