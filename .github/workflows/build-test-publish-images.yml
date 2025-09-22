@@ -41,6 +41,7 @@ jobs:
       - build-rapids-multiarch-manifest
       - build-cuvs
       - build-cuvs-multiarch-manifest
+      - retag-major-version
       - test
     secrets: inherit
     uses: rapidsai/shared-workflows/.github/workflows/pr-builder.yaml@branch-25.10
@@ -280,6 +281,44 @@ jobs:
           GPUCIBOT_DOCKERHUB_TOKEN: ${{ secrets.GPUCIBOT_DOCKERHUB_TOKEN }}
           ARCHES: ${{ toJSON(matrix.ARCHES) }}
         run: ci/create-cuvs-multiarch-manifest.sh
+  retag-major-version:
+    needs: [build-rapids-multiarch-manifest, build-cuvs-multiarch-manifest, compute-matrix]
+    strategy:
+      matrix: ${{ fromJSON(needs.compute-matrix.outputs.MATRIX) }}
+      fail-fast: false
+    name: retag-major-version (${{ needs.compute-matrix.outputs.RAPIDS_VER }}${{ needs.compute-matrix.outputs.ALPHA_TAG }}-cuda${{ matrix.CUDA_VER }}-py${{ matrix.PYTHON_VER }}, build_cpu=${{ matrix.BUILD_CUVS_BENCH_CPU_IMAGE }})
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Login to DockerHub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.GPUCIBOT_DOCKERHUB_USER }}
+          password: ${{ secrets.GPUCIBOT_DOCKERHUB_TOKEN }}
+      - name: Retag with major version
+        shell: bash
+        env:
+          BASE_IMAGE_REPO: ${{ needs.compute-matrix.outputs.BASE_IMAGE_REPO }}
+          BASE_TAG_PREFIX: ${{ needs.compute-matrix.outputs.BASE_TAG_PREFIX }}
+          RAPIDS_VER: ${{ needs.compute-matrix.outputs.RAPIDS_VER }}
+          ALPHA_TAG: ${{ needs.compute-matrix.outputs.ALPHA_TAG }}
+          CUDA_VER: ${{ matrix.CUDA_VER }}
+          PYTHON_VER: ${{ matrix.PYTHON_VER }}
+          NOTEBOOKS_IMAGE_REPO: ${{ needs.compute-matrix.outputs.NOTEBOOKS_IMAGE_REPO }}
+          NOTEBOOKS_TAG_PREFIX: ${{ needs.compute-matrix.outputs.NOTEBOOKS_TAG_PREFIX }}
+          BUILD_CUVS_BENCH_CPU_IMAGE: ${{ matrix.BUILD_CUVS_BENCH_CPU_IMAGE }}
+          CUVS_BENCH_IMAGE_REPO: ${{ needs.compute-matrix.outputs.CUVS_BENCH_IMAGE_REPO }}
+          CUVS_BENCH_TAG_PREFIX: ${{ needs.compute-matrix.outputs.CUVS_BENCH_TAG_PREFIX }}
+          CUVS_BENCH_DATASETS_IMAGE_REPO: ${{ needs.compute-matrix.outputs.CUVS_BENCH_DATASETS_IMAGE_REPO }}
+          CUVS_BENCH_DATASETS_TAG_PREFIX: ${{ needs.compute-matrix.outputs.CUVS_BENCH_DATASETS_TAG_PREFIX }}
+          CUVS_BENCH_CPU_IMAGE_REPO: ${{ needs.compute-matrix.outputs.CUVS_BENCH_CPU_IMAGE_REPO }}
+          CUVS_BENCH_CPU_TAG_PREFIX: ${{ needs.compute-matrix.outputs.CUVS_BENCH_CPU_TAG_PREFIX }}
+          GPUCIBOT_DOCKERHUB_USER: ${{ secrets.GPUCIBOT_DOCKERHUB_USER }}
+          GPUCIBOT_DOCKERHUB_TOKEN: ${{ secrets.GPUCIBOT_DOCKERHUB_TOKEN }}
+        run: ci/retag-major-version.sh
   validate:
     needs: [compute-matrix, build-rapids, build-rapids-multiarch-manifest]
     strategy:

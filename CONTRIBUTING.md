@@ -16,6 +16,11 @@ To build just the `base` image with default arguments: `docker buildx build --pu
 - `PYTHON_VER` - Version of Python to use. Should be `major.minor`
 - `RAPIDS_VER` - Version of RAPIDS to use. Should be `YY.MM`
 
+**Note on CUDA versioning**:
+- **RAPIDS 25.08 and older**: CUDA version tags are major.minor (e.g., `cuda12.9`).
+- **RAPIDS 25.10**: Both major.minor version tags (e.g., `cuda12.9`, `cuda13.0`) and consolidated major version tags (e.g., `cuda12`, `cuda13`). The major version tags are created by retagging the latest minor version builds.
+- **RAPIDS 25.12 and later**: Only major version tags will be created (e.g., `cuda12`, `cuda13`).
+
 ## Cleaning Up
 
 Every build first writes images to the https://hub.docker.com/r/rapidsai/staging repo on DockerHub,

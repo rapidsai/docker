@@ -22,6 +22,11 @@ It extends the `base` images to include RAPIDS notebooks and a [`jupyterlab` ser
 
 Tags for both `base` and `notebooks` images take the form of `${RAPIDS_VER}-cuda${CUDA_VER}-py${PYTHON_VER}`.
 
+**Note on CUDA versioning**:
+- **RAPIDS 25.08 and older**: CUDA version tags are major.minor (e.g., `cuda12.9`).
+- **RAPIDS 25.10**: Both major.minor version tags (e.g., `cuda12.9`, `cuda13.0`) and consolidated major version tags (e.g., `cuda12`, `cuda13`). The major version tags are created by retagging the latest minor version builds.
+- **RAPIDS 25.12 and later**: Only major version tags will be created (e.g., `cuda12`, `cuda13`).
+
 There is no `latest` tag.
 
 ## Environment Variables
