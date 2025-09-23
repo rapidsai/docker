@@ -33,3 +33,18 @@ docker manifest push "${org}/${BASE_IMAGE_REPO}:${base_tag}"
 
 docker manifest create "${org}/${NOTEBOOKS_IMAGE_REPO}:${notebooks_tag}" "${notebooks_source_tags[@]}"
 docker manifest push "${org}/${NOTEBOOKS_IMAGE_REPO}:${notebooks_tag}"
+
+# If CUDA 12.9 or 13.0, retag images as cuda12 or cuda13
+if [[ "$CUDA_TAG" == "12.9" || "$CUDA_TAG" == "13.0" ]]; then
+    major_version=${CUDA_TAG%.*}
+    echo "Retagging cuda${CUDA_TAG} images as cuda${major_version}..."
+
+    base_tag_cuda_major="${BASE_TAG_PREFIX}${RAPIDS_VER}${ALPHA_TAG}-cuda${major_version}-py${PYTHON_VER}"
+    notebooks_tag_cuda_major="${NOTEBOOKS_TAG_PREFIX}${RAPIDS_VER}${ALPHA_TAG}-cuda${major_version}-py${PYTHON_VER}"
+
+    docker manifest create "${org}/${BASE_IMAGE_REPO}:${base_tag_cuda_major}" "${base_source_tags[@]}"
+    docker manifest push "${org}/${BASE_IMAGE_REPO}:${base_tag_cuda_major}"
+
+    docker manifest create "${org}/${NOTEBOOKS_IMAGE_REPO}:${notebooks_tag_cuda_major}" "${notebooks_source_tags[@]}"
+    docker manifest push "${org}/${NOTEBOOKS_IMAGE_REPO}:${notebooks_tag_cuda_major}"
+fi

@@ -46,3 +46,13 @@ if [ "$CUVS_BENCH_CPU_IMAGE_BUILT" = "true" ]; then
     docker manifest create "${org}/${CUVS_BENCH_CPU_IMAGE_REPO}:${cuvs_bench_cpu_tag}" "${cuvs_bench_cpu_source_tags[@]}"
     docker manifest push "${org}/${CUVS_BENCH_CPU_IMAGE_REPO}:${cuvs_bench_cpu_tag}"
 fi
+
+# If CUDA 12.9 or 13.0, retag images as cuda12 or cuda13
+if [[ "$CUDA_TAG" == "12.9" || "$CUDA_TAG" == "13.0" ]]; then
+    major_version=${CUDA_TAG%.*}
+    echo "Retagging cuda${CUDA_TAG} images as cuda${major_version}..."
+
+    cuvs_bench_tag_cuda_major="${CUVS_BENCH_TAG_PREFIX}${RAPIDS_VER}${ALPHA_TAG}-cuda${major_version}-py${PYTHON_VER}"
+    docker manifest create "${org}/${CUVS_BENCH_IMAGE_REPO}:${cuvs_bench_tag_cuda_major}" "${cuvs_bench_source_tags[@]}"
+    docker manifest push "${org}/${CUVS_BENCH_IMAGE_REPO}:${cuvs_bench_tag_cuda_major}"
+fi
