@@ -38,16 +38,21 @@ There are two types:
 The tag naming scheme for RAPIDS images incorporates key platform details into the tag as shown below:
 
 ```text
-25.12-cuda13.0-py3.13
- ^        ^      ^
- |        |      Python version
- |        |
- |        CUDA version
- |
- RAPIDS version
+25.12-cuda13-py3.13
+^         ^    ^
+|         |    Python version
+|         |
+|         CUDA major version
+|
+RAPIDS version
 ```
 
-**Note: Nightly builds of the images have the RAPIDS version appended with an `a` (ie `25.12a-cuda13.0-py3.13`)**
+**Note: Nightly builds of the images have the RAPIDS version appended with an `a` (ie `25.12a-cuda13-py3.13`)**
+
+**Note on CUDA versioning**:
+- **RAPIDS 25.08 and older**: CUDA version tags are major.minor (e.g., `cuda12.9`).
+- **RAPIDS 25.10**: Both major.minor version tags (e.g., `cuda12.9`, `cuda13.0`) and major version tags (e.g., `cuda12`, `cuda13`). The major version tags are created by retagging the latest minor version builds.
+- **RAPIDS 25.12 and later**: CUDA version tags are major-only (e.g., `cuda12`, `cuda13`).
 
 ## Usage
 
