@@ -13,8 +13,8 @@ def compute_ubuntu_version($x):
   end |
   $x + {LINUX_VER: (.[0]+.[1]), LINUX_DISTRO: .[0], LINUX_DISTRO_VER: .[1]};
 
-def compute_cuda_tag($x):
-  $x + {CUDA_TAG: $x.CUDA_VER | split(".") | [.[0], .[1]] | join(".") };
+def compute_cuda_major_tag($x):
+  $x + {CUDA_TAG: $x.CUDA_VER | split(".") | .[0] };
 
 def latest_cuda_version($cuda_versions):
   $cuda_versions | max_by(. | split(".") | map(tonumber));
@@ -45,7 +45,7 @@ def compute_matrix($input):
     combinations |
     lists2dict($matrix_keys; .) |
     compute_ubuntu_version(.) |
-    compute_cuda_tag(.) |
+    compute_cuda_major_tag(.) |
     compute_build_cuvs_bench_cpu_image(.; $latest_cuda_version) |
     filter_excludes(.; $excludes) |
     compute_arch(.)
