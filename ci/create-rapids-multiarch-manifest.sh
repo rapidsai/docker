@@ -29,28 +29,12 @@ done
 
 # Create and push Docker multi-arch manifests
 
-# If CUDA 12.0 or 12.9, create and push multi-arch manifests with minor version tags
-if [[ "$CUDA_TAG" == "12.0" || "$CUDA_TAG" == "12.9" ]]; then
-    echo "Creating and pushing multi-arch manifests with minor version tags for cuda${CUDA_TAG}..."
+cuda_major=${CUDA_TAG%.*}
+base_tag_cuda_major="${BASE_TAG_PREFIX}${RAPIDS_VER}${ALPHA_TAG}-cuda${cuda_major}-py${PYTHON_VER}"
+notebooks_tag_cuda_major="${NOTEBOOKS_TAG_PREFIX}${RAPIDS_VER}${ALPHA_TAG}-cuda${cuda_major}-py${PYTHON_VER}"
 
-    docker manifest create "${org}/${BASE_IMAGE_REPO}:${base_tag}" "${base_source_tags[@]}"
-    docker manifest push "${org}/${BASE_IMAGE_REPO}:${base_tag}"
+docker manifest create "${org}/${BASE_IMAGE_REPO}:${base_tag_cuda_major}" "${base_source_tags[@]}"
+docker manifest push "${org}/${BASE_IMAGE_REPO}:${base_tag_cuda_major}"
 
-    docker manifest create "${org}/${NOTEBOOKS_IMAGE_REPO}:${notebooks_tag}" "${notebooks_source_tags[@]}"
-    docker manifest push "${org}/${NOTEBOOKS_IMAGE_REPO}:${notebooks_tag}"
-fi
-
-# If CUDA 12.9 or 13.0, create and push multi-arch manifests with major version tags
-if [[ "$CUDA_TAG" == "12.9" || "$CUDA_TAG" == "13.0" ]]; then
-    cuda_major=${CUDA_TAG%.*}
-    echo "Creating and pushing multi-arch manifests with major version tags for cuda${cuda_major}..."
-
-    base_tag_cuda_major="${BASE_TAG_PREFIX}${RAPIDS_VER}${ALPHA_TAG}-cuda${cuda_major}-py${PYTHON_VER}"
-    notebooks_tag_cuda_major="${NOTEBOOKS_TAG_PREFIX}${RAPIDS_VER}${ALPHA_TAG}-cuda${cuda_major}-py${PYTHON_VER}"
-
-    docker manifest create "${org}/${BASE_IMAGE_REPO}:${base_tag_cuda_major}" "${base_source_tags[@]}"
-    docker manifest push "${org}/${BASE_IMAGE_REPO}:${base_tag_cuda_major}"
-
-    docker manifest create "${org}/${NOTEBOOKS_IMAGE_REPO}:${notebooks_tag_cuda_major}" "${notebooks_source_tags[@]}"
-    docker manifest push "${org}/${NOTEBOOKS_IMAGE_REPO}:${notebooks_tag_cuda_major}"
-fi
+docker manifest create "${org}/${NOTEBOOKS_IMAGE_REPO}:${notebooks_tag_cuda_major}" "${notebooks_source_tags[@]}"
+docker manifest push "${org}/${NOTEBOOKS_IMAGE_REPO}:${notebooks_tag_cuda_major}"
