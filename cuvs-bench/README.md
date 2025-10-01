@@ -36,7 +36,7 @@ export DATA_FOLDER=path/to/store/results/and/data
 docker run --gpus all --rm -it \
     -v $DATA_FOLDER:/home/rapids/benchmarks \
     -u $(id -u) \
-    rapidsai/cuvs-bench:25.12a-cuda13.0-py3.13 \
+    rapidsai/cuvs-bench:25.12a-cuda13-py3.13 \
     "--dataset deep-image-96-angular" \
     "--normalize" \
     "--algorithms cuvs_cagra" \
@@ -47,7 +47,7 @@ Where:
 
 - `DATA_FOLDER=path/to/store/results/and/data`: Results and datasets will be written to this host folder.
 - `-u $(id -u)`: This flag allows the container to use the host user for permissions
-- `rapidsai/cuvs-bench:25.12a-cuda13.0-py3.13`: Image to use, either `cuvs-bench` or `cuvs-bench-datasets`, cuVS version, CUDA version, and Python version.
+- `rapidsai/cuvs-bench:25.12a-cuda13-py3.13`: Image to use, either `cuvs-bench` or `cuvs-bench-datasets`, cuVS version, CUDA version, and Python version.
 - "--dataset deep-image-96-angular": Dataset name(s). See https://docs.rapids.ai/api/cuvs/nightly/cuvs_bench for more details.
 - "--normalize": Whether to normalize the dataset, leave string empty ("") to not normalize.
 - "--algorithms cuvs_cagra": What algorithm(s) to use as a ; separated list, as well as any other argument to pass to `cuvs_bench.run`.
@@ -74,7 +74,7 @@ export DATA_FOLDER=path/to/store/results/and/data
 docker run --gpus all --rm -it \
     -v $DATA_FOLDER:/home/rapids/benchmarks \
     -u $(id -u) \
-    rapidsai/cuvs-bench:25.12a-cuda13.0-py3.13 \
+    rapidsai/cuvs-bench:25.12a-cuda13-py3.13 \
     --entrypoint /bin/bash
 ```
 
