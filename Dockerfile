@@ -60,6 +60,16 @@ EOF
 
 RUN useradd -rm -d /home/rapids -s /bin/bash -g conda -u 1001 rapids
 
+### -- CVE-2025-8194 tarfile patch -- ###
+# Adjust Python version path if needed (e.g., 3.9 or 3.11)
+ENV PYTHON_SITE_PKGS=/opt/conda/lib/python${PYTHON_VER}/site-packages
+
+# Download and install the patch
+RUN curl -sSL https://gist.githubusercontent.com/sethmlarson/1716ac5b82b73dbcbf23ad2eff8b33e1/raw/tarfile_patch.py \
+      -o ${PYTHON_SITE_PKGS}/tarfile_patch.py && \
+    echo "import tarfile_patch" > ${PYTHON_SITE_PKGS}/zzz_tar_patch.pth
+
+
 USER rapids
 
 WORKDIR /home/rapids
