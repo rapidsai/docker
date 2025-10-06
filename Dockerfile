@@ -65,7 +65,7 @@ RUN useradd -rm -d /home/rapids -s /bin/bash -g conda -u 1001 rapids
 ENV PYTHON_SITE_PKGS=/opt/conda/lib/python${PYTHON_VER}/site-packages
 
 # Download and install the patch
-RUN curl -sSL https://gist.githubusercontent.com/sethmlarson/1716ac5b82b73dbcbf23ad2eff8b33e1/raw/tarfile_patch.py \
+RUN curl -sSL https://gist.githubusercontent.com/sethmlarson/1716ac5b82b73dbcbf23ad2eff8b33e1/raw/70aedc4e31f4785b537b026f903fafc758fb2c17/cve-2025-8194.py \
       -o ${PYTHON_SITE_PKGS}/tarfile_patch.py && \
     echo "import tarfile_patch" > ${PYTHON_SITE_PKGS}/zzz_tar_patch.pth
 
@@ -87,7 +87,8 @@ rapids-mamba-retry install -y -n base \
     "python=${PYTHON_VER}.*" \
     "cuda-version=${CUDA_VER%.*}.*" \
     ipython \
-    'rapids-cli==0.1.*'
+    'rapids-cli==0.1.*' \
+    'openssl==3.5.4'
 conda clean -afy
 EOF
 
