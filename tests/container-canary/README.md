@@ -9,7 +9,7 @@ Install `container-canary` following the instructions in that project's repo.
 Run the tests against a built image, the same way they're run in CI.
 
 ```shell
-IMAGE_URI="rapidsai/notebooks:25.08a-cuda12.9-py3.13"
+IMAGE_URI="rapidsai/notebooks:25.10a-cuda13.0-py3.13"
 
 ci/run-validation-checks.sh \
     --dask-scheduler \

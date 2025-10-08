@@ -8,7 +8,7 @@ Visit [rapids.ai](https://rapids.ai) for more information.
 
 **NOTE:** Review our [system requirements](https://docs.rapids.ai/install#system-req) to ensure you have a compatible system!
 
-### Current Version - RAPIDS v25.08
+### Current Version - RAPIDS v25.10
 
 RAPIDS Libraries included in the images:
 
@@ -38,16 +38,21 @@ There are two types:
 The tag naming scheme for RAPIDS images incorporates key platform details into the tag as shown below:
 
 ```text
-25.08-cuda12.9-py3.13
- ^        ^      ^
- |        |      Python version
- |        |
- |        CUDA version
- |
- RAPIDS version
+25.10-cuda13-py3.13
+^         ^    ^
+|         |    Python version
+|         |
+|         CUDA major version
+|
+RAPIDS version
 ```
 
-**Note: Nightly builds of the images have the RAPIDS version appended with an `a` (ie `25.08a-cuda12.9-py3.13`)**
+**Note: Nightly builds of the images have the RAPIDS version appended with an `a` (ie `25.10a-cuda13-py3.13`)**
+
+**Note on CUDA versioning**:
+- **RAPIDS 25.08 and older**: CUDA version tags are major.minor (e.g., `cuda12.9`).
+- **RAPIDS 25.10**: Both major.minor version tags (e.g., `cuda12.9`, `cuda13.0`) and major version tags (e.g., `cuda12`, `cuda13`). The major version tags are created by retagging the latest minor version builds.
+- **RAPIDS 25.12 and later**: CUDA version tags are major-only (e.g., `cuda12`, `cuda13`).
 
 ## Usage
 
@@ -80,7 +85,7 @@ $ docker run \
     -e EXTRA_CONDA_PACKAGES="jq" \
     -e EXTRA_PIP_PACKAGES="beautifulsoup4" \
     -p 8888:8888 \
-    rapidsai/notebooks:25.08-cuda12.9-py3.13
+    rapidsai/notebooks:25.10-cuda13.0-py3.13
 ```
 
 ### Bind Mounts
@@ -105,7 +110,7 @@ $ docker run \
     --gpus all \
     --shm-size=1g --ulimit memlock=-1 --ulimit stack=67108864 \
     -v $(pwd)/environment.yml:/home/rapids/environment.yml \
-    rapidsai/base:25.08-cuda12.9-py3.13
+    rapidsai/base:25.10-cuda13.0-py3.13
 ```
 
 ### Use JupyterLab to Explore the Notebooks

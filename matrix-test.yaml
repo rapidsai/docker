@@ -1,14 +1,14 @@
 # Copyright (c) 2023-2025, NVIDIA CORPORATION.
-# CUDA_VER is `<major>.<minor>` (e.g. `12.0`)
+# CUDA_VER is `<major>.<minor>` (e.g. `13.0`)
 
 pull-request:
   - { CUDA_VER: '12.0', ARCH: 'amd64', PYTHON_VER: '3.10', GPU: 'l4',   DRIVER: 'earliest' }
-  - { CUDA_VER: '12.9', ARCH: 'arm64', PYTHON_VER: '3.11', GPU: 'a100', DRIVER: 'latest'   }
-  - { CUDA_VER: '12.9', ARCH: 'amd64', PYTHON_VER: '3.13', GPU: 'l4',   DRIVER: 'latest'   }
+  - { CUDA_VER: '12.9', ARCH: 'amd64', PYTHON_VER: '3.12', GPU: 'l4',   DRIVER: 'latest'   }
+  - { CUDA_VER: '13.0', ARCH: 'arm64', PYTHON_VER: '3.13', GPU: 'a100', DRIVER: 'latest'   }
+  - { CUDA_VER: '13.0', ARCH: 'amd64', PYTHON_VER: '3.13', GPU: 'h100', DRIVER: 'latest'   }
 branch:
-  - { CUDA_VER: '12.0', ARCH: 'amd64', PYTHON_VER: '3.10', GPU: 'l4',   DRIVER: 'earliest' }
-  - { CUDA_VER: '12.0', ARCH: 'amd64', PYTHON_VER: '3.10', GPU: 'l4',   DRIVER: 'latest'   }
-  - { CUDA_VER: '12.0', ARCH: 'arm64', PYTHON_VER: '3.11', GPU: 'a100', DRIVER: 'latest'   }
-  - { CUDA_VER: '12.0', ARCH: 'amd64', PYTHON_VER: '3.12', GPU: 'l4',   DRIVER: 'latest'   }
-  - { CUDA_VER: '12.9', ARCH: 'amd64', PYTHON_VER: '3.13', GPU: 'l4',   DRIVER: 'latest'   }
+  - { CUDA_VER: '12.0', ARCH: 'arm64', PYTHON_VER: '3.11', GPU: 'a100', DRIVER: 'earliest' }
+  - { CUDA_VER: '12.9', ARCH: 'amd64', PYTHON_VER: '3.11', GPU: 'l4',   DRIVER: 'latest'   }
   - { CUDA_VER: '12.9', ARCH: 'arm64', PYTHON_VER: '3.13', GPU: 'a100', DRIVER: 'latest'   }
+  - { CUDA_VER: '13.0', ARCH: 'amd64', PYTHON_VER: '3.11', GPU: 'l4',   DRIVER: 'latest'   }
+  - { CUDA_VER: '13.0', ARCH: 'arm64', PYTHON_VER: '3.12', GPU: 'a100', DRIVER: 'latest'   }

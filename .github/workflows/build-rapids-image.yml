@@ -1,5 +1,5 @@
 # Copyright (c) 2025, NVIDIA CORPORATION.
-name: Build and push image variant
+name: build-rapids
 
 on:
   workflow_call:
@@ -42,6 +42,12 @@ jobs:
         PYTHON_VER: ["${{ inputs.PYTHON_VER }}"]
         RAPIDS_VER: ["${{ inputs.RAPIDS_VER }}"]
       fail-fast: false
+    # Referencing something from the 'matrix' context prevents GitHub auto-generating
+    # a hard-to-read name with all the matrix input values.
+    #
+    # The 'name:' in this file also becomes the name in the left-hand navigation list
+    # on the 'Summary' page, so should be more specific than the one in the calling workflow.
+    name: build-rapids (${{ matrix.CUDA_VER }}, py${{ matrix.PYTHON_VER }}, ${{ matrix.ARCH }}, ${{ matrix.LINUX_VER }})
     runs-on: "linux-${{ matrix.ARCH }}-cpu4"
     steps:
       - name: Checkout

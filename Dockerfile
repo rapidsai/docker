@@ -7,7 +7,7 @@ ARG LINUX_DISTRO=ubuntu
 ARG LINUX_DISTRO_VER=22.04
 ARG LINUX_VER=${LINUX_DISTRO}${LINUX_DISTRO_VER}
 
-ARG RAPIDS_VER=25.08
+ARG RAPIDS_VER=25.10
 
 # Gather dependency information
 
@@ -60,6 +60,15 @@ EOF
 
 RUN useradd -rm -d /home/rapids -s /bin/bash -g conda -u 1001 rapids
 
+### -- CVE-2025-8194 tarfile patch -- ###
+# Adjust Python version path if needed (e.g., 3.9 or 3.11)
+ENV PYTHON_SITE_PKGS=/opt/conda/lib/python${PYTHON_VER}/site-packages
+
+# Download and install the patch
+RUN curl -sSL https://gist.githubusercontent.com/sethmlarson/1716ac5b82b73dbcbf23ad2eff8b33e1/raw/70aedc4e31f4785b537b026f903fafc758fb2c17/cve-2025-8194.py \
+      -o ${PYTHON_SITE_PKGS}/tarfile_patch.py && \
+    echo "import tarfile_patch" > ${PYTHON_SITE_PKGS}/zzz_tar_patch.pth
+
 USER rapids
 
 WORKDIR /home/rapids
@@ -78,7 +87,8 @@ rapids-mamba-retry install -y -n base \
     "python=${PYTHON_VER}.*" \
     "cuda-version=${CUDA_VER%.*}.*" \
     ipython \
-    'rapids-cli==0.1.*'
+    'rapids-cli==0.1.*' \
+    'openssl==3.5.4'
 conda clean -afy
 EOF
 
@@ -145,7 +155,7 @@ LABEL com.nvidia.workbench.application.jupyterlab.webapp.url-cmd="jupyter lab li
 LABEL com.nvidia.workbench.cuda-version="$CUDA_VER"
 LABEL com.nvidia.workbench.description="RAPIDS with CUDA ${CUDA_VER}"
 LABEL com.nvidia.workbench.entrypoint-script="/home/rapids/entrypoint.sh"
-LABEL com.nvidia.workbench.image-version="25.08.00"
+LABEL com.nvidia.workbench.image-version="25.10.00"
 LABEL com.nvidia.workbench.labels="cuda${CUDA_VER}"
 LABEL com.nvidia.workbench.name="RAPIDS with CUDA ${CUDA_VER}"
 LABEL com.nvidia.workbench.os-distro-release="$LINUX_DISTRO_VER"
