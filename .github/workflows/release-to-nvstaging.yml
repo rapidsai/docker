@@ -55,11 +55,29 @@ jobs:
 
           CUDA_VER=${{ matrix.CUDA_VER }}
           CUDA_VER_SHORT=${CUDA_VER%.*}
+          CUDA_MAJOR=${CUDA_VER%%.*}
           PYTHON_VER=${{ matrix.PYTHON_VER }}
 
           for type in base notebooks; do
-            source="rapidsai/$type:${{ inputs.RAPIDS_VER }}-cuda$CUDA_VER_SHORT-py$PYTHON_VER"
-            target="nvcr.io/nvstaging/rapids/$type:${{ inputs.RAPIDS_VER }}-cuda$CUDA_VER_SHORT-py$PYTHON_VER"
-            echo "$source => $target"
-            docker run -v ~/.docker/config.json:/config.json quay.io/skopeo/stable:latest copy --multi-arch all --dest-authfile=/config.json docker://$source docker://$target
+            # For CUDA 12, copy both major.minor and major tags
+            if [[ "$CUDA_MAJOR" == "12" ]]; then
+              # Copy major.minor tag
+              source="rapidsai/$type:${{ inputs.RAPIDS_VER }}-cuda$CUDA_VER_SHORT-py$PYTHON_VER"
+              target="nvcr.io/nvstaging/rapids/$type:${{ inputs.RAPIDS_VER }}-cuda$CUDA_VER_SHORT-py$PYTHON_VER"
+              echo "$source => $target"
+              docker run -v ~/.docker/config.json:/config.json quay.io/skopeo/stable:latest copy --multi-arch all --dest-authfile=/config.json docker://$source docker://$target
+
+              # Copy major tag
+              source="rapidsai/$type:${{ inputs.RAPIDS_VER }}-cuda$CUDA_MAJOR-py$PYTHON_VER"
+              target="nvcr.io/nvstaging/rapids/$type:${{ inputs.RAPIDS_VER }}-cuda$CUDA_MAJOR-py$PYTHON_VER"
+              echo "$source => $target"
+              docker run -v ~/.docker/config.json:/config.json quay.io/skopeo/stable:latest copy --multi-arch all --dest-authfile=/config.json docker://$source docker://$target
+
+            # For CUDA 13, copy only major tag
+            elif [[ "$CUDA_MAJOR" == "13" ]]; then
+              source="rapidsai/$type:${{ inputs.RAPIDS_VER }}-cuda$CUDA_MAJOR-py$PYTHON_VER"
+              target="nvcr.io/nvstaging/rapids/$type:${{ inputs.RAPIDS_VER }}-cuda$CUDA_MAJOR-py$PYTHON_VER"
+              echo "$source => $target"
+              docker run -v ~/.docker/config.json:/config.json quay.io/skopeo/stable:latest copy --multi-arch all --dest-authfile=/config.json docker://$source docker://$target
+            fi
           done
