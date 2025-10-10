@@ -17,6 +17,8 @@ jobs:
     steps:
       - name: Checkout code
         uses: actions/checkout@v4
+        with:
+          ref: branch-25.10
 
       - name: Compute matrix
         id: generate-matrix
