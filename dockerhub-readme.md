@@ -85,7 +85,7 @@ $ docker run \
     -e EXTRA_CONDA_PACKAGES="jq" \
     -e EXTRA_PIP_PACKAGES="beautifulsoup4" \
     -p 8888:8888 \
-    rapidsai/notebooks:25.12-cuda13.0-py3.13
+    rapidsai/notebooks:25.12-cuda13-py3.13
 ```
 
 ### Bind Mounts
@@ -110,7 +110,7 @@ $ docker run \
     --gpus all \
     --shm-size=1g --ulimit memlock=-1 --ulimit stack=67108864 \
     -v $(pwd)/environment.yml:/home/rapids/environment.yml \
-    rapidsai/base:25.12-cuda13.0-py3.13
+    rapidsai/base:25.12-cuda13-py3.13
 ```
 
 ### Use JupyterLab to Explore the Notebooks
