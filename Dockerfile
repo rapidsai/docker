@@ -122,14 +122,13 @@ SHELL ["/bin/sh", "-euo", "pipefail", "-c"]
 RUN --mount=type=bind,from=base-build,source=/,target=/rootfs,ro \
     mkdir -p /out && \
     syft scan \
+      --source name "rapidsai/base" \
       --scope all-layers \
       --output cyclonedx-json@1.6=/out/sbom.json \
       dir:/rootfs
 
 
 FROM base-build AS base
-USER root
-RUN install -d -m 755 /sbom
 COPY --from=base-sbom /out/sbom.json /sbom/sbom.json
 USER rapids
 
@@ -217,12 +216,11 @@ SHELL ["/bin/sh", "-euo", "pipefail", "-c"]
 RUN --mount=type=bind,from=notebooks-build,source=/,target=/rootfs,ro \
     mkdir -p /out && \
     syft scan \
+      --source name "rapidsai/notebooks" \
       --scope all-layers \
       --output cyclonedx-json@1.6=/out/sbom.json \
       dir:/rootfs
 
 FROM notebooks-build AS notebooks
-USER root
-RUN install -d -m 755 /sbom
 COPY --from=notebooks-sbom /out/sbom.json /sbom/sbom.json
 USER rapids
