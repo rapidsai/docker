@@ -127,7 +127,7 @@ RUN --mount=type=bind,from=base-build,source=/,target=/rootfs,ro \
       --output cyclonedx-json@1.6=/out/sbom.json \
       dir:/rootfs
 
-
+# Create the base image with the SBOM
 FROM base-build AS base
 COPY --from=base-sbom /out/sbom.json /sbom/sbom.json
 USER rapids
@@ -221,6 +221,7 @@ RUN --mount=type=bind,from=notebooks-build,source=/,target=/rootfs,ro \
       --output cyclonedx-json@1.6=/out/sbom.json \
       dir:/rootfs
 
+# Create the notebooks image with the SBOM
 FROM notebooks-build AS notebooks
 COPY --from=notebooks-sbom /out/sbom.json /sbom/sbom.json
 USER rapids
