@@ -7,3 +7,5 @@ ignored:
   - DL3013
   # warning: Avoid use of cache directory with pip.
   - DL3042
+  # warning: Pin version in apk install.
+  - DL3018
