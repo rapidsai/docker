@@ -15,7 +15,7 @@ FROM --platform=$BUILDPLATFORM alpine:3.20 AS syft-base
 ARG BUILDPLATFORM
 ARG SYFT_VER
 
-SHELL ["/bin/sh", "-eo", "pipefail", "-c"]
+SHELL ["/bin/ash", "-eo", "pipefail", "-c"]
 
 RUN apk add --no-cache curl tar ca-certificates \
  && case "$BUILDPLATFORM" in \
