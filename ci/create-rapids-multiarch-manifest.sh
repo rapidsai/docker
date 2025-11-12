@@ -4,7 +4,7 @@
 set -eEuo pipefail
 
 common_path="$(dirname "$(realpath "$0")")/common.sh"
-# shellcheck source=common.sh
+# shellcheck source=SCRIPTDIR/common.sh
 source "$common_path"
 
 # Initialize arrays to store source tags for each image
@@ -28,8 +28,13 @@ for arch in $(echo "${ARCHES}" | jq .[] -r); do
 done
 
 # Create and push Docker multi-arch manifests
-docker manifest create "${org}/${BASE_IMAGE_REPO}:${base_tag}" "${base_source_tags[@]}"
-docker manifest push "${org}/${BASE_IMAGE_REPO}:${base_tag}"
 
-docker manifest create "${org}/${NOTEBOOKS_IMAGE_REPO}:${notebooks_tag}" "${notebooks_source_tags[@]}"
-docker manifest push "${org}/${NOTEBOOKS_IMAGE_REPO}:${notebooks_tag}"
+cuda_major=${CUDA_TAG%.*}
+base_tag_cuda_major="${BASE_TAG_PREFIX}${RAPIDS_VER}${ALPHA_TAG}-cuda${cuda_major}-py${PYTHON_VER}"
+notebooks_tag_cuda_major="${NOTEBOOKS_TAG_PREFIX}${RAPIDS_VER}${ALPHA_TAG}-cuda${cuda_major}-py${PYTHON_VER}"
+
+docker manifest create "${org}/${BASE_IMAGE_REPO}:${base_tag_cuda_major}" "${base_source_tags[@]}"
+docker manifest push "${org}/${BASE_IMAGE_REPO}:${base_tag_cuda_major}"
+
+docker manifest create "${org}/${NOTEBOOKS_IMAGE_REPO}:${notebooks_tag_cuda_major}" "${notebooks_source_tags[@]}"
+docker manifest push "${org}/${NOTEBOOKS_IMAGE_REPO}:${notebooks_tag_cuda_major}"

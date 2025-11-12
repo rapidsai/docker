@@ -2,7 +2,7 @@
 # Copyright (c) 2024-2025, NVIDIA CORPORATION.
 
 ARG PYTHON_VER=unset
-ARG RAPIDS_VER=25.08
+ARG RAPIDS_VER=25.12
 
 FROM condaforge/miniforge3:24.11.3-2 AS cuvs-bench-cpu
 ARG RAPIDS_VER

@@ -4,7 +4,7 @@
 set -eEuo pipefail
 
 common_path="$(dirname "$(realpath "$0")")/common.sh"
-# shellcheck source=common.sh
+# shellcheck source=SCRIPTDIR/common.sh
 source "$common_path"
 
 cuvs_bench_source_tags=()
