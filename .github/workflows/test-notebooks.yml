@@ -82,7 +82,7 @@ jobs:
           mkdir -p "$GHA_TOOLS_DIR"
           curl -s -L 'https://github.com/rapidsai/gha-tools/releases/latest/download/tools.tar.gz' | tar -xz -C "$GHA_TOOLS_DIR"
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v5
         with:
           fetch-depth: 0
       - name: Get RAPIDS GitHub Info
