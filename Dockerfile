@@ -21,7 +21,7 @@ ARG PYTHON_VER
 
 ARG RAPIDS_VER
 
-ARG RAPIDS_BRANCH="main"
+ARG RAPIDS_BRANCH="release/25.12"
 
 SHELL ["/bin/bash", "-euo", "pipefail", "-c"]
 
