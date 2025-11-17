@@ -21,7 +21,7 @@ ARG PYTHON_VER
 
 ARG RAPIDS_VER
 
-ARG RAPIDS_BRANCH="branch-${RAPIDS_VER}"
+ARG RAPIDS_BRANCH="main"
 
 SHELL ["/bin/bash", "-euo", "pipefail", "-c"]
 
