@@ -89,7 +89,7 @@ rapids-mamba-retry install -y -n base \
     ipython \
     'rapids-cli==0.1.*' \
     'openssl==3.6.0' \
-    'brotli==1.2.0'
+    'glob==11.1.0'
 conda clean -afy
 EOF
 
