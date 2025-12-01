@@ -36,7 +36,7 @@ jobs:
           - rapidsai/notebooks
     steps:
       - name: checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
       - name: Update DockerHub README for ${{ matrix.repo_name }}
         uses: peter-evans/dockerhub-description@v4
