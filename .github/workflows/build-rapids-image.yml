@@ -32,6 +32,11 @@ on:
         required: true
         type: string
 
+env:
+  # prevent buildx from creating arch-specific manifest lists...
+  # we want single images, that are later referenced together in a multiarch manifest
+  BUILDX_NO_DEFAULT_ATTESTATIONS: 1
+
 jobs:
   build:
     strategy:
