@@ -101,7 +101,7 @@ jobs:
         run: |
           PATH="$PATH:$GHA_TOOLS_DIR"
           rapids-mamba-retry install -n base awscli
-      - uses: aws-actions/configure-aws-credentials@v4
+      - uses: aws-actions/configure-aws-credentials@v5
         if: '!cancelled()'
         with:
           role-to-assume: ${{ vars.AWS_ROLE_ARN }}
