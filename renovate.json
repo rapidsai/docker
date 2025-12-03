@@ -1,5 +1,16 @@
 {
   "$schema": "https://docs.renovatebot.com/renovate-schema.json",
-  "extends": ["config:base"],
-  "schedule": ["before 4am on the first day of the month"]
+  "extends": [
+    "config:recommended"
+  ],
+  "schedule": ["before 4am on the first day of the month"],
+  "packageRules": [
+    {
+      "description": "Update most GitHub actions together",
+      "matchPackagePatterns": [
+        "^(actions/.*|aws-actions/*|docker/*|go|peter-evans/dockerhub-description|pre-commit/)$"
+      ],
+      "groupName": "gh-actions"
+    }
+  ]
 }
