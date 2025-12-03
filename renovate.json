@@ -11,6 +11,12 @@
         "^(actions/.*|aws-actions/*|docker/*|go|peter-evans/dockerhub-description|pre-commit/)$"
       ],
       "groupName": "gh-actions"
+    },
+    {
+      "matchDatasources": ["docker"],
+      "matchPackagePatterns": [
+        "^condaforge/miniforge3$"
+      ]
     }
   ]
 }
