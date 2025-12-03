@@ -3,19 +3,23 @@
   "extends": [
     "config:recommended"
   ],
-  "schedule": ["before 4am on the first day of the month"],
+  "schedule": [
+    "before 4am on the first day of the month"
+  ],
   "packageRules": [
     {
       "description": "Update most GitHub actions together",
-      "matchPackagePatterns": [
-        "^(actions/.*|aws-actions/*|docker/*|go|peter-evans/dockerhub-description|pre-commit/)$"
-      ],
-      "groupName": "gh-actions"
+      "groupName": "gh-actions",
+      "matchPackageNames": [
+        "/^(actions/.*|aws-actions/*|docker/*|go|peter-evans/dockerhub-description|pre-commit/)$/"
+      ]
     },
     {
-      "matchDatasources": ["docker"],
-      "matchPackagePatterns": [
-        "^condaforge/miniforge3$"
+      "matchDatasources": [
+        "docker"
+      ],
+      "matchPackageNames": [
+        "/^condaforge/miniforge3$/"
       ]
     }
   ]
