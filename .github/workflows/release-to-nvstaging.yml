@@ -16,7 +16,7 @@ jobs:
       matrix: ${{ steps.generate-matrix.outputs.matrix }}
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
       - name: Compute matrix
         id: generate-matrix
@@ -33,7 +33,7 @@ jobs:
       matrix: ${{fromJson(needs.compute-matrix.outputs.matrix)}}
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
 
       - name: Login to DockerHub
         uses: docker/login-action@v3
