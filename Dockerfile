@@ -7,10 +7,10 @@ ARG LINUX_DISTRO=ubuntu
 ARG LINUX_DISTRO_VER=22.04
 ARG LINUX_VER=${LINUX_DISTRO}${LINUX_DISTRO_VER}
 
-ARG RAPIDS_VER=25.12
+ARG RAPIDS_VER=26.02
 ARG SYFT_VER=1.32.0
 
-# SBOM tooling
+# Build syft base image
 FROM --platform=$BUILDPLATFORM alpine:3.20 AS syft-base
 ARG BUILDPLATFORM
 ARG SYFT_VER
@@ -39,7 +39,7 @@ ARG PYTHON_VER
 
 ARG RAPIDS_VER
 
-ARG RAPIDS_BRANCH="branch-${RAPIDS_VER}"
+ARG RAPIDS_BRANCH="main"
 
 SHELL ["/bin/bash", "-euo", "pipefail", "-c"]
 
@@ -106,7 +106,7 @@ rapids-mamba-retry install -y -n base \
     "cuda-version=${CUDA_VER%.*}.*" \
     ipython \
     'rapids-cli==0.1.*' \
-    'openssl==3.5.4'
+    'openssl==3.6.0'
 conda clean -afy
 EOF
 
@@ -191,7 +191,7 @@ LABEL com.nvidia.workbench.application.jupyterlab.webapp.url-cmd="jupyter lab li
 LABEL com.nvidia.workbench.cuda-version="$CUDA_VER"
 LABEL com.nvidia.workbench.description="RAPIDS with CUDA ${CUDA_VER}"
 LABEL com.nvidia.workbench.entrypoint-script="/home/rapids/entrypoint.sh"
-LABEL com.nvidia.workbench.image-version="25.12.00"
+LABEL com.nvidia.workbench.image-version="26.02.00"
 LABEL com.nvidia.workbench.labels="cuda${CUDA_VER}"
 LABEL com.nvidia.workbench.name="RAPIDS with CUDA ${CUDA_VER}"
 LABEL com.nvidia.workbench.os-distro-release="$LINUX_DISTRO_VER"

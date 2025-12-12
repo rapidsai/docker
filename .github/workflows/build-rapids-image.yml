@@ -32,6 +32,11 @@ on:
         required: true
         type: string
 
+env:
+  # prevent buildx from creating arch-specific manifest lists...
+  # we want single images, that are later referenced together in a multiarch manifest
+  BUILDX_NO_DEFAULT_ATTESTATIONS: 1
+
 jobs:
   build:
     strategy:
@@ -51,7 +56,7 @@ jobs:
     runs-on: "linux-${{ matrix.ARCH }}-cpu4"
     steps:
       - name: Checkout
-        uses: actions/checkout@v4
+        uses: actions/checkout@v6
         with:
           fetch-depth: 0
       - name: Install gha-tools
@@ -64,7 +69,7 @@ jobs:
           GIT_DESCRIBE_TAG="$(git describe --tags --abbrev=0)"
           GIT_DESCRIBE_TAG="${GIT_DESCRIBE_TAG:1}" # remove leading 'v'
           if [[ ! $GIT_DESCRIBE_TAG =~ [a-z] ]]; then
-            rapids-logger "Most recent tag is for release, adding the `rapidsai` channel and removing the `rapidsai-nightly` channel."
+            rapids-logger 'Most recent tag is for release, adding the `rapidsai` channel and removing the `rapidsai-nightly` channel.'
             sed -i 's|rapidsai-nightly|rapidsai|' context/condarc
           else
             rapids-logger "Most recent tag is an alpha. Build will use nightly channels."
