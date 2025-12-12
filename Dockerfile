@@ -8,6 +8,24 @@ ARG LINUX_DISTRO_VER=22.04
 ARG LINUX_VER=${LINUX_DISTRO}${LINUX_DISTRO_VER}
 
 ARG RAPIDS_VER=26.02
+ARG SYFT_VER=1.32.0
+
+# Build syft base image
+FROM --platform=$BUILDPLATFORM alpine:3.20 AS syft-base
+ARG BUILDPLATFORM
+ARG SYFT_VER
+
+SHELL ["/bin/ash", "-eo", "pipefail", "-c"]
+
+RUN apk add --no-cache curl tar ca-certificates \
+ && case "$BUILDPLATFORM" in \
+      linux/amd64) SYFT_ARCH="linux_amd64" ;; \
+      linux/arm64) SYFT_ARCH="linux_arm64" ;; \
+      *) echo "Unsupported BUILDPLATFORM: ${BUILDPLATFORM}" && exit 1 ;; \
+    esac \
+ && curl -sSfL "https://github.com/anchore/syft/releases/download/v${SYFT_VER}/syft_${SYFT_VER}_${SYFT_ARCH}.tar.gz" \
+    | tar -xz -C /usr/local/bin syft \
+ && chmod +x /usr/local/bin/syft
 
 # Gather dependency information
 
@@ -40,7 +58,7 @@ EOF
 
 
 # Base image
-FROM rapidsai/miniforge-cuda:${RAPIDS_VER}-cuda${CUDA_VER}-base-${LINUX_VER}-py${PYTHON_VER} AS base
+FROM rapidsai/miniforge-cuda:${RAPIDS_VER}-cuda${CUDA_VER}-base-${LINUX_VER}-py${PYTHON_VER} AS base-build
 ARG CUDA_VER
 ARG PYTHON_VER
 
@@ -99,8 +117,26 @@ ENTRYPOINT ["/home/rapids/entrypoint.sh"]
 CMD ["ipython"]
 
 
+# SBOM generation for base image
+FROM syft-base AS base-sbom
+SHELL ["/bin/sh", "-euo", "pipefail", "-c"]
+
+RUN --mount=type=bind,from=base-build,source=/,target=/rootfs,ro \
+    mkdir -p /out && \
+    syft scan \
+      --source-name "rapidsai/base" \
+      --scope all-layers \
+      --output cyclonedx-json@1.6=/out/sbom.json \
+      dir:/rootfs
+
+# Create the base image with the SBOM
+FROM base-build AS base
+COPY --from=base-sbom /out/sbom.json /sbom/sbom.json
+USER rapids
+
+
 # Notebooks image
-FROM base AS notebooks
+FROM base AS notebooks-build
 
 ARG CUDA_VER
 ARG LINUX_DISTRO
@@ -174,3 +210,20 @@ LABEL com.nvidia.workbench.schema-version="v2"
 LABEL com.nvidia.workbench.user.gid="1000"
 LABEL com.nvidia.workbench.user.uid="1001"
 LABEL com.nvidia.workbench.user.username="rapids"
+
+# SBOM generation for notebooks image
+FROM syft-base AS notebooks-sbom
+SHELL ["/bin/sh", "-euo", "pipefail", "-c"]
+
+RUN --mount=type=bind,from=notebooks-build,source=/,target=/rootfs,ro \
+    mkdir -p /out && \
+    syft scan \
+      --source-name "rapidsai/notebooks" \
+      --scope all-layers \
+      --output cyclonedx-json@1.6=/out/sbom.json \
+      dir:/rootfs
+
+# Create the notebooks image with the SBOM
+FROM notebooks-build AS notebooks
+COPY --from=notebooks-sbom /out/sbom.json /sbom/sbom.json
+USER rapids
