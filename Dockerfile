@@ -124,7 +124,7 @@ SHELL ["/bin/sh", "-euo", "pipefail", "-c"]
 RUN --mount=type=bind,from=base-build,source=/,target=/rootfs,ro \
     mkdir -p /out && \
     syft scan \
-      --source name "rapidsai/base" \
+      --source-name "rapidsai/base" \
       --scope all-layers \
       --output cyclonedx-json@1.6=/out/sbom.json \
       dir:/rootfs
@@ -218,7 +218,7 @@ SHELL ["/bin/sh", "-euo", "pipefail", "-c"]
 RUN --mount=type=bind,from=notebooks-build,source=/,target=/rootfs,ro \
     mkdir -p /out && \
     syft scan \
-      --source name "rapidsai/notebooks" \
+      --source-name "rapidsai/notebooks" \
       --scope all-layers \
       --output cyclonedx-json@1.6=/out/sbom.json \
       dir:/rootfs
