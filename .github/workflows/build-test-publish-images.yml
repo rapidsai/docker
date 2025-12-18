@@ -55,8 +55,6 @@ jobs:
           ci/lint-dockerfiles.sh
   compute-matrix:
     runs-on: ubuntu-latest
-    container:
-      image: rapidsai/ci-conda:latest
     outputs:
       BASE_IMAGE_REPO: ${{ steps.compute-image-repo.outputs.BASE_IMAGE_REPO }}
       NOTEBOOKS_IMAGE_REPO: ${{ steps.compute-image-repo.outputs.NOTEBOOKS_IMAGE_REPO }}

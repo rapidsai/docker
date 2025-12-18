@@ -1,7 +1,20 @@
 .vscode
 
+*.a
+*.bz2
+*.dll
+*.dylib
+*.exe
+*.gz
+*.pdf
+*.png
+.ruff_cache/
+*.so
+*.tar.gz
+*.tgz
+*.whl
+*.zip
 
-# Created by https://www.gitignore.io/api/macos,linux
 ### Linux ###
 *~
 .fuse_hidden*
@@ -27,5 +40,3 @@ Icon
 Network Trash Folder
 Temporary Items
 .apdisk
-
-# End of https://www.gitignore.io/api/macos,linux
