@@ -30,15 +30,27 @@ COPY notebooks.sh /notebooks.sh
 #
 RUN <<EOF
 apt-get update
-apt-get install -y --no-install-recommends rsync
-python -m pip install    \
-    --no-cache-dir       \
-    --prefer-binary      \
-    --upgrade            \
-    'conda-merge==0.3.*' \
-    'rapids-dependency-file-generator==1.20.*'
+apt-get install             \
+    -y                      \
+    --no-install-recommends \
+      jq                    \
+      rsync                 \
+      yq
+
+python -m pip install      \
+    --no-cache-dir         \
+    --prefer-binary        \
+    --upgrade              \
+      'conda-merge==0.3.*' \
+      'rapids-dependency-file-generator==1.20.*'
+
 /notebooks.sh
-apt-get purge -y --auto-remove rsync
+apt-get purge     \
+    -y            \
+    --auto-remove \
+      jq          \
+      rsync       \
+      yq
 rm -rf /var/lib/apt/lists/*
 EOF
 
