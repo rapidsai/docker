@@ -90,8 +90,9 @@ jobs:
           # will use NVIDIA's self-hosted DockerHub pull-through cache, which should mean faster builds,
           # fewer network failures, and fewer rate-limiting issues
           buildkitd-config: /etc/buildkit/buildkitd.toml
-          driver: docker
+          driver: docker-container
           endpoint: builders
+          version: 'v0.30.1'
       - name: Build base image
         uses: docker/build-push-action@v6
         with:
@@ -108,6 +109,8 @@ jobs:
             PYTHON_VER=${{ inputs.PYTHON_VER }}
             RAPIDS_VER=${{ inputs.RAPIDS_VER }}
           tags: ${{ inputs.BASE_TAG }}-${{ matrix.ARCH }}
+          # ensure only OCI mediatypes are used: https://docs.docker.com/build/exporters/#oci-media-types
+          outputs: type=registry,oci-mediatypes=true
       - name: Build notebooks image
         uses: docker/build-push-action@v6
         with:
@@ -124,3 +127,5 @@ jobs:
             PYTHON_VER=${{ inputs.PYTHON_VER }}
             RAPIDS_VER=${{ inputs.RAPIDS_VER }}
           tags: ${{ inputs.NOTEBOOKS_TAG }}-${{ matrix.ARCH }}
+          # ensure only OCI mediatypes are used: https://docs.docker.com/build/exporters/#oci-media-types
+          outputs: type=registry,oci-mediatypes=true
