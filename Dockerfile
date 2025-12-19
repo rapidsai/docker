@@ -11,12 +11,15 @@ ARG RAPIDS_VER=26.02
 
 # Gather dependency information
 FROM python:${PYTHON_VER} AS dependencies
+ARG CPU_ARCH
 ARG CUDA_VER
 ARG PYTHON_VER
 
 ARG RAPIDS_VER
 
 ARG RAPIDS_BRANCH="main"
+
+ARG YQ_VER=4.49.2
 
 SHELL ["/bin/bash", "-euo", "pipefail", "-c"]
 
@@ -34,8 +37,7 @@ apt-get install             \
     -y                      \
     --no-install-recommends \
       jq                    \
-      rsync                 \
-      yq
+      rsync
 
 python -m pip install      \
     --no-cache-dir         \
@@ -44,13 +46,19 @@ python -m pip install      \
       'conda-merge==0.3.*' \
       'rapids-dependency-file-generator==1.20.*'
 
+# yq>=4.0 is needed for the bit in /notebooks.sh that uses load() to read channels from /condarc
+wget https://github.com/mikefarah/yq/releases/download/v${YQ_VER}/yq_linux_${CPU_ARCH} -O /tmp/yq
+mv /tmp/yq /usr/bin/yq
+chmod +x /usr/bin/yq
+
 /notebooks.sh
+
 apt-get purge     \
     -y            \
     --auto-remove \
       jq          \
-      rsync       \
-      yq
+      rsync
+
 rm -rf /var/lib/apt/lists/*
 EOF
 
