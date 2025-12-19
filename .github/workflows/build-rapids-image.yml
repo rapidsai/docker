@@ -121,6 +121,7 @@ jobs:
           push: true
           pull: true
           build-args: |
+            CPU_ARCH=${{ matrix.ARCH }}
             CUDA_VER=${{ inputs.CUDA_VER }}
             LINUX_DISTRO=${{ inputs.LINUX_DISTRO }}
             LINUX_DISTRO_VER=${{ inputs.LINUX_DISTRO_VER }}
