@@ -47,7 +47,7 @@ python -m pip install      \
       'rapids-dependency-file-generator==1.20.*'
 
 # yq>=4.0 is needed for the bit in /notebooks.sh that uses load() to read channels from /condarc
-wget https://github.com/mikefarah/yq/releases/download/v${YQ_VER}/yq_linux_${CPU_ARCH} -O /tmp/yq
+wget -q https://github.com/mikefarah/yq/releases/download/v${YQ_VER}/yq_linux_${CPU_ARCH} -O /tmp/yq
 mv /tmp/yq /usr/bin/yq
 chmod +x /usr/bin/yq
 
