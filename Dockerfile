@@ -10,12 +10,8 @@ ARG LINUX_VER=${LINUX_DISTRO}${LINUX_DISTRO_VER}
 ARG RAPIDS_VER=26.02
 
 # Gather dependency information
-
-# ignore hadolint DL3007... we really do always want the latest 'rapidsai/ci-conda',
-# and don't want to have to push new commits to update to it
-#
-# hadolint ignore=DL3007
-FROM rapidsai/ci-conda:${RAPIDS_VER}-latest AS dependencies
+FROM python:${PYTHON_VER} AS dependencies
+ARG CPU_ARCH
 ARG CUDA_VER
 ARG PYTHON_VER
 
@@ -23,21 +19,48 @@ ARG RAPIDS_VER
 
 ARG RAPIDS_BRANCH="main"
 
-SHELL ["/bin/bash", "-euo", "pipefail", "-c"]
+ARG YQ_VER=4.49.2
 
-RUN pip install --upgrade conda-merge rapids-dependency-file-generator
+SHELL ["/bin/bash", "-euo", "pipefail", "-c"]
 
 COPY condarc /condarc
 COPY notebooks.sh /notebooks.sh
 
+# clone RAPIDS repos and extract the following:
+#
+#   * IPython notebooks (/notebooks)
+#   * a single conda env YAML with all dependencies needed to run the notebooks (at /test_notebooks_dependencies.yaml)
+#
 RUN <<EOF
 apt-get update
-apt-get install -y --no-install-recommends rsync
+apt-get install             \
+    -y                      \
+    --no-install-recommends \
+      jq                    \
+      rsync
+
+python -m pip install      \
+    --no-cache-dir         \
+    --prefer-binary        \
+    --upgrade              \
+      'conda-merge==0.3.*' \
+      'rapids-dependency-file-generator==1.20.*'
+
+# yq>=4.0 is needed for the bit in /notebooks.sh that uses load() to read channels from /condarc
+wget -q https://github.com/mikefarah/yq/releases/download/v${YQ_VER}/yq_linux_${CPU_ARCH} -O /tmp/yq
+mv /tmp/yq /usr/bin/yq
+chmod +x /usr/bin/yq
+
 /notebooks.sh
-apt-get purge -y --auto-remove rsync
+
+apt-get purge     \
+    -y            \
+    --auto-remove \
+      jq          \
+      rsync
+
 rm -rf /var/lib/apt/lists/*
 EOF
-
 
 # Base image
 FROM rapidsai/miniforge-cuda:${RAPIDS_VER}-cuda${CUDA_VER}-base-${LINUX_VER}-py${PYTHON_VER} AS base
