@@ -106,8 +106,7 @@ conda list --show-channel-urls
 
 # Install RAPIDS
 rapids-mamba-retry install -y -n base \
-    "cugraph=${RAPIDS_VER}.*" \
-    "cuml=${RAPIDS_VER}.*" \
+    "rapids=${RAPIDS_VER}.*" \
     "python=${PYTHON_VER}.*" \
     "cuda-version=${CUDA_VER%.*}.*" \
     ipython \
