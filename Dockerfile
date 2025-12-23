@@ -38,7 +38,6 @@ apt-get purge -y --auto-remove rsync
 rm -rf /var/lib/apt/lists/*
 EOF
 
-
 # Base image
 FROM rapidsai/miniforge-cuda:${RAPIDS_VER}-cuda${CUDA_VER}-base-${LINUX_VER}-py${PYTHON_VER} AS base
 ARG CUDA_VER
@@ -86,7 +85,7 @@ rapids-mamba-retry install -y -n base \
     "rapids=${RAPIDS_VER}.*" \
     "python=${PYTHON_VER}.*" \
     "cuda-version=${CUDA_VER%.*}.*" \
-    ipython \
+    'ipython>=9' \
     'rapids-cli==0.1.*' \
     'openssl==3.6.0'
 conda clean -afy
@@ -97,7 +96,6 @@ COPY entrypoint.sh /home/rapids/entrypoint.sh
 ENTRYPOINT ["/home/rapids/entrypoint.sh"]
 
 CMD ["ipython"]
-
 
 # Notebooks image
 FROM base AS notebooks
@@ -124,8 +122,8 @@ EOF
 RUN <<EOF
 rapids-mamba-retry install -y -n base \
     "jupyterlab=4" \
-    dask-labextension \
-    jupyterlab-nvdashboard
+    'dask-labextension>=7.0.0' \
+    'jupyterlab-nvdashboard>=0.13.0'
 conda clean -afy
 EOF
 
