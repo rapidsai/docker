@@ -94,7 +94,7 @@ PYTHON_MINOR_VERSION=${PYTHON_VERSION#*.}
 PYTHON_UPPER_BOUND="${PYTHON_MAJOR_VERSION}.$((PYTHON_MINOR_VERSION+1)).0a0"
 PYTHON_MINOR_PADDED=$(printf "%02d" "$PYTHON_MINOR_VERSION")
 PYTHON_VERSION_PADDED="${PYTHON_MAJOR_VERSION}.${PYTHON_MINOR_PADDED}"
-if [[ "$PYTHON_VERSION_PADDED" > "3.12" ]]; then
+if [[ $(echo "$PYTHON_VERSION_PADDED > 3.12" | bc) == 1 ]]; then
     PYTHON_ABI_TAG="cp${PYTHON_MAJOR_VERSION}${PYTHON_MINOR_VERSION}"
 else
     PYTHON_ABI_TAG="cpython"
@@ -127,7 +127,7 @@ RUN <<EOF
 case "${LINUX_VER}" in
   "ubuntu"*)
     os_version=$(grep 'VERSION_ID' /etc/os-release | cut -d '"' -f 2)
-    if [[ "${os_version}" > "24.04" ]] || [[ "${os_version}" == "24.04" ]]; then
+    if [[ $(echo "${os_version} > 24.04" | bc) == 1 ]] || [[ "${os_version}" == "24.04" ]]; then
         tzdata_pkgs=(tzdata tzdata-legacy)
     else
         tzdata_pkgs=(tzdata)
@@ -149,6 +149,7 @@ case "${LINUX_VER}" in
     ;;
 esac
 EOF
+
 # --- end 'rapidsai/miniforge-cuda' --- #
 
 FROM miniforge-cuda AS cuvs-bench
