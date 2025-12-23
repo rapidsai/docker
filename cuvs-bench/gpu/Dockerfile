@@ -55,7 +55,6 @@ CMD ["--dataset fashion-mnist-784-euclidean", "", "--algorithms cuvs_cagra", ""]
 
 ENTRYPOINT ["/bin/bash", "/data/scripts/run_benchmark.sh"]
 
-
 FROM cuvs-bench AS cuvs-bench-datasets
 
 SHELL ["/bin/bash", "-euo", "pipefail", "-c"]
