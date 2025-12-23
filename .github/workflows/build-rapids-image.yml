@@ -59,20 +59,15 @@ jobs:
         uses: actions/checkout@v6
         with:
           fetch-depth: 0
-      - name: Install gha-tools
-        run: |
-          mkdir -p /tmp/gha-tools
-          curl -s -L 'https://github.com/rapidsai/gha-tools/releases/latest/download/tools.tar.gz' | tar -xz -C /tmp/gha-tools
-          echo "/tmp/gha-tools" >> "${GITHUB_PATH}"
       - name: Clean up condarc for release builds
         run: |
           GIT_DESCRIBE_TAG="$(git describe --tags --abbrev=0)"
           GIT_DESCRIBE_TAG="${GIT_DESCRIBE_TAG:1}" # remove leading 'v'
           if [[ ! $GIT_DESCRIBE_TAG =~ [a-z] ]]; then
-            rapids-logger 'Most recent tag is for release, adding the `rapidsai` channel and removing the `rapidsai-nightly` channel.'
+            echo 'Most recent tag is for release, adding the `rapidsai` channel and removing the `rapidsai-nightly` channel.'
             sed -i 's|rapidsai-nightly|rapidsai|' context/condarc
           else
-            rapids-logger "Most recent tag is an alpha. Build will use nightly channels."
+            echo "Most recent tag is an alpha. Build will use nightly channels."
           fi
       - name: Login to DockerHub
         uses: docker/login-action@v3
@@ -107,6 +102,7 @@ jobs:
             LINUX_DISTRO=${{ inputs.LINUX_DISTRO }}
             LINUX_DISTRO_VER=${{ inputs.LINUX_DISTRO_VER }}
             LINUX_VER=${{ inputs.LINUX_VER }}
+            MINIFORGE_VER=25.9.1-0
             PYTHON_VER=${{ inputs.PYTHON_VER }}
             RAPIDS_VER=${{ inputs.RAPIDS_VER }}
           tags: ${{ inputs.BASE_TAG }}-${{ matrix.ARCH }}
@@ -126,6 +122,7 @@ jobs:
             LINUX_DISTRO=${{ inputs.LINUX_DISTRO }}
             LINUX_DISTRO_VER=${{ inputs.LINUX_DISTRO_VER }}
             LINUX_VER=${{ inputs.LINUX_VER }}
+            MINIFORGE_VER=25.9.1-0
             PYTHON_VER=${{ inputs.PYTHON_VER }}
             RAPIDS_VER=${{ inputs.RAPIDS_VER }}
           tags: ${{ inputs.NOTEBOOKS_TAG }}-${{ matrix.ARCH }}
