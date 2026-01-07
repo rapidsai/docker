@@ -109,7 +109,7 @@ rapids-mamba-retry install -y -n base \
     "rapids=${RAPIDS_VER}.*" \
     "python=${PYTHON_VER}.*" \
     "cuda-version=${CUDA_VER%.*}.*" \
-    ipython \
+    'ipython>=8.37.0' \
     'rapids-cli==0.1.*' \
     'openssl==3.6.0'
 conda clean -afy
@@ -120,7 +120,6 @@ COPY entrypoint.sh /home/rapids/entrypoint.sh
 ENTRYPOINT ["/home/rapids/entrypoint.sh"]
 
 CMD ["ipython"]
-
 
 # Notebooks image
 FROM base AS notebooks
@@ -147,8 +146,8 @@ EOF
 RUN <<EOF
 rapids-mamba-retry install -y -n base \
     "jupyterlab=4" \
-    dask-labextension \
-    jupyterlab-nvdashboard
+    'dask-labextension>=7.0.0' \
+    'jupyterlab-nvdashboard>=0.13.0'
 conda clean -afy
 EOF
 
