@@ -1,15 +1,14 @@
 # syntax=docker/dockerfile:1
-# Copyright (c) 2024-2025, NVIDIA CORPORATION.
+# Copyright (c) 2024-2026, NVIDIA CORPORATION.
 
-ARG CUDA_VER=unset
-ARG PYTHON_VER=unset
-ARG LINUX_VER=unset
-
+ARG CUDA_VER=notset
+ARG LINUX_VER=notset
+ARG PYTHON_VER=notset
 ARG RAPIDS_VER=26.02
 
 FROM rapidsai/miniforge-cuda:${RAPIDS_VER}-cuda${CUDA_VER}-base-${LINUX_VER}-py${PYTHON_VER} AS cuvs-bench
-ARG CUDA_VER
-ARG RAPIDS_VER
+ARG CUDA_VER=notset
+ARG RAPIDS_VER=notset
 
 COPY condarc /opt/conda/.condarc
 
@@ -27,18 +26,24 @@ EOF
 # we need perl temporarily for the remaining benchmark perl scripts
 RUN <<EOF
 apt-get update
-apt-get install -y --no-install-recommends \
-  perl \
+PACKAGES_TO_INSTALL=(
+  perl
   wget
+)
+apt-get install -y --no-install-recommends \
+  "${PACKAGES_TO_INSTALL[@]}"
 wget --quiet https://github.com/rapidsai/gha-tools/releases/latest/download/tools.tar.gz -O - | tar -xz -C /usr/local/bin
 rm -rf /var/lib/apt/lists/*
 EOF
 
 RUN <<EOF
 rapids-mamba-retry update --all -y -n base
-rapids-mamba-retry install -y -n base \
-    "cuvs-bench=${RAPIDS_VER}.*" \
+PACKAGES_TO_INSTALL=(
+    "cuvs-bench=${RAPIDS_VER}.*"
     "cuda-version=${CUDA_VER%.*}.*"
+)
+rapids-mamba-retry install -y -n base \
+  "${PACKAGES_TO_INSTALL[@]}"
 conda clean -afy
 chmod -R 777 /opt/conda
 EOF

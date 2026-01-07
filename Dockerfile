@@ -1,25 +1,21 @@
 # syntax=docker/dockerfile:1
 # Copyright (c) 2024-2026, NVIDIA CORPORATION.
 
-ARG CUDA_VER=unset
-ARG PYTHON_VER=unset
+ARG CUDA_VER=notset
 ARG LINUX_DISTRO=ubuntu
 ARG LINUX_DISTRO_VER=22.04
 ARG LINUX_VER=${LINUX_DISTRO}${LINUX_DISTRO_VER}
-
+ARG PYTHON_VER=notset
 ARG RAPIDS_VER=26.02
 
 # Gather dependency information
 FROM python:${PYTHON_VER} AS dependencies
-ARG CPU_ARCH
-ARG CUDA_VER
-ARG PYTHON_VER
-
-ARG RAPIDS_VER
-
+ARG CPU_ARCH=notset
+ARG CUDA_VER=notset
+ARG PYTHON_VER=notset
 ARG RAPIDS_BRANCH="main"
-
-ARG YQ_VER=4.49.2
+ARG RAPIDS_VER=notset
+ARG YQ_VER=notset
 
 SHELL ["/bin/bash", "-euo", "pipefail", "-c"]
 
@@ -33,18 +29,19 @@ COPY notebooks.sh /notebooks.sh
 #
 RUN <<EOF
 apt-get update
-apt-get install             \
-    -y                      \
-    --no-install-recommends \
-      jq                    \
-      rsync
+PACKAGES_TO_INSTALL=$(
+  jq
+  rsync
+)
+apt-get install -y --no-install-recommends \
+  "${PACKAGES_TO_INSTALL[@]}"
 
-python -m pip install      \
-    --no-cache-dir         \
-    --prefer-binary        \
-    --upgrade              \
-      'conda-merge==0.3.*' \
-      'rapids-dependency-file-generator==1.20.*'
+PACKAGES_TO_INSTALL=(
+  'conda-merge==0.3.*'
+  'rapids-dependency-file-generator==1.20.*'
+)
+python -m pip install --no-cache-dir --prefer-binary --upgrade \
+  "${PACKAGES_TO_INSTALL[@]}"
 
 # yq>=4.0 is needed for the bit in /notebooks.sh that uses load() to read channels from /condarc
 wget -q https://github.com/mikefarah/yq/releases/download/v${YQ_VER}/yq_linux_${CPU_ARCH} -O /tmp/yq
@@ -64,19 +61,21 @@ EOF
 
 # Base image
 FROM rapidsai/miniforge-cuda:${RAPIDS_VER}-cuda${CUDA_VER}-base-${LINUX_VER}-py${PYTHON_VER} AS base
-ARG CUDA_VER
-ARG PYTHON_VER
-
-ARG RAPIDS_VER
+ARG CUDA_VER=notset
+ARG PYTHON_VER=notset
+ARG RAPIDS_VER=notset
 
 SHELL ["/bin/bash", "-euo", "pipefail", "-c"]
 
 RUN <<EOF
 apt-get update
+PACKAGES_TO_INSTALL=(
+  curl
+  git
+  wget
+)
 apt-get install -y --no-install-recommends \
-    curl \
-    git \
-    wget
+  "${PACKAGES_TO_INSTALL[@]}"
 curl --silent --show-error -L https://github.com/rapidsai/gha-tools/releases/latest/download/tools.tar.gz | tar -xz -C /usr/local/bin
 rm -rf /var/lib/apt/lists/*
 EOF
@@ -105,13 +104,17 @@ conda config --show-sources
 conda list --show-channel-urls
 
 # Install RAPIDS
+PACKAGES_TO_INSTALL=(
+  "rapids=${RAPIDS_VER}.*"
+  "python=${PYTHON_VER}.*"
+  "cuda-version=${CUDA_VER%.*}.*"
+  'ipython>=8.37.0'
+  'rapids-cli==0.1.*'
+  'openssl==3.6.0'
+)
 rapids-mamba-retry install -y -n base \
-    "rapids=${RAPIDS_VER}.*" \
-    "python=${PYTHON_VER}.*" \
-    "cuda-version=${CUDA_VER%.*}.*" \
-    'ipython>=8.37.0' \
-    'rapids-cli==0.1.*' \
-    'openssl==3.6.0'
+  "${PACKAGES_TO_INSTALL[@]}"
+
 conda clean -afy
 EOF
 
@@ -124,9 +127,9 @@ CMD ["ipython"]
 # Notebooks image
 FROM base AS notebooks
 
-ARG CUDA_VER
-ARG LINUX_DISTRO
-ARG LINUX_DISTRO_VER
+ARG CUDA_VER=notset
+ARG LINUX_DISTRO=notset
+ARG LINUX_DISTRO_VER=notset
 
 SHELL ["/bin/bash", "-euo", "pipefail", "-c"]
 
@@ -144,10 +147,13 @@ conda clean -afy
 EOF
 
 RUN <<EOF
+PACKAGES_TO_INSTALL=(
+  'jupyterlab=4'
+  'dask-labextension>=7.0.0'
+  'jupyterlab-nvdashboard>=0.13.0'
+)
 rapids-mamba-retry install -y -n base \
-    "jupyterlab=4" \
-    'dask-labextension>=7.0.0' \
-    'jupyterlab-nvdashboard>=0.13.0'
+  "${PACKAGES_TO_INSTALL[@]}"
 conda clean -afy
 EOF
 
