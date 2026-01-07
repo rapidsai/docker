@@ -29,12 +29,12 @@ COPY notebooks.sh /notebooks.sh
 #
 RUN <<EOF
 apt-get update
-PACKAGES_TO_INSTALL=$(
+APT_PACKAGES_TO_INSTALL=(
   jq
   rsync
 )
 apt-get install -y --no-install-recommends \
-  "${PACKAGES_TO_INSTALL[@]}"
+  "${APT_PACKAGES_TO_INSTALL[@]}"
 
 PACKAGES_TO_INSTALL=(
   'conda-merge==0.3.*'
@@ -50,11 +50,8 @@ chmod +x /usr/bin/yq
 
 /notebooks.sh
 
-apt-get purge     \
-    -y            \
-    --auto-remove \
-      jq          \
-      rsync
+apt-get purge -y --auto-remove \
+  "${APT_PACKAGES_TO_INSTALL[@]}"
 
 rm -rf /var/lib/apt/lists/*
 EOF
