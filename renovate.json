@@ -26,7 +26,9 @@
   "customManagers": [
     {
       "customType": "regex",
-      "fileMatch": "versions.yaml",
+      "managerFilePatterns": [
+        "/versions.yaml/"
+      ],
       "matchStrings": [
         "# renovate: datasource=(?<datasource>[^ ]+) depName=(?<depName>[^\\s]+)(?:\\s+versioning=(?<versioning>[^\\n]+))?\\n(?<depNameCapture>[^:]+): (?<currentValue>[^\\n]+)"
       ],
