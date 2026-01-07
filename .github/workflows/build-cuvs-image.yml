@@ -107,7 +107,6 @@ jobs:
           pull: true
           build-args: |
             ${{ steps.generate-build-args.outputs.DOCKER_BUILD_ARGS }}
->>>>>>> Stashed changes
           tags: ${{ inputs.CUVS_BENCH_TAG }}-${{ matrix.ARCH }}
           # ensure only OCI mediatypes are used: https://docs.docker.com/build/exporters/#oci-media-types
           outputs: type=registry,oci-mediatypes=true
