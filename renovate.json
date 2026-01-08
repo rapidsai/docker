@@ -22,5 +22,19 @@
         "/^condaforge/miniforge3$/"
       ]
     }
+  ],
+  "customManagers": [
+    {
+      "customType": "regex",
+      "managerFilePatterns": [
+        "/versions.yaml/"
+      ],
+      "matchStrings": [
+        "# renovate: datasource=(?<datasource>[^ ]+) depName=(?<depName>[^\\s]+)(?:\\s+versioning=(?<versioning>[^\\n]+))?\\n(?<depNameCapture>[^:]+): (?<currentValue>[^\\n]+)"
+      ],
+      "depNameTemplate": "{{depName}}",
+      "datasourceTemplate": "{{datasource}}",
+      "versioningTemplate": "{{#if versioning}}{{versioning}}{{else}}semver{{/if}}"
+    }
   ]
 }

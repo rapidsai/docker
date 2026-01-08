@@ -1,4 +1,4 @@
-# Copyright (c) 2025, NVIDIA CORPORATION.
+# Copyright (c) 2025-2026, NVIDIA CORPORATION.
 name: build-rapids
 
 on:
@@ -88,6 +88,17 @@ jobs:
           driver: docker-container
           endpoint: builders
           version: 'v0.30.1'
+      - name: Generate Build Args
+        id: generate-build-args
+        run: ci/compute-build-args.sh
+        env:
+          CPU_ARCH: ${{ matrix.ARCH }}
+          CUDA_VER: ${{ inputs.CUDA_VER }}
+          LINUX_DISTRO: ${{ inputs.LINUX_DISTRO }}
+          LINUX_DISTRO_VER: ${{ inputs.LINUX_DISTRO_VER }}
+          LINUX_VER: ${{ inputs.LINUX_VER }}
+          PYTHON_VER: ${{ inputs.PYTHON_VER }}
+          RAPIDS_VER: ${{ inputs.RAPIDS_VER }}
       - name: Build base image
         uses: docker/build-push-action@v6
         with:
@@ -97,12 +108,7 @@ jobs:
           push: true
           pull: true
           build-args: |
-            CUDA_VER=${{ inputs.CUDA_VER }}
-            LINUX_DISTRO=${{ inputs.LINUX_DISTRO }}
-            LINUX_DISTRO_VER=${{ inputs.LINUX_DISTRO_VER }}
-            LINUX_VER=${{ inputs.LINUX_VER }}
-            PYTHON_VER=${{ inputs.PYTHON_VER }}
-            RAPIDS_VER=${{ inputs.RAPIDS_VER }}
+            ${{ steps.generate-build-args.outputs.DOCKER_BUILD_ARGS }}
           tags: ${{ inputs.BASE_TAG }}-${{ matrix.ARCH }}
           # ensure only OCI mediatypes are used: https://docs.docker.com/build/exporters/#oci-media-types
           outputs: type=registry,oci-mediatypes=true
@@ -115,12 +121,7 @@ jobs:
           push: true
           pull: true
           build-args: |
-            CUDA_VER=${{ inputs.CUDA_VER }}
-            LINUX_DISTRO=${{ inputs.LINUX_DISTRO }}
-            LINUX_DISTRO_VER=${{ inputs.LINUX_DISTRO_VER }}
-            LINUX_VER=${{ inputs.LINUX_VER }}
-            PYTHON_VER=${{ inputs.PYTHON_VER }}
-            RAPIDS_VER=${{ inputs.RAPIDS_VER }}
+            ${{ steps.generate-build-args.outputs.DOCKER_BUILD_ARGS }}
           tags: ${{ inputs.NOTEBOOKS_TAG }}-${{ matrix.ARCH }}
           # ensure only OCI mediatypes are used: https://docs.docker.com/build/exporters/#oci-media-types
           outputs: type=registry,oci-mediatypes=true
