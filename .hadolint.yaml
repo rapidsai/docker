@@ -1,9 +1,11 @@
-# Copyright (c) 2025, NVIDIA CORPORATION.
+# Copyright (c) 2025-2026, NVIDIA CORPORATION.
 
 ignored:
   # warning: Pin versions in apt get install.
   - DL3008
   # warning: Pin versions in pip.
   - DL3013
+  # warning: Specify version with `dnf install -y <package>-<version>`
+  - DL3041
   # warning: Avoid use of cache directory with pip.
   - DL3042
