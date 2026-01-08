@@ -1,7 +1,7 @@
 # syntax=docker/dockerfile:1
 # Copyright (c) 2024-2026, NVIDIA CORPORATION.
 
-ARG MINIFORGE_VER=unset
+ARG MINIFORGE_VER=notset
 ARG PYTHON_VER=notset
 ARG RAPIDS_VER=26.02
 

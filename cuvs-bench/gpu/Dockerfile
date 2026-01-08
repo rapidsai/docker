@@ -39,9 +39,9 @@ EOF
 
 FROM nvidia/cuda:${CUDA_VER}-base-${LINUX_VER} AS miniforge-cuda
 
-ARG CUDA_VER
-ARG LINUX_VER
-ARG PYTHON_VER
+ARG CUDA_VER=notset
+ARG LINUX_VER=notset
+ARG PYTHON_VER=notset
 ARG DEBIAN_FRONTEND=noninteractive
 ENV PATH=/opt/conda/bin:$PATH
 ENV PYTHON_VERSION=${PYTHON_VER}
@@ -129,21 +129,23 @@ EOF
 RUN <<EOF
 case "${LINUX_VER}" in
   "ubuntu"*)
+    PACKAGES_TO_INSTALL=(
+      tzdata
+    )
+
     os_version=$(grep 'VERSION_ID' /etc/os-release | cut -d '"' -f 2)
     # 'shellcheck' is unhappy with the use of '>' to compare decimals here, but it works as expected for the 'bash' version in these
     # images, and installing 'bc' or using a Python interpreter seem heavy for this purpose.
     #
     # shellcheck disable=SC2072
     if [[ "${os_version}" > "24.04" ]] || [[ "${os_version}" == "24.04" ]]; then
-        tzdata_pkgs=(tzdata tzdata-legacy)
-    else
-        tzdata_pkgs=(tzdata)
+        PACKAGES_TO_INSTALL+=(tzdata-legacy)
     fi
 
     rapids-retry apt-get update -y
     apt-get upgrade -y
     apt-get install -y --no-install-recommends \
-      "${tzdata_pkgs[@]}"
+      "${PACKAGES_TO_INSTALL[@]}"
 
     rm -rf "/var/lib/apt/lists/*"
     ;;
