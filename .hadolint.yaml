@@ -5,5 +5,7 @@ ignored:
   - DL3008
   # warning: Pin versions in pip.
   - DL3013
+  # warning: Specify version with `dnf install -y <package>-<version>`
+  - DL3041
   # warning: Avoid use of cache directory with pip.
   - DL3042
