@@ -1,11 +1,11 @@
 # Copyright (c) 2023-2025, NVIDIA CORPORATION.
 
 CUDA_VER:
-# The version format is `<major>.<minor>.<patch>` (e.g. `13.0.2`).
+# The version format is `<major>.<minor>.<patch>` (e.g. `13.1.0`).
 # Use the latest supported minor/patch version for each supported CUDA major
 # version. Only one entry is allowed per CUDA major version.
   - "12.9.1"
-  - "13.0.2"
+  - "13.1.0"
 PYTHON_VER:
   - "3.10"
   - "3.11"

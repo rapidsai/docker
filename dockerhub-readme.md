@@ -51,7 +51,7 @@ RAPIDS version
 
 **Note on CUDA versioning**:
 - **RAPIDS 25.12 and later**: CUDA version tags are major-only (e.g., `cuda12`, `cuda13`).
-- **RAPIDS 25.10**: Both major.minor version tags (e.g., `cuda12.9`, `cuda13.0`) and major version tags (e.g., `cuda12`, `cuda13`). The major version tags are created by retagging the latest minor version builds.
+- **RAPIDS 25.10**: Both major.minor version tags (e.g., `cuda12.9`, `cuda13.1`) and major version tags (e.g., `cuda12`, `cuda13`). The major version tags are created by retagging the latest minor version builds.
 - **RAPIDS 25.08 and older**: CUDA version tags are major.minor (e.g., `cuda12.9`).
 
 ## Usage
