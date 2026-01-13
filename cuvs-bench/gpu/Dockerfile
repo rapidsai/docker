@@ -131,7 +131,6 @@ apt-get install -y --no-install-recommends \
   "${PACKAGES_TO_INSTALL[@]}"
 
 rm -rf "/var/lib/apt/lists/*"
-;;
 EOF
 
 # --- end 'rapidsai/miniforge-cuda' --- #
