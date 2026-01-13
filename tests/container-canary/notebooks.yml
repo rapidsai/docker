@@ -14,7 +14,7 @@ checks:
         command:
           - /bin/bash
           - -c
-          - '[[ "${ENV DASK_LABEXTENSION__FACTORY__CLASS}" == "LocalCUDACluster" ]] && [[ "${DASK_LABEXTENSION__FACTORY__MODULE}" == "dask_cuda" ]];'
+          - '[[ "${DASK_LABEXTENSION__FACTORY__CLASS}" == "LocalCUDACluster" ]] && [[ "${DASK_LABEXTENSION__FACTORY__MODULE}" == "dask_cuda" ]];'
   - name: tool-jupyter-lab
     description: jupyter lab can be executed
     probe:
