@@ -4,17 +4,54 @@
 
 Building the images requires `docker` `>=18.09` with [`buildkit`](https://docs.docker.com/build/buildkit/).
 
-## Building
+## Building the images locally
 
-To build the `notebooks` image with default arguments: `docker buildx build --pull -f Dockerfile -t rapidsai/notebooks context/`
+To build the images locally, you may use the following snippets.
 
-To build just the `base` image with default arguments: `docker buildx build --pull -f Dockerfile -t rapidsai/base --target=base context/`
+```sh
+# one of ('amd64', 'arm64')
+export CPU_ARCH=amd64
 
-### Build arguments
+# CUDA version in {major}.{minor}.{patch}
+export CUDA_VER=13.0.2
 
-- `CUDA_VER` - Version of CUDA to use. Should be `major.minor.patch`
-- `PYTHON_VER` - Version of Python to use. Should be `major.minor`
-- `RAPIDS_VER` - Version of RAPIDS to use. Should be `YY.MM`
+# Linux distribution
+export LINUX_DISTRO=ubuntu
+export LINUX_DISTRO_VER=24.04
+export LINUX_VER=ubuntu24.04
+
+# Python version in {major}.{minor}
+export PYTHON_VER=3.13
+
+# RAPIDS version in {major}.{minor}
+export RAPIDS_VER=26.02
+
+# rapidsai/base
+docker build $(ci/compute-build-args.sh) \
+    --target=base \
+    -t rapidsai/base:local \
+    -f Dockerfile \
+    context/
+
+# rapidsai/cuvs-bench-cpu
+docker build $(ci/compute-build-args.sh) \
+    -t rapidsai/cuvs-bench:local \
+    -f ./cuvs-bench/gpu/Dockerfile \
+    context/
+
+# rapidsai/cuvs-bench-cpu
+docker build $(ci/compute-build-args.sh) \
+    -t rapidsai/cuvs-bench-cpu:local \
+    -f ./cuvs-bench/cpu/Dockerfile \
+    context/
+
+# rapidsai/notebooks
+docker build $(ci/compute-build-args.sh) \
+    --target=base \
+    -t rapidsai/notebooks:notebooks \
+    -f Dockerfile \
+    context/
+```
 
 ## Cleaning Up
 
@@ -24,5 +61,5 @@ then pushes them on to the individual repos like `rapidsai/base`, `rapidsai/note
 A scheduled job regularly deletes old images from that `rapidsai/staging` repo.
 See https://github.com/rapidsai/workflows/blob/main/.github/workflows/cleanup_staging.yaml for details.
 
-If you come back to a pull requests here after more than a few days and find that jobs are failing with errors
+If you come back to a pull request here after more than a few days and find that jobs are failing with errors
 that suggest that some necessary images don't exist, re-run all of CI on that pull request to produce new images.

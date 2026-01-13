@@ -1,0 +1,7 @@
+# reduce the risk of other files accidentally included in context/ getting passed to image builds
+*
+!condarc
+!cuvs-bench/
+!entrypoint.sh
+!notebooks.sh
+!test_notebooks.py

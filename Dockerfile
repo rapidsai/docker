@@ -71,11 +71,7 @@ SHELL ["/bin/bash", "-euo", "pipefail", "-c"]
 
 # Install gha-tools
 RUN <<EOF
-  i=0; until apt-get update -y; do ((++i >= 5)) && break; sleep 10; done
-  apt-get install -y --no-install-recommends wget
   wget -q https://github.com/rapidsai/gha-tools/releases/latest/download/tools.tar.gz -O - | tar -xz -C /usr/local/bin
-  apt-get purge -y wget && apt-get autoremove -y
-  rm -rf /var/lib/apt/lists/*
 EOF
 
 RUN <<EOF
