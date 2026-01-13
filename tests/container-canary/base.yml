@@ -12,6 +12,23 @@ command:
   - -c
   - "sleep 600"
 checks:
+  - name: env-cuda-version
+    description: CUDA_VERSION env variable set to a 3-part version
+    probe:
+      exec:
+        command:
+          - /bin/bash
+          - -c
+          - '[[ "${CUDA_VERSION}" =~ ^[0-9]{1,2}\.[0-9]{1,2}\.[0-9]{1,2}$ ]]'
+  - name: env-python-version
+    description: PYTHON_VERSION env variable set to a 2-part version
+    probe:
+      exec:
+        command:
+          - /bin/bash
+          - -c
+          # the second component could have a 't' for like '3.15t' for free-threaded builds at some point in the future
+          - '[[ "${PYTHON_VERSION}" =~ ^[0-9]{1,2}\.[0-9t]{1,2}$ ]]'
   - name: tool-conda
     description: conda can be executed
     probe:
