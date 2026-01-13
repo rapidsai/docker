@@ -10,18 +10,14 @@ ARG RAPIDS_VER=26.02
 # --- begin 'rapidsai/miniforge-cuda' --- #
 FROM condaforge/miniforge3:${MINIFORGE_VER} AS miniforge-upstream
 
-ENV PATH=
-
 SHELL ["/bin/bash", "-euo", "pipefail", "-c"]
-
-# Install gha-tools
-RUN <<EOF
-  wget -q https://github.com/rapidsai/gha-tools/releases/latest/download/tools.tar.gz -O - | tar -xz -C /usr/local/bin
-EOF
 
 RUN <<EOF
 # Ensure new files/dirs have group write permissions
 umask 002
+
+# install gha-tools for rapids-mamba-retry
+wget -q https://github.com/rapidsai/gha-tools/releases/latest/download/tools.tar.gz -O - | tar -xz -C /usr/local/bin
 
 # Example of pinned package in case you require an override
 # echo '<PACKAGE_NAME>==<VERSION>' >> /opt/conda/conda-meta/pinned

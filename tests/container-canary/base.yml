@@ -1,4 +1,4 @@
-# Copyright (c) 2025, NVIDIA CORPORATION.
+# Copyright (c) 2025-2026, NVIDIA CORPORATION.
 apiVersion: container-canary.nvidia.com/v1
 kind: Validator
 name: rapids-base

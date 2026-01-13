@@ -65,25 +65,22 @@ ARG MINIFORGE_VER=notset
 
 FROM condaforge/miniforge3:${MINIFORGE_VER} AS miniforge-upstream
 
-ENV PATH=/opt/conda/bin:$PATH
-
 SHELL ["/bin/bash", "-euo", "pipefail", "-c"]
-
-# Install gha-tools
-RUN <<EOF
-  wget -q https://github.com/rapidsai/gha-tools/releases/latest/download/tools.tar.gz -O - | tar -xz -C /usr/local/bin
-EOF
 
 RUN <<EOF
 # Ensure new files/dirs have group write permissions
 umask 002
+
+# install gha-tools for rapids-mamba-retry
+wget -q https://github.com/rapidsai/gha-tools/releases/latest/download/tools.tar.gz -O - | tar -xz -C /usr/local/bin
 
 # Example of pinned package in case you require an override
 # echo '<PACKAGE_NAME>==<VERSION>' >> /opt/conda/conda-meta/pinned
 
 # update everything before other environment changes, to ensure mixing
 # an older conda with newer packages still works well
-rapids-mamba-retry update --all -y -n base
+PATH="/opt/conda/bin:$PATH" \
+  rapids-mamba-retry update --all -y -n base
 EOF
 
 ################################ build miniforge-cuda using updated miniforge-upstream from above ###############################
