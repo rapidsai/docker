@@ -65,29 +65,22 @@ ARG MINIFORGE_VER=notset
 
 FROM condaforge/miniforge3:${MINIFORGE_VER} AS miniforge-upstream
 
-ENV PATH=/opt/conda/bin:$PATH
-
 SHELL ["/bin/bash", "-euo", "pipefail", "-c"]
-
-# Install gha-tools
-RUN <<EOF
-  i=0; until apt-get update -y; do ((++i >= 5)) && break; sleep 10; done
-  apt-get install -y --no-install-recommends wget
-  wget -q https://github.com/rapidsai/gha-tools/releases/latest/download/tools.tar.gz -O - | tar -xz -C /usr/local/bin
-  apt-get purge -y wget && apt-get autoremove -y
-  rm -rf /var/lib/apt/lists/*
-EOF
 
 RUN <<EOF
 # Ensure new files/dirs have group write permissions
 umask 002
+
+# install gha-tools for rapids-mamba-retry
+wget -q https://github.com/rapidsai/gha-tools/releases/latest/download/tools.tar.gz -O - | tar -xz -C /usr/local/bin
 
 # Example of pinned package in case you require an override
 # echo '<PACKAGE_NAME>==<VERSION>' >> /opt/conda/conda-meta/pinned
 
 # update everything before other environment changes, to ensure mixing
 # an older conda with newer packages still works well
-rapids-mamba-retry update --all -y -n base
+PATH="/opt/conda/bin:$PATH" \
+  rapids-mamba-retry update --all -y -n base
 EOF
 
 ################################ build miniforge-cuda using updated miniforge-upstream from above ###############################
@@ -105,16 +98,11 @@ SHELL ["/bin/bash", "-euo", "pipefail", "-c"]
 
 # Set apt policy configurations
 # We bump up the number of retries and the timeouts for `apt`
-# Note that `dnf` defaults to 10 retries, so no additional configuration is required here
 RUN <<EOF
-case "${LINUX_VER}" in
-  "ubuntu"*)
-    echo 'APT::Update::Error-Mode "any";' > /etc/apt/apt.conf.d/warnings-as-errors
-    echo 'APT::Acquire::Retries "10";' > /etc/apt/apt.conf.d/retries
-    echo 'APT::Acquire::https::Timeout "240";' > /etc/apt/apt.conf.d/https-timeout
-    echo 'APT::Acquire::http::Timeout "240";' > /etc/apt/apt.conf.d/http-timeout
-    ;;
-esac
+echo 'APT::Update::Error-Mode "any";' > /etc/apt/apt.conf.d/warnings-as-errors
+echo 'APT::Acquire::Retries "10";' > /etc/apt/apt.conf.d/retries
+echo 'APT::Acquire::https::Timeout "240";' > /etc/apt/apt.conf.d/https-timeout
+echo 'APT::Acquire::http::Timeout "240";' > /etc/apt/apt.conf.d/http-timeout
 EOF
 
 # Install gha-tools
@@ -135,10 +123,10 @@ EOF
 # Ownership & permissions based on https://docs.anaconda.com/anaconda/install/multi-user/#multi-user-anaconda-installation-on-linux
 COPY --from=miniforge-upstream --chown=root:conda --chmod=770 /opt/conda /opt/conda
 
-# Ensure new files are created with group write access & setgid. See https://unix.stackexchange.com/a/12845
-RUN chmod g+ws /opt/conda
-
 RUN <<EOF
+# Ensure new files are created with group write access & setgid. See https://unix.stackexchange.com/a/12845
+chmod g+ws /opt/conda
+
 # Ensure new files/dirs have group write permissions
 umask 002
 
@@ -159,10 +147,6 @@ else
 fi
 rapids-mamba-retry install -y -n base "python>=${PYTHON_VERSION},<${PYTHON_UPPER_BOUND}=*_${PYTHON_ABI_TAG}"
 rapids-mamba-retry update --all -y -n base
-if [[ "$LINUX_VER" == "rockylinux"* ]]; then
-  dnf install -y findutils
-  dnf clean all
-fi
 find /opt/conda -follow -type f -name '*.a' -delete
 find /opt/conda -follow -type f -name '*.pyc' -delete
 # recreate missing libstdc++ symlinks
@@ -182,37 +166,26 @@ EOF
 # tzdata is needed by the ORC library used by pyarrow, because it provides /etc/localtime
 # On Ubuntu 24.04 and newer, we also need tzdata-legacy
 RUN <<EOF
-case "${LINUX_VER}" in
-  "ubuntu"*)
 
-    PACKAGES_TO_INSTALL=(
-      tzdata
-    )
+PACKAGES_TO_INSTALL=(
+  tzdata
+)
 
-    os_version=$(grep 'VERSION_ID' /etc/os-release | cut -d '"' -f 2)
-    # 'shellcheck' is unhappy with the use of '>' to compare decimals here, but it works as expected for the 'bash' version in these
-    # images, and installing 'bc' or using a Python interpreter seem heavy for this purpose.
-    #
-    # shellcheck disable=SC2072
-    if [[ "${os_version}" > "24.04" ]] || [[ "${os_version}" == "24.04" ]]; then
-        PACKAGES_TO_INSTALL+=(tzdata-legacy)
-    fi
+os_version=$(grep 'VERSION_ID' /etc/os-release | cut -d '"' -f 2)
+# 'shellcheck' is unhappy with the use of '>' to compare decimals here, but it works as expected for the 'bash' version in these
+# images, and installing 'bc' or using a Python interpreter seem heavy for this purpose.
+#
+# shellcheck disable=SC2072
+if [[ "${os_version}" > "24.04" ]] || [[ "${os_version}" == "24.04" ]]; then
+    PACKAGES_TO_INSTALL+=(tzdata-legacy)
+fi
 
-    rapids-retry apt-get update -y
-    apt-get upgrade -y
-    apt-get install -y --no-install-recommends \
-      "${PACKAGES_TO_INSTALL[@]}"
+rapids-retry apt-get update -y
+apt-get upgrade -y
+apt-get install -y --no-install-recommends \
+  "${PACKAGES_TO_INSTALL[@]}"
 
-    rm -rf "/var/lib/apt/lists/*"
-    ;;
-  "rockylinux"*)
-    dnf update -y
-    dnf clean all
-    ;;
-  *)
-    echo "Unsupported LINUX_VER: ${LINUX_VER}" && exit 1
-    ;;
-esac
+rm -rf "/var/lib/apt/lists/*"
 EOF
 
 # --- end 'rapidsai/miniforge-cuda' --- #
@@ -318,6 +291,8 @@ EOF
 # Disable the JupyterLab announcements
 RUN /opt/conda/bin/jupyter labextension disable "@jupyterlab/apputils-extension:announcements"
 
+# use dask-cuda by default in dask-labextension
+# docs: https://github.com/dask/dask-labextension/blob/0264df0539add90cf44930fad67abf7ba94673e7/README.md?plain=1#L113
 ENV DASK_LABEXTENSION__FACTORY__MODULE="dask_cuda"
 ENV DASK_LABEXTENSION__FACTORY__CLASS="LocalCUDACluster"
 

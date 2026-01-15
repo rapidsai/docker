@@ -1,4 +1,4 @@
-# Copyright (c) 2025, NVIDIA CORPORATION.
+# Copyright (c) 2025-2026, NVIDIA CORPORATION.
 apiVersion: container-canary.nvidia.com/v1
 kind: Validator
 name: rapids-notebooks
@@ -7,6 +7,14 @@ description: |
   are expected to have.
 documentation: https://github.com/rapidsai/docker
 checks:
+  - name: env-dask-cuda
+    description: dask-labextension is configured to use dask-cuda by default via environment variables
+    probe:
+      exec:
+        command:
+          - /bin/bash
+          - -c
+          - '[[ "${DASK_LABEXTENSION__FACTORY__CLASS}" == "LocalCUDACluster" ]] && [[ "${DASK_LABEXTENSION__FACTORY__MODULE}" == "dask_cuda" ]];'
   - name: tool-jupyter-lab
     description: jupyter lab can be executed
     probe:
