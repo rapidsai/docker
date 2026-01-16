@@ -137,7 +137,7 @@ EOF
 
 FROM miniforge-cuda AS cuvs-bench
 ARG CUDA_VER=notset
-ARG RAPIDS_VER=notset
+ARG RAPIDS_VER=26.02
 
 COPY condarc /opt/conda/.condarc
 

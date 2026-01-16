@@ -43,7 +43,7 @@ jobs:
       - build-cuvs-multiarch-manifest
       - test
     secrets: inherit
-    uses: rapidsai/shared-workflows/.github/workflows/pr-builder.yaml@main
+    uses: rapidsai/shared-workflows/.github/workflows/pr-builder.yaml@release/26.02
   checks:
     runs-on: ubuntu-latest
     steps:
