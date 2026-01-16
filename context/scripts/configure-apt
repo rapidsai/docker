@@ -1,0 +1,16 @@
+#!/bin/bash
+
+# [description]
+#
+#   Updates apt's settings.
+#   Initially introduced to add more and longer retries, to try to get past network issues.
+#
+
+set -e -u -o pipefail
+
+# Set apt policy configurations
+# We bump up the number of retries and the timeouts for `apt`
+echo 'APT::Update::Error-Mode "any";' > /etc/apt/apt.conf.d/warnings-as-errors
+echo 'APT::Acquire::Retries "10";' > /etc/apt/apt.conf.d/retries
+echo 'APT::Acquire::https::Timeout "240";' > /etc/apt/apt.conf.d/https-timeout
+echo 'APT::Acquire::http::Timeout "240";' > /etc/apt/apt.conf.d/http-timeout
