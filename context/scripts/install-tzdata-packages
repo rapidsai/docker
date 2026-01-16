@@ -1,0 +1,30 @@
+#!/bin/bash
+
+# [description]
+#
+#   tzdata is needed by the ORC library used by pyarrow, because it provides /etc/localtime
+#   On Ubuntu 24.04 and newer, we also need tzdata-legacy
+#
+
+set -e -u -o pipefail
+
+PACKAGES_TO_INSTALL=(
+  tzdata
+)
+
+os_version=$(grep 'VERSION_ID' /etc/os-release | cut -d '"' -f 2)
+
+# 'shellcheck' is unhappy with the use of '>' to compare decimals here, but it works as expected for the 'bash' version in these
+# images, and installing 'bc' or using a Python interpreter seem heavy for this purpose.
+#
+# shellcheck disable=SC2072
+if [[ "${os_version}" > "24.04" ]] || [[ "${os_version}" == "24.04" ]]; then
+    PACKAGES_TO_INSTALL+=(tzdata-legacy)
+fi
+
+rapids-retry apt-get update -y
+apt-get upgrade -y
+apt-get install -y --no-install-recommends \
+  "${PACKAGES_TO_INSTALL[@]}"
+
+rm -rf "/var/lib/apt/lists/*"

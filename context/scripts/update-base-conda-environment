@@ -1,0 +1,30 @@
+#!/bin/bash
+
+set -e -u -o pipefail
+
+# [description]
+#
+#   Updates the 'base' conda environment that ships in the condaforge/miniforge3 image,
+#   to ensure everything is up to date before it's copied into later images.
+#
+
+# expect to find other scripts in the same directory as this one
+SCRIPT_DIR="$(dirname "$(realpath "${BASH_SOURCE[0]}")")"
+
+# Ensure new files/dirs have group write permissions
+umask 002
+
+# install gha-tools for rapids-mamba-retry
+"${SCRIPT_DIR}/install-gha-tools"
+
+# Example of pinned package in case you require an override
+# echo '<PACKAGE_NAME>==<VERSION>' >> /opt/conda/conda-meta/pinned
+
+# update everything before other environment changes, to ensure mixing
+# an older conda with newer packages still works well
+PATH="/opt/conda/bin:$PATH" \
+  rapids-mamba-retry update --all -y -n base
+
+# clean up the package cache and other unused files, to minimize
+# what's copied into later images
+conda clean -aiptfy
