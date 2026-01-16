@@ -1,0 +1,36 @@
+#!/bin/bash
+
+# [description]
+#
+#   Installs 'gha-tools' and puts it at /usr/local/bin so no PATH modification is required.
+#
+
+set -e -u -o pipefail
+
+# allow this to be overridden so it can be re-used in GitHub Actions workflows
+GHA_TOOLS_DIR="${GHA_TOOLS_DIR:-/usr/local/bin}"
+
+# install wget
+wget_preinstalled=true
+
+if ! type -f wget >/dev/null; then
+  echo "could not find 'wget', installing it"
+  wget_preinstalled=false
+  i=0
+  until apt-get update -y; do
+    ((++i >= 5)) && break;
+    sleep 10;
+  done
+  apt-get install -y --no-install-recommends \
+    wget
+fi
+
+# install gha-tools
+wget -q https://github.com/rapidsai/gha-tools/releases/latest/download/tools.tar.gz -O - | tar -xz -C "${GHA_TOOLS_DIR}"
+
+# uninstall wget
+if [[ "${wget_preinstalled}" != "true" ]]; then
+  apt-get purge -y wget
+  apt-get autoremove -y
+  rm -rf /var/lib/apt/lists/*
+fi
