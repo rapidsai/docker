@@ -14,8 +14,8 @@ FROM python:${PYTHON_VER} AS dependencies
 ARG CPU_ARCH=notset
 ARG CUDA_VER=notset
 ARG PYTHON_VER=notset
-ARG RAPIDS_BRANCH="release/26.02"
-ARG RAPIDS_VER=26.02
+ARG RAPIDS_BRANCH="main"
+ARG RAPIDS_VER=notset
 ARG YQ_VER=notset
 
 SHELL ["/bin/bash", "-euo", "pipefail", "-c"]
@@ -194,7 +194,7 @@ EOF
 FROM miniforge-cuda AS base
 ARG CUDA_VER=notset
 ARG PYTHON_VER=notset
-ARG RAPIDS_VER=26.02
+ARG RAPIDS_VER=notset
 
 SHELL ["/bin/bash", "-euo", "pipefail", "-c"]
 
