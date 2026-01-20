@@ -16,7 +16,7 @@ jobs:
       matrix: ${{ steps.generate-matrix.outputs.matrix }}
     steps:
       - name: Checkout code
-        uses: actions/checkout@v6
+        uses: actions/checkout@v4
 
       - name: Compute matrix
         id: generate-matrix
@@ -33,7 +33,7 @@ jobs:
       matrix: ${{fromJson(needs.compute-matrix.outputs.matrix)}}
     steps:
       - name: Checkout code
-        uses: actions/checkout@v6
+        uses: actions/checkout@v4
 
       - name: Login to DockerHub
         uses: docker/login-action@v3
@@ -54,12 +54,12 @@ jobs:
           set -e
 
           CUDA_VER=${{ matrix.CUDA_VER }}
-          CUDA_VER_SHORT=${CUDA_VER%.*}
+          CUDA_MAJOR=${CUDA_VER%%.*}
           PYTHON_VER=${{ matrix.PYTHON_VER }}
 
           for type in base notebooks; do
-            source="rapidsai/$type:${{ inputs.RAPIDS_VER }}-cuda$CUDA_VER_SHORT-py$PYTHON_VER"
-            target="nvcr.io/nvstaging/rapids/$type:${{ inputs.RAPIDS_VER }}-cuda$CUDA_VER_SHORT-py$PYTHON_VER"
+            source="rapidsai/$type:${{ inputs.RAPIDS_VER }}-cuda$CUDA_MAJOR-py$PYTHON_VER"
+            target="nvcr.io/nvstaging/rapids/$type:${{ inputs.RAPIDS_VER }}-cuda$CUDA_MAJOR-py$PYTHON_VER"
             echo "$source => $target"
-            docker run -v ~/.docker/config.json:/config.json quay.io/skopeo/stable:latest copy --multi-arch all --dest-authfile=/config.json docker://$source docker://$target
+            docker run -v ~/.docker/config.json:/config.json quay.io/skopeo/stable:v1.20.0 copy --multi-arch all --dest-authfile=/config.json docker://$source docker://$target
           done
