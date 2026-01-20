@@ -74,13 +74,13 @@ jobs:
           mamba install -n base --freeze-installed \
             curl \
             git
-      - name: Install gha-tools
-        run: |
-          context/scripts/install-gha-tools
       - name: Checkout code
         uses: actions/checkout@v6
         with:
           fetch-depth: 0
+      - name: Install gha-tools
+        run: |
+          context/scripts/install-gha-tools
       - name: Get RAPIDS GitHub Info
         id: get-rapids-github-info
         uses: rapidsai/shared-actions/rapids-github-info@main
