@@ -1,4 +1,4 @@
-# Copyright (c) 2023-2025, NVIDIA CORPORATION.
+# Copyright (c) 2023-2026, NVIDIA CORPORATION.
 name: Test notebooks
 
 on:
@@ -45,9 +45,6 @@ permissions:
   security-events: none
   statuses: none
 
-env:
-  GHA_TOOLS_DIR: /home/rapids/.local/bin # Workaround for https://github.com/actions/runner/issues/2411
-
 jobs:
   test:
     strategy:
@@ -79,8 +76,7 @@ jobs:
             git
       - name: Install gha-tools
         run: |
-          mkdir -p "$GHA_TOOLS_DIR"
-          curl -s -L 'https://github.com/rapidsai/gha-tools/releases/latest/download/tools.tar.gz' | tar -xz -C "$GHA_TOOLS_DIR"
+          context/build-scripts/install-gha-tools
       - name: Checkout code
         uses: actions/checkout@v6
         with:
@@ -90,7 +86,6 @@ jobs:
         uses: rapidsai/shared-actions/rapids-github-info@main
       - name: Print environment
         run: |
-          PATH="$PATH:$GHA_TOOLS_DIR"
           rapids-print-env
           rapids-logger "nvidia-smi"
           nvidia-smi
@@ -99,7 +94,6 @@ jobs:
       - name: Install awscli
         if: '!cancelled()'
         run: |
-          PATH="$PATH:$GHA_TOOLS_DIR"
           rapids-mamba-retry install -n base awscli
       - uses: aws-actions/configure-aws-credentials@v5
         if: '!cancelled()'
@@ -110,5 +104,4 @@ jobs:
       - name: Upload notebook test outputs
         if: '!cancelled()'
         run: |
-          PATH="$PATH:$GHA_TOOLS_DIR"
           rapids-upload-to-s3 test_notebooks_output_${{ inputs.ARCH }}_cuda${{ inputs.CUDA_VER }}_py${{ inputs.PYTHON_VER }}_${{ inputs.GPU }}-${{ inputs.DRIVER }}.tar.gz /home/rapids/notebooks_output

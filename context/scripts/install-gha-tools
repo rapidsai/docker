@@ -7,8 +7,7 @@
 
 set -e -u -o pipefail
 
-# allow this to be overridden so it can be re-used in GitHub Actions workflows
-GHA_TOOLS_DIR="${GHA_TOOLS_DIR:-/usr/local/bin}"
+GHA_TOOLS_INSTALL_DIR=/usr/local/bin
 
 # install wget
 wget_preinstalled=true
@@ -26,7 +25,7 @@ if ! type -f wget >/dev/null; then
 fi
 
 # install gha-tools
-wget -q https://github.com/rapidsai/gha-tools/releases/latest/download/tools.tar.gz -O - | tar -xz -C "${GHA_TOOLS_DIR}"
+wget -q https://github.com/rapidsai/gha-tools/releases/latest/download/tools.tar.gz -O - | tar -xz -C "${GHA_TOOLS_INSTALL_DIR}"
 
 # uninstall wget
 if [[ "${wget_preinstalled}" != "true" ]]; then
