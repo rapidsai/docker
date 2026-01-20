@@ -35,7 +35,7 @@ RUN \
     "${PACKAGES_TO_INSTALL[@]}"
 
   # install gha-tools for rapids-mamba-retry
-  /tmp/build-scripts/install gha-tools
+  /tmp/build-scripts/install-gha-tools
 
   # clean up
   rm -rf /var/lib/apt/lists/*
