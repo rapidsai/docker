@@ -4,4 +4,9 @@
 !cuvs-bench/
 !entrypoint.sh
 !notebooks.sh
+!scripts/configure-apt
+!scripts/configure-conda-base-environment
+!scripts/install-gha-tools
+!scripts/install-tzdata-packages
+!scripts/update-base-conda-environment
 !test_notebooks.py

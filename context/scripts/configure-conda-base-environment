@@ -1,0 +1,50 @@
+#!/bin/bash
+
+# [description]
+#
+#   Configures the image's environment so users can be productive in the 'base' conda env.
+#   For example:
+#
+#     * installs the expected Python version
+#     * ensures the 'base' environment is always activated by default
+#
+
+set -e -u -o pipefail
+
+# Ensure new files are created with group write access & setgid. See https://unix.stackexchange.com/a/12845
+chmod g+ws /opt/conda
+
+# Ensure new files/dirs have group write permissions
+umask 002
+
+# install expected Python version
+PYTHON_MAJOR_VERSION=${PYTHON_VERSION%%.*}
+PYTHON_MINOR_VERSION=${PYTHON_VERSION#*.}
+PYTHON_UPPER_BOUND="${PYTHON_MAJOR_VERSION}.$((PYTHON_MINOR_VERSION+1)).0a0"
+PYTHON_MINOR_PADDED=$(printf "%02d" "$PYTHON_MINOR_VERSION")
+PYTHON_VERSION_PADDED="${PYTHON_MAJOR_VERSION}.${PYTHON_MINOR_PADDED}"
+
+# 'shellcheck' is unhappy with the use of '>' to compare decimals here, but it works as expected for the 'bash' version in these
+# images, and installing 'bc' or using a Python interpreter seem heavy for this purpose.
+#
+# shellcheck disable=SC2072
+if [[ "$PYTHON_VERSION_PADDED" > "3.12" ]]; then
+    PYTHON_ABI_TAG="cp${PYTHON_MAJOR_VERSION}${PYTHON_MINOR_VERSION}"
+else
+    PYTHON_ABI_TAG="cpython"
+fi
+rapids-mamba-retry install -y -n base "python>=${PYTHON_VERSION},<${PYTHON_UPPER_BOUND}=*_${PYTHON_ABI_TAG}"
+rapids-mamba-retry update --all -y -n base
+find /opt/conda -follow -type f -name '*.a' -delete
+find /opt/conda -follow -type f -name '*.pyc' -delete
+
+# recreate missing libstdc++ symlinks
+conda clean -aiptfy
+
+# Reassign root's primary group to root
+usermod -g root root
+
+# ensure conda environment is always activated
+ln -s /opt/conda/etc/profile.d/conda.sh /etc/profile.d/conda.sh
+echo ". /opt/conda/etc/profile.d/conda.sh; conda activate base" >> /etc/skel/.bashrc
+echo ". /opt/conda/etc/profile.d/conda.sh; conda activate base" >> ~/.bashrc

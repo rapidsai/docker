@@ -22,17 +22,23 @@ chmod 777 /data
 echo ". /opt/conda/etc/profile.d/conda.sh; conda activate base" >> /etc/bash.bashrc
 EOF
 
-# we need perl temporarily for the remaining benchmark perl scripts
-RUN <<EOF
-apt-get update
-PACKAGES_TO_INSTALL=(
-  perl
-  wget
-)
-apt-get install -y --no-install-recommends \
-  "${PACKAGES_TO_INSTALL[@]}"
-wget --quiet https://github.com/rapidsai/gha-tools/releases/latest/download/tools.tar.gz -O - | tar -xz -C /usr/local/bin
-rm -rf /var/lib/apt/lists/*
+RUN \
+  --mount=type=bind,source=scripts,target=/tmp/build-scripts \
+<<EOF
+  # we need perl temporarily for the remaining benchmark perl scripts
+  apt-get update
+  PACKAGES_TO_INSTALL=(
+    perl
+    wget
+  )
+  apt-get install -y --no-install-recommends \
+    "${PACKAGES_TO_INSTALL[@]}"
+
+  # install gha-tools for rapids-mamba-retry
+  /tmp/build-scripts/install-gha-tools
+
+  # clean up
+  rm -rf /var/lib/apt/lists/*
 EOF
 
 # update everything before other environment changes, to ensure mixing
