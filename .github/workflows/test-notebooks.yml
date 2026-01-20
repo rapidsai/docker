@@ -76,7 +76,7 @@ jobs:
             git
       - name: Install gha-tools
         run: |
-          context/build-scripts/install-gha-tools
+          context/scripts/install-gha-tools
       - name: Checkout code
         uses: actions/checkout@v6
         with:
