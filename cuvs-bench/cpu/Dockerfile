@@ -67,17 +67,3 @@ COPY cuvs-bench/run_benchmark.sh /data/scripts/run_benchmark.sh
 CMD ["--dataset fashion-mnist-784-euclidean", "", "--algorithms hnswlib"]
 
 ENTRYPOINT ["/bin/bash", "/data/scripts/run_benchmark.sh"]
-
-FROM cuvs-bench-cpu AS cuvs-bench-cpu-datasets
-
-SHELL ["/bin/bash", "-euo", "pipefail", "-c"]
-
-COPY cuvs-bench/get_datasets.sh /home/rapids/cuvs-bench/get_datasets.sh
-
-COPY cuvs-bench/run_benchmark.sh /data/scripts/run_benchmark_preloaded_datasets.sh
-
-RUN /home/rapids/cuvs-bench/get_datasets.sh
-
-CMD ["--dataset fashion-mnist-784-euclidean", "", "--algorithms hnswlib"]
-
-ENTRYPOINT ["/bin/bash", "/data/scripts/run_benchmark_preloaded_datasets.sh"]
