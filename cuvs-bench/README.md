@@ -18,7 +18,6 @@ For complete details, refer to the cuVS documentation: https://docs.rapids.ai/ap
 We provide images for GPU enabled systems, as well as systems without a GPU. The following images are available:
 
 - `cuvs-bench`: Contains GPU and CPU benchmarks, can run all algorithms supported. Will download million-scale datasets as required. Best suited for users that prefer a smaller container size for GPU based systems. Requires the NVIDIA Container Toolkit to run GPU algorithms, can run CPU algorithms without it.
-- `cuvs-bench-datasets`: Contains the GPU and CPU benchmarks with million-scale datasets already included in the container. Best suited for users that want to run multiple million scale datasets already included in the image.
 - `cuvs-bench-cpu`: Contains only CPU benchmarks with minimal size. Best suited for users that want the smallest containers to reproduce benchmarks on systems without a GPU.
 
 Nightly images are located in [DockerHub](https://hub.docker.com/r/rapidsai/cuvs-bench), release versions will be located in NCG in the next release.
@@ -47,7 +46,7 @@ Where:
 
 - `DATA_FOLDER=path/to/store/results/and/data`: Results and datasets will be written to this host folder.
 - `-u $(id -u)`: This flag allows the container to use the host user for permissions
-- `rapidsai/cuvs-bench:26.04a-cuda13-py3.13`: Image to use, either `cuvs-bench` or `cuvs-bench-datasets`, cuVS version, CUDA version, and Python version.
+- `rapidsai/cuvs-bench:26.04a-cuda13-py3.13`: Image to use, `cuvs-bench`, cuVS version, CUDA version, and Python version.
 - "--dataset deep-image-96-angular": Dataset name(s). See https://docs.rapids.ai/api/cuvs/nightly/cuvs_bench for more details.
 - "--normalize": Whether to normalize the dataset, leave string empty ("") to not normalize.
 - "--algorithms cuvs_cagra": What algorithm(s) to use as a ; separated list, as well as any other argument to pass to `cuvs_bench.run`.

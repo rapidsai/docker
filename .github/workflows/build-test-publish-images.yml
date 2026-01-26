@@ -59,14 +59,12 @@ jobs:
       BASE_IMAGE_REPO: ${{ steps.compute-image-repo.outputs.BASE_IMAGE_REPO }}
       NOTEBOOKS_IMAGE_REPO: ${{ steps.compute-image-repo.outputs.NOTEBOOKS_IMAGE_REPO }}
       CUVS_BENCH_IMAGE_REPO: ${{ steps.compute-image-repo.outputs.CUVS_BENCH_IMAGE_REPO }}
-      CUVS_BENCH_DATASETS_IMAGE_REPO: ${{ steps.compute-image-repo.outputs.CUVS_BENCH_DATASETS_IMAGE_REPO }}
       CUVS_BENCH_CPU_IMAGE_REPO: ${{ steps.compute-image-repo.outputs.CUVS_BENCH_CPU_IMAGE_REPO }}
       MATRIX: ${{ steps.compute-matrix.outputs.MATRIX }}
       TEST_MATRIX: ${{ steps.compute-test-matrix.outputs.TEST_MATRIX }}
       BASE_TAG_PREFIX: ${{ steps.compute-tag-prefix.outputs.BASE_TAG_PREFIX }}
       NOTEBOOKS_TAG_PREFIX: ${{ steps.compute-tag-prefix.outputs.NOTEBOOKS_TAG_PREFIX }}
       CUVS_BENCH_TAG_PREFIX: ${{ steps.compute-tag-prefix.outputs.CUVS_BENCH_TAG_PREFIX }}
-      CUVS_BENCH_DATASETS_TAG_PREFIX: ${{ steps.compute-tag-prefix.outputs.CUVS_BENCH_DATASETS_TAG_PREFIX }}
       CUVS_BENCH_CPU_TAG_PREFIX: ${{ steps.compute-tag-prefix.outputs.CUVS_BENCH_CPU_TAG_PREFIX }}
       RAPIDS_VER: ${{ steps.compute-rapids-ver.outputs.RAPIDS_VER }}
       ALPHA_TAG: ${{ steps.compute-rapids-ver.outputs.ALPHA_TAG }}
@@ -89,13 +87,11 @@ jobs:
             BASE_TAG_PREFIX="docker-${pr_num}-"
             NOTEBOOKS_TAG_PREFIX="docker-notebooks-${pr_num}-"
             CUVS_BENCH_TAG_PREFIX="docker-cuvs-bench-${pr_num}-"
-            CUVS_BENCH_DATASETS_TAG_PREFIX="docker-cuvs-bench-datasets-${pr_num}-"
             CUVS_BENCH_CPU_TAG_PREFIX="docker-cuvs-bench-cpu-${pr_num}-"
           fi
           echo "BASE_TAG_PREFIX=${BASE_TAG_PREFIX}" | tee -a ${GITHUB_OUTPUT}
           echo "NOTEBOOKS_TAG_PREFIX=${NOTEBOOKS_TAG_PREFIX}" | tee -a ${GITHUB_OUTPUT}
           echo "CUVS_BENCH_TAG_PREFIX=${CUVS_BENCH_TAG_PREFIX}" | tee -a ${GITHUB_OUTPUT}
-          echo "CUVS_BENCH_DATASETS_TAG_PREFIX=${CUVS_BENCH_DATASETS_TAG_PREFIX}" | tee -a ${GITHUB_OUTPUT}
           echo "CUVS_BENCH_CPU_TAG_PREFIX=${CUVS_BENCH_CPU_TAG_PREFIX}" | tee -a ${GITHUB_OUTPUT}
       - name: Compute image repo
         id: compute-image-repo
@@ -103,19 +99,16 @@ jobs:
           base_repo="base"
           notebooks_repo="notebooks"
           cuvs_bench_repo="cuvs-bench"
-          cuvs_bench_datasets_repo="cuvs-bench-datasets"
           cuvs_bench_cpu_repo="cuvs-bench-cpu"
           if [ "${{ inputs.build_type }}" = "pull-request" ]; then
             base_repo="staging"
             notebooks_repo="staging"
             cuvs_bench_repo="staging"
-            cuvs_bench_datasets_repo="staging"
             cuvs_bench_cpu_repo="staging"
           fi
           echo "BASE_IMAGE_REPO=${base_repo}" | tee -a ${GITHUB_OUTPUT}
           echo "NOTEBOOKS_IMAGE_REPO=${notebooks_repo}" | tee -a ${GITHUB_OUTPUT}
           echo "CUVS_BENCH_IMAGE_REPO=${cuvs_bench_repo}" | tee -a ${GITHUB_OUTPUT}
-          echo "CUVS_BENCH_DATASETS_IMAGE_REPO=${cuvs_bench_datasets_repo}" | tee -a ${GITHUB_OUTPUT}
           echo "CUVS_BENCH_CPU_IMAGE_REPO=${cuvs_bench_cpu_repo}" | tee -a ${GITHUB_OUTPUT}
       - name: Compute RAPIDS_VER
         id: compute-rapids-ver
@@ -198,13 +191,6 @@ jobs:
         ${{ needs.compute-matrix.outputs.ALPHA_TAG }}-\
         cuda${{ matrix.CUDA_TAG }}-\
         py${{ matrix.PYTHON_VER }}"
-      CUVS_BENCH_DATASETS_TAG:
-        "rapidsai/${{ needs.compute-matrix.outputs.CUVS_BENCH_DATASETS_IMAGE_REPO }}:\
-        ${{ needs.compute-matrix.outputs.CUVS_BENCH_DATASETS_TAG_PREFIX }}\
-        ${{ needs.compute-matrix.outputs.RAPIDS_VER }}\
-        ${{ needs.compute-matrix.outputs.ALPHA_TAG }}-\
-        cuda${{ matrix.CUDA_TAG }}-\
-        py${{ matrix.PYTHON_VER }}"
       CUVS_BENCH_CPU_TAG:
         "rapidsai/${{ needs.compute-matrix.outputs.CUVS_BENCH_CPU_IMAGE_REPO }}:\
         ${{ needs.compute-matrix.outputs.CUVS_BENCH_CPU_TAG_PREFIX }}\
@@ -270,8 +256,6 @@ jobs:
           CUVS_BENCH_CPU_IMAGE_BUILT: ${{ matrix.BUILD_CUVS_BENCH_CPU_IMAGE }}
           CUVS_BENCH_IMAGE_REPO: ${{ needs.compute-matrix.outputs.CUVS_BENCH_IMAGE_REPO }}
           CUVS_BENCH_TAG_PREFIX: ${{ needs.compute-matrix.outputs.CUVS_BENCH_TAG_PREFIX }}
-          CUVS_BENCH_DATASETS_IMAGE_REPO: ${{ needs.compute-matrix.outputs.CUVS_BENCH_DATASETS_IMAGE_REPO }}
-          CUVS_BENCH_DATASETS_TAG_PREFIX: ${{ needs.compute-matrix.outputs.CUVS_BENCH_DATASETS_TAG_PREFIX }}
           CUVS_BENCH_CPU_IMAGE_REPO: ${{ needs.compute-matrix.outputs.CUVS_BENCH_CPU_IMAGE_REPO }}
           CUVS_BENCH_CPU_TAG_PREFIX: ${{ needs.compute-matrix.outputs.CUVS_BENCH_CPU_TAG_PREFIX }}
           GPUCIBOT_DOCKERHUB_USER: ${{ secrets.GPUCIBOT_DOCKERHUB_USER }}

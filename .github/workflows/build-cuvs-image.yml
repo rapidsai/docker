@@ -22,9 +22,6 @@ on:
       CUVS_BENCH_TAG:
         required: true
         type: string
-      CUVS_BENCH_DATASETS_TAG:
-        required: true
-        type: string
       CUVS_BENCH_CPU_TAG:
         required: true
         type: string
@@ -110,18 +107,6 @@ jobs:
           tags: ${{ inputs.CUVS_BENCH_TAG }}-${{ matrix.ARCH }}
           # ensure only OCI mediatypes are used: https://docs.docker.com/build/exporters/#oci-media-types
           outputs: type=registry,oci-mediatypes=true
-      # - name: Build cuVS Benchmarks GPU with datasets image
-      #   uses: docker/build-push-action@v6
-      #   with:
-      #     context: context
-      #     file: cuvs-bench/gpu/Dockerfile
-      #     target: cuvs-bench-datasets
-      #     push: true
-      #     pull: true
-      #     build-args: |
-      #       ${{ steps.generate-build-args.outputs.DOCKER_BUILD_ARGS }}
-      #     tags: ${{ inputs.CUVS_BENCH_DATASETS_TAG }}-${{ matrix.ARCH }}
-      #     outputs: type=registry,oci-mediatypes=true
       - name: Build cuVS Benchmarks CPU image
         if: inputs.BUILD_CUVS_BENCH_CPU_IMAGE
         uses: docker/build-push-action@v6
