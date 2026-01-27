@@ -242,6 +242,8 @@ PACKAGES_TO_INSTALL=(
   'ipython>=8.37.0'
   'rapids-cli==0.1.*'
   'openssl==3.6.0'
+  'tar==7.5.4'
+  'wheel==0.46.2'
 )
 rapids-mamba-retry install -y -n base \
   "${PACKAGES_TO_INSTALL[@]}"
