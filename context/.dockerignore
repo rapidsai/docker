@@ -10,3 +10,4 @@
 !scripts/install-tzdata-packages
 !scripts/update-base-conda-environment
 !test_notebooks.py
+!pinned
