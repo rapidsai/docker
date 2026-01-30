@@ -4,5 +4,5 @@
 !cuvs-bench/
 !entrypoint.sh
 !notebooks.sh
-!test_notebooks.py
 !pinned
+!test_notebooks.py

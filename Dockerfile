@@ -67,6 +67,8 @@ FROM condaforge/miniforge3:${MINIFORGE_VER} AS miniforge-upstream
 
 SHELL ["/bin/bash", "-euo", "pipefail", "-c"]
 
+COPY pinned /opt/conda/conda-meta/pinned
+
 RUN <<EOF
 # Ensure new files/dirs have group write permissions
 umask 002
