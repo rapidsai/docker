@@ -123,6 +123,8 @@ EOF
 # Ownership & permissions based on https://docs.anaconda.com/anaconda/install/multi-user/#multi-user-anaconda-installation-on-linux
 COPY --from=miniforge-upstream --chown=root:conda --chmod=770 /opt/conda /opt/conda
 
+COPY pinned /opt/conda/conda-meta/pinned
+
 RUN <<EOF
 # Ensure new files are created with group write access & setgid. See https://unix.stackexchange.com/a/12845
 chmod g+ws /opt/conda
@@ -241,9 +243,6 @@ PACKAGES_TO_INSTALL=(
   "cuda-version=${CUDA_VER%.*}.*"
   'ipython>=8.37.0'
   'rapids-cli==0.1.*'
-  'openssl==3.6.0'
-  'tar==7.5.4'
-  'wheel==0.46.2'
 )
 rapids-mamba-retry install -y -n base \
   "${PACKAGES_TO_INSTALL[@]}"
