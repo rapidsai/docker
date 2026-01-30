@@ -67,6 +67,8 @@ FROM condaforge/miniforge3:${MINIFORGE_VER} AS miniforge-upstream
 
 SHELL ["/bin/bash", "-euo", "pipefail", "-c"]
 
+COPY pinned /opt/conda/conda-meta/pinned
+
 RUN <<EOF
 # Ensure new files/dirs have group write permissions
 umask 002
@@ -122,6 +124,8 @@ EOF
 
 # Ownership & permissions based on https://docs.anaconda.com/anaconda/install/multi-user/#multi-user-anaconda-installation-on-linux
 COPY --from=miniforge-upstream --chown=root:conda --chmod=770 /opt/conda /opt/conda
+
+COPY pinned /opt/conda/conda-meta/pinned
 
 RUN <<EOF
 # Ensure new files are created with group write access & setgid. See https://unix.stackexchange.com/a/12845
@@ -241,7 +245,6 @@ PACKAGES_TO_INSTALL=(
   "cuda-version=${CUDA_VER%.*}.*"
   'ipython>=8.37.0'
   'rapids-cli==0.1.*'
-  'openssl==3.6.0'
 )
 rapids-mamba-retry install -y -n base \
   "${PACKAGES_TO_INSTALL[@]}"
