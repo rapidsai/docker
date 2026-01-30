@@ -11,3 +11,4 @@
 !scripts/update-base-conda-environment
 !test_notebooks.py
 !pinned
+!test_notebooks.py

@@ -70,6 +70,25 @@ RUN \
 <<EOF
   # update everything in 'base' before we copy files into later targets
   /tmp/build-scripts/update-base-conda-environment
+SHELL ["/bin/bash", "-euo", "pipefail", "-c"]
+EOF
+
+COPY pinned /opt/conda/conda-meta/pinned
+
+RUN <<EOF
+# Ensure new files/dirs have group write permissions
+umask 002
+
+# install gha-tools for rapids-mamba-retry
+wget -q https://github.com/rapidsai/gha-tools/releases/latest/download/tools.tar.gz -O - | tar -xz -C /usr/local/bin
+
+# Example of pinned package in case you require an override
+# echo '<PACKAGE_NAME>==<VERSION>' >> /opt/conda/conda-meta/pinned
+
+# update everything before other environment changes, to ensure mixing
+# an older conda with newer packages still works well
+PATH="/opt/conda/bin:$PATH" \
+  rapids-mamba-retry update --all -y -n base
 EOF
 
 ################################ build miniforge-cuda using updated miniforge-upstream from above ###############################
@@ -99,6 +118,7 @@ COPY pinned /opt/conda/conda-meta/pinned
 RUN <<EOF
 # Ensure new files are created with group write access & setgid. See https://unix.stackexchange.com/a/12845
 chmod g+ws /opt/conda
+EOF
 
 RUN \
   --mount=type=bind,source=scripts,target=/tmp/build-scripts \
