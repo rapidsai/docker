@@ -65,6 +65,8 @@ ARG MINIFORGE_VER=notset
 
 FROM condaforge/miniforge3:${MINIFORGE_VER} AS miniforge-upstream
 
+COPY pinned /opt/conda/conda-meta/pinned
+
 RUN \
   --mount=type=bind,source=scripts,target=/tmp/build-scripts \
 <<EOF
@@ -93,6 +95,8 @@ EOF
 
 # Ownership & permissions based on https://docs.anaconda.com/anaconda/install/multi-user/#multi-user-anaconda-installation-on-linux
 COPY --from=miniforge-upstream --chown=root:conda --chmod=770 /opt/conda /opt/conda
+
+COPY pinned /opt/conda/conda-meta/pinned
 
 RUN \
   --mount=type=bind,source=scripts,target=/tmp/build-scripts \
@@ -169,7 +173,6 @@ PACKAGES_TO_INSTALL=(
   "cuda-version=${CUDA_VER%.*}.*"
   'ipython>=8.37.0'
   'rapids-cli==0.1.*'
-  'openssl==3.6.0'
 )
 rapids-mamba-retry install -y -n base \
   "${PACKAGES_TO_INSTALL[@]}"
