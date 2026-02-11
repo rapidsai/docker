@@ -4,6 +4,7 @@
 !cuvs-bench/
 !entrypoint.sh
 !notebooks.sh
+!pinned
 !scripts/configure-apt
 !scripts/configure-conda-base-environment
 !scripts/install-gha-tools
