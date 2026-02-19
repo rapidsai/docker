@@ -1,4 +1,4 @@
-# Copyright (c) 2023-2025, NVIDIA CORPORATION.
+# Copyright (c) 2023-2026, NVIDIA CORPORATION.
 name: ci
 
 on:
@@ -11,6 +11,34 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
+  # Please keep pr-builder as the top job here
+  pr-builder:
+    needs:
+      - check-nightly-ci
+      - docker
+    uses: rapidsai/shared-workflows/.github/workflows/pr-builder.yaml@main
+    if: always()
+    with:
+      needs: ${{ toJSON(needs) }}
+  check-nightly-ci:
+    runs-on: ubuntu-latest
+    permissions:
+      actions: read
+      id-token: write
+    env:
+      GH_TOKEN: ${{ github.token }}
+    steps:
+      - name: Get PR Info
+        id: get-pr-info
+        uses: nv-gha-runners/get-pr-info@main
+      - name: Check if nightly CI is passing
+        uses: rapidsai/shared-actions/check_nightly_success/dispatch@main
+        with:
+          # default is 7 days, but this repo is downstream of all of RAPIDS so allow a bit longer window
+          max-days-without-success: 14
+          repo: ${{ github.repository }}
+          target-branch: ${{ fromJSON(steps.get-pr-info.outputs.pr-info).base.ref }}
+          workflow-id: 'publish.yml'
   docker:
     uses: ./.github/workflows/build-test-publish-images.yml
     with:
