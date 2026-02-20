@@ -1,6 +1,6 @@
 # SPDX-FileCopyrightText: Copyright (c) 2024-2026 NVIDIA CORPORATION & AFFILIATES. All rights reserved.
 # SPDX-License-Identifier: Apache-2.0
 # renovate: datasource=docker depName=condaforge/miniforge3 versioning=docker
-MINIFORGE_VER: 25.9.1-0
+MINIFORGE_VER: 25.11.0-0
 # renovate: datasource=github-releases depName=mikefarah/yq
 YQ_VER: 4.52.2
