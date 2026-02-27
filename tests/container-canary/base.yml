@@ -124,7 +124,6 @@ checks:
           - /bin/bash
           - -c
           - "[[ $(conda env list --quiet | grep --count -E '^[A-Za-z]+') == 1 ]];"
-  # ref: https://github.com/rapidsai/docker/issues/835
   - name: no-pytest
     description: pytest should not be installed (testing-only library)
     probe:
