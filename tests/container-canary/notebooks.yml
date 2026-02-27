@@ -23,3 +23,11 @@ checks:
           - jupyter
           - lab
           - --version
+  - name: no-pytest-packages
+    description: pytest packages should not be installed (testing-only libraries)
+    probe:
+      exec:
+        command:
+          - /bin/bash
+          - -c
+          - "! conda list '^pytest' | grep -q '^pytest'"
