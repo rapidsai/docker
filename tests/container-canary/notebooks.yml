@@ -23,3 +23,20 @@ checks:
           - jupyter
           - lab
           - --version
+  # ref: https://github.com/rapidsai/docker/issues/835
+  - name: no-pytest
+    description: pytest should not be installed (testing-only library)
+    probe:
+      exec:
+        command:
+          - /bin/bash
+          - -c
+          - "! conda list '^pytest$' | grep -q '^pytest '"
+  - name: no-pytest-xdist
+    description: pytest-xdist should not be installed (testing-only library)
+    probe:
+      exec:
+        command:
+          - /bin/bash
+          - -c
+          - "! conda list '^pytest-xdist$' | grep -q '^pytest-xdist '"
