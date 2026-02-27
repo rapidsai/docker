@@ -124,19 +124,11 @@ checks:
           - /bin/bash
           - -c
           - "[[ $(conda env list --quiet | grep --count -E '^[A-Za-z]+') == 1 ]];"
-  - name: no-pytest
-    description: pytest should not be installed (testing-only library)
+  - name: no-pytest-packages
+    description: pytest packages should not be installed (testing-only libraries)
     probe:
       exec:
         command:
           - /bin/bash
           - -c
-          - "! conda list '^pytest$' | grep -q '^pytest '"
-  - name: no-pytest-xdist
-    description: pytest-xdist should not be installed (testing-only library)
-    probe:
-      exec:
-        command:
-          - /bin/bash
-          - -c
-          - "! conda list '^pytest-xdist$' | grep -q '^pytest-xdist '"
+          - "! conda list '^pytest' | grep -q '^pytest'"

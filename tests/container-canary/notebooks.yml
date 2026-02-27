@@ -23,19 +23,11 @@ checks:
           - jupyter
           - lab
           - --version
-  - name: no-pytest
-    description: pytest should not be installed (testing-only library)
+  - name: no-pytest-packages
+    description: pytest packages should not be installed (testing-only libraries)
     probe:
       exec:
         command:
           - /bin/bash
           - -c
-          - "! conda list '^pytest$' | grep -q '^pytest '"
-  - name: no-pytest-xdist
-    description: pytest-xdist should not be installed (testing-only library)
-    probe:
-      exec:
-        command:
-          - /bin/bash
-          - -c
-          - "! conda list '^pytest-xdist$' | grep -q '^pytest-xdist '"
+          - "! conda list '^pytest' | grep -q '^pytest'"
