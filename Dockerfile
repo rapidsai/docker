@@ -83,6 +83,7 @@ ARG LINUX_VER=notset
 ARG PYTHON_VER=notset
 ARG DEBIAN_FRONTEND=noninteractive
 ENV PATH=/opt/conda/bin:$PATH
+ENV CONDA_PREFIX=/opt/conda
 ENV PYTHON_VERSION=${PYTHON_VER}
 
 SHELL ["/bin/bash", "-euo", "pipefail", "-c"]
