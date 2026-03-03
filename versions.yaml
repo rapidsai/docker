@@ -4,3 +4,7 @@
 MINIFORGE_VER: 25.11.0-0
 # renovate: datasource=github-releases depName=mikefarah/yq
 YQ_VER: 4.52.2
+# renovate: datasource=github-releases depName=anchore/syft
+SYFT_VER: 1.32.0
+# renovate: datasource=docker depName=alpine versioning=docker
+SYFT_ALPINE_VER: "3.20"

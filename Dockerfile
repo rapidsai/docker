@@ -8,6 +8,8 @@ ARG LINUX_VER=${LINUX_DISTRO}${LINUX_DISTRO_VER}
 ARG MINIFORGE_VER=notset
 ARG PYTHON_VER=notset
 ARG RAPIDS_VER=26.04
+ARG SYFT_ALPINE_VER=notset
+ARG SYFT_VER=notset
 
 # Gather dependency information
 FROM python:${PYTHON_VER} AS dependencies
@@ -117,7 +119,7 @@ EOF
 # --- end 'rapidsai/miniforge-cuda' --- #
 
 # Base image
-FROM miniforge-cuda AS base
+FROM miniforge-cuda AS base-build
 ARG CUDA_VER=notset
 ARG PYTHON_VER=notset
 ARG RAPIDS_VER=26.04
@@ -186,8 +188,26 @@ ENTRYPOINT ["/home/rapids/entrypoint.sh"]
 
 CMD ["ipython"]
 
+############################# generate SBOM (base) #############################
+
+FROM --platform=$BUILDPLATFORM alpine:${SYFT_ALPINE_VER} AS base-sbom
+ARG SYFT_VER
+RUN \
+  --mount=type=bind,from=base-build,source=/,target=/rootfs,ro \
+  --mount=type=bind,source=scripts,target=/tmp/build-scripts \
+<<EOF
+SYFT_VER=${SYFT_VER} /tmp/build-scripts/install-syft
+IMAGE_REPO=base /tmp/build-scripts/generate-sbom
+EOF
+
+######################### final base image with SBOM ##########################
+
+FROM base-build AS base
+COPY --from=base-sbom /out/sbom.json /sbom/sbom.json
+USER rapids
+
 # Notebooks image
-FROM base AS notebooks
+FROM base AS notebooks-build
 
 ARG CUDA_VER=notset
 ARG LINUX_DISTRO=notset
@@ -266,3 +286,21 @@ LABEL com.nvidia.workbench.schema-version="v2"
 LABEL com.nvidia.workbench.user.gid="1000"
 LABEL com.nvidia.workbench.user.uid="1001"
 LABEL com.nvidia.workbench.user.username="rapids"
+
+########################## generate SBOM (notebooks) ###########################
+
+FROM --platform=$BUILDPLATFORM alpine:${SYFT_ALPINE_VER} AS notebooks-sbom
+ARG SYFT_VER
+RUN \
+  --mount=type=bind,from=notebooks-build,source=/,target=/rootfs,ro \
+  --mount=type=bind,source=scripts,target=/tmp/build-scripts \
+<<EOF
+SYFT_VER=${SYFT_VER} /tmp/build-scripts/install-syft
+IMAGE_REPO=notebooks /tmp/build-scripts/generate-sbom
+EOF
+
+######################## final notebooks image with SBOM #######################
+
+FROM notebooks-build AS notebooks
+COPY --from=notebooks-sbom /out/sbom.json /sbom/sbom.json
+USER rapids

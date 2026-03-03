@@ -9,5 +9,7 @@
 !scripts/configure-conda-base-environment
 !scripts/install-gha-tools
 !scripts/install-tzdata-packages
+!scripts/generate-sbom
+!scripts/install-syft
 !scripts/update-base-conda-environment
 !test_notebooks.py

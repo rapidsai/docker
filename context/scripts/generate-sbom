@@ -1,0 +1,28 @@
+#!/bin/sh
+
+# [description]
+#
+#   Generates a CycloneDX SBOM using Syft by scanning a mounted filesystem.
+#   Designed to run on Alpine Linux (the sbom Docker stage).
+#
+#   Required environment variables:
+#     IMAGE_REPO  - Image repository name (e.g., "base"), used for --source-name
+#
+#   Expects:
+#     - Syft installed at /usr/local/bin/syft (from install-syft script)
+#     - Target filesystem mounted at /rootfs (read-only bind mount from build stage)
+#
+
+set -eu
+
+if [ "${IMAGE_REPO:-}" = "" ] || [ "${IMAGE_REPO}" = "notset" ]; then
+    echo "ERROR: IMAGE_REPO is not set" >&2
+    exit 1
+fi
+
+mkdir -p /out
+
+syft scan \
+    --source-name "rapidsai/${IMAGE_REPO}" \
+    --output cyclonedx-json@1.6=/out/sbom.json \
+    dir:/rootfs
