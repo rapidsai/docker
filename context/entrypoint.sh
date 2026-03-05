@@ -33,6 +33,10 @@ if [ "$(uname -m)" = "aarch64" ]; then
     fi
 fi
 
+#Activate the base environment
+. /opt/conda/etc/profile.d/conda.sh
+conda activate base
+
 # Run whatever the user wants.
 if [ "${UNQUOTE}" = "true" ]; then
     # splitting elements without quoting is intentional here,
