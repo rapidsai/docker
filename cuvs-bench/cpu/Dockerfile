@@ -34,7 +34,7 @@ RUN \
   apt-get install -y --no-install-recommends \
     "${PACKAGES_TO_INSTALL[@]}"
 
-  # install gha-tools for rapids-mamba-retry
+  # install gha-tools for rapids-conda-retry
   /tmp/build-scripts/install-gha-tools
 
   # clean up
@@ -45,14 +45,14 @@ EOF
 # an older conda with newer packages still works well
 # ref: https://github.com/rapidsai/ci-imgs/issues/185
 RUN <<EOF
-rapids-mamba-retry update --all -y -n base
-rapids-mamba-retry install -y -n base "python=${PYTHON_VER}"
-rapids-mamba-retry update --all -y -n base
+rapids-conda-retry update --all -y -n base
+rapids-conda-retry install -y -n base "python=${PYTHON_VER}"
+rapids-conda-retry update --all -y -n base
 PACKAGES_TO_INSTALL=(
   "cuvs-bench-cpu=${RAPIDS_VER}.*"
   "python=${PYTHON_VER}"
 )
-rapids-mamba-retry install -y -n base \
+rapids-conda-retry install -y -n base \
   "${PACKAGES_TO_INSTALL[@]}"
 conda clean -afy
 chmod -R 777 /opt/conda
