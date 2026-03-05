@@ -9,7 +9,7 @@ These images are meant to enable end users of cuVS ANN algorithms to easily run 
 There are two image types:
 
 - gpu: Contains dockerfile to build images using conda packages for GPU systems.
-- cpu: Contains dockerfile to build images using conda packages for CPU systems. Based on `mambaforge`.
+- cpu: Contains dockerfile to build images using conda packages for CPU systems. Based on `miniforge`.
 
 # Running the Containers
 
