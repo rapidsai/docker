@@ -33,7 +33,7 @@ if [ "$(uname -m)" = "aarch64" ]; then
     fi
 fi
 
-#Activate the base environment
+# Activate the base environment
 . /opt/conda/etc/profile.d/conda.sh
 conda activate base
 
