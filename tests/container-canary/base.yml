@@ -124,11 +124,19 @@ checks:
           - /bin/bash
           - -c
           - "[[ $(conda env list --quiet | grep --count -E '^[A-Za-z]+') == 1 ]];"
-  - name: conda-prefix-non-interactive
-    description: Checks conda configuration in non-interactive mode
+  - name: conda-prefix
+    description: Conda prefix set to /opt/conda
     probe:
       exec:
         command:
           - /bin/bash
           - -c
-          - 'test -d "$CONDA_PREFIX" && conda config --show-sources'
+          - '[[ "${CONDA_PREFIX}" == "/opt/conda" ]];'
+  - name: conda-base-active
+    description: The base conda environment is active
+    probe:
+      exec:
+        command:
+          - /bin/bash
+          - -c
+          - '[[ "${CONDA_DEFAULT_ENV}" == "base" ]];'
