@@ -1,10 +1,5 @@
-#!/usr/bin/env bash -l
+#!/usr/bin/env -S bash -l
 # Copyright (c) 2023-2026, NVIDIA CORPORATION.
-#
-# Shellcheck doesn't like multiple options to the shell in the shebang.
-# However this works fine in practice. So disable this shellcheck error.
-#
-# shellcheck disable=SC2096
 
 set -eo pipefail
 
