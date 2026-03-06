@@ -30,4 +30,4 @@ checks:
         command:
           - /bin/bash
           - -c
-          - 'conda info --envs | grep -E "^base\s+\*"'
+          - '[[ "${CONDA_DEFAULT_ENV}" == "base" ]];'
