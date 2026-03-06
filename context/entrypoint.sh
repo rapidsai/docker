@@ -1,4 +1,4 @@
-#!/usr/bin/env bash -il
+#!/usr/bin/env bash -l
 # Copyright (c) 2023-2026, NVIDIA CORPORATION.
 #
 # Shellcheck doesn't like multiple options to the shell in the shebang.
