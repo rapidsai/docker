@@ -29,6 +29,14 @@ checks:
           - -c
           # the second component could have a 't' for like '3.15t' for free-threaded builds at some point in the future
           - '[[ "${PYTHON_VERSION}" =~ ^[0-9]{1,2}\.[0-9t]{1,2}$ ]]'
+  - name: tst-conda-active
+    description: test the conda environment is active
+    probe:
+      exec:
+        command:
+          - /bin/bash
+          - -c
+          - '[ "${CONDA_EXE+x}" ];'
   - name: tool-conda
     description: conda can be executed
     probe:

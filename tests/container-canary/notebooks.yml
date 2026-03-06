@@ -7,14 +7,6 @@ description: |
   are expected to have.
 documentation: https://github.com/rapidsai/docker
 checks:
-  - name: tst-conda-active
-    description: test the conda environment is active
-    probe:
-      exec:
-        command:
-          - /bin/bash
-          - -c
-          - '[ "${CONDA_EXE+x}" ];'
   - name: env-dask-cuda
     description: dask-labextension is configured to use dask-cuda by default via environment variables
     probe:
