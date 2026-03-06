@@ -23,3 +23,11 @@ checks:
           - jupyter
           - lab
           - --version
+  - name: conda-base-active
+    description: The base conda environment is active
+    probe:
+      exec:
+        command:
+          - /bin/bash
+          - -c
+          - 'conda info --envs | grep -E "^base\s+\*"'

@@ -124,3 +124,11 @@ checks:
           - /bin/bash
           - -c
           - "[[ $(conda env list --quiet | grep --count -E '^[A-Za-z]+') == 1 ]];"
+  - name: conda-prefix-non-interactive
+    description: Checks conda configuration in non-interactive mode
+    probe:
+      exec:
+        command:
+          - /bin/bash
+          - -c
+          - 'test -d "$CONDA_PREFIX" && conda config --show-sources'
