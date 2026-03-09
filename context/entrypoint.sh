@@ -1,5 +1,5 @@
-#!/usr/bin/env bash
-# Copyright (c) 2023-2025, NVIDIA CORPORATION.
+#!/usr/bin/env -S bash -l
+# Copyright (c) 2023-2026, NVIDIA CORPORATION.
 
 set -eo pipefail
 
@@ -9,6 +9,9 @@ By pulling and using the container, you accept the terms and conditions of this 
 https://developer.download.nvidia.com/licenses/NVIDIA_Deep_Learning_Container_License.pdf
 
 EOF
+
+# Activate conda (login shell sources from /etc/profile.d/conda.sh)
+conda activate
 
 if [ -e "/home/rapids/environment.yml" ]; then
     echo "environment.yml found. Installing packages."
@@ -32,10 +35,6 @@ if [ "$(uname -m)" = "aarch64" ]; then
         echo "Set NCCL_CUMEM_HOST_ENABLE=0 for ARM with CUDA 12.9"
     fi
 fi
-
-# Activate the base environment
-. /opt/conda/etc/profile.d/conda.sh
-conda activate base
 
 # Run whatever the user wants.
 if [ "${UNQUOTE}" = "true" ]; then
