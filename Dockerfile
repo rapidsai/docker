@@ -84,7 +84,6 @@ ARG PYTHON_VER=notset
 ARG DEBIAN_FRONTEND=noninteractive
 ENV PATH=/opt/conda/bin:$PATH
 # ensure conda's files and configuration can be found at runtime even if environment activation was bypassed
-# ensure conda's files and configuration can be found at runtime even if environment activation was bypassed
 ENV CONDA_PREFIX=/opt/conda
 ENV PYTHON_VERSION=${PYTHON_VER}
 
