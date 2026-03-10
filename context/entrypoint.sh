@@ -10,6 +10,7 @@ https://developer.download.nvidia.com/licenses/NVIDIA_Deep_Learning_Container_Li
 
 EOF
 
+# Activate conda (login shell sources from /etc/profile.d/conda.sh)
 conda activate
 
 if [ -e "/home/rapids/environment.yml" ]; then
