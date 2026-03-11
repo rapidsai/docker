@@ -124,3 +124,11 @@ checks:
           - /bin/bash
           - -c
           - "[[ $(conda env list --quiet | grep --count -E '^[A-Za-z]+') == 1 ]];"
+  - name: conda-prefix
+    description: Conda prefix set to /opt/conda
+    probe:
+      exec:
+        command:
+          - /bin/bash
+          - -c
+          - '[[ "${CONDA_PREFIX}" == "/opt/conda" ]];'
