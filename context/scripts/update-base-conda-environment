@@ -1,4 +1,5 @@
 #!/bin/bash
+# Copyright (c) 2026, NVIDIA CORPORATION.
 
 set -e -u -o pipefail
 
@@ -14,7 +15,7 @@ SCRIPT_DIR="$(dirname "$(realpath "${BASH_SOURCE[0]}")")"
 # Ensure new files/dirs have group write permissions
 umask 002
 
-# install gha-tools for rapids-mamba-retry
+# install gha-tools for rapids-conda-retry
 "${SCRIPT_DIR}/install-gha-tools"
 
 # Example of pinned package in case you require an override
@@ -23,7 +24,7 @@ umask 002
 # update everything before other environment changes, to ensure mixing
 # an older conda with newer packages still works well
 PATH="/opt/conda/bin:$PATH" \
-  rapids-mamba-retry update --all -y -n base
+  rapids-conda-retry update --all -y -n base
 
 # clean up the package cache and other unused files, to minimize
 # what's copied into later images
