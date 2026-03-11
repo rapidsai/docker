@@ -83,6 +83,8 @@ ARG LINUX_VER=notset
 ARG PYTHON_VER=notset
 ARG DEBIAN_FRONTEND=noninteractive
 ENV PATH=/opt/conda/bin:$PATH
+# ensure conda's files and configuration can be found at runtime even if environment activation was bypassed
+ENV CONDA_PREFIX=/opt/conda
 ENV PYTHON_VERSION=${PYTHON_VER}
 
 SHELL ["/bin/bash", "-euo", "pipefail", "-c"]
@@ -174,7 +176,7 @@ PACKAGES_TO_INSTALL=(
   'ipython>=8.37.0'
   'rapids-cli==0.1.*'
 )
-rapids-mamba-retry install -y -n base \
+rapids-conda-retry install -y -n base \
   "${PACKAGES_TO_INSTALL[@]}"
 
 conda clean -afy
@@ -204,7 +206,7 @@ COPY --from=dependencies --chown=rapids /test_notebooks_dependencies.yaml test_n
 COPY --from=dependencies --chown=rapids /notebooks /home/rapids/notebooks
 
 RUN <<EOF
-rapids-mamba-retry env update -n base -f test_notebooks_dependencies.yaml
+rapids-conda-retry env update -n base -f test_notebooks_dependencies.yaml
 conda clean -afy
 EOF
 
@@ -214,7 +216,7 @@ PACKAGES_TO_INSTALL=(
   'dask-labextension>=7.0.0'
   'jupyterlab-nvdashboard>=0.13.0'
 )
-rapids-mamba-retry install -y -n base \
+rapids-conda-retry install -y -n base \
   "${PACKAGES_TO_INSTALL[@]}"
 conda clean -afy
 EOF
