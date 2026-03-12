@@ -16,7 +16,7 @@ jobs:
     needs:
       - check-nightly-ci
       - docker
-    uses: rapidsai/shared-workflows/.github/workflows/pr-builder.yaml@main
+    uses: rapidsai/shared-workflows/.github/workflows/pr-builder.yaml@release/26.04
     if: always()
     with:
       needs: ${{ toJSON(needs) }}
