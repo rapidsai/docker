@@ -91,12 +91,12 @@ rm -rf /var/lib/apt/lists/*
 /tmp/build-scripts/install-gha-tools
 
 # install cuvs-bench
-rapids-mamba-retry update --all -y -n base
+rapids-conda-retry update --all -y -n base
 PACKAGES_TO_INSTALL=(
     "cuvs-bench=${RAPIDS_VER}.*"
     "cuda-version=${CUDA_VER%.*}.*"
 )
-rapids-mamba-retry install -y -n base \
+rapids-conda-retry install -y -n base \
   "${PACKAGES_TO_INSTALL[@]}"
 conda clean -afy
 chmod -R 777 /opt/conda
