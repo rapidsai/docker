@@ -7,7 +7,7 @@ ARG LINUX_DISTRO_VER=22.04
 ARG LINUX_VER=${LINUX_DISTRO}${LINUX_DISTRO_VER}
 ARG MINIFORGE_VER=notset
 ARG PYTHON_VER=notset
-ARG RAPIDS_VER=26.04
+ARG RAPIDS_VER=26.06
 
 # Gather dependency information
 FROM python:${PYTHON_VER} AS dependencies
@@ -15,7 +15,7 @@ ARG CPU_ARCH=notset
 ARG CUDA_VER=notset
 ARG PYTHON_VER=notset
 ARG RAPIDS_BRANCH="main"
-ARG RAPIDS_VER=26.04
+ARG RAPIDS_VER=26.06
 ARG YQ_VER=notset
 
 SHELL ["/bin/bash", "-euo", "pipefail", "-c"]
@@ -122,7 +122,7 @@ EOF
 FROM miniforge-cuda AS base
 ARG CUDA_VER=notset
 ARG PYTHON_VER=notset
-ARG RAPIDS_VER=26.04
+ARG RAPIDS_VER=26.06
 
 SHELL ["/bin/bash", "-euo", "pipefail", "-c"]
 
@@ -249,7 +249,7 @@ LABEL com.nvidia.workbench.application.jupyterlab.webapp.url-cmd="jupyter lab li
 LABEL com.nvidia.workbench.cuda-version="$CUDA_VER"
 LABEL com.nvidia.workbench.description="RAPIDS with CUDA ${CUDA_VER}"
 LABEL com.nvidia.workbench.entrypoint-script="/home/rapids/entrypoint.sh"
-LABEL com.nvidia.workbench.image-version="26.04.00"
+LABEL com.nvidia.workbench.image-version="26.06.00"
 LABEL com.nvidia.workbench.labels="cuda${CUDA_VER}"
 LABEL com.nvidia.workbench.name="RAPIDS with CUDA ${CUDA_VER}"
 LABEL com.nvidia.workbench.os-distro-release="$LINUX_DISTRO_VER"
