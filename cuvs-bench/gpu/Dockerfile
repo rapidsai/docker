@@ -5,7 +5,7 @@ ARG CUDA_VER=notset
 ARG LINUX_VER=notset
 ARG MINIFORGE_VER=notset
 ARG PYTHON_VER=notset
-ARG RAPIDS_VER=26.04
+ARG RAPIDS_VER=26.06
 
 # --- begin 'rapidsai/miniforge-cuda' --- #
 FROM condaforge/miniforge3:${MINIFORGE_VER} AS miniforge-upstream
@@ -59,7 +59,7 @@ EOF
 
 FROM miniforge-cuda AS cuvs-bench
 ARG CUDA_VER=notset
-ARG RAPIDS_VER=26.04
+ARG RAPIDS_VER=26.06
 
 COPY condarc /opt/conda/.condarc
 
