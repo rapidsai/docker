@@ -21,10 +21,10 @@ export LINUX_DISTRO_VER=24.04
 export LINUX_VER=ubuntu24.04
 
 # Python version in {major}.{minor}
-export PYTHON_VER=3.13
+export PYTHON_VER=3.14
 
 # RAPIDS version in {major}.{minor}
-export RAPIDS_VER=26.02
+export RAPIDS_VER=26.04
 
 # rapidsai/base
 docker build $(ci/compute-build-args.sh) \
