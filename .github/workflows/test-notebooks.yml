@@ -71,7 +71,7 @@ jobs:
     steps:
       - name: Install required tools
         run: |
-          mamba install -n base --freeze-installed \
+          conda install -n base --freeze-installed \
             curl \
             git
       - name: Checkout code
@@ -94,7 +94,7 @@ jobs:
       - name: Install awscli
         if: '!cancelled()'
         run: |
-          rapids-mamba-retry install -n base awscli
+          rapids-conda-retry install -n base awscli
       - uses: aws-actions/configure-aws-credentials@v5
         if: '!cancelled()'
         with:

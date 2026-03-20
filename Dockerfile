@@ -7,7 +7,7 @@ ARG LINUX_DISTRO_VER=22.04
 ARG LINUX_VER=${LINUX_DISTRO}${LINUX_DISTRO_VER}
 ARG MINIFORGE_VER=notset
 ARG PYTHON_VER=notset
-ARG RAPIDS_VER=26.04
+ARG RAPIDS_VER=26.06
 
 # Gather dependency information
 FROM python:${PYTHON_VER} AS dependencies
@@ -15,7 +15,7 @@ ARG CPU_ARCH=notset
 ARG CUDA_VER=notset
 ARG PYTHON_VER=notset
 ARG RAPIDS_BRANCH="main"
-ARG RAPIDS_VER=26.04
+ARG RAPIDS_VER=26.06
 ARG YQ_VER=notset
 
 SHELL ["/bin/bash", "-euo", "pipefail", "-c"]
@@ -83,6 +83,8 @@ ARG LINUX_VER=notset
 ARG PYTHON_VER=notset
 ARG DEBIAN_FRONTEND=noninteractive
 ENV PATH=/opt/conda/bin:$PATH
+# ensure conda's files and configuration can be found at runtime even if environment activation was bypassed
+ENV CONDA_PREFIX=/opt/conda
 ENV PYTHON_VERSION=${PYTHON_VER}
 
 SHELL ["/bin/bash", "-euo", "pipefail", "-c"]
@@ -120,7 +122,7 @@ EOF
 FROM miniforge-cuda AS base
 ARG CUDA_VER=notset
 ARG PYTHON_VER=notset
-ARG RAPIDS_VER=26.04
+ARG RAPIDS_VER=26.06
 
 SHELL ["/bin/bash", "-euo", "pipefail", "-c"]
 
@@ -174,7 +176,7 @@ PACKAGES_TO_INSTALL=(
   'ipython>=8.37.0'
   'rapids-cli==0.1.*'
 )
-rapids-mamba-retry install -y -n base \
+rapids-conda-retry install -y -n base \
   "${PACKAGES_TO_INSTALL[@]}"
 
 conda clean -afy
@@ -204,7 +206,7 @@ COPY --from=dependencies --chown=rapids /test_notebooks_dependencies.yaml test_n
 COPY --from=dependencies --chown=rapids /notebooks /home/rapids/notebooks
 
 RUN <<EOF
-rapids-mamba-retry env update -n base -f test_notebooks_dependencies.yaml
+rapids-conda-retry env update -n base -f test_notebooks_dependencies.yaml
 conda clean -afy
 EOF
 
@@ -214,7 +216,7 @@ PACKAGES_TO_INSTALL=(
   'dask-labextension>=7.0.0'
   'jupyterlab-nvdashboard>=0.13.0'
 )
-rapids-mamba-retry install -y -n base \
+rapids-conda-retry install -y -n base \
   "${PACKAGES_TO_INSTALL[@]}"
 conda clean -afy
 EOF
@@ -247,7 +249,7 @@ LABEL com.nvidia.workbench.application.jupyterlab.webapp.url-cmd="jupyter lab li
 LABEL com.nvidia.workbench.cuda-version="$CUDA_VER"
 LABEL com.nvidia.workbench.description="RAPIDS with CUDA ${CUDA_VER}"
 LABEL com.nvidia.workbench.entrypoint-script="/home/rapids/entrypoint.sh"
-LABEL com.nvidia.workbench.image-version="26.04.00"
+LABEL com.nvidia.workbench.image-version="26.06.00"
 LABEL com.nvidia.workbench.labels="cuda${CUDA_VER}"
 LABEL com.nvidia.workbench.name="RAPIDS with CUDA ${CUDA_VER}"
 LABEL com.nvidia.workbench.os-distro-release="$LINUX_DISTRO_VER"
