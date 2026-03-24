@@ -29,11 +29,20 @@ for REPO in "${NOTEBOOK_REPOS[@]}"; do
         cp -rL "$SOURCE" "$DESTINATION"
     fi
 
-    if [ -f "$REPO/dependencies.yaml" ] && yq -e '.files.test_notebooks' "$REPO/dependencies.yaml" >/dev/null; then
-        echo "Running dfg on $REPO"
+    if [ -f "$REPO/dependencies.yaml" ]; then
+        # Prefer run_notebooks (runtime-only deps) over test_notebooks
+        # (which may include testing libraries like pytest).
+        if yq -e '.files.run_notebooks' "$REPO/dependencies.yaml" >/dev/null 2>&1; then
+            FILE_KEY="run_notebooks"
+        elif yq -e '.files.test_notebooks' "$REPO/dependencies.yaml" >/dev/null 2>&1; then
+            FILE_KEY="test_notebooks"
+        else
+            continue
+        fi
+        echo "Running dfg on $REPO (file-key: $FILE_KEY)"
         rapids-dependency-file-generator \
             --config "$REPO/dependencies.yaml" \
-            --file-key test_notebooks \
+            --file-key "$FILE_KEY" \
             --matrix "cuda=${CUDA_VER%.*};arch=$(arch);py=${PYTHON_VER}" \
             --output conda >"/dependencies/${REPO}_notebooks_tests_dependencies.yaml"
     fi
