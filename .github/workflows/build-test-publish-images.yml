@@ -113,7 +113,7 @@ jobs:
       - name: Compute RAPIDS_VER
         id: compute-rapids-ver
         run: |
-          GIT_DESCRIBE_TAG="$(git describe --tags --abbrev=0)"
+          GIT_DESCRIBE_TAG="$(git describe --tags --first-parent --abbrev=0)"
           GIT_DESCRIBE_TAG="${GIT_DESCRIBE_TAG:1}" # remove leading 'v'
           ALPHA_TAG=""
           if [[ $GIT_DESCRIBE_TAG =~ [a-z] ]]; then
