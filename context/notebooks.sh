@@ -29,14 +29,17 @@ for REPO in "${NOTEBOOK_REPOS[@]}"; do
         cp -rL "$SOURCE" "$DESTINATION"
     fi
 
-    if [ -f "$REPO/dependencies.yaml" ] && yq -e '.files.test_notebooks' "$REPO/dependencies.yaml" >/dev/null; then
-        echo "Running dfg on $REPO"
-        rapids-dependency-file-generator \
-            --config "$REPO/dependencies.yaml" \
-            --file-key test_notebooks \
-            --matrix "cuda=${CUDA_VER%.*};arch=$(arch);py=${PYTHON_VER}" \
-            --output conda >"/dependencies/${REPO}_notebooks_tests_dependencies.yaml"
+    if [[ "${REPO}" == "cugraph" ]]; then
+        FILE_KEY="run_notebooks"
+    else
+        FILE_KEY="test_notebooks"
     fi
+    echo "Running dfg on $REPO (file-key: $FILE_KEY)"
+    rapids-dependency-file-generator \
+        --config "$REPO/dependencies.yaml" \
+        --file-key "$FILE_KEY" \
+        --matrix "cuda=${CUDA_VER%.*};arch=$(arch);py=${PYTHON_VER}" \
+        --output conda >"/dependencies/${REPO}_notebooks_tests_dependencies.yaml"
 done
 
 pushd "/dependencies"
