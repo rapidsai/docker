@@ -12,6 +12,8 @@ on:
 jobs:
   compute-matrix:
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
     outputs:
       matrix: ${{ steps.generate-matrix.outputs.matrix }}
     steps:
@@ -31,6 +33,8 @@ jobs:
     name: copy (${{ matrix.CUDA_VER }}, ${{ matrix.PYTHON_VER }})
     needs: compute-matrix
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
     strategy:
       matrix: ${{fromJson(needs.compute-matrix.outputs.matrix)}}
     steps:

@@ -16,6 +16,9 @@ jobs:
     needs:
       - check-nightly-ci
       - docker
+    permissions:
+      checks: write
+      pull-requests: write
     uses: rapidsai/shared-workflows/.github/workflows/pr-builder.yaml@main # zizmor: ignore[unpinned-uses]
     if: always()
     with:
@@ -40,6 +43,12 @@ jobs:
           target-branch: ${{ fromJSON(steps.get-pr-info.outputs.pr-info).base.ref }}
           workflow-id: 'publish.yml'
   docker:
+    permissions:
+      actions: read
+      contents: read
+      id-token: write
+      packages: read
+      pull-requests: read
     uses: ./.github/workflows/build-test-publish-images.yml
     with:
       build_type: pull-request
