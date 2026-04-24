@@ -83,9 +83,11 @@ jobs:
           echo "MATRIX=${MATRIX}" | tee -a ${GITHUB_OUTPUT}
       - name: Compute tag prefix
         id: compute-tag-prefix
+        env:
+          BUILD_TYPE: ${{ inputs.build_type }}
         run: |
           TAG_PREFIX=""
-          if [ "${{ inputs.build_type }}" = "pull-request" ]; then
+          if [ "$BUILD_TYPE" = "pull-request" ]; then
             pr_num="${GITHUB_REF_NAME##*/}"
             BASE_TAG_PREFIX="docker-${pr_num}-"
             NOTEBOOKS_TAG_PREFIX="docker-notebooks-${pr_num}-"
@@ -98,12 +100,14 @@ jobs:
           echo "CUVS_BENCH_CPU_TAG_PREFIX=${CUVS_BENCH_CPU_TAG_PREFIX}" | tee -a ${GITHUB_OUTPUT}
       - name: Compute image repo
         id: compute-image-repo
+        env:
+          BUILD_TYPE: ${{ inputs.build_type }}
         run: |
           base_repo="base"
           notebooks_repo="notebooks"
           cuvs_bench_repo="cuvs-bench"
           cuvs_bench_cpu_repo="cuvs-bench-cpu"
-          if [ "${{ inputs.build_type }}" = "pull-request" ]; then
+          if [ "$BUILD_TYPE" = "pull-request" ]; then
             base_repo="staging"
             notebooks_repo="staging"
             cuvs_bench_repo="staging"
@@ -129,8 +133,10 @@ jobs:
           echo "ALPHA_TAG=${ALPHA_TAG}" | tee -a ${GITHUB_OUTPUT}
       - name: Compute test matrix
         id: compute-test-matrix
+        env:
+          BUILD_TYPE: ${{ inputs.build_type }}
         run: |
-          TEST_MATRIX=$(yq '.${{ inputs.build_type }}' matrix-test.yaml)
+          TEST_MATRIX=$(yq ".$BUILD_TYPE" matrix-test.yaml)
           export TEST_MATRIX
 
           echo "TEST_MATRIX=$(yq -n -o json 'env(TEST_MATRIX)' | jq -c '{include: .}')" | tee --append "${GITHUB_OUTPUT}"

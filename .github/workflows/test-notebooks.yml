@@ -104,5 +104,11 @@ jobs:
           role-duration-seconds: 1800 # 30m
       - name: Upload notebook test outputs
         if: '!cancelled()'
+        env:
+          ARCH: ${{ inputs.ARCH }}
+          CUDA_VER: ${{ inputs.CUDA_VER }}
+          PYTHON_VER: ${{ inputs.PYTHON_VER }}
+          GPU: ${{ inputs.GPU }}
+          DRIVER: ${{ inputs.DRIVER }}
         run: |
-          rapids-upload-to-s3 test_notebooks_output_${{ inputs.ARCH }}_cuda${{ inputs.CUDA_VER }}_py${{ inputs.PYTHON_VER }}_${{ inputs.GPU }}-${{ inputs.DRIVER }}.tar.gz /home/rapids/notebooks_output
+          rapids-upload-to-s3 test_notebooks_output_${ARCH}_cuda${CUDA_VER}_py${PYTHON_VER}_${GPU}-${DRIVER}.tar.gz /home/rapids/notebooks_output
