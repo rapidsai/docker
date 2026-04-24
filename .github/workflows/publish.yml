@@ -31,7 +31,7 @@ jobs:
     with:
       build_type: branch
       run_tests: ${{ inputs.run_tests || false }}
-    secrets: inherit
+    secrets: inherit # zizmor: ignore[secrets-inherit]
   readme:
     runs-on: ubuntu-latest
     needs: docker

@@ -53,4 +53,4 @@ jobs:
     with:
       build_type: pull-request
       run_tests: true
-    secrets: inherit
+    secrets: inherit # zizmor: ignore[secrets-inherit]

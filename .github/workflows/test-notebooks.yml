@@ -63,7 +63,7 @@ jobs:
     name: test (${{ matrix.CUDA_VER }}, py${{ matrix.PYTHON_VER }}, ${{ matrix.ARCH }}, ${{ matrix.GPU}}, ${{ matrix.DRIVER }})
     runs-on: "linux-${{ inputs.ARCH }}-gpu-${{ inputs.GPU }}-${{ inputs.DRIVER }}-1"
     container:
-      image: ${{ inputs.NOTEBOOKS_TAG }}
+      image: ${{ inputs.NOTEBOOKS_TAG }} # zizmor: ignore[unpinned-images]
       env:
         NVIDIA_VISIBLE_DEVICES: ${{ env.NVIDIA_VISIBLE_DEVICES }}
         RAPIDS_BUILD_TYPE: ${{ inputs.BUILD_TYPE }}
