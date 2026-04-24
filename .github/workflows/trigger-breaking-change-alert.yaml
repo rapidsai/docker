@@ -2,7 +2,10 @@
 name: Trigger Breaking Change Notifications
 
 on:
-  pull_request_target:
+  # needs to be pull_request_target so the webhook token is available. no code
+  # gets checked out, only metadata, so there is no risk to executing this from
+  # fork PRs
+  pull_request_target: # zizmor: ignore[dangerous-triggers]
     types:
       - closed
       - reopened
