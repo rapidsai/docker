@@ -75,7 +75,7 @@ jobs:
             curl \
             git
       - name: Checkout code
-        uses: actions/checkout@v6
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
         with:
           fetch-depth: 0
       - name: Install gha-tools
@@ -83,7 +83,7 @@ jobs:
           context/scripts/install-gha-tools
       - name: Get RAPIDS GitHub Info
         id: get-rapids-github-info
-        uses: rapidsai/shared-actions/rapids-github-info@main
+        uses: rapidsai/shared-actions/rapids-github-info@main # zizmor: ignore[unpinned-uses]
       - name: Print environment
         run: |
           rapids-print-env
@@ -95,7 +95,7 @@ jobs:
         if: '!cancelled()'
         run: |
           rapids-conda-retry install -n base awscli
-      - uses: aws-actions/configure-aws-credentials@v6
+      - uses: aws-actions/configure-aws-credentials@ec61189d14ec14c8efccab744f656cffd0e33f37 # v6
         if: '!cancelled()'
         with:
           role-to-assume: ${{ vars.AWS_ROLE_ARN }}

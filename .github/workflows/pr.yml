@@ -16,7 +16,7 @@ jobs:
     needs:
       - check-nightly-ci
       - docker
-    uses: rapidsai/shared-workflows/.github/workflows/pr-builder.yaml@main
+    uses: rapidsai/shared-workflows/.github/workflows/pr-builder.yaml@main # zizmor: ignore[unpinned-uses]
     if: always()
     with:
       needs: ${{ toJSON(needs) }}
@@ -30,9 +30,9 @@ jobs:
     steps:
       - name: Get PR Info
         id: get-pr-info
-        uses: nv-gha-runners/get-pr-info@main
+        uses: nv-gha-runners/get-pr-info@main # zizmor: ignore[unpinned-uses]
       - name: Check if nightly CI is passing
-        uses: rapidsai/shared-actions/check_nightly_success/dispatch@main
+        uses: rapidsai/shared-actions/check_nightly_success/dispatch@main # zizmor: ignore[unpinned-uses]
         with:
           # default is 7 days, but this repo is downstream of all of RAPIDS so allow a bit longer window
           max-days-without-success: 14
