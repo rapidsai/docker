@@ -63,7 +63,7 @@ jobs:
     name: test (${{ matrix.CUDA_VER }}, py${{ matrix.PYTHON_VER }}, ${{ matrix.ARCH }}, ${{ matrix.GPU}}, ${{ matrix.DRIVER }})
     runs-on: "linux-${{ inputs.ARCH }}-gpu-${{ inputs.GPU }}-${{ inputs.DRIVER }}-1"
     container:
-      image: ${{ inputs.NOTEBOOKS_TAG }}
+      image: ${{ inputs.NOTEBOOKS_TAG }} # zizmor: ignore[unpinned-images]
       env:
         NVIDIA_VISIBLE_DEVICES: ${{ env.NVIDIA_VISIBLE_DEVICES }}
         RAPIDS_BUILD_TYPE: ${{ inputs.BUILD_TYPE }}
@@ -75,15 +75,16 @@ jobs:
             curl \
             git
       - name: Checkout code
-        uses: actions/checkout@v6
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
         with:
           fetch-depth: 0
+          persist-credentials: false
       - name: Install gha-tools
         run: |
           context/scripts/install-gha-tools
       - name: Get RAPIDS GitHub Info
         id: get-rapids-github-info
-        uses: rapidsai/shared-actions/rapids-github-info@main
+        uses: rapidsai/shared-actions/rapids-github-info@main # zizmor: ignore[unpinned-uses]
       - name: Print environment
         run: |
           rapids-print-env
@@ -95,7 +96,7 @@ jobs:
         if: '!cancelled()'
         run: |
           rapids-conda-retry install -n base awscli
-      - uses: aws-actions/configure-aws-credentials@v6
+      - uses: aws-actions/configure-aws-credentials@ec61189d14ec14c8efccab744f656cffd0e33f37 # v6
         if: '!cancelled()'
         with:
           role-to-assume: ${{ vars.AWS_ROLE_ARN }}
@@ -103,5 +104,11 @@ jobs:
           role-duration-seconds: 1800 # 30m
       - name: Upload notebook test outputs
         if: '!cancelled()'
+        env:
+          ARCH: ${{ inputs.ARCH }}
+          CUDA_VER: ${{ inputs.CUDA_VER }}
+          PYTHON_VER: ${{ inputs.PYTHON_VER }}
+          GPU: ${{ inputs.GPU }}
+          DRIVER: ${{ inputs.DRIVER }}
         run: |
-          rapids-upload-to-s3 test_notebooks_output_${{ inputs.ARCH }}_cuda${{ inputs.CUDA_VER }}_py${{ inputs.PYTHON_VER }}_${{ inputs.GPU }}-${{ inputs.DRIVER }}.tar.gz /home/rapids/notebooks_output
+          rapids-upload-to-s3 test_notebooks_output_${ARCH}_cuda${CUDA_VER}_py${PYTHON_VER}_${GPU}-${DRIVER}.tar.gz /home/rapids/notebooks_output

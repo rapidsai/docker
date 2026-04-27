@@ -18,6 +18,10 @@ repos:
     hooks:
       - id: shellcheck
         args: ["--severity=warning", "--external-sources"]
+  - repo: https://github.com/zizmorcore/zizmor-pre-commit
+    rev: v1.24.1
+    hooks:
+      - id: zizmor
   - repo: https://github.com/rapidsai/pre-commit-hooks
     rev: v1.4.3
     hooks:
