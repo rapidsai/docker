@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Copyright (c) 2023-2025, NVIDIA CORPORATION.
+# Copyright (c) 2023-2026, NVIDIA CORPORATION.
 
 # Clones repos with notebooks & compiles notebook test dependencies
 # Requires environment variables:
@@ -14,7 +14,11 @@ NOTEBOOK_REPOS=(cudf cuml cugraph)
 mkdir -p /notebooks /dependencies
 for REPO in "${NOTEBOOK_REPOS[@]}"; do
     echo "Cloning $REPO..."
-    git clone -b "${RAPIDS_BRANCH}" --depth 1 --single-branch "https://github.com/rapidsai/$REPO" "$REPO"
+    if [[ "${REPO}" == "cugraph" ]]; then
+        git clone -b split-test-libraries --depth 1 --single-branch "https://github.com/jayavenkatesh19/cugraph" "$REPO"
+    else
+        git clone -b "${RAPIDS_BRANCH}" --depth 1 --single-branch "https://github.com/rapidsai/$REPO" "$REPO"
+    fi
 
     SOURCE="$REPO/notebooks"
     DESTINATION="/notebooks/$REPO"
