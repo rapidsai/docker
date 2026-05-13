@@ -42,14 +42,16 @@ jobs:
       - build-cuvs
       - build-cuvs-multiarch-manifest
       - test
-    secrets: inherit
-    uses: rapidsai/shared-workflows/.github/workflows/pr-builder.yaml@main
+    secrets: inherit # zizmor: ignore[secrets-inherit]
+    uses: rapidsai/shared-workflows/.github/workflows/pr-builder.yaml@main # zizmor: ignore[unpinned-uses]
   checks:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v6
+      - uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
+        with:
+          persist-credentials: false
       - name: Run pre-commit
-        uses: pre-commit/action@v3.0.1
+        uses: pre-commit/action@2c7b3805fd2a0fd8c1884dcaebf91fc102a13ecd # v3.0.1
       - name: Run hadolint
         run: |
           ci/lint-dockerfiles.sh
@@ -70,9 +72,10 @@ jobs:
       ALPHA_TAG: ${{ steps.compute-rapids-ver.outputs.ALPHA_TAG }}
     steps:
       - name: Checkout
-        uses: actions/checkout@v6
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
         with:
           fetch-depth: 0
+          persist-credentials: false
       - name: Compute matrix
         id: compute-matrix
         run: |
@@ -80,9 +83,11 @@ jobs:
           echo "MATRIX=${MATRIX}" | tee -a ${GITHUB_OUTPUT}
       - name: Compute tag prefix
         id: compute-tag-prefix
+        env:
+          BUILD_TYPE: ${{ inputs.build_type }}
         run: |
           TAG_PREFIX=""
-          if [ "${{ inputs.build_type }}" = "pull-request" ]; then
+          if [ "$BUILD_TYPE" = "pull-request" ]; then
             pr_num="${GITHUB_REF_NAME##*/}"
             BASE_TAG_PREFIX="docker-${pr_num}-"
             NOTEBOOKS_TAG_PREFIX="docker-notebooks-${pr_num}-"
@@ -95,12 +100,14 @@ jobs:
           echo "CUVS_BENCH_CPU_TAG_PREFIX=${CUVS_BENCH_CPU_TAG_PREFIX}" | tee -a ${GITHUB_OUTPUT}
       - name: Compute image repo
         id: compute-image-repo
+        env:
+          BUILD_TYPE: ${{ inputs.build_type }}
         run: |
           base_repo="base"
           notebooks_repo="notebooks"
           cuvs_bench_repo="cuvs-bench"
           cuvs_bench_cpu_repo="cuvs-bench-cpu"
-          if [ "${{ inputs.build_type }}" = "pull-request" ]; then
+          if [ "$BUILD_TYPE" = "pull-request" ]; then
             base_repo="staging"
             notebooks_repo="staging"
             cuvs_bench_repo="staging"
@@ -126,8 +133,10 @@ jobs:
           echo "ALPHA_TAG=${ALPHA_TAG}" | tee -a ${GITHUB_OUTPUT}
       - name: Compute test matrix
         id: compute-test-matrix
+        env:
+          BUILD_TYPE: ${{ inputs.build_type }}
         run: |
-          TEST_MATRIX=$(yq '.${{ inputs.build_type }}' matrix-test.yaml)
+          TEST_MATRIX=$(yq ".$BUILD_TYPE" matrix-test.yaml)
           export TEST_MATRIX
 
           echo "TEST_MATRIX=$(yq -n -o json 'env(TEST_MATRIX)' | jq -c '{include: .}')" | tee --append "${GITHUB_OUTPUT}"
@@ -136,7 +145,7 @@ jobs:
     strategy:
       matrix: ${{ fromJSON(needs.compute-matrix.outputs.MATRIX) }}
       fail-fast: false
-    secrets: inherit
+    secrets: inherit # zizmor: ignore[secrets-inherit]
     uses: ./.github/workflows/build-rapids-image.yml
     # Referencing something from the 'matrix' context prevents GitHub auto-generating
     # a hard-to-read name with all the matrix input values.
@@ -170,7 +179,7 @@ jobs:
     strategy:
       matrix: ${{ fromJSON(needs.compute-matrix.outputs.MATRIX) }}
       fail-fast: false
-    secrets: inherit
+    secrets: inherit # zizmor: ignore[secrets-inherit]
     uses: ./.github/workflows/build-cuvs-image.yml
     # Referencing something from the 'matrix' context prevents GitHub auto-generating
     # a hard-to-read name with all the matrix input values.
@@ -206,11 +215,12 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v6
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
         with:
           fetch-depth: 0
+          persist-credentials: false
       - name: Login to DockerHub
-        uses: docker/login-action@v3
+        uses: docker/login-action@c94ce9fb468520275223c153574b00df6fe4bcc9 # v3
         with:
           username: ${{ secrets.GPUCIBOT_DOCKERHUB_USER }}
           password: ${{ secrets.GPUCIBOT_DOCKERHUB_TOKEN }}
@@ -238,11 +248,12 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v6
+        uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6
         with:
           fetch-depth: 0
+          persist-credentials: false
       - name: Login to DockerHub
-        uses: docker/login-action@v3
+        uses: docker/login-action@c94ce9fb468520275223c153574b00df6fe4bcc9 # v3
         with:
           username: ${{ secrets.GPUCIBOT_DOCKERHUB_USER }}
           password: ${{ secrets.GPUCIBOT_DOCKERHUB_TOKEN }}
@@ -267,7 +278,7 @@ jobs:
     strategy:
       matrix: ${{ fromJSON(needs.compute-matrix.outputs.TEST_MATRIX) }}
       fail-fast: false
-    secrets: inherit
+    secrets: inherit # zizmor: ignore[secrets-inherit]
     uses: ./.github/workflows/validate.yml
     # Referencing something from the 'matrix' context prevents GitHub auto-generating
     # a hard-to-read name with all the matrix input values.
@@ -304,7 +315,7 @@ jobs:
     strategy:
       matrix: ${{ fromJSON(needs.compute-matrix.outputs.TEST_MATRIX) }}
       fail-fast: false
-    secrets: inherit
+    secrets: inherit # zizmor: ignore[secrets-inherit]
     uses: ./.github/workflows/test-notebooks.yml
     # Referencing something from the 'matrix' context prevents GitHub auto-generating
     # a hard-to-read name with all the matrix input values.
