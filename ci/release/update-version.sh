@@ -119,5 +119,3 @@ sed_runner "s/[[:digit:]]\+\.[[:digit:]]\+a-py/${NEXT_SHORT_TAG}a-py/g" cuvs-ben
 sed_runner "s/[[:digit:]]\+\.[[:digit:]]\+a-cuda/${NEXT_SHORT_TAG}a-cuda/g" cuvs-bench/README.md
 
 sed_runner "s/[[:digit:]]\+\.[[:digit:]]\+a-cuda/${NEXT_SHORT_TAG}a-cuda/g" tests/container-canary/README.md
-
-# TODO: update in README.md too
