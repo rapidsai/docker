@@ -1,5 +1,5 @@
 #!/bin/bash
-# Copyright (c) 2023-2025, NVIDIA CORPORATION.
+# Copyright (c) 2023-2026, NVIDIA CORPORATION.
 
 ## Usage
 # Primary interface:   bash update-version.sh <new_version> [--run-context=main|release]
@@ -99,6 +99,10 @@ sed_runner "s/com\.nvidia\.workbench\.image-version=.*/com.nvidia.workbench.imag
 # Dockerfile RAPIDS_BRANCH
 sed_runner "s|ARG RAPIDS_BRANCH=\"release/[0-9]\+\.[0-9]\+\"|ARG RAPIDS_BRANCH=\"${RAPIDS_BRANCH_NAME}\"|g" Dockerfile
 sed_runner "s|ARG RAPIDS_BRANCH=\"main\"|ARG RAPIDS_BRANCH=\"${RAPIDS_BRANCH_NAME}\"|g" Dockerfile
+
+# docs
+sed_runner "s|RAPIDS_VER=[[:digit:]]\+\.[[:digit:]]|RAPIDS_VER=${NEXT_SHORT_TAG}|g" CONTRIBUTING.md
+sed_runner "s|[[:digit:]]\+\.[[:digit:]]-cuda|${NEXT_SHORT_TAG}-cuda|g" SECURITY.md
 
 # CI files
 for FILE in .github/workflows/*.yaml .github/workflows/*.yml; do
