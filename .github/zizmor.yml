@@ -1,0 +1,12 @@
+# Copyright (c) 2026, NVIDIA CORPORATION & AFFILIATES. All rights reserved.
+
+rules:
+  unpinned-uses:
+    config:
+      policies:
+        # We require SHA-pinning for all workflows and actions _except_ for those from
+        # rapidsai/shared-workflows and rapidsai/shared-actions
+        "rapidsai/shared-workflows/*": any
+        "rapidsai/shared-actions/*": any
+        "actions/*": ref-pin
+        "*": hash-pin
