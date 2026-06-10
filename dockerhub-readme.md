@@ -18,7 +18,6 @@ RAPIDS Libraries included in the images:
 - `cuVS`
 - `RMM`
 - `RAFT`
-- `cuxfilter`
 - `cuCIM`
 - `xgboost`
 
