@@ -1,4 +1,4 @@
-# Copyright (c) 2023-2026, NVIDIA CORPORATION.
+# Copyright (c) 2023-2026, NVIDIA CORPORATION & AFFILIATES. All rights reserved.
 name: build and publish imgs workflow
 
 on:
@@ -43,7 +43,7 @@ jobs:
       - build-cuvs-multiarch-manifest
       - test
     secrets: inherit # zizmor: ignore[secrets-inherit]
-    uses: rapidsai/shared-workflows/.github/workflows/pr-builder.yaml@main # zizmor: ignore[unpinned-uses]
+    uses: rapidsai/shared-workflows/.github/workflows/pr-builder.yaml@main
   checks:
     runs-on: ubuntu-latest
     steps:
