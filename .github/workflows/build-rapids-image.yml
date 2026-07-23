@@ -79,10 +79,16 @@ jobs:
         with:
           username: ${{ secrets.GPUCIBOT_DOCKERHUB_USER }}
           password: ${{ secrets.GPUCIBOT_DOCKERHUB_TOKEN }}
-      - name: Set up ORAS
-        uses: oras-project/setup-oras@22ce207df3b08e061f537244349aac6ae1d214f6 # v1
+      - name: Install Go
+        uses: actions/setup-go@4a3601121dd01d1626a1e23e37211e3254c1c06c # v6
         with:
-          version: 1.3.0
+          go-version: '1.25.x'
+          cache: false
+      - name: Install ORAS
+        run: |
+          GOBIN="${RUNNER_TEMP}/oras-bin" go install oras.land/oras/cmd/oras@v1.3.0
+          echo "${RUNNER_TEMP}/oras-bin" >> "${GITHUB_PATH}"
+          "${RUNNER_TEMP}/oras-bin/oras" version
       - name: Set up Cosign
         uses: sigstore/cosign-installer@f713795cb21599bc4e5c4b58cbad1da852d7eeb9 # v3
       - name: Set up Docker Context for Buildx
