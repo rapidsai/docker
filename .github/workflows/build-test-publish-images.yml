@@ -123,6 +123,8 @@ jobs:
           echo "CUVS_BENCH_CPU_IMAGE_REPO=${cuvs_bench_cpu_repo}" | tee -a ${GITHUB_OUTPUT}
       - name: Compute RAPIDS_VER
         id: compute-rapids-ver
+        env:
+          BUILD_TYPE: ${{ inputs.build_type }}
         run: |
           GIT_DESCRIBE_TAG="$(git describe --tags --first-parent --abbrev=0)"
           GIT_DESCRIBE_TAG="${GIT_DESCRIBE_TAG:1}" # remove leading 'v'
@@ -132,6 +134,13 @@ jobs:
             ALPHA_TAG="a"
           fi
           RAPIDS_VER="$(echo $GIT_DESCRIBE_TAG | awk 'BEGIN{FS=OFS="."} NF--')" # Convert full tag to YY.MM
+
+          # The source branch advances before its packages are published. Keep
+          # pull-request image validation on the latest available package line.
+          if [[ $BUILD_TYPE == "pull-request" ]]; then
+            RAPIDS_VER="26.08"
+            ALPHA_TAG="a"
+          fi
 
           echo "RAPIDS_VER=${RAPIDS_VER}" | tee -a ${GITHUB_OUTPUT}
           echo "ALPHA_TAG=${ALPHA_TAG}" | tee -a ${GITHUB_OUTPUT}
