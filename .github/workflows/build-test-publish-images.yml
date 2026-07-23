@@ -55,6 +55,10 @@ jobs:
       - name: Run hadolint
         run: |
           ci/lint-dockerfiles.sh
+      - name: Test image provenance manifest generator
+        run: |
+          python3 -m pip install --disable-pip-version-check -r requirements-test.txt
+          python3 -m pytest -q tests
   compute-matrix:
     runs-on: ubuntu-latest
     outputs:
@@ -224,6 +228,12 @@ jobs:
         with:
           username: ${{ secrets.GPUCIBOT_DOCKERHUB_USER }}
           password: ${{ secrets.GPUCIBOT_DOCKERHUB_TOKEN }}
+      - name: Set up ORAS
+        uses: oras-project/setup-oras@22ce207df3b08e061f537244349aac6ae1d214f6 # v1
+        with:
+          version: 1.3.0
+      - name: Set up Cosign
+        uses: sigstore/cosign-installer@f713795cb21599bc4e5c4b58cbad1da852d7eeb9 # v3
       - name: Create multiarch manifest
         shell: bash
         env:
@@ -239,6 +249,38 @@ jobs:
           GPUCIBOT_DOCKERHUB_TOKEN: ${{ secrets.GPUCIBOT_DOCKERHUB_TOKEN }}
           ARCHES: ${{ toJSON(matrix.ARCHES) }}
         run: ci/create-rapids-multiarch-manifest.sh
+      - name: Publish multiarch image provenance indexes
+        shell: bash
+        env:
+          BASE_IMAGE_REPO: ${{ needs.compute-matrix.outputs.BASE_IMAGE_REPO }}
+          BASE_TAG_PREFIX: ${{ needs.compute-matrix.outputs.BASE_TAG_PREFIX }}
+          RAPIDS_VER: ${{ needs.compute-matrix.outputs.RAPIDS_VER }}
+          ALPHA_TAG: ${{ needs.compute-matrix.outputs.ALPHA_TAG }}
+          CUDA_TAG: ${{ matrix.CUDA_TAG }}
+          PYTHON_VER: ${{ matrix.PYTHON_VER }}
+          NOTEBOOKS_IMAGE_REPO: ${{ needs.compute-matrix.outputs.NOTEBOOKS_IMAGE_REPO }}
+          NOTEBOOKS_TAG_PREFIX: ${{ needs.compute-matrix.outputs.NOTEBOOKS_TAG_PREFIX }}
+          ARCHES: ${{ toJSON(matrix.ARCHES) }}
+        run: |
+          base_reference="rapidsai/${BASE_IMAGE_REPO}:${BASE_TAG_PREFIX}${RAPIDS_VER}${ALPHA_TAG}-cuda${CUDA_TAG}-py${PYTHON_VER}"
+          notebooks_reference="rapidsai/${NOTEBOOKS_IMAGE_REPO}:${NOTEBOOKS_TAG_PREFIX}${RAPIDS_VER}${ALPHA_TAG}-cuda${CUDA_TAG}-py${PYTHON_VER}"
+          for image_kind in base notebooks; do
+            if [[ "$image_kind" == base ]]; then
+              image_reference="$base_reference"
+            else
+              image_reference="$notebooks_reference"
+            fi
+            platform_references="$({
+              while IFS= read -r arch; do
+                printf 'linux/%s=%s-%s\n' "$arch" "$image_reference" "$arch"
+              done < <(jq -r '.[]' <<< "$ARCHES")
+            })"
+            IMAGE_KIND="$image_kind" \
+              IMAGE_REFERENCE="$image_reference" \
+              PLATFORM_REFERENCES="$platform_references" \
+              CUDA_VER="$CUDA_TAG" \
+              ci/publish-image-provenance-index.sh
+          done
   build-cuvs-multiarch-manifest:
     needs: [build-cuvs, compute-matrix]
     strategy:
