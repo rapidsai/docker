@@ -1,10 +1,12 @@
 # Copyright (c) 2026, NVIDIA CORPORATION & AFFILIATES. All rights reserved.
 # SPDX-License-Identifier: Apache-2.0
+# ruff: noqa: S101
 
 from __future__ import annotations
 
 import importlib.util
 import json
+import sys
 from pathlib import Path
 
 import pytest
@@ -14,7 +16,28 @@ MODULE_PATH = Path(__file__).parents[1] / "ci" / "image_provenance_manifest.py"
 SPEC = importlib.util.spec_from_file_location("image_provenance_manifest", MODULE_PATH)
 assert SPEC is not None and SPEC.loader is not None
 MODULE = importlib.util.module_from_spec(SPEC)
+sys.modules[SPEC.name] = MODULE
 SPEC.loader.exec_module(MODULE)
+
+
+def manifest_context(**overrides: object) -> object:
+    """Create valid provenance inputs, with targeted test overrides."""
+    defaults = {
+        "image_reference": "rapidsai/base:26.08-cuda12-py312-amd64",
+        "image_digest": "sha256:image",
+        "image_kind": "base",
+        "rapids_version": "26.08",
+        "cuda_version": "12",
+        "python_version": "3.12",
+        "platform": "linux/amd64",
+        "source_repository": "https://github.com/rapidsai/docker",
+        "source_commit": "abc123",
+        "workflow_ref": ".github/workflows/build-rapids-image.yml@abc123",
+        "workflow_run_url": "https://github.com/rapidsai/docker/actions/runs/1",
+        "build_args": ["PYTHON_VER=3.12", "CUDA_VER=12"],
+    }
+    defaults.update(overrides)
+    return MODULE.ManifestContext(**defaults)
 
 
 def test_build_manifest_records_exact_conda_package_facts(tmp_path: Path) -> None:
@@ -34,18 +57,7 @@ def test_build_manifest_records_exact_conda_package_facts(tmp_path: Path) -> Non
     )
 
     manifest = MODULE.build_manifest(
-        image_reference="rapidsai/base:26.08-cuda12-py312-amd64",
-        image_digest="sha256:image",
-        image_kind="base",
-        rapids_version="26.08",
-        cuda_version="12",
-        python_version="3.12",
-        platform="linux/amd64",
-        source_repository="https://github.com/rapidsai/docker",
-        source_commit="abc123",
-        workflow_ref=".github/workflows/build-rapids-image.yml@abc123",
-        workflow_run_url="https://github.com/rapidsai/docker/actions/runs/1",
-        build_args=["PYTHON_VER=3.12", "CUDA_VER=12"],
+        manifest_context(),
         metadata_dir=metadata_dir,
     )
 
@@ -71,18 +83,14 @@ def test_build_manifest_records_exact_conda_package_facts(tmp_path: Path) -> Non
 
 def test_build_manifest_links_platform_manifests_for_multiarch_images() -> None:
     manifest = MODULE.build_manifest(
-        image_reference="rapidsai/base:26.08-cuda12-py312",
-        image_digest="sha256:index",
-        image_kind="base",
-        rapids_version="26.08",
-        cuda_version="12",
-        python_version="3.12",
-        platform="multiarch",
-        source_repository="https://github.com/rapidsai/docker",
-        source_commit="abc123",
-        workflow_ref="workflow",
-        workflow_run_url="run",
-        build_args=[],
+        manifest_context(
+            image_reference="rapidsai/base:26.08-cuda12-py312",
+            image_digest="sha256:index",
+            platform="multiarch",
+            workflow_ref="workflow",
+            workflow_run_url="run",
+            build_args=[],
+        ),
         platform_manifests=[
             "linux/arm64|rapidsai/base:tag-arm64|sha256:arm",
             "linux/amd64|rapidsai/base:tag-amd64|sha256:amd",
