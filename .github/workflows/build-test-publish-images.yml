@@ -55,6 +55,10 @@ jobs:
       - name: Run hadolint
         run: |
           ci/lint-dockerfiles.sh
+      - name: Test image provenance manifest generator
+        run: |
+          python3 -m pip install --disable-pip-version-check -r requirements-test.txt
+          python3 -m pytest -q tests
   compute-matrix:
     runs-on: ubuntu-latest
     outputs:
@@ -68,6 +72,7 @@ jobs:
       NOTEBOOKS_TAG_PREFIX: ${{ steps.compute-tag-prefix.outputs.NOTEBOOKS_TAG_PREFIX }}
       CUVS_BENCH_TAG_PREFIX: ${{ steps.compute-tag-prefix.outputs.CUVS_BENCH_TAG_PREFIX }}
       CUVS_BENCH_CPU_TAG_PREFIX: ${{ steps.compute-tag-prefix.outputs.CUVS_BENCH_CPU_TAG_PREFIX }}
+      RAPIDS_NOTEBOOKS_REF: ${{ steps.compute-rapids-ver.outputs.RAPIDS_NOTEBOOKS_REF }}
       RAPIDS_VER: ${{ steps.compute-rapids-ver.outputs.RAPIDS_VER }}
       ALPHA_TAG: ${{ steps.compute-rapids-ver.outputs.ALPHA_TAG }}
     steps:
@@ -119,6 +124,8 @@ jobs:
           echo "CUVS_BENCH_CPU_IMAGE_REPO=${cuvs_bench_cpu_repo}" | tee -a ${GITHUB_OUTPUT}
       - name: Compute RAPIDS_VER
         id: compute-rapids-ver
+        env:
+          BUILD_TYPE: ${{ inputs.build_type }}
         run: |
           GIT_DESCRIBE_TAG="$(git describe --tags --first-parent --abbrev=0)"
           GIT_DESCRIBE_TAG="${GIT_DESCRIBE_TAG:1}" # remove leading 'v'
@@ -128,7 +135,20 @@ jobs:
             ALPHA_TAG="a"
           fi
           RAPIDS_VER="$(echo $GIT_DESCRIBE_TAG | awk 'BEGIN{FS=OFS="."} NF--')" # Convert full tag to YY.MM
+          RAPIDS_NOTEBOOKS_REF="main"
+          if [[ ! $GIT_DESCRIBE_TAG =~ [a-z] ]]; then
+            RAPIDS_NOTEBOOKS_REF="release/${RAPIDS_VER}"
+          fi
 
+          # The source branch advances before its packages are published. Keep
+          # pull-request images on a matching published package and source line.
+          if [[ $BUILD_TYPE == "pull-request" ]]; then
+            RAPIDS_VER="26.08"
+            RAPIDS_NOTEBOOKS_REF="release/26.08"
+            ALPHA_TAG="a"
+          fi
+
+          echo "RAPIDS_NOTEBOOKS_REF=${RAPIDS_NOTEBOOKS_REF}" | tee -a ${GITHUB_OUTPUT}
           echo "RAPIDS_VER=${RAPIDS_VER}" | tee -a ${GITHUB_OUTPUT}
           echo "ALPHA_TAG=${ALPHA_TAG}" | tee -a ${GITHUB_OUTPUT}
       - name: Compute test matrix
@@ -159,6 +179,7 @@ jobs:
       LINUX_DISTRO_VER: ${{ matrix.LINUX_DISTRO_VER }}
       LINUX_VER: ${{ matrix.LINUX_VER }}
       PYTHON_VER: ${{ matrix.PYTHON_VER }}
+      RAPIDS_NOTEBOOKS_REF: ${{ needs.compute-matrix.outputs.RAPIDS_NOTEBOOKS_REF }}
       RAPIDS_VER: ${{ needs.compute-matrix.outputs.RAPIDS_VER }}
       BASE_TAG:
         "rapidsai/${{ needs.compute-matrix.outputs.BASE_IMAGE_REPO }}:\
@@ -224,6 +245,18 @@ jobs:
         with:
           username: ${{ secrets.GPUCIBOT_DOCKERHUB_USER }}
           password: ${{ secrets.GPUCIBOT_DOCKERHUB_TOKEN }}
+      - name: Install Go
+        uses: actions/setup-go@4a3601121dd01d1626a1e23e37211e3254c1c06c # v6
+        with:
+          go-version: '1.25.x'
+          cache: false
+      - name: Install ORAS
+        run: |
+          GOBIN="${RUNNER_TEMP}/oras-bin" go install oras.land/oras/cmd/oras@v1.3.0
+          echo "${RUNNER_TEMP}/oras-bin" >> "${GITHUB_PATH}"
+          "${RUNNER_TEMP}/oras-bin/oras" version
+      - name: Set up Cosign
+        uses: sigstore/cosign-installer@f713795cb21599bc4e5c4b58cbad1da852d7eeb9 # v3
       - name: Create multiarch manifest
         shell: bash
         env:
@@ -239,6 +272,38 @@ jobs:
           GPUCIBOT_DOCKERHUB_TOKEN: ${{ secrets.GPUCIBOT_DOCKERHUB_TOKEN }}
           ARCHES: ${{ toJSON(matrix.ARCHES) }}
         run: ci/create-rapids-multiarch-manifest.sh
+      - name: Publish multiarch image provenance indexes
+        shell: bash
+        env:
+          BASE_IMAGE_REPO: ${{ needs.compute-matrix.outputs.BASE_IMAGE_REPO }}
+          BASE_TAG_PREFIX: ${{ needs.compute-matrix.outputs.BASE_TAG_PREFIX }}
+          RAPIDS_VER: ${{ needs.compute-matrix.outputs.RAPIDS_VER }}
+          ALPHA_TAG: ${{ needs.compute-matrix.outputs.ALPHA_TAG }}
+          CUDA_TAG: ${{ matrix.CUDA_TAG }}
+          PYTHON_VER: ${{ matrix.PYTHON_VER }}
+          NOTEBOOKS_IMAGE_REPO: ${{ needs.compute-matrix.outputs.NOTEBOOKS_IMAGE_REPO }}
+          NOTEBOOKS_TAG_PREFIX: ${{ needs.compute-matrix.outputs.NOTEBOOKS_TAG_PREFIX }}
+          ARCHES: ${{ toJSON(matrix.ARCHES) }}
+        run: |
+          base_reference="rapidsai/${BASE_IMAGE_REPO}:${BASE_TAG_PREFIX}${RAPIDS_VER}${ALPHA_TAG}-cuda${CUDA_TAG}-py${PYTHON_VER}"
+          notebooks_reference="rapidsai/${NOTEBOOKS_IMAGE_REPO}:${NOTEBOOKS_TAG_PREFIX}${RAPIDS_VER}${ALPHA_TAG}-cuda${CUDA_TAG}-py${PYTHON_VER}"
+          for image_kind in base notebooks; do
+            if [[ "$image_kind" == base ]]; then
+              image_reference="$base_reference"
+            else
+              image_reference="$notebooks_reference"
+            fi
+            platform_references="$({
+              while IFS= read -r arch; do
+                printf 'linux/%s=%s-%s\n' "$arch" "$image_reference" "$arch"
+              done < <(jq -r '.[]' <<< "$ARCHES")
+            })"
+            IMAGE_KIND="$image_kind" \
+              IMAGE_REFERENCE="$image_reference" \
+              PLATFORM_REFERENCES="$platform_references" \
+              CUDA_VER="$CUDA_TAG" \
+              ci/publish-image-provenance-index.sh
+          done
   build-cuvs-multiarch-manifest:
     needs: [build-cuvs, compute-matrix]
     strategy:

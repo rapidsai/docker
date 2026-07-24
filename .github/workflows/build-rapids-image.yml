@@ -1,4 +1,4 @@
-# Copyright (c) 2025-2026, NVIDIA CORPORATION.
+# Copyright (c) 2025-2026, NVIDIA CORPORATION & AFFILIATES. All rights reserved.
 name: build-rapids
 
 on:
@@ -25,12 +25,19 @@ on:
       RAPIDS_VER:
         required: true
         type: string
+      RAPIDS_NOTEBOOKS_REF:
+        required: true
+        type: string
       BASE_TAG:
         required: true
         type: string
       NOTEBOOKS_TAG:
         required: true
         type: string
+
+permissions:
+  contents: read
+  id-token: write
 
 env:
   # prevent buildx from creating arch-specific manifest lists...
@@ -75,6 +82,18 @@ jobs:
         with:
           username: ${{ secrets.GPUCIBOT_DOCKERHUB_USER }}
           password: ${{ secrets.GPUCIBOT_DOCKERHUB_TOKEN }}
+      - name: Install Go
+        uses: actions/setup-go@4a3601121dd01d1626a1e23e37211e3254c1c06c # v6
+        with:
+          go-version: '1.25.x'
+          cache: false
+      - name: Install ORAS
+        run: |
+          GOBIN="${RUNNER_TEMP}/oras-bin" go install oras.land/oras/cmd/oras@v1.3.0
+          echo "${RUNNER_TEMP}/oras-bin" >> "${GITHUB_PATH}"
+          "${RUNNER_TEMP}/oras-bin/oras" version
+      - name: Set up Cosign
+        uses: sigstore/cosign-installer@f713795cb21599bc4e5c4b58cbad1da852d7eeb9 # v3
       - name: Set up Docker Context for Buildx
         id: buildx-context
         run: |
@@ -99,8 +118,10 @@ jobs:
           LINUX_DISTRO_VER: ${{ inputs.LINUX_DISTRO_VER }}
           LINUX_VER: ${{ inputs.LINUX_VER }}
           PYTHON_VER: ${{ inputs.PYTHON_VER }}
+          RAPIDS_NOTEBOOKS_REF: ${{ inputs.RAPIDS_NOTEBOOKS_REF }}
           RAPIDS_VER: ${{ inputs.RAPIDS_VER }}
       - name: Build base image
+        id: build-base
         uses: docker/build-push-action@10e90e3645eae34f1e60eeb005ba3a3d33f178e8 # v6
         with:
           context: context
@@ -113,7 +134,26 @@ jobs:
           tags: ${{ inputs.BASE_TAG }}-${{ matrix.ARCH }}
           # ensure only OCI mediatypes are used: https://docs.docker.com/build/exporters/#oci-media-types
           outputs: type=registry,oci-mediatypes=true
+      - name: Export base image package provenance
+        env:
+          DOCKER_BUILD_ARGS: ${{ steps.generate-build-args.outputs.DOCKER_BUILD_ARGS }}
+          PROVENANCE_OUTPUT_DIR: ${{ runner.temp }}/provenance-base-${{ matrix.ARCH }}
+          PROVENANCE_TARGET: provenance-base
+        run: ci/export-image-provenance.sh
+      - name: Publish base image provenance
+        env:
+          CUDA_VER: ${{ inputs.CUDA_VER }}
+          DOCKER_BUILD_ARGS: ${{ steps.generate-build-args.outputs.DOCKER_BUILD_ARGS }}
+          IMAGE_DIGEST: ${{ steps.build-base.outputs.digest }}
+          IMAGE_KIND: base
+          IMAGE_PLATFORM: linux/${{ matrix.ARCH }}
+          IMAGE_REFERENCE: ${{ inputs.BASE_TAG }}-${{ matrix.ARCH }}
+          PROVENANCE_OUTPUT_DIR: ${{ runner.temp }}/provenance-base-${{ matrix.ARCH }}
+          PYTHON_VER: ${{ inputs.PYTHON_VER }}
+          RAPIDS_VER: ${{ inputs.RAPIDS_VER }}
+        run: ci/publish-image-provenance.sh
       - name: Build notebooks image
+        id: build-notebooks
         uses: docker/build-push-action@10e90e3645eae34f1e60eeb005ba3a3d33f178e8 # v6
         with:
           context: context
@@ -126,3 +166,21 @@ jobs:
           tags: ${{ inputs.NOTEBOOKS_TAG }}-${{ matrix.ARCH }}
           # ensure only OCI mediatypes are used: https://docs.docker.com/build/exporters/#oci-media-types
           outputs: type=registry,oci-mediatypes=true
+      - name: Export notebooks image package provenance
+        env:
+          DOCKER_BUILD_ARGS: ${{ steps.generate-build-args.outputs.DOCKER_BUILD_ARGS }}
+          PROVENANCE_OUTPUT_DIR: ${{ runner.temp }}/provenance-notebooks-${{ matrix.ARCH }}
+          PROVENANCE_TARGET: provenance-notebooks
+        run: ci/export-image-provenance.sh
+      - name: Publish notebooks image provenance
+        env:
+          CUDA_VER: ${{ inputs.CUDA_VER }}
+          DOCKER_BUILD_ARGS: ${{ steps.generate-build-args.outputs.DOCKER_BUILD_ARGS }}
+          IMAGE_DIGEST: ${{ steps.build-notebooks.outputs.digest }}
+          IMAGE_KIND: notebooks
+          IMAGE_PLATFORM: linux/${{ matrix.ARCH }}
+          IMAGE_REFERENCE: ${{ inputs.NOTEBOOKS_TAG }}-${{ matrix.ARCH }}
+          PROVENANCE_OUTPUT_DIR: ${{ runner.temp }}/provenance-notebooks-${{ matrix.ARCH }}
+          PYTHON_VER: ${{ inputs.PYTHON_VER }}
+          RAPIDS_VER: ${{ inputs.RAPIDS_VER }}
+        run: ci/publish-image-provenance.sh
