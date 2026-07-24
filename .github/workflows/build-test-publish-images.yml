@@ -82,7 +82,15 @@ jobs:
           persist-credentials: false
       - name: Compute matrix
         id: compute-matrix
+        env:
+          BUILD_TYPE: ${{ inputs.build_type }}
         run: |
+          # PR images use published 26.08 packages. At this point in the
+          # release cycle, CUDA 13 package builds are not guaranteed to be
+          # published with the compatible 26.08 package set.
+          if [[ $BUILD_TYPE == "pull-request" ]]; then
+            export MATRIX_CUDA_VERSIONS='["12.9.1"]'
+          fi
           MATRIX=$(ci/compute-matrix.sh)
           echo "MATRIX=${MATRIX}" | tee -a ${GITHUB_OUTPUT}
       - name: Compute tag prefix
