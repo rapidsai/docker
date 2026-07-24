@@ -11,17 +11,28 @@ set -eEuo pipefail
 : "${PYTHON_VER:?Set PYTHON_VER}"
 : "${PLATFORM_REFERENCES:?Set PLATFORM_REFERENCES as platform=tag lines}"
 
+normalize_registry_reference() {
+    local reference="$1"
+    local first_component="${reference%%/*}"
+    if [[ $first_component != *.* && $first_component != *:* && $first_component != "localhost" ]]; then
+        reference="docker.io/${reference}"
+    fi
+    printf '%s\n' "$reference"
+}
+
 output_dir="${RUNNER_TEMP:-/tmp}/image-provenance-index-${IMAGE_KIND}"
 manifest_path="$output_dir/image-provenance-index.json"
 workflow_run_url="${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}"
+registry_reference="$(normalize_registry_reference "$IMAGE_REFERENCE")"
 mkdir -p "$output_dir"
 
-image_digest="$(oras manifest fetch --descriptor "$IMAGE_REFERENCE" | jq -r '.digest')"
+image_digest="$(oras manifest fetch --descriptor "$registry_reference" | jq -r '.digest')"
 platform_args=()
 while IFS='=' read -r platform reference; do
     [[ -z "$platform" ]] && continue
-    digest="$(oras manifest fetch --descriptor "$reference" | jq -r '.digest')"
-    platform_args+=(--platform-manifest "${platform}|${reference}|${digest}")
+    platform_reference="$(normalize_registry_reference "$reference")"
+    digest="$(oras manifest fetch --descriptor "$platform_reference" | jq -r '.digest')"
+    platform_args+=(--platform-manifest "${platform}|${platform_reference}|${digest}")
 done <<<"$PLATFORM_REFERENCES"
 
 python3 ci/image_provenance_manifest.py \
@@ -47,8 +58,8 @@ oras attach \
     --artifact-type application/vnd.rapids.image.provenance.index.v1+json \
     --disable-path-validation \
     --export-manifest "$attached_manifest" \
-    "${IMAGE_REFERENCE%@*}@${image_digest}" \
+    "${registry_reference%@*}@${image_digest}" \
     "$manifest_path:application/vnd.rapids.image.provenance.index.v1+json"
 
 artifact_digest="sha256:$(sha256sum "$attached_manifest" | awk '{print $1}')"
-cosign sign --yes "${IMAGE_REFERENCE%@*}@${artifact_digest}"
+cosign sign --yes "${registry_reference%@*}@${artifact_digest}"

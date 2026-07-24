@@ -13,8 +13,18 @@ set -eEuo pipefail
 : "${CUDA_VER:?Set CUDA_VER}"
 : "${PYTHON_VER:?Set PYTHON_VER}"
 
+normalize_registry_reference() {
+    local reference="$1"
+    local first_component="${reference%%/*}"
+    if [[ $first_component != *.* && $first_component != *:* && $first_component != "localhost" ]]; then
+        reference="docker.io/${reference}"
+    fi
+    printf '%s\n' "$reference"
+}
+
 manifest_path="$PROVENANCE_OUTPUT_DIR/image-provenance.json"
 workflow_run_url="${GITHUB_SERVER_URL}/${GITHUB_REPOSITORY}/actions/runs/${GITHUB_RUN_ID}"
+registry_reference="$(normalize_registry_reference "$IMAGE_REFERENCE")"
 
 generator_args=()
 while IFS= read -r argument; do
@@ -43,8 +53,8 @@ oras attach \
     --artifact-type application/vnd.rapids.image.provenance.v1+json \
     --disable-path-validation \
     --export-manifest "$attached_manifest" \
-    "${IMAGE_REFERENCE%@*}@${IMAGE_DIGEST}" \
+    "${registry_reference%@*}@${IMAGE_DIGEST}" \
     "$manifest_path:application/vnd.rapids.image.provenance.v1+json"
 
 artifact_digest="sha256:$(sha256sum "$attached_manifest" | awk '{print $1}')"
-cosign sign --yes "${IMAGE_REFERENCE%@*}@${artifact_digest}"
+cosign sign --yes "${registry_reference%@*}@${artifact_digest}"
