@@ -45,6 +45,7 @@ python3 ci/image_provenance_manifest.py \
 attached_manifest="$output_dir/attached-image-provenance-index.json"
 oras attach \
     --artifact-type application/vnd.rapids.image.provenance.index.v1+json \
+    --disable-path-validation \
     --export-manifest "$attached_manifest" \
     "${IMAGE_REFERENCE%@*}@${image_digest}" \
     "$manifest_path:application/vnd.rapids.image.provenance.index.v1+json"
