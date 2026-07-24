@@ -49,12 +49,14 @@ python3 ci/image_provenance_manifest.py \
     "${generator_args[@]}"
 
 attached_manifest="$PROVENANCE_OUTPUT_DIR/attached-image-provenance.json"
-oras attach \
-    --artifact-type application/vnd.rapids.image.provenance.v1+json \
-    --disable-path-validation \
-    --export-manifest "$attached_manifest" \
-    "${registry_reference%@*}@${IMAGE_DIGEST}" \
-    "$manifest_path:application/vnd.rapids.image.provenance.v1+json"
+(
+    cd "$PROVENANCE_OUTPUT_DIR"
+    oras attach \
+        --artifact-type application/vnd.rapids.image.provenance.v1+json \
+        --export-manifest "$attached_manifest" \
+        "${registry_reference%@*}@${IMAGE_DIGEST}" \
+        "image-provenance.json:application/vnd.rapids.image.provenance.v1+json"
+)
 
 artifact_digest="sha256:$(sha256sum "$attached_manifest" | awk '{print $1}')"
 cosign sign --yes "${registry_reference%@*}@${artifact_digest}"

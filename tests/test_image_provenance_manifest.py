@@ -13,6 +13,7 @@ import pytest
 
 
 MODULE_PATH = Path(__file__).parents[1] / "ci" / "image_provenance_manifest.py"
+REPOSITORY_ROOT = MODULE_PATH.parents[1]
 SPEC = importlib.util.spec_from_file_location("image_provenance_manifest", MODULE_PATH)
 assert SPEC is not None and SPEC.loader is not None
 MODULE = importlib.util.module_from_spec(SPEC)
@@ -107,3 +108,20 @@ def test_build_manifest_links_platform_manifests_for_multiarch_images() -> None:
 def test_invalid_build_argument_is_rejected() -> None:
     with pytest.raises(ValueError, match="NAME=VALUE"):
         MODULE.parse_build_args(["CUDA_VER"])
+
+
+@pytest.mark.parametrize(
+    ("script_name", "safe_title"),
+    [
+        ("publish-image-provenance.sh", "image-provenance.json"),
+        ("publish-image-provenance-index.sh", "image-provenance-index.json"),
+    ],
+)
+def test_published_provenance_uses_safe_oci_layer_titles(
+    script_name: str,
+    safe_title: str,
+) -> None:
+    script = (REPOSITORY_ROOT / "ci" / script_name).read_text()
+
+    assert "--disable-path-validation" not in script
+    assert f'"{safe_title}:application/vnd.rapids.image.provenance' in script
