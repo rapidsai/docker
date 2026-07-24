@@ -72,6 +72,7 @@ jobs:
       NOTEBOOKS_TAG_PREFIX: ${{ steps.compute-tag-prefix.outputs.NOTEBOOKS_TAG_PREFIX }}
       CUVS_BENCH_TAG_PREFIX: ${{ steps.compute-tag-prefix.outputs.CUVS_BENCH_TAG_PREFIX }}
       CUVS_BENCH_CPU_TAG_PREFIX: ${{ steps.compute-tag-prefix.outputs.CUVS_BENCH_CPU_TAG_PREFIX }}
+      RAPIDS_BRANCH: ${{ steps.compute-rapids-ver.outputs.RAPIDS_BRANCH }}
       RAPIDS_VER: ${{ steps.compute-rapids-ver.outputs.RAPIDS_VER }}
       ALPHA_TAG: ${{ steps.compute-rapids-ver.outputs.ALPHA_TAG }}
     steps:
@@ -82,15 +83,7 @@ jobs:
           persist-credentials: false
       - name: Compute matrix
         id: compute-matrix
-        env:
-          BUILD_TYPE: ${{ inputs.build_type }}
         run: |
-          # PR images use published 26.08 packages. At this point in the
-          # release cycle, CUDA 13 package builds are not guaranteed to be
-          # published with the compatible 26.08 package set.
-          if [[ $BUILD_TYPE == "pull-request" ]]; then
-            export MATRIX_CUDA_VERSIONS='["12.9.1"]'
-          fi
           MATRIX=$(ci/compute-matrix.sh)
           echo "MATRIX=${MATRIX}" | tee -a ${GITHUB_OUTPUT}
       - name: Compute tag prefix
@@ -142,14 +135,20 @@ jobs:
             ALPHA_TAG="a"
           fi
           RAPIDS_VER="$(echo $GIT_DESCRIBE_TAG | awk 'BEGIN{FS=OFS="."} NF--')" # Convert full tag to YY.MM
+          RAPIDS_BRANCH="main"
+          if [[ ! $GIT_DESCRIBE_TAG =~ [a-z] ]]; then
+            RAPIDS_BRANCH="release/${RAPIDS_VER}"
+          fi
 
           # The source branch advances before its packages are published. Keep
-          # pull-request image validation on the latest available package line.
+          # pull-request images on a matching published package and source line.
           if [[ $BUILD_TYPE == "pull-request" ]]; then
             RAPIDS_VER="26.08"
+            RAPIDS_BRANCH="release/26.08"
             ALPHA_TAG="a"
           fi
 
+          echo "RAPIDS_BRANCH=${RAPIDS_BRANCH}" | tee -a ${GITHUB_OUTPUT}
           echo "RAPIDS_VER=${RAPIDS_VER}" | tee -a ${GITHUB_OUTPUT}
           echo "ALPHA_TAG=${ALPHA_TAG}" | tee -a ${GITHUB_OUTPUT}
       - name: Compute test matrix
@@ -180,6 +179,7 @@ jobs:
       LINUX_DISTRO_VER: ${{ matrix.LINUX_DISTRO_VER }}
       LINUX_VER: ${{ matrix.LINUX_VER }}
       PYTHON_VER: ${{ matrix.PYTHON_VER }}
+      RAPIDS_BRANCH: ${{ needs.compute-matrix.outputs.RAPIDS_BRANCH }}
       RAPIDS_VER: ${{ needs.compute-matrix.outputs.RAPIDS_VER }}
       BASE_TAG:
         "rapidsai/${{ needs.compute-matrix.outputs.BASE_IMAGE_REPO }}:\
