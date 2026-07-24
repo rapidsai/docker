@@ -1,9 +1,9 @@
 #!/usr/bin/env bash
-# Copyright (c) 2023-2026, NVIDIA CORPORATION.
+# Copyright (c) 2023-2026, NVIDIA CORPORATION & AFFILIATES. All rights reserved.
 
 # Clones repos with notebooks & compiles notebook test dependencies
 # Requires environment variables:
-#    RAPIDS_BRANCH
+#    RAPIDS_NOTEBOOKS_REF
 #    CUDA_VER
 #    PYTHON_VER
 
@@ -14,7 +14,7 @@ NOTEBOOK_REPOS=(cudf cuml cugraph)
 mkdir -p /notebooks /dependencies
 for REPO in "${NOTEBOOK_REPOS[@]}"; do
     echo "Cloning $REPO..."
-    git clone -b "${RAPIDS_BRANCH}" --depth 1 --single-branch "https://github.com/rapidsai/$REPO" "$REPO"
+    git clone -b "${RAPIDS_NOTEBOOKS_REF}" --depth 1 --single-branch "https://github.com/rapidsai/$REPO" "$REPO"
 
     SOURCE="$REPO/notebooks"
     DESTINATION="/notebooks/$REPO"

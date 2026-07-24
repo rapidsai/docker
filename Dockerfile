@@ -14,7 +14,7 @@ FROM python:${PYTHON_VER} AS dependencies
 ARG CPU_ARCH=notset
 ARG CUDA_VER=notset
 ARG PYTHON_VER=notset
-ARG RAPIDS_BRANCH="main"
+ARG RAPIDS_NOTEBOOKS_REF="main"
 ARG RAPIDS_VER=26.10
 ARG YQ_VER=notset
 

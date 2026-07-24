@@ -25,7 +25,7 @@ on:
       RAPIDS_VER:
         required: true
         type: string
-      RAPIDS_BRANCH:
+      RAPIDS_NOTEBOOKS_REF:
         required: true
         type: string
       BASE_TAG:
@@ -118,7 +118,7 @@ jobs:
           LINUX_DISTRO_VER: ${{ inputs.LINUX_DISTRO_VER }}
           LINUX_VER: ${{ inputs.LINUX_VER }}
           PYTHON_VER: ${{ inputs.PYTHON_VER }}
-          RAPIDS_BRANCH: ${{ inputs.RAPIDS_BRANCH }}
+          RAPIDS_NOTEBOOKS_REF: ${{ inputs.RAPIDS_NOTEBOOKS_REF }}
           RAPIDS_VER: ${{ inputs.RAPIDS_VER }}
       - name: Build base image
         id: build-base
