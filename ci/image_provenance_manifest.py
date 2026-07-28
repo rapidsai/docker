@@ -15,7 +15,7 @@ from pathlib import Path
 from typing import Any
 
 
-SCHEMA_VERSION = 1
+SCHEMA_VERSION = 2
 
 
 @dataclass(frozen=True)
@@ -93,6 +93,55 @@ def conda_packages(metadata_dir: Path | None) -> list[dict[str, Any]]:
     )
 
 
+def installed_packages(
+    conda_package_records: list[dict[str, Any]],
+    pip_packages_path: Path | None,
+) -> list[dict[str, Any]]:
+    """Combine package-manager inventories without inventing upstream identities."""
+    packages = [
+        {
+            **package,
+            "ecosystem": "conda",
+            "installer": "conda",
+            "evidence": "conda-meta",
+        }
+        for package in conda_package_records
+    ]
+    if pip_packages_path is not None:
+        try:
+            pip_records = json.loads(pip_packages_path.read_text(encoding="utf-8"))
+        except json.JSONDecodeError as exc:
+            raise ValueError(f"invalid pip package inventory: {pip_packages_path}") from exc
+        if not isinstance(pip_records, list):
+            raise ValueError("pip package inventory must be a JSON list")
+        for record in pip_records:
+            if not isinstance(record, dict):
+                raise ValueError("pip package inventory entries must be JSON objects")
+            name = str(record.get("name") or "").strip()
+            version = str(record.get("version") or "").strip()
+            purls = record.get("purls")
+            if not name or not version or not isinstance(purls, list):
+                raise ValueError("pip package inventory entries require name, version, and purls")
+            packages.append(
+                {
+                    "name": name,
+                    "version": version,
+                    "purls": [str(purl) for purl in purls if str(purl).startswith("pkg:")],
+                    "ecosystem": "pypi",
+                    "installer": str(record.get("installer") or "pip"),
+                    "evidence": str(record.get("evidence") or "python-distribution-metadata"),
+                }
+            )
+    return sorted(
+        packages,
+        key=lambda package: (
+            str(package["ecosystem"]),
+            str(package["name"]),
+            str(package["version"]),
+        ),
+    )
+
+
 def parse_platform_manifest(value: str) -> dict[str, str]:
     """Parse ``os/architecture|reference|digest`` into a manifest entry."""
     platform, separator, remainder = value.partition("|")
@@ -115,6 +164,7 @@ def build_manifest(
     context: ManifestContext,
     *,
     metadata_dir: Path | None = None,
+    pip_packages_path: Path | None = None,
     platform_manifests: list[str] | None = None,
 ) -> dict[str, Any]:
     """Construct the schema payload for a platform image or multiarch index."""
@@ -122,6 +172,10 @@ def build_manifest(
         raise ValueError(f"image digest must be sha256: {context.image_digest!r}")
     packages = conda_packages(metadata_dir)
     package_payload = json.dumps(packages, sort_keys=True, separators=(",", ":")).encode()
+    all_packages = installed_packages(packages, pip_packages_path)
+    all_package_payload = json.dumps(
+        all_packages, sort_keys=True, separators=(",", ":")
+    ).encode()
     subject: dict[str, Any] = {
         "reference": context.image_reference,
         "digest": context.image_digest,
@@ -150,6 +204,8 @@ def build_manifest(
         },
         "conda_packages": packages,
         "conda_packages_sha256": _sha256(package_payload),
+        "installed_packages": all_packages,
+        "installed_packages_sha256": _sha256(all_package_payload),
         "platform_manifests": sorted(
             (parse_platform_manifest(value) for value in platform_manifests or []),
             key=lambda item: item["platform"],
@@ -173,6 +229,7 @@ def parse_args() -> argparse.Namespace:
     parser.add_argument("--workflow-ref", required=True)
     parser.add_argument("--workflow-run-url", required=True)
     parser.add_argument("--conda-meta-dir", type=Path)
+    parser.add_argument("--pip-packages", type=Path)
     parser.add_argument("--build-arg", action="append", default=[])
     parser.add_argument("--platform-manifest", action="append", default=[])
     return parser.parse_args()
@@ -196,6 +253,7 @@ def main() -> None:
             build_args=args.build_arg,
         ),
         metadata_dir=args.conda_meta_dir,
+        pip_packages_path=args.pip_packages,
         platform_manifests=args.platform_manifest,
     )
     args.output.parent.mkdir(parents=True, exist_ok=True)

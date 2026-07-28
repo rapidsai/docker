@@ -82,6 +82,40 @@ def test_build_manifest_records_exact_conda_package_facts(tmp_path: Path) -> Non
     assert manifest["conda_packages_sha256"].startswith("sha256:")
 
 
+def test_build_manifest_records_direct_pip_purl_evidence(tmp_path: Path) -> None:
+    pip_packages = tmp_path / "pip-packages.json"
+    pip_packages.write_text(
+        json.dumps(
+            [
+                {
+                    "name": "torch",
+                    "version": "2.8.0",
+                    "purls": ["pkg:pypi/torch"],
+                    "installer": "pip",
+                    "evidence": "python-distribution-metadata; INSTALLER=pip",
+                }
+            ]
+        )
+    )
+
+    manifest = MODULE.build_manifest(
+        manifest_context(),
+        pip_packages_path=pip_packages,
+    )
+
+    assert manifest["installed_packages"] == [
+        {
+            "ecosystem": "pypi",
+            "evidence": "python-distribution-metadata; INSTALLER=pip",
+            "installer": "pip",
+            "name": "torch",
+            "purls": ["pkg:pypi/torch"],
+            "version": "2.8.0",
+        }
+    ]
+    assert manifest["installed_packages_sha256"].startswith("sha256:")
+
+
 def test_build_manifest_links_platform_manifests_for_multiarch_images() -> None:
     manifest = MODULE.build_manifest(
         manifest_context(

@@ -46,6 +46,7 @@ python3 ci/image_provenance_manifest.py \
     --workflow-ref "${GITHUB_WORKFLOW_REF:-$GITHUB_WORKFLOW}" \
     --workflow-run-url "$workflow_run_url" \
     --conda-meta-dir "$PROVENANCE_OUTPUT_DIR/conda-meta" \
+    --pip-packages "$PROVENANCE_OUTPUT_DIR/pip-packages.json" \
     "${generator_args[@]}"
 
 attached_manifest="$PROVENANCE_OUTPUT_DIR/attached-image-provenance.json"
