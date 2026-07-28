@@ -144,6 +144,12 @@ def test_invalid_build_argument_is_rejected() -> None:
         MODULE.parse_build_args(["CUDA_VER"])
 
 
+def test_pip_inventory_collector_is_in_docker_build_context() -> None:
+    dockerignore = (REPOSITORY_ROOT / "context" / ".dockerignore").read_text()
+
+    assert "!scripts/export-pip-package-inventory" in dockerignore
+
+
 @pytest.mark.parametrize(
     ("script_name", "safe_title"),
     [
