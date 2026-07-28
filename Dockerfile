@@ -275,19 +275,19 @@ LABEL com.nvidia.workbench.user.username="rapids"
 # metadata copied from the corresponding final image target.
 FROM base AS provenance-base-inventory
 COPY scripts/export-pip-package-inventory /usr/local/bin/export-pip-package-inventory
-RUN python /usr/local/bin/export-pip-package-inventory /pip-packages.json
+RUN python /usr/local/bin/export-pip-package-inventory /tmp/pip-packages.json
 
 FROM scratch AS provenance-base
 COPY --from=base /opt/conda/conda-meta /conda-meta
-COPY --from=provenance-base-inventory /pip-packages.json /pip-packages.json
+COPY --from=provenance-base-inventory /tmp/pip-packages.json /pip-packages.json
 
 FROM notebooks AS provenance-notebooks-inventory
 COPY scripts/export-pip-package-inventory /usr/local/bin/export-pip-package-inventory
-RUN python /usr/local/bin/export-pip-package-inventory /pip-packages.json
+RUN python /usr/local/bin/export-pip-package-inventory /tmp/pip-packages.json
 
 FROM scratch AS provenance-notebooks
 COPY --from=notebooks /opt/conda/conda-meta /conda-meta
-COPY --from=provenance-notebooks-inventory /pip-packages.json /pip-packages.json
+COPY --from=provenance-notebooks-inventory /tmp/pip-packages.json /pip-packages.json
 
 # Keep the default Docker build target runnable for local users.
 FROM notebooks

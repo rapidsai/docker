@@ -150,6 +150,13 @@ def test_pip_inventory_collector_is_in_docker_build_context() -> None:
     assert "!scripts/export-pip-package-inventory" in dockerignore
 
 
+def test_provenance_collector_writes_outside_the_nonroot_image_root() -> None:
+    dockerfile = (REPOSITORY_ROOT / "Dockerfile").read_text()
+
+    assert "export-pip-package-inventory /tmp/pip-packages.json" in dockerfile
+    assert "COPY --from=provenance-base-inventory /tmp/pip-packages.json" in dockerfile
+
+
 @pytest.mark.parametrize(
     ("script_name", "safe_title"),
     [
