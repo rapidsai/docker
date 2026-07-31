@@ -16,7 +16,7 @@ for dockerfile in ${DOCKERFILES}; do
 		--rm \
         -v "$(pwd)/.hadolint.yaml":/.config/hadolint.yaml \
 		-i \
-		hadolint/hadolint \
+		hadolint/hadolint:v2.14.0 \
 	< "${dockerfile}"
 done
 
