@@ -1,5 +1,5 @@
 # syntax=docker/dockerfile:1
-# Copyright (c) 2024-2026, NVIDIA CORPORATION.
+# Copyright (c) 2024-2026, NVIDIA CORPORATION & AFFILIATES. All rights reserved.
 
 ARG CUDA_VER=notset
 ARG LINUX_DISTRO=ubuntu
@@ -7,15 +7,15 @@ ARG LINUX_DISTRO_VER=22.04
 ARG LINUX_VER=${LINUX_DISTRO}${LINUX_DISTRO_VER}
 ARG MINIFORGE_VER=notset
 ARG PYTHON_VER=notset
-ARG RAPIDS_VER=26.08
+ARG RAPIDS_VER=26.10
 
 # Gather dependency information
 FROM python:${PYTHON_VER} AS dependencies
 ARG CPU_ARCH=notset
 ARG CUDA_VER=notset
 ARG PYTHON_VER=notset
-ARG RAPIDS_BRANCH="release/26.08"
-ARG RAPIDS_VER=26.08
+ARG RAPIDS_NOTEBOOKS_REF="main"
+ARG RAPIDS_VER=26.10
 ARG YQ_VER=notset
 
 SHELL ["/bin/bash", "-euo", "pipefail", "-c"]
@@ -122,7 +122,7 @@ EOF
 FROM miniforge-cuda AS base
 ARG CUDA_VER=notset
 ARG PYTHON_VER=notset
-ARG RAPIDS_VER=26.08
+ARG RAPIDS_VER=26.10
 
 SHELL ["/bin/bash", "-euo", "pipefail", "-c"]
 
@@ -249,7 +249,7 @@ LABEL com.nvidia.workbench.application.jupyterlab.webapp.url-cmd="jupyter lab li
 LABEL com.nvidia.workbench.cuda-version="$CUDA_VER"
 LABEL com.nvidia.workbench.description="RAPIDS with CUDA ${CUDA_VER}"
 LABEL com.nvidia.workbench.entrypoint-script="/home/rapids/entrypoint.sh"
-LABEL com.nvidia.workbench.image-version="26.08.00"
+LABEL com.nvidia.workbench.image-version="26.10.00"
 LABEL com.nvidia.workbench.labels="cuda${CUDA_VER}"
 LABEL com.nvidia.workbench.name="RAPIDS with CUDA ${CUDA_VER}"
 LABEL com.nvidia.workbench.os-distro-release="$LINUX_DISTRO_VER"
@@ -258,6 +258,7 @@ LABEL com.nvidia.workbench.os="linux"
 LABEL com.nvidia.workbench.package-manager-environment.target="/opt/conda"
 LABEL com.nvidia.workbench.package-manager-environment.type="conda"
 LABEL com.nvidia.workbench.package-manager.apt.binary="/usr/bin/apt"
+
 LABEL com.nvidia.workbench.package-manager.apt.installed-packages=""
 LABEL com.nvidia.workbench.package-manager.conda3.binary="/opt/conda/bin/conda"
 LABEL com.nvidia.workbench.package-manager.conda3.installed-packages="rapids cudf cuml cugraph rmm pylibraft cucim xgboost jupyterlab"
@@ -268,3 +269,25 @@ LABEL com.nvidia.workbench.schema-version="v2"
 LABEL com.nvidia.workbench.user.gid="1000"
 LABEL com.nvidia.workbench.user.uid="1001"
 LABEL com.nvidia.workbench.user.username="rapids"
+
+# Minimal BuildKit export targets used to publish image provenance without
+# exporting or pulling the image filesystem. Each contains only conda package
+# metadata copied from the corresponding final image target.
+FROM base AS provenance-base-inventory
+COPY scripts/export-pip-package-inventory /usr/local/bin/export-pip-package-inventory
+RUN python /usr/local/bin/export-pip-package-inventory /tmp/pip-packages.json
+
+FROM scratch AS provenance-base
+COPY --from=base /opt/conda/conda-meta /conda-meta
+COPY --from=provenance-base-inventory /tmp/pip-packages.json /pip-packages.json
+
+FROM notebooks AS provenance-notebooks-inventory
+COPY scripts/export-pip-package-inventory /usr/local/bin/export-pip-package-inventory
+RUN python /usr/local/bin/export-pip-package-inventory /tmp/pip-packages.json
+
+FROM scratch AS provenance-notebooks
+COPY --from=notebooks /opt/conda/conda-meta /conda-meta
+COPY --from=provenance-notebooks-inventory /tmp/pip-packages.json /pip-packages.json
+
+# Keep the default Docker build target runnable for local users.
+FROM notebooks
