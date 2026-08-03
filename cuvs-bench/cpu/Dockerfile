@@ -1,13 +1,13 @@
 # syntax=docker/dockerfile:1
-# Copyright (c) 2024-2026, NVIDIA CORPORATION & AFFILIATES. All rights reserved.
+# Copyright (c) 2024-2026, NVIDIA CORPORATION.
 
 ARG MINIFORGE_VER=notset
 ARG PYTHON_VER=notset
-ARG RAPIDS_VER=26.10
+ARG RAPIDS_VER=26.08
 
 FROM condaforge/miniforge3:${MINIFORGE_VER} AS cuvs-bench-cpu
 ARG PYTHON_VER=notset
-ARG RAPIDS_VER=26.10
+ARG RAPIDS_VER=26.08
 
 COPY condarc /opt/conda/.condarc
 
