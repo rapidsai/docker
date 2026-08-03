@@ -12,7 +12,6 @@ LINUX_DISTRO: ${LINUX_DISTRO:-notset}
 LINUX_DISTRO_VER: ${LINUX_DISTRO_VER:-notset}
 LINUX_VER: ${LINUX_VER}
 PYTHON_VER: ${PYTHON_VER}
-RAPIDS_NOTEBOOKS_REF: ${RAPIDS_NOTEBOOKS_REF:-main}
 RAPIDS_VER: ${RAPIDS_VER}
 "
 export ARGS
@@ -31,7 +30,7 @@ if [ -n "${GITHUB_ACTIONS:-}" ]; then
 #
 cat <<EOF > "${GITHUB_OUTPUT:-/dev/stdout}"
 DOCKER_BUILD_ARGS<<EOT
-$(yq -r '. + env(ARGS) | to_entries | map(.key + "=" + .value) | join("\n")' versions.yaml)
+$(yq -r '. + env(ARGS) | to_entries | map(.key + "=" + .value) | join(" \n")' versions.yaml)
 EOT
 EOF
 else

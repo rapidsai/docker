@@ -1,6 +1,4 @@
 .vscode
-__pycache__/
-*.py[cod]
 
 *.a
 *.bz2

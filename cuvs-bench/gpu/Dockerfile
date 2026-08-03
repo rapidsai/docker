@@ -1,11 +1,11 @@
 # syntax=docker/dockerfile:1
-# Copyright (c) 2024-2026, NVIDIA CORPORATION & AFFILIATES. All rights reserved.
+# Copyright (c) 2024-2026, NVIDIA CORPORATION.
 
 ARG CUDA_VER=notset
 ARG LINUX_VER=notset
 ARG MINIFORGE_VER=notset
 ARG PYTHON_VER=notset
-ARG RAPIDS_VER=26.10
+ARG RAPIDS_VER=26.08
 
 # --- begin 'rapidsai/miniforge-cuda' --- #
 FROM condaforge/miniforge3:${MINIFORGE_VER} AS miniforge-upstream
@@ -59,7 +59,7 @@ EOF
 
 FROM miniforge-cuda AS cuvs-bench
 ARG CUDA_VER=notset
-ARG RAPIDS_VER=26.10
+ARG RAPIDS_VER=26.08
 
 COPY condarc /opt/conda/.condarc
 

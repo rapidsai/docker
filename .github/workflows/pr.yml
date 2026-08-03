@@ -1,4 +1,4 @@
-# Copyright (c) 2023-2026, NVIDIA CORPORATION & AFFILIATES. All rights reserved.
+# Copyright (c) 2023-2026, NVIDIA CORPORATION.
 name: ci
 
 on:
@@ -19,7 +19,7 @@ jobs:
     permissions:
       checks: write
       pull-requests: write
-    uses: rapidsai/shared-workflows/.github/workflows/pr-builder.yaml@main # zizmor: ignore[unpinned-uses]
+    uses: rapidsai/shared-workflows/.github/workflows/pr-builder.yaml@release/26.08
     if: always()
     with:
       needs: ${{ toJSON(needs) }}
