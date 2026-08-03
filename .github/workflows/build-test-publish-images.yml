@@ -144,7 +144,9 @@ jobs:
           fi
           RAPIDS_VER="$(echo $GIT_DESCRIBE_TAG | awk 'BEGIN{FS=OFS="."} NF--')" # Convert full tag to YY.MM
           RAPIDS_NOTEBOOKS_REF="main"
-          if [[ ! $GIT_DESCRIBE_TAG =~ [a-z] ]]; then
+          if [[ ${GITHUB_REF_NAME:-} =~ ^release/[0-9]{2}\.[0-9]{2}$ ]]; then
+            RAPIDS_NOTEBOOKS_REF="${GITHUB_REF_NAME}"
+          elif [[ ! $GIT_DESCRIBE_TAG =~ [a-z] ]]; then
             RAPIDS_NOTEBOOKS_REF="release/${RAPIDS_VER}"
           fi
 
