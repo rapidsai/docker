@@ -63,3 +63,24 @@ See https://github.com/rapidsai/workflows/blob/main/.github/workflows/cleanup_st
 
 If you come back to a pull request here after more than a few days and find that jobs are failing with errors
 that suggest that some necessary images don't exist, re-run all of CI on that pull request to produce new images.
+
+## Preparing a release branch
+
+Run the version update with the release context when preparing `release/YY.MM`:
+
+```sh
+bash ci/release/update-version.sh YY.MM.00 --run-context=release
+```
+
+This updates the Dockerfile's `RAPIDS_NOTEBOOKS_REF` default to `release/YY.MM`.
+Branch CI also derives the notebook ref directly from `GITHUB_REF_NAME`, so alpha-tagged
+builds on `release/YY.MM` clone notebook inputs from the matching `cudf`, `cuml`, and
+`cugraph` release branches instead of `main`. Those release branches must exist before
+the first Docker build runs; no separate notebook-ref edit is otherwise required during
+the branch cut.
+
+Pull requests targeting `main` use the current version derived from the repository tag
+and clone notebook inputs from `main`. Pull requests targeting `release/YY.MM` use that
+target branch for both the package version and notebook inputs. This keeps package and
+source lines matched without hardcoded version pins or manual updates when the next
+release branch is created.

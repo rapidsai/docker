@@ -1,5 +1,5 @@
 #!/bin/bash
-# Copyright (c) 2023-2026, NVIDIA CORPORATION.
+# Copyright (c) 2023-2026, NVIDIA CORPORATION & AFFILIATES. All rights reserved.
 
 ## Usage
 # Primary interface:   bash update-version.sh <new_version> [--run-context=main|release]
@@ -76,11 +76,11 @@ NEXT_SHORT_TAG=${NEXT_MAJOR}.${NEXT_MINOR}
 
 # Set branch references based on RUN_CONTEXT
 if [[ "${RUN_CONTEXT}" == "main" ]]; then
-    RAPIDS_BRANCH_NAME="main"
+    RAPIDS_NOTEBOOKS_REF="main"
     WORKFLOW_BRANCH_REF="main"
     echo "Preparing development branch update $CURRENT_TAG => $NEXT_FULL_TAG (targeting main branch)"
 elif [[ "${RUN_CONTEXT}" == "release" ]]; then
-    RAPIDS_BRANCH_NAME="release/${NEXT_SHORT_TAG}"
+    RAPIDS_NOTEBOOKS_REF="release/${NEXT_SHORT_TAG}"
     WORKFLOW_BRANCH_REF="release/${NEXT_SHORT_TAG}"
     echo "Preparing release branch update $CURRENT_TAG => $NEXT_FULL_TAG (targeting release/${NEXT_SHORT_TAG} branch)"
 fi
@@ -96,9 +96,9 @@ done
 
 sed_runner "s/com\.nvidia\.workbench\.image-version=.*/com.nvidia.workbench.image-version=\"${NEXT_FULL_TAG}\"/g" Dockerfile
 
-# Dockerfile RAPIDS_BRANCH
-sed_runner "s|ARG RAPIDS_BRANCH=\"release/[0-9]\+\.[0-9]\+\"|ARG RAPIDS_BRANCH=\"${RAPIDS_BRANCH_NAME}\"|g" Dockerfile
-sed_runner "s|ARG RAPIDS_BRANCH=\"main\"|ARG RAPIDS_BRANCH=\"${RAPIDS_BRANCH_NAME}\"|g" Dockerfile
+# Dockerfile RAPIDS_NOTEBOOKS_REF
+sed_runner "s|ARG RAPIDS_NOTEBOOKS_REF=\"release/[0-9]\+\.[0-9]\+\"|ARG RAPIDS_NOTEBOOKS_REF=\"${RAPIDS_NOTEBOOKS_REF}\"|g" Dockerfile
+sed_runner "s|ARG RAPIDS_NOTEBOOKS_REF=\"main\"|ARG RAPIDS_NOTEBOOKS_REF=\"${RAPIDS_NOTEBOOKS_REF}\"|g" Dockerfile
 
 # docs
 sed_runner "s|RAPIDS_VER=[[:digit:]]\+\.[[:digit:]]|RAPIDS_VER=${NEXT_SHORT_TAG}|g" CONTRIBUTING.md
