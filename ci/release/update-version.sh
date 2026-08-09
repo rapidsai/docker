@@ -101,7 +101,7 @@ sed_runner "s|ARG RAPIDS_BRANCH=\"release/[0-9]\+\.[0-9]\+\"|ARG RAPIDS_BRANCH=\
 sed_runner "s|ARG RAPIDS_BRANCH=\"main\"|ARG RAPIDS_BRANCH=\"${RAPIDS_BRANCH_NAME}\"|g" Dockerfile
 
 # docs
-sed_runner "s|RAPIDS_VER=[[:digit:]]\+\.[[:digit:]]|RAPIDS_VER=${NEXT_SHORT_TAG}|g" CONTRIBUTING.md
+sed_runner "s|RAPIDS_VER=[[:digit:]]\+\.[[:digit:]]\+|RAPIDS_VER=${NEXT_SHORT_TAG}|g" CONTRIBUTING.md
 sed_runner "s|[[:digit:]]\+\.[[:digit:]]-cuda|${NEXT_SHORT_TAG}-cuda|g" SECURITY.md
 
 # CI files
