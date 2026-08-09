@@ -106,7 +106,7 @@ sed_runner "s|[[:digit:]]\+\.[[:digit:]]-cuda|${NEXT_SHORT_TAG}-cuda|g" SECURITY
 
 # CI files
 for FILE in .github/workflows/*.yaml .github/workflows/*.yml; do
-  sed_runner "/shared-workflows/ s|@.*|@${WORKFLOW_BRANCH_REF}|g" "${FILE}"
+  sed_runner "/shared-workflows/ s|@[^[:space:]]\+|@${WORKFLOW_BRANCH_REF}|" "${FILE}"
 done
 
 sed_runner "s/v[[:digit:]]\+\.[[:digit:]]\+/v${NEXT_SHORT_TAG}/g" dockerhub-readme.md
