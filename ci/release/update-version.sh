@@ -42,7 +42,7 @@ NEXT_FULL_TAG="$VERSION_ARG"
 if [[ -n "$CLI_RUN_CONTEXT" ]]; then
     RUN_CONTEXT="$CLI_RUN_CONTEXT"
     echo "Using run-context from CLI: $RUN_CONTEXT"
-elif [[ -n "${RAPIDS_RUN_CONTEXT}" ]]; then
+elif [[ -n "${RAPIDS_RUN_CONTEXT:-}" ]]; then
     RUN_CONTEXT="$RAPIDS_RUN_CONTEXT"
     echo "Using run-context from environment: $RUN_CONTEXT"
 else
