@@ -14,6 +14,7 @@ jobs:
   # Please keep pr-builder as the top job here
   pr-builder:
     needs:
+      - changed-files
       - check-nightly-ci
       - docker
     permissions:
@@ -23,6 +24,39 @@ jobs:
     if: always()
     with:
       needs: ${{ toJSON(needs) }}
+  changed-files:
+    permissions:
+      actions: read
+      contents: read
+      packages: read
+      pull-requests: read
+    uses: rapidsai/shared-workflows/.github/workflows/changed-files.yaml@main # zizmor: ignore[unpinned-uses]
+    with:
+      files_yaml: |
+        build_images:
+          - '**'
+          - '!.github/CODEOWNERS'
+          - '!.github/ISSUE_TEMPLATE/**'
+          - '!.github/copy-pr-bot.yaml'
+          - '!.github/ops-bot.yaml'
+          - '!.github/release.yml'
+          - '!.github/workflows/publish.yml'
+          - '!.github/workflows/release-to-nvstaging.yml'
+          - '!.github/workflows/trigger-breaking-change-alert.yaml'
+          - '!.github/zizmor.yml'
+          - '!.gitignore'
+          - '!.pre-commit-config.yaml'
+          - '!CONTRIBUTING.md'
+          - '!LICENSE'
+          - '!README.md'
+          - '!SECURITY.md'
+          - '!ci/release/update-version.sh'
+          - '!context/scripts/README.md'
+          - '!cuvs-bench/README.md'
+          - '!dockerhub-readme.md'
+          - '!pyproject.toml'
+          - '!renovate.json'
+          - '!tests/container-canary/README.md'
   check-nightly-ci:
     runs-on: ubuntu-latest
     permissions:
@@ -43,6 +77,8 @@ jobs:
           target-branch: ${{ fromJSON(steps.get-pr-info.outputs.pr-info).base.ref }}
           workflow-id: 'publish.yml'
   docker:
+    needs: changed-files
+    if: fromJSON(needs.changed-files.outputs.changed_file_groups).build_images
     permissions:
       actions: read
       contents: read
