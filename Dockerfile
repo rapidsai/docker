@@ -39,7 +39,7 @@ apt-get install -y --no-install-recommends \
 
 PACKAGES_TO_INSTALL=(
   'conda-merge==0.3.*'
-  'rapids-dependency-file-generator==1.20.*'
+  'rapids-dependency-file-generator==1.*,>=1.22'
 )
 python -m pip install --no-cache-dir --prefer-binary --upgrade \
   "${PACKAGES_TO_INSTALL[@]}"
