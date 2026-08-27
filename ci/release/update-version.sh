@@ -42,7 +42,7 @@ NEXT_FULL_TAG="$VERSION_ARG"
 if [[ -n "$CLI_RUN_CONTEXT" ]]; then
     RUN_CONTEXT="$CLI_RUN_CONTEXT"
     echo "Using run-context from CLI: $RUN_CONTEXT"
-elif [[ -n "${RAPIDS_RUN_CONTEXT}" ]]; then
+elif [[ -n "${RAPIDS_RUN_CONTEXT:-}" ]]; then
     RUN_CONTEXT="$RAPIDS_RUN_CONTEXT"
     echo "Using run-context from environment: $RUN_CONTEXT"
 else
@@ -101,12 +101,11 @@ sed_runner "s|ARG RAPIDS_BRANCH=\"release/[0-9]\+\.[0-9]\+\"|ARG RAPIDS_BRANCH=\
 sed_runner "s|ARG RAPIDS_BRANCH=\"main\"|ARG RAPIDS_BRANCH=\"${RAPIDS_BRANCH_NAME}\"|g" Dockerfile
 
 # docs
-sed_runner "s|RAPIDS_VER=[[:digit:]]\+\.[[:digit:]]|RAPIDS_VER=${NEXT_SHORT_TAG}|g" CONTRIBUTING.md
-sed_runner "s|[[:digit:]]\+\.[[:digit:]]-cuda|${NEXT_SHORT_TAG}-cuda|g" SECURITY.md
+sed_runner "s|RAPIDS_VER=[[:digit:]]\{1,2\}\.[[:digit:]]\{1,2\}|RAPIDS_VER=${NEXT_SHORT_TAG}|g" CONTRIBUTING.md
 
 # CI files
 for FILE in .github/workflows/*.yaml .github/workflows/*.yml; do
-  sed_runner "/shared-workflows/ s|@.*|@${WORKFLOW_BRANCH_REF}|g" "${FILE}"
+  sed_runner "/shared-workflows/ s|@[^[:space:]]\+|@${WORKFLOW_BRANCH_REF}|" "${FILE}"
 done
 
 sed_runner "s/v[[:digit:]]\+\.[[:digit:]]\+/v${NEXT_SHORT_TAG}/g" dockerhub-readme.md
