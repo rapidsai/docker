@@ -88,7 +88,7 @@ jobs:
           buildkitd-config: /etc/buildkit/buildkitd.toml
           driver: docker-container
           endpoint: builders
-          version: 'v0.35.0'
+          version: 'v0.36.1'
       - name: Generate Build Args
         id: generate-build-args
         run: ci/compute-build-args.sh
