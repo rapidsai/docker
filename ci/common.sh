@@ -1,5 +1,5 @@
 #!/bin/bash
-# Copyright (c) 2023-2025, NVIDIA CORPORATION.
+# Copyright (c) 2023-2026, NVIDIA CORPORATION & AFFILIATES. All rights reserved.
 
 set -eEuo pipefail
 
@@ -17,14 +17,43 @@ export HUB_TOKEN
 check_tag_exists() {
     local repo="$1"
     local tag="$2"
-    local exists
-    exists=$(curl -s -o /dev/null -w "%{http_code}" -H "Authorization: JWT $HUB_TOKEN" \
-        "https://hub.docker.com/v2/repositories/${org}/${repo}/tags/${tag}/")
+    local attempts=6
+    local attempt=1
+    local delay=5
+    local http_code
 
-    if [ "$exists" -ne 200 ]; then
-        echo "Error: Required image tag ${repo}:${tag} does not exist. This implies that the image was not built successfully in the build job."
-        exit 1
-    fi
+    while ((attempt <= attempts)); do
+        http_code=$(curl -sS -o /dev/null -w "%{http_code}" -H "Authorization: JWT $HUB_TOKEN" \
+            "https://hub.docker.com/v2/repositories/${org}/${repo}/tags/${tag}/") || http_code="000"
+
+        if [[ $http_code == "200" ]]; then
+            return 0
+        fi
+
+        if ((attempt == attempts)); then
+            break
+        fi
+
+        case "$http_code" in
+            000 | 404 | 429 | 5??)
+                echo "Required image tag ${repo}:${tag} is not visible yet (HTTP ${http_code}); retrying in ${delay}s (${attempt}/${attempts})."
+                sleep "$delay"
+                delay=$((delay * 2))
+                if ((delay > 60)); then
+                    delay=60
+                fi
+                ;;
+            *)
+                echo "Error: Failed to check required image tag ${repo}:${tag} (HTTP ${http_code})."
+                return 1
+                ;;
+        esac
+
+        attempt=$((attempt + 1))
+    done
+
+    echo "Error: Required image tag ${repo}:${tag} was not visible after ${attempts} attempts (last HTTP ${http_code}). The image build may have failed, or Docker Hub may not have propagated the tag yet."
+    return 1
 }
 
 export org="rapidsai"

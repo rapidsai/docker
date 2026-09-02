@@ -14,7 +14,7 @@ FROM python:${PYTHON_VER} AS dependencies
 ARG CPU_ARCH=notset
 ARG CUDA_VER=notset
 ARG PYTHON_VER=notset
-ARG RAPIDS_BRANCH="main"
+ARG RAPIDS_NOTEBOOKS_REF="main"
 ARG RAPIDS_VER=26.10
 ARG YQ_VER=notset
 
@@ -258,6 +258,7 @@ LABEL com.nvidia.workbench.os="linux"
 LABEL com.nvidia.workbench.package-manager-environment.target="/opt/conda"
 LABEL com.nvidia.workbench.package-manager-environment.type="conda"
 LABEL com.nvidia.workbench.package-manager.apt.binary="/usr/bin/apt"
+
 LABEL com.nvidia.workbench.package-manager.apt.installed-packages=""
 LABEL com.nvidia.workbench.package-manager.conda3.binary="/opt/conda/bin/conda"
 LABEL com.nvidia.workbench.package-manager.conda3.installed-packages="rapids cudf cuml cugraph rmm pylibraft cucim xgboost jupyterlab"
@@ -268,3 +269,25 @@ LABEL com.nvidia.workbench.schema-version="v2"
 LABEL com.nvidia.workbench.user.gid="1000"
 LABEL com.nvidia.workbench.user.uid="1001"
 LABEL com.nvidia.workbench.user.username="rapids"
+
+# Minimal BuildKit export targets used to publish image provenance without
+# exporting or pulling the image filesystem. Each contains only conda package
+# metadata copied from the corresponding final image target.
+FROM base AS provenance-base-inventory
+COPY scripts/export-pip-package-inventory /usr/local/bin/export-pip-package-inventory
+RUN python /usr/local/bin/export-pip-package-inventory /tmp/pip-packages.json
+
+FROM scratch AS provenance-base
+COPY --from=base /opt/conda/conda-meta /conda-meta
+COPY --from=provenance-base-inventory /tmp/pip-packages.json /pip-packages.json
+
+FROM notebooks AS provenance-notebooks-inventory
+COPY scripts/export-pip-package-inventory /usr/local/bin/export-pip-package-inventory
+RUN python /usr/local/bin/export-pip-package-inventory /tmp/pip-packages.json
+
+FROM scratch AS provenance-notebooks
+COPY --from=notebooks /opt/conda/conda-meta /conda-meta
+COPY --from=provenance-notebooks-inventory /tmp/pip-packages.json /pip-packages.json
+
+# Keep the default Docker build target runnable for local users.
+FROM notebooks
