@@ -146,7 +146,7 @@ jobs:
       matrix: ${{ fromJSON(needs.compute-matrix.outputs.MATRIX) }}
       fail-fast: false
     secrets: inherit # zizmor: ignore[secrets-inherit]
-    uses: ./.github/workflows/build-rapids-image.yml
+    uses: $/.github/workflows/build-rapids-image.yml
     # Referencing something from the 'matrix' context prevents GitHub auto-generating
     # a hard-to-read name with all the matrix input values.
     #
@@ -180,7 +180,7 @@ jobs:
       matrix: ${{ fromJSON(needs.compute-matrix.outputs.MATRIX) }}
       fail-fast: false
     secrets: inherit # zizmor: ignore[secrets-inherit]
-    uses: ./.github/workflows/build-cuvs-image.yml
+    uses: $/.github/workflows/build-cuvs-image.yml
     # Referencing something from the 'matrix' context prevents GitHub auto-generating
     # a hard-to-read name with all the matrix input values.
     #
@@ -279,7 +279,7 @@ jobs:
       matrix: ${{ fromJSON(needs.compute-matrix.outputs.TEST_MATRIX) }}
       fail-fast: false
     secrets: inherit # zizmor: ignore[secrets-inherit]
-    uses: ./.github/workflows/validate.yml
+    uses: $/.github/workflows/validate.yml
     # Referencing something from the 'matrix' context prevents GitHub auto-generating
     # a hard-to-read name with all the matrix input values.
     #
@@ -316,7 +316,7 @@ jobs:
       matrix: ${{ fromJSON(needs.compute-matrix.outputs.TEST_MATRIX) }}
       fail-fast: false
     secrets: inherit # zizmor: ignore[secrets-inherit]
-    uses: ./.github/workflows/test-notebooks.yml
+    uses: $/.github/workflows/test-notebooks.yml
     # Referencing something from the 'matrix' context prevents GitHub auto-generating
     # a hard-to-read name with all the matrix input values.
     #

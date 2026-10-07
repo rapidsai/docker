@@ -85,7 +85,7 @@ jobs:
       id-token: write
       packages: read
       pull-requests: read
-    uses: ./.github/workflows/build-test-publish-images.yml
+    uses: $/.github/workflows/build-test-publish-images.yml
     with:
       build_type: pull-request
       run_tests: true
