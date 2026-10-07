@@ -1,4 +1,4 @@
-# Copyright (c) 2023-2025, NVIDIA CORPORATION.
+# Copyright (c) 2023-2026, NVIDIA CORPORATION & AFFILIATES. All rights reserved.
 name: publish
 
 on:
@@ -27,7 +27,7 @@ jobs:
       id-token: write
       packages: read
       pull-requests: read
-    uses: ./.github/workflows/build-test-publish-images.yml
+    uses: $/.github/workflows/build-test-publish-images.yml
     with:
       build_type: branch
       run_tests: ${{ inputs.run_tests || false }}
