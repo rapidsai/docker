@@ -2,10 +2,10 @@
 # CUDA_VER is `<major>` (e.g. `13`)
 
 pull-request:
-  - { CUDA_VER: '12', ARCH: 'amd64', PYTHON_VER: '3.12', GPU: 'l4',   DRIVER: 'latest'   }
-  - { CUDA_VER: '13', ARCH: 'amd64', PYTHON_VER: '3.13', GPU: 'h100', DRIVER: 'latest'   }
-  - { CUDA_VER: '13', ARCH: 'arm64', PYTHON_VER: '3.14', GPU: 'l4',   DRIVER: 'latest'   }
+  - { CUDA_VER: '12', ARCH: 'amd64', PYTHON_VER: '3.14', GPU: 'rtxpro6000', DRIVER: 'latest'   }
+  - { CUDA_VER: '13', ARCH: 'arm64', PYTHON_VER: '3.14', GPU: 'l4',         DRIVER: 'latest'   }
 branch:
-  - { CUDA_VER: '12', ARCH: 'amd64', PYTHON_VER: '3.12', GPU: 'l4',   DRIVER: 'latest'   }
-  - { CUDA_VER: '13', ARCH: 'amd64', PYTHON_VER: '3.13', GPU: 'h100', DRIVER: 'latest'   }
-  - { CUDA_VER: '13', ARCH: 'arm64', PYTHON_VER: '3.14', GPU: 'l4',   DRIVER: 'latest'   }
+  - { CUDA_VER: '12', ARCH: 'amd64', PYTHON_VER: '3.14', GPU: 'rtxpro600', DRIVER: 'latest'   }
+  - { CUDA_VER: '12', ARCH: 'arm64', PYTHON_VER: '3.14', GPU: 'l4',        DRIVER: 'latest'   }
+  - { CUDA_VER: '13', ARCH: 'amd64', PYTHON_VER: '3.14', GPU: 'h100',      DRIVER: 'latest'   }
+  - { CUDA_VER: '13', ARCH: 'arm64', PYTHON_VER: '3.14', GPU: 'l4',        DRIVER: 'latest'   }
