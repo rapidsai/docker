@@ -1,5 +1,5 @@
 #!/bin/bash
-# Copyright (c) 2023-2026, NVIDIA CORPORATION.
+# Copyright (c) 2023-2026, NVIDIA CORPORATION & AFFILIATES. All rights reserved.
 
 ## Usage
 # Primary interface:   bash update-version.sh <new_version> [--run-context=main|release]
@@ -101,11 +101,11 @@ sed_runner "s|ARG RAPIDS_BRANCH=\"release/[0-9]\+\.[0-9]\+\"|ARG RAPIDS_BRANCH=\
 sed_runner "s|ARG RAPIDS_BRANCH=\"main\"|ARG RAPIDS_BRANCH=\"${RAPIDS_BRANCH_NAME}\"|g" Dockerfile
 
 # docs
-sed_runner "s|RAPIDS_VER=[[:digit:]]\{1,2\}\.[[:digit:]]\{1,2\}|RAPIDS_VER=${NEXT_SHORT_TAG}|g" CONTRIBUTING.md
+sed_runner "s|^export RAPIDS_VER=.*$|export RAPIDS_VER=${NEXT_SHORT_TAG}|" CONTRIBUTING.md
 
 # CI files
 for FILE in .github/workflows/*.yaml .github/workflows/*.yml; do
-  sed_runner "/shared-workflows/ s|@[^[:space:]]\+|@${WORKFLOW_BRANCH_REF}|" "${FILE}"
+  sed_runner "/shared-workflows/ s|@[^[:space:]][^[:space:]]*|@${WORKFLOW_BRANCH_REF}|" "${FILE}"
 done
 
 sed_runner "s/v[[:digit:]]\+\.[[:digit:]]\+/v${NEXT_SHORT_TAG}/g" dockerhub-readme.md
