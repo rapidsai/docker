@@ -117,7 +117,7 @@ sed_runner "s/[[:digit:]]\+\.[[:digit:]]\+a-cuda/${NEXT_SHORT_TAG}a-cuda/g" dock
 
 sed_runner "s/v[[:digit:]]\+\.[[:digit:]]\+/v${NEXT_SHORT_TAG}/g" cuvs-bench/README.md
 sed_runner "s/[[:digit:]]\+\.[[:digit:]]\+-cuda/${NEXT_SHORT_TAG}-cuda/g" cuvs-bench/README.md
-sed_runner "s/[[:digit:]]\+\.[[:digit:]]\+a-py/${NEXT_SHORT_TAG}a-py/g" cuvs-bench/README.md
+sed_runner "s/[[:digit:]]\+\.[[:digit:]]\+a/${NEXT_SHORT_TAG}a/g" cuvs-bench/README.md
 sed_runner "s/[[:digit:]]\+\.[[:digit:]]\+a-cuda/${NEXT_SHORT_TAG}a-cuda/g" cuvs-bench/README.md
 
 sed_runner "s/[[:digit:]]\+\.[[:digit:]]\+a-cuda/${NEXT_SHORT_TAG}a-cuda/g" tests/container-canary/README.md
