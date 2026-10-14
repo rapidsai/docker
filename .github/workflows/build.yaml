@@ -3,6 +3,8 @@
 name: Private candidate RAPIDS containers
 
 on:
+  push:
+    branches: [release-test-workflow-registration]
   workflow_dispatch:
     inputs:
       branch:
@@ -25,6 +27,12 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
+  register-workflow:
+    if: github.event_name == 'push'
+    runs-on: ubuntu-latest
+    permissions: {}
+    steps:
+      - run: printf '%s\n' 'Private candidate workflow registered.'
   candidate-matrix:
     if: ${{ inputs.build_type == 'release-candidate' && startsWith(github.ref_name, 'release-test-') }}
     runs-on: linux-amd64-cpu4
@@ -119,6 +127,7 @@ jobs:
           driver: docker-container
           endpoint: builders
           version: 'v0.36.1'
+          cache-binary: false
       - name: Build frozen aggregate and inject private package/source inputs
         env:
           ARCH: ${{ matrix.ARCH }}
