@@ -21,6 +21,7 @@ concurrency:
 
 jobs:
   docker:
+    if: ${{ !startsWith(github.ref_name, 'release-test-') }}
     permissions:
       actions: read
       contents: read

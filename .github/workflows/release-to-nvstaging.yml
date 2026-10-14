@@ -1,4 +1,4 @@
-# Copyright (c) 2024-2026, NVIDIA CORPORATION.
+# Copyright (c) 2024-2026, NVIDIA CORPORATION & AFFILIATES. All rights reserved.
 
 name: Publish release images to NGC
 
@@ -30,6 +30,7 @@ jobs:
           echo "matrix=${matrix}" | tee -a ${GITHUB_OUTPUT}
 
   copy-images:
+    if: ${{ !startsWith(github.ref_name, 'release-test-') }}
     name: copy (${{ matrix.CUDA_VER }}, ${{ matrix.PYTHON_VER }})
     needs: compute-matrix
     runs-on: ubuntu-latest

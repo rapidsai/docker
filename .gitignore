@@ -40,3 +40,12 @@ Icon
 Network Trash Folder
 Temporary Items
 .apdisk
+
+# Job-local private candidate contexts and OCI archives
+.candidate-state/
+.release-candidate-artifacts/
+context/candidate-channel/
+context/candidate-gha-tools/
+context/candidate-source-manifest.json
+context/candidate-package-receipts.json
+__pycache__/

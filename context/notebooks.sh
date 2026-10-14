@@ -1,5 +1,5 @@
 #!/usr/bin/env bash
-# Copyright (c) 2023-2026, NVIDIA CORPORATION.
+# Copyright (c) 2023-2026, NVIDIA CORPORATION & AFFILIATES. All rights reserved.
 
 # Clones repos with notebooks & compiles notebook test dependencies
 # Requires environment variables:
@@ -14,7 +14,22 @@ NOTEBOOK_REPOS=(cudf cuml cugraph)
 mkdir -p /notebooks /dependencies
 for REPO in "${NOTEBOOK_REPOS[@]}"; do
     echo "Cloning $REPO..."
-    git clone -b "${RAPIDS_BRANCH}" --depth 1 --single-branch "https://github.com/rapidsai/$REPO" "$REPO"
+    if [[ "${RAPIDS_RELEASE_CANDIDATE:-0}" == "1" ]]; then
+        source_manifest=/candidate-source-manifest.json
+        revision=$(jq -er --arg name "${REPO}" '.source_revisions[$name]' "${source_manifest}")
+        repository=$(jq -er --arg name "${REPO}" '.github_repositories[$name]' "${source_manifest}")
+        if [[ ! "${revision}" =~ ^[0-9a-f]{40}$ ]] ||
+           [[ ! "${repository}" =~ ^[A-Za-z0-9_.-]+/[A-Za-z0-9_.-]+$ ]]; then
+            echo "Notebook source is not frozen in the candidate train: ${REPO}" >&2
+            exit 1
+        fi
+        git init --quiet "${REPO}"
+        git -C "${REPO}" fetch --quiet --depth 1 "https://github.com/${repository}.git" "${revision}"
+        git -C "${REPO}" checkout --quiet --detach FETCH_HEAD
+        test "$(git -C "${REPO}" rev-parse HEAD)" = "${revision}"
+    else
+        git clone -b "${RAPIDS_BRANCH}" --depth 1 --single-branch "https://github.com/rapidsai/$REPO" "$REPO"
+    fi
 
     SOURCE="$REPO/notebooks"
     DESTINATION="/notebooks/$REPO"

@@ -1,4 +1,4 @@
-# Copyright (c) 2025-2026, NVIDIA CORPORATION.
+# Copyright (c) 2025-2026, NVIDIA CORPORATION & AFFILIATES. All rights reserved.
 name: build-cuvs
 
 on:
@@ -38,6 +38,7 @@ env:
 
 jobs:
   build:
+    if: ${{ !startsWith(github.ref_name, 'release-test-') }}
     strategy:
       matrix:
         ARCH: ${{ fromJSON(inputs.ARCHES) }}

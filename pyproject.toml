@@ -1,4 +1,4 @@
-# Copyright (c) 2024-2025, NVIDIA CORPORATION.
+# Copyright (c) 2024-2026, NVIDIA CORPORATION & AFFILIATES. All rights reserved.
 
 [tool.ruff]
 target-version = "py310"
@@ -40,3 +40,6 @@ select = [
     # flake8-bandit
     "S",
 ]
+
+[tool.ruff.lint.per-file-ignores]
+"tests/test_candidate_containers.py" = ["S101", "PLR2004"]

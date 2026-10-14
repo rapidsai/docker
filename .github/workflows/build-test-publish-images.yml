@@ -141,6 +141,7 @@ jobs:
 
           echo "TEST_MATRIX=$(yq -n -o json 'env(TEST_MATRIX)' | jq -c '{include: .}')" | tee --append "${GITHUB_OUTPUT}"
   build-rapids:
+    if: ${{ inputs.build_type != 'release-candidate' && !startsWith(github.ref_name, 'release-test-') }}
     needs: [checks, compute-matrix]
     strategy:
       matrix: ${{ fromJSON(needs.compute-matrix.outputs.MATRIX) }}
@@ -175,6 +176,7 @@ jobs:
         cuda${{ matrix.CUDA_TAG }}-\
         py${{ matrix.PYTHON_VER }}"
   build-cuvs:
+    if: ${{ inputs.build_type != 'release-candidate' && !startsWith(github.ref_name, 'release-test-') }}
     needs: [checks, compute-matrix]
     strategy:
       matrix: ${{ fromJSON(needs.compute-matrix.outputs.MATRIX) }}
@@ -207,6 +209,7 @@ jobs:
         ${{ needs.compute-matrix.outputs.ALPHA_TAG }}-\
         py${{ matrix.PYTHON_VER }}"
   build-rapids-multiarch-manifest:
+    if: ${{ inputs.build_type != 'release-candidate' && !startsWith(github.ref_name, 'release-test-') }}
     needs: [build-rapids, compute-matrix]
     strategy:
       matrix: ${{ fromJSON(needs.compute-matrix.outputs.MATRIX) }}
@@ -240,6 +243,7 @@ jobs:
           ARCHES: ${{ toJSON(matrix.ARCHES) }}
         run: ci/create-rapids-multiarch-manifest.sh
   build-cuvs-multiarch-manifest:
+    if: ${{ inputs.build_type != 'release-candidate' && !startsWith(github.ref_name, 'release-test-') }}
     needs: [build-cuvs, compute-matrix]
     strategy:
       matrix: ${{ fromJSON(needs.compute-matrix.outputs.MATRIX) }}
