@@ -123,13 +123,19 @@ def package_receipts(channel, owned_names, required):
     return {"schema_version": 1, "owned_names": sorted(owned_names | {"rapids"}), "required": required, "packages": packages}
 
 
-def prepare_context(train, arch, cuda, python, kind):
+def validated_sources(train):
+    """Require the producer's consumed sources in the common build-input receipt."""
     sources = frozen_sources(train)
     source_inputs = json.loads(Path(os.environ["RELEASE_CANDIDATE_SOURCE_INPUTS"]).read_text())
     for name, source in sources.items():
         family = "sources" if name in SOURCE_NAMES else "build_tools"
         if source_inputs.get(family, {}).get(name) != source:
             raise ValueError(f"container source is absent from the validated build input receipt: {name}")
+    return sources
+
+
+def prepare_context(train, arch, cuda, python, kind):
+    sources = validated_sources(train)
     channel = Path(os.environ["RAPIDS_CANDIDATE_CONDA_CHANNEL"]).resolve()
     if not channel.is_dir():
         raise ValueError("private candidate Conda channel is missing")
