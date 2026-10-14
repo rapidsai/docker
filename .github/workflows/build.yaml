@@ -54,6 +54,7 @@ jobs:
         id: context
         with:
           source-sha: ${{ inputs.sha }}
+          audit-boundary: 'true'
       - name: Resolve frozen train and complete image matrix
         id: matrix
         env:
