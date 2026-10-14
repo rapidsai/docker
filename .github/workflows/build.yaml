@@ -89,9 +89,7 @@ jobs:
           echo "DOCKER_CONFIG=${candidate_docker_config}" >> "${GITHUB_ENV}"
           build_datetime="${BUILD_DATE//-/}"
           echo "RAPIDS_DATETIME_STRING=${build_datetime:2}000000" >> "${GITHUB_ENV}"
-          python3 -m venv "${RUNNER_TEMP}/container-index-tools"
-          "${RUNNER_TEMP}/container-index-tools/bin/python" -m pip install conda-index==0.13.0 PyYAML==6.0.3
-          echo "${RUNNER_TEMP}/container-index-tools/bin" >> "${GITHUB_PATH}"
+          ci/install-candidate-conda-indexer.sh
       - uses: aws-actions/configure-aws-credentials@517a711dbcd0e402f90c77e7e2f81e849156e31d # v6.2.2
         with:
           aws-region: us-east-2
