@@ -22,18 +22,7 @@ umask 002
 PYTHON_MAJOR_VERSION=${PYTHON_VERSION%%.*}
 PYTHON_MINOR_VERSION=${PYTHON_VERSION#*.}
 PYTHON_UPPER_BOUND="${PYTHON_MAJOR_VERSION}.$((PYTHON_MINOR_VERSION+1)).0a0"
-PYTHON_MINOR_PADDED=$(printf "%02d" "$PYTHON_MINOR_VERSION")
-PYTHON_VERSION_PADDED="${PYTHON_MAJOR_VERSION}.${PYTHON_MINOR_PADDED}"
-
-# 'shellcheck' is unhappy with the use of '>' to compare decimals here, but it works as expected for the 'bash' version in these
-# images, and installing 'bc' or using a Python interpreter seem heavy for this purpose.
-#
-# shellcheck disable=SC2072
-if [[ "$PYTHON_VERSION_PADDED" > "3.12" ]]; then
-    PYTHON_ABI_TAG="cp${PYTHON_MAJOR_VERSION}${PYTHON_MINOR_VERSION}"
-else
-    PYTHON_ABI_TAG="cpython"
-fi
+PYTHON_ABI_TAG="cp${PYTHON_MAJOR_VERSION}${PYTHON_MINOR_VERSION}"
 
 # force-reinstall 'conda' first, to clear out any files left behind from updates
 rapids-conda-retry install -y -n base --force-reinstall 'conda>=26.5.0'
