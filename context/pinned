@@ -1,2 +1,5 @@
+ca-certificates >=2026.10.20
+certifi >=2026.10.23
 openssl >=3.6.1
+pip >=26.2.2
 wheel >=0.46.2
