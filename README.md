@@ -20,7 +20,7 @@ It extends the `base` images to include RAPIDS notebooks and a [`jupyterlab` ser
 
 ## Image tags
 
-Tags for both `base` and `notebooks` images take the form of `${RAPIDS_VER}-cuda${CUDA_VER}-py${PYTHON_VER}`.
+Tags for both `base` and `notebooks` images take the form of `${RAPIDS_VER}-cuda${CUDA_VER}`.
 
 **Note on CUDA versioning**:
 - **RAPIDS 25.12 and later**: CUDA version tags are major-only (e.g., `cuda12`, `cuda13`).

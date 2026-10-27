@@ -1,5 +1,5 @@
 # syntax=docker/dockerfile:1
-# Copyright (c) 2024-2026, NVIDIA CORPORATION.
+# Copyright (c) 2024-2026, NVIDIA CORPORATION & AFFILIATES. All rights reserved.
 
 ARG CUDA_VER=notset
 ARG LINUX_DISTRO=ubuntu
@@ -7,7 +7,7 @@ ARG LINUX_DISTRO_VER=22.04
 ARG LINUX_VER=${LINUX_DISTRO}${LINUX_DISTRO_VER}
 ARG MINIFORGE_VER=notset
 ARG PYTHON_VER=notset
-ARG RAPIDS_VER=26.06
+ARG RAPIDS_VER=26.12
 
 # Gather dependency information
 FROM python:${PYTHON_VER} AS dependencies
@@ -15,7 +15,7 @@ ARG CPU_ARCH=notset
 ARG CUDA_VER=notset
 ARG PYTHON_VER=notset
 ARG RAPIDS_BRANCH="main"
-ARG RAPIDS_VER=26.06
+ARG RAPIDS_VER=26.12
 ARG YQ_VER=notset
 
 SHELL ["/bin/bash", "-euo", "pipefail", "-c"]
@@ -39,7 +39,7 @@ apt-get install -y --no-install-recommends \
 
 PACKAGES_TO_INSTALL=(
   'conda-merge==0.3.*'
-  'rapids-dependency-file-generator==1.20.*'
+  'rapids-dependency-file-generator==1.*,>=1.22'
 )
 python -m pip install --no-cache-dir --prefer-binary --upgrade \
   "${PACKAGES_TO_INSTALL[@]}"
@@ -122,7 +122,7 @@ EOF
 FROM miniforge-cuda AS base
 ARG CUDA_VER=notset
 ARG PYTHON_VER=notset
-ARG RAPIDS_VER=26.06
+ARG RAPIDS_VER=26.12
 
 SHELL ["/bin/bash", "-euo", "pipefail", "-c"]
 
@@ -249,7 +249,7 @@ LABEL com.nvidia.workbench.application.jupyterlab.webapp.url-cmd="jupyter lab li
 LABEL com.nvidia.workbench.cuda-version="$CUDA_VER"
 LABEL com.nvidia.workbench.description="RAPIDS with CUDA ${CUDA_VER}"
 LABEL com.nvidia.workbench.entrypoint-script="/home/rapids/entrypoint.sh"
-LABEL com.nvidia.workbench.image-version="26.06.00"
+LABEL com.nvidia.workbench.image-version="26.12.00"
 LABEL com.nvidia.workbench.labels="cuda${CUDA_VER}"
 LABEL com.nvidia.workbench.name="RAPIDS with CUDA ${CUDA_VER}"
 LABEL com.nvidia.workbench.os-distro-release="$LINUX_DISTRO_VER"
@@ -260,7 +260,7 @@ LABEL com.nvidia.workbench.package-manager-environment.type="conda"
 LABEL com.nvidia.workbench.package-manager.apt.binary="/usr/bin/apt"
 LABEL com.nvidia.workbench.package-manager.apt.installed-packages=""
 LABEL com.nvidia.workbench.package-manager.conda3.binary="/opt/conda/bin/conda"
-LABEL com.nvidia.workbench.package-manager.conda3.installed-packages="rapids cudf cuml cugraph rmm pylibraft cuxfilter cucim xgboost jupyterlab"
+LABEL com.nvidia.workbench.package-manager.conda3.installed-packages="rapids cudf cuml cugraph rmm pylibraft cucim xgboost jupyterlab"
 LABEL com.nvidia.workbench.package-manager.pip.binary="/opt/conda/bin/pip"
 LABEL com.nvidia.workbench.package-manager.pip.installed-packages="jupyterlab-nvdashboard"
 LABEL com.nvidia.workbench.programming-languages="python3"
