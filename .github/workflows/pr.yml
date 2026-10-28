@@ -69,7 +69,7 @@ jobs:
         id: get-pr-info
         uses: nv-gha-runners/get-pr-info@main # zizmor: ignore[unpinned-uses]
       - name: Check if nightly CI is passing
-        uses: rapidsai/shared-actions/check_nightly_success/dispatch@1403582b10649dcfd6fd6478eec743dddad8cc6d
+        uses: rapidsai/shared-actions/check_nightly_success/dispatch@release/26.10
         with:
           # default is 7 days, but this repo is downstream of all of RAPIDS so allow a bit longer window
           max-days-without-success: 14
