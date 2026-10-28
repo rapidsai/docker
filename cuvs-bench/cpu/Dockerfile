@@ -24,16 +24,12 @@ USER root
 # Update Ubuntu certs
 RUN apt-get update && \
     apt-get install -y --no-install-recommends curl ca-certificates && \
-    rm -r /var/lib/apt/lists
+    rm -rf /var/lib/apt/lists/*
 
 USER rapids
 
-# Test system cert
-# this should fail if the certificate is revoked
-RUN ! curl https://dv-g3b-emudhra.we-have-a-problem.com/
-
-# Test Python builtin cert (should fail)
-RUN ! python -c "import urllib.request; urllib.request.urlopen('https://dv-g3b-emudhra.we-have-a-problem.com/')" 2>&1
-
-# Test Python certifi (should fail)
-RUN ! python -c "import ssl, certifi, urllib.request; ctx = ssl.create_default_context(cafile=certifi.where()); urllib.request.urlopen('https://dv-g3b-emudhra.we-have-a-problem.com/', context=ctx)" 2>&1
+# Test that revoked certs are rejected by the system store, Python's
+# builtin store, and certifi (each of these should fail)
+RUN ! curl https://dv-g3b-emudhra.we-have-a-problem.com/ && \
+    ! python -c "import urllib.request; urllib.request.urlopen('https://dv-g3b-emudhra.we-have-a-problem.com/')" 2>&1 && \
+    ! python -c "import ssl, certifi, urllib.request; ctx = ssl.create_default_context(cafile=certifi.where()); urllib.request.urlopen('https://dv-g3b-emudhra.we-have-a-problem.com/', context=ctx)" 2>&1
