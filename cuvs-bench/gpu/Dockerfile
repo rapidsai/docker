@@ -2,7 +2,7 @@
 # Copyright (c) 2024-2026, NVIDIA CORPORATION & AFFILIATES. All rights reserved.
 ARG CUDA_MAJOR=notset
 ARG PYTHON_VER=notset
-ARG RAPIDS_VER=notset
+ARG RAPIDS_VER=26.10
 
 FROM rapidsai/cuvs-bench:${RAPIDS_VER}-cuda${CUDA_MAJOR}-py${PYTHON_VER} AS cuvs-bench
 
