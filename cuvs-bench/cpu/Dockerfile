@@ -1,69 +1,34 @@
 # syntax=docker/dockerfile:1
 # Copyright (c) 2024-2026, NVIDIA CORPORATION & AFFILIATES. All rights reserved.
 
-ARG MINIFORGE_VER=notset
 ARG PYTHON_VER=notset
-ARG RAPIDS_VER=26.10
+ARG RAPIDS_VER=notset
 
-FROM condaforge/miniforge3:${MINIFORGE_VER} AS cuvs-bench-cpu
-ARG PYTHON_VER=notset
-ARG RAPIDS_VER=26.10
+FROM rapidsai/cuvs-bench-cpu:${RAPIDS_VER}-py${PYTHON_VER} AS cuvs-bench-cpu
 
-COPY condarc /opt/conda/.condarc
+COPY pinned /opt/conda/conda-meta/pinned
 
-SHELL ["/bin/bash", "-euo", "pipefail", "-c"]
-
-# Create a data folder accessible by any user so mounted volumes under it can be accessible
-# when the user passes their uid to docker run with -u $(id -u)
-# Also add the conda_prefix config to the global bashrc file so that all users have it correctly configured.
 RUN <<EOF
-mkdir /data
-chmod 777 /data
-echo ". /opt/conda/etc/profile.d/conda.sh; conda activate base" >> /etc/bash.bashrc
+rapids-conda-retry update \
+  --no-deps \
+  --force-reinstall \
+  --yes \
+    ca-certificates \
+    certifi \
+    pip
 EOF
 
-RUN \
-  --mount=type=bind,source=scripts,target=/tmp/build-scripts \
-<<EOF
-  # we need perl temporarily for the remaining benchmark perl scripts
-  apt-get update
-  PACKAGES_TO_INSTALL=(
-    perl
-    wget
-  )
-  apt-get install -y --no-install-recommends \
-    "${PACKAGES_TO_INSTALL[@]}"
+USER root
 
-  # install gha-tools for rapids-conda-retry
-  /tmp/build-scripts/install-gha-tools
+# Update Ubuntu certs
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends curl ca-certificates && \
+    rm -rf /var/lib/apt/lists/*
 
-  # clean up
-  rm -rf /var/lib/apt/lists/*
-EOF
-
-# update everything before other environment changes, to ensure mixing
-# an older conda with newer packages still works well
-# ref: https://github.com/rapidsai/ci-imgs/issues/185
-RUN <<EOF
-rapids-conda-retry update --all -y -n base
-rapids-conda-retry install -y -n base "python=${PYTHON_VER}"
-rapids-conda-retry update --all -y -n base
-PACKAGES_TO_INSTALL=(
-  "cuvs-bench-cpu=${RAPIDS_VER}.*"
-  "python=${PYTHON_VER}"
-)
-rapids-conda-retry install -y -n base \
-  "${PACKAGES_TO_INSTALL[@]}"
-conda clean -afy
-chmod -R 777 /opt/conda
-EOF
-
-RUN useradd -rm -d /home/rapids -s /bin/bash -u 1001 rapids
 USER rapids
-WORKDIR /data/benchmarks
 
-COPY cuvs-bench/run_benchmark.sh /data/scripts/run_benchmark.sh
-
-CMD ["--dataset fashion-mnist-784-euclidean", "", "--algorithms hnswlib"]
-
-ENTRYPOINT ["/bin/bash", "/data/scripts/run_benchmark.sh"]
+# Test that revoked certs are rejected by the system store, Python's
+# builtin store, and certifi (each of these should fail)
+RUN ! curl https://dv-g3b-emudhra.we-have-a-problem.com/ && \
+    ! python -c "import urllib.request; urllib.request.urlopen('https://dv-g3b-emudhra.we-have-a-problem.com/')" 2>&1 && \
+    ! python -c "import ssl, certifi, urllib.request; ctx = ssl.create_default_context(cafile=certifi.where()); urllib.request.urlopen('https://dv-g3b-emudhra.we-have-a-problem.com/', context=ctx)" 2>&1

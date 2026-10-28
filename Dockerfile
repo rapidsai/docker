@@ -163,6 +163,8 @@ WORKDIR /home/rapids
 COPY condarc /opt/conda/.condarc
 
 RUN <<EOF
+# Install conda-libmamba-solver for older conda versions
+mamba install -n base conda-libmamba-solver
 # Include common diagnostic info
 conda info
 conda config --show-sources
@@ -206,6 +208,7 @@ COPY --from=dependencies --chown=rapids /test_notebooks_dependencies.yaml test_n
 COPY --from=dependencies --chown=rapids /notebooks /home/rapids/notebooks
 
 RUN <<EOF
+mamba update -y conda
 rapids-conda-retry env update -n base -f test_notebooks_dependencies.yaml
 conda clean -afy
 EOF

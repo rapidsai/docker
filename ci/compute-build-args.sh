@@ -7,6 +7,7 @@ set -euo pipefail
 # a subset of images built here.
 ARGS="
 CPU_ARCH: ${CPU_ARCH:-notset}
+CUDA_MAJOR: ${CUDA_VER%%.*}
 CUDA_VER: ${CUDA_VER}
 LINUX_DISTRO: ${LINUX_DISTRO:-notset}
 LINUX_DISTRO_VER: ${LINUX_DISTRO_VER:-notset}
