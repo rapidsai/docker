@@ -22,8 +22,9 @@ EOF
 USER root
 
 # Update Ubuntu certs
-RUN apt update && \
-    apt install -y curl ca-certificates
+RUN apt-get update && \
+    apt-get install -y --no-install-recommends curl ca-certificates && \
+    rm -r /var/lib/apt/lists
 
 USER rapids
 
