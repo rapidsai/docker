@@ -4,7 +4,7 @@ ARG CUDA_MAJOR=notset
 ARG PYTHON_VER=notset
 ARG RAPIDS_VER=notset
 
-FROM rapidsai/cuvs-bench:${RAPIDS_VER}-cuda${CUDA_MAJOR}-py${PYTHON_VER}
+FROM rapidsai/cuvs-bench:${RAPIDS_VER}-cuda${CUDA_MAJOR}-py${PYTHON_VER} AS cuvs-bench
 
 COPY pinned /opt/conda/conda-meta/pinned
 
