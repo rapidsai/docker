@@ -15,7 +15,6 @@ rapids-conda-retry update \
   --yes \
     ca-certificates \
     certifi \
-    conda \
     pip
 EOF
 
