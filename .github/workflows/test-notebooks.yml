@@ -84,7 +84,7 @@ jobs:
           context/scripts/install-gha-tools
       - name: Get RAPIDS GitHub Info
         id: get-rapids-github-info
-        uses: rapidsai/shared-actions/rapids-github-info@main # zizmor: ignore[unpinned-uses]
+        uses: rapidsai/shared-actions/rapids-github-info@1403582b10649dcfd6fd6478eec743dddad8cc6d
       - name: Print environment
         run: |
           rapids-print-env
