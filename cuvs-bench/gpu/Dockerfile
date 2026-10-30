@@ -105,7 +105,8 @@ EOF
 # We add rapids is the default user in case the user runs without -u,
 # but users are encouraged to  use the -u docker run flag to write/read to mounted volumes.
 RUN useradd -rm -d /home/rapids -s /bin/bash -g conda -u 1001 rapids
-USER rapids
+# USER rapids
+USER 1001
 WORKDIR /data/benchmarks
 
 COPY cuvs-bench/run_benchmark.sh /data/scripts/run_benchmark.sh
