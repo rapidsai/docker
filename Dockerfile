@@ -156,12 +156,14 @@ RUN curl -sSL https://gist.githubusercontent.com/sethmlarson/1716ac5b82b73dbcbf2
       -o ${PYTHON_SITE_PKGS}/tarfile_patch.py && \
     echo "import tarfile_patch" > ${PYTHON_SITE_PKGS}/zzz_tar_patch.pth
 
-USER rapids
+# USER rapids
+USER 1001
 
 WORKDIR /home/rapids
 
 COPY condarc /opt/conda/.condarc
 
+# hadolint shell=/bin/bash
 RUN <<EOF
 # Include common diagnostic info
 conda info
@@ -197,7 +199,8 @@ ARG LINUX_DISTRO_VER=notset
 
 SHELL ["/bin/bash", "-euo", "pipefail", "-c"]
 
-USER rapids
+# USER rapids
+USER 1001
 
 WORKDIR /home/rapids
 
