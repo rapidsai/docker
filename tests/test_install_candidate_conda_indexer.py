@@ -58,7 +58,7 @@ def _run_installer(
         "RUNNER_TEMP": str(tmp_path),
         "MINIFORGE_VERSION_FILE": str(version_file),
     }
-    result = subprocess.run([str(INSTALLER)], env=env, check=False, capture_output=True, text=True)
+    result = subprocess.run([str(INSTALLER)], env=env, check=False, capture_output=True, text=True)  # noqa: S603
     return result, log.read_text() if log.exists() else "", github_path
 
 

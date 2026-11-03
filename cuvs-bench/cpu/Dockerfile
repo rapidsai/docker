@@ -59,7 +59,8 @@ chmod -R 777 /opt/conda
 EOF
 
 RUN useradd -rm -d /home/rapids -s /bin/bash -u 1001 rapids
-USER rapids
+# USER rapids
+USER 1001
 WORKDIR /data/benchmarks
 
 COPY cuvs-bench/run_benchmark.sh /data/scripts/run_benchmark.sh

@@ -1,5 +1,5 @@
 #!/bin/bash
-# Copyright (c) 2025-2026, NVIDIA CORPORATION.
+# Copyright (c) 2025-2026, NVIDIA CORPORATION & AFFILIATES. All rights reserved.
 
 set -eEuo pipefail
 
@@ -11,8 +11,8 @@ cuvs_bench_source_tags=()
 cuvs_bench_cpu_source_tags=()
 
 # Define tag arrays for different images
-cuvs_bench_tag="${CUVS_BENCH_TAG_PREFIX}${RAPIDS_VER}${ALPHA_TAG}-cuda${CUDA_TAG}-py${PYTHON_VER}"
-cuvs_bench_cpu_tag="${CUVS_BENCH_CPU_TAG_PREFIX}${RAPIDS_VER}${ALPHA_TAG}-py${PYTHON_VER}"
+cuvs_bench_tag="${CUVS_BENCH_TAG_PREFIX}${RAPIDS_VER}${ALPHA_TAG}-cuda${CUDA_TAG}"
+cuvs_bench_cpu_tag="${CUVS_BENCH_CPU_TAG_PREFIX}${RAPIDS_VER}${ALPHA_TAG}"
 
 # Check if all source tags exist and add to source tags array
 for arch in $(echo "${ARCHES}" | jq .[] -r); do

@@ -16,14 +16,14 @@ VERIFY = runpy.run_path(str(ROOT / "context/scripts/verify-candidate-environment
 def test_full_native_matrix_includes_all_targets_and_both_architectures():
     native = json.loads(run(["bash", "ci/compute-matrix.sh"]))
     matrix = container_matrix(native, "26.12")["include"]
-    assert len(matrix) == 56
+    assert len(matrix) == 14
     assert {row["ARCH"] for row in matrix} == {"amd64", "arm64"}
     assert {row["KIND"] for row in matrix} == {"base", "notebooks", "cuvs-bench", "cuvs-bench-cpu"}
     identities = {(row["IMAGE_NAME"], row["IMAGE_TAG"], row["ARCH"]) for row in matrix}
     assert len(identities) == len(matrix)
     cpu = [row for row in matrix if row["KIND"] == "cuvs-bench-cpu"]
-    assert len(cpu) == 8
-    assert {row["CUDA_VER"] for row in cpu} == {"13.3.0"}
+    assert len(cpu) == 2
+    assert {row["CUDA_VER"] for row in cpu} == {"13.4.3"}
 
 
 @pytest.mark.parametrize("version", ["latest", "26.12\nRUN evil", "26"])

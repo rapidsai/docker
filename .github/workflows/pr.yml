@@ -20,7 +20,7 @@ jobs:
     permissions:
       checks: write
       pull-requests: write
-    uses: rapidsai/shared-workflows/.github/workflows/pr-builder.yaml@main # zizmor: ignore[unpinned-uses]
+    uses: rapidsai/shared-workflows/.github/workflows/pr-builder.yaml@d68e1cc1dbe40fbff66c0ea25c3083cb9c44c691 # zizmor: ignore[unpinned-uses]
     if: always()
     with:
       needs: ${{ toJSON(needs) }}
@@ -30,7 +30,7 @@ jobs:
       contents: read
       packages: read
       pull-requests: read
-    uses: rapidsai/shared-workflows/.github/workflows/changed-files.yaml@main # zizmor: ignore[unpinned-uses]
+    uses: rapidsai/shared-workflows/.github/workflows/changed-files.yaml@d68e1cc1dbe40fbff66c0ea25c3083cb9c44c691 # zizmor: ignore[unpinned-uses]
     with:
       files_yaml: |
         build_images:

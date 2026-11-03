@@ -1,5 +1,5 @@
 #!/bin/bash
-# Copyright (c) 2025, NVIDIA CORPORATION.
+# Copyright (c) 2025-2026, NVIDIA CORPORATION & AFFILIATES. All rights reserved.
 
 set -eEuo pipefail
 
@@ -12,8 +12,8 @@ base_source_tags=()
 notebooks_source_tags=()
 
 # Define tag arrays for different images
-base_tag="${BASE_TAG_PREFIX}${RAPIDS_VER}${ALPHA_TAG}-cuda${CUDA_TAG}-py${PYTHON_VER}"
-notebooks_tag="${NOTEBOOKS_TAG_PREFIX}${RAPIDS_VER}${ALPHA_TAG}-cuda${CUDA_TAG}-py${PYTHON_VER}"
+base_tag="${BASE_TAG_PREFIX}${RAPIDS_VER}${ALPHA_TAG}-cuda${CUDA_TAG}"
+notebooks_tag="${NOTEBOOKS_TAG_PREFIX}${RAPIDS_VER}${ALPHA_TAG}-cuda${CUDA_TAG}"
 
 # Check if all source tags exist and add to source tags array
 for arch in $(echo "${ARCHES}" | jq .[] -r); do
@@ -30,8 +30,8 @@ done
 # Create and push Docker multi-arch manifests
 
 cuda_major=${CUDA_TAG%.*}
-base_tag_cuda_major="${BASE_TAG_PREFIX}${RAPIDS_VER}${ALPHA_TAG}-cuda${cuda_major}-py${PYTHON_VER}"
-notebooks_tag_cuda_major="${NOTEBOOKS_TAG_PREFIX}${RAPIDS_VER}${ALPHA_TAG}-cuda${cuda_major}-py${PYTHON_VER}"
+base_tag_cuda_major="${BASE_TAG_PREFIX}${RAPIDS_VER}${ALPHA_TAG}-cuda${cuda_major}"
+notebooks_tag_cuda_major="${NOTEBOOKS_TAG_PREFIX}${RAPIDS_VER}${ALPHA_TAG}-cuda${cuda_major}"
 
 docker manifest create "${org}/${BASE_IMAGE_REPO}:${base_tag_cuda_major}" "${base_source_tags[@]}"
 docker manifest push "${org}/${BASE_IMAGE_REPO}:${base_tag_cuda_major}"

@@ -43,7 +43,7 @@ jobs:
       - build-cuvs-multiarch-manifest
       - test
     secrets: inherit # zizmor: ignore[secrets-inherit]
-    uses: rapidsai/shared-workflows/.github/workflows/pr-builder.yaml@main # zizmor: ignore[unpinned-uses]
+    uses: rapidsai/shared-workflows/.github/workflows/pr-builder.yaml@d68e1cc1dbe40fbff66c0ea25c3083cb9c44c691 # zizmor: ignore[unpinned-uses]
   checks:
     runs-on: ubuntu-latest
     steps:
@@ -166,15 +166,13 @@ jobs:
         ${{ needs.compute-matrix.outputs.BASE_TAG_PREFIX }}\
         ${{ needs.compute-matrix.outputs.RAPIDS_VER }}\
         ${{ needs.compute-matrix.outputs.ALPHA_TAG }}-\
-        cuda${{ matrix.CUDA_TAG }}-\
-        py${{ matrix.PYTHON_VER }}"
+        cuda${{ matrix.CUDA_TAG }}"
       NOTEBOOKS_TAG:
         "rapidsai/${{ needs.compute-matrix.outputs.NOTEBOOKS_IMAGE_REPO }}:\
         ${{ needs.compute-matrix.outputs.NOTEBOOKS_TAG_PREFIX }}\
         ${{ needs.compute-matrix.outputs.RAPIDS_VER }}\
         ${{ needs.compute-matrix.outputs.ALPHA_TAG }}-\
-        cuda${{ matrix.CUDA_TAG }}-\
-        py${{ matrix.PYTHON_VER }}"
+        cuda${{ matrix.CUDA_TAG }}"
   build-cuvs:
     if: ${{ inputs.build_type != 'release-candidate' && !startsWith(github.ref_name, 'release-test-') }}
     needs: [checks, compute-matrix]
@@ -200,21 +198,19 @@ jobs:
         ${{ needs.compute-matrix.outputs.CUVS_BENCH_TAG_PREFIX }}\
         ${{ needs.compute-matrix.outputs.RAPIDS_VER }}\
         ${{ needs.compute-matrix.outputs.ALPHA_TAG }}-\
-        cuda${{ matrix.CUDA_TAG }}-\
-        py${{ matrix.PYTHON_VER }}"
+        cuda${{ matrix.CUDA_TAG }}"
       CUVS_BENCH_CPU_TAG:
         "rapidsai/${{ needs.compute-matrix.outputs.CUVS_BENCH_CPU_IMAGE_REPO }}:\
         ${{ needs.compute-matrix.outputs.CUVS_BENCH_CPU_TAG_PREFIX }}\
         ${{ needs.compute-matrix.outputs.RAPIDS_VER }}\
-        ${{ needs.compute-matrix.outputs.ALPHA_TAG }}-\
-        py${{ matrix.PYTHON_VER }}"
+        ${{ needs.compute-matrix.outputs.ALPHA_TAG }}"
   build-rapids-multiarch-manifest:
     if: ${{ inputs.build_type != 'release-candidate' && !startsWith(github.ref_name, 'release-test-') }}
     needs: [build-rapids, compute-matrix]
     strategy:
       matrix: ${{ fromJSON(needs.compute-matrix.outputs.MATRIX) }}
       fail-fast: false
-    name: build-rapids-manifest (${{ needs.compute-matrix.outputs.RAPIDS_VER }}${{ needs.compute-matrix.outputs.ALPHA_TAG }}-cuda${{ matrix.CUDA_VER }}-py${{ matrix.PYTHON_VER }})
+    name: build-rapids-manifest (${{ needs.compute-matrix.outputs.RAPIDS_VER }}${{ needs.compute-matrix.outputs.ALPHA_TAG }}-cuda${{ matrix.CUDA_VER }})
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -248,7 +244,7 @@ jobs:
     strategy:
       matrix: ${{ fromJSON(needs.compute-matrix.outputs.MATRIX) }}
       fail-fast: false
-    name: build-cuvs-manifest (${{ needs.compute-matrix.outputs.RAPIDS_VER }}${{ needs.compute-matrix.outputs.ALPHA_TAG }}-cuda${{ matrix.CUDA_VER }}-py${{ matrix.PYTHON_VER }}, build_cpu=${{ matrix.BUILD_CUVS_BENCH_CPU_IMAGE }})
+    name: build-cuvs-manifest (${{ needs.compute-matrix.outputs.RAPIDS_VER }}${{ needs.compute-matrix.outputs.ALPHA_TAG }}-cuda${{ matrix.CUDA_VER }}, build_cpu=${{ matrix.BUILD_CUVS_BENCH_CPU_IMAGE }})
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -303,7 +299,6 @@ jobs:
         ${{ needs.compute-matrix.outputs.RAPIDS_VER }}\
         ${{ needs.compute-matrix.outputs.ALPHA_TAG }}-\
         cuda${{ matrix.CUDA_VER }}-\
-        py${{ matrix.PYTHON_VER }}-\
         ${{ matrix.ARCH }}"
       NOTEBOOKS_TAG:
         "docker.io/rapidsai/${{ needs.compute-matrix.outputs.NOTEBOOKS_IMAGE_REPO }}:\
@@ -311,7 +306,6 @@ jobs:
         ${{ needs.compute-matrix.outputs.RAPIDS_VER }}\
         ${{ needs.compute-matrix.outputs.ALPHA_TAG }}-\
         cuda${{ matrix.CUDA_VER }}-\
-        py${{ matrix.PYTHON_VER }}-\
         ${{ matrix.ARCH }}"
   test:
     needs: [compute-matrix, build-rapids]
@@ -339,5 +333,4 @@ jobs:
         ${{ needs.compute-matrix.outputs.RAPIDS_VER }}\
         ${{ needs.compute-matrix.outputs.ALPHA_TAG }}-\
         cuda${{ matrix.CUDA_VER }}-\
-        py${{ matrix.PYTHON_VER }}-\
         ${{ matrix.ARCH }}"
