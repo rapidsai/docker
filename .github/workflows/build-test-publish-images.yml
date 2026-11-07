@@ -43,7 +43,7 @@ jobs:
       - build-cuvs-multiarch-manifest
       - test
     secrets: inherit # zizmor: ignore[secrets-inherit]
-    uses: rapidsai/shared-workflows/.github/workflows/pr-builder.yaml@d68e1cc1dbe40fbff66c0ea25c3083cb9c44c691 # zizmor: ignore[unpinned-uses]
+    uses: rapidsai/shared-workflows/.github/workflows/pr-builder.yaml@1efe7df184d1e72c1038607252fb40a9fedc8ced # zizmor: ignore[unpinned-uses]
   checks:
     runs-on: ubuntu-latest
     steps:
