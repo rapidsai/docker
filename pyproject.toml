@@ -44,3 +44,4 @@ select = [
 [tool.ruff.lint.per-file-ignores]
 "tests/test_candidate_containers.py" = ["S101", "PLR2004"]
 "tests/test_install_candidate_conda_indexer.py" = ["S101"]
+"tests/test_bootstrap_download.py" = ["S101"]

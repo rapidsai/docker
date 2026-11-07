@@ -7,7 +7,9 @@
 
 set -e -u -o pipefail
 
-GHA_TOOLS_INSTALL_DIR=/usr/local/bin
+GHA_TOOLS_INSTALL_DIR="${GHA_TOOLS_INSTALL_DIR:-/usr/local/bin}"
+archive="$(mktemp)"
+trap 'rm -f -- "$archive"' EXIT
 
 # install wget
 wget_preinstalled=true
@@ -25,7 +27,9 @@ if ! type -f wget >/dev/null; then
 fi
 
 # install gha-tools
-wget -q https://github.com/rapidsai/gha-tools/releases/latest/download/tools.tar.gz -O - | tar -xz -C "${GHA_TOOLS_INSTALL_DIR}"
+wget -q --tries=4 --retry-on-http-error=429,500,502,503,504 --waitretry=10 \
+  https://github.com/rapidsai/gha-tools/releases/latest/download/tools.tar.gz -O "$archive"
+tar -xzf "$archive" -C "${GHA_TOOLS_INSTALL_DIR}"
 
 # uninstall wget
 if [[ "${wget_preinstalled}" != "true" ]]; then
