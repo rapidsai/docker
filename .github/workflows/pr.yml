@@ -14,6 +14,7 @@ jobs:
   # Please keep pr-builder as the top job here
   pr-builder:
     needs:
+      - burndown-pr
       - changed-files
       - check-nightly-ci
       - docker
@@ -24,6 +25,13 @@ jobs:
     if: always()
     with:
       needs: ${{ toJSON(needs) }}
+  burndown-pr:
+    permissions:
+      actions: read
+      contents: read
+      pull-requests: read
+    uses: rapidsai/shared-workflows/.github/workflows/burndown-pr.yaml@main
+
   changed-files:
     permissions:
       actions: read
@@ -77,8 +85,9 @@ jobs:
           target-branch: ${{ fromJSON(steps.get-pr-info.outputs.pr-info).base.ref }}
           workflow-id: 'publish.yml'
   docker:
-    needs: changed-files
-    if: fromJSON(needs.changed-files.outputs.changed_file_groups).build_images
+    needs: [burndown-pr, changed-files]
+    if: >-
+      needs.burndown-pr.result == 'success' && needs.burndown-pr.outputs.skip-product-ci != 'true' && (fromJSON(needs.changed-files.outputs.changed_file_groups).build_images)
     permissions:
       actions: read
       contents: read
