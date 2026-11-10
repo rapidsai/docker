@@ -8,7 +8,7 @@ Visit [rapids.ai](https://rapids.ai) for more information.
 
 **NOTE:** Review our [system requirements](https://docs.rapids.ai/install#system-req) to ensure you have a compatible system!
 
-### Current Version - RAPIDS v26.12
+### Current Version - RAPIDS v27.02
 
 RAPIDS Libraries included in the images:
 
@@ -38,7 +38,7 @@ There are two types:
 The tag naming scheme for RAPIDS images incorporates key platform details into the tag as shown below:
 
 ```text
-26.12-cuda13
+27.02-cuda13
 ^         ^
 |         |
 |         |
@@ -47,7 +47,7 @@ The tag naming scheme for RAPIDS images incorporates key platform details into t
 RAPIDS version
 ```
 
-**Note: Nightly builds of the images have the RAPIDS version appended with an `a` (ie `26.12a-cuda13`)**
+**Note: Nightly builds of the images have the RAPIDS version appended with an `a` (ie `27.02a-cuda13`)**
 
 **Note on CUDA versioning**:
 - **RAPIDS 25.12 and later**: CUDA version tags are major-only (e.g., `cuda12`, `cuda13`).
@@ -85,7 +85,7 @@ $ docker run \
     -e EXTRA_CONDA_PACKAGES="jq" \
     -e EXTRA_PIP_PACKAGES="beautifulsoup4" \
     -p 8888:8888 \
-    rapidsai/notebooks:26.12-cuda13
+    rapidsai/notebooks:27.02-cuda13
 ```
 
 ### Bind Mounts
@@ -110,7 +110,7 @@ $ docker run \
     --gpus all \
     --shm-size=1g --ulimit memlock=-1 --ulimit stack=67108864 \
     -v $(pwd)/environment.yml:/home/rapids/environment.yml \
-    rapidsai/base:26.12-cuda13
+    rapidsai/base:27.02-cuda13
 ```
 
 ### Use JupyterLab to Explore the Notebooks

@@ -3,11 +3,11 @@
 
 ARG MINIFORGE_VER=notset
 ARG PYTHON_VER=notset
-ARG RAPIDS_VER=26.12
+ARG RAPIDS_VER=27.02
 
 FROM condaforge/miniforge3:${MINIFORGE_VER} AS cuvs-bench-cpu
 ARG PYTHON_VER=notset
-ARG RAPIDS_VER=26.12
+ARG RAPIDS_VER=27.02
 
 COPY condarc /opt/conda/.condarc
 
