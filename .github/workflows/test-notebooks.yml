@@ -72,43 +72,21 @@ jobs:
       - name: Install required tools
         run: |
           conda install -n base --freeze-installed \
-            curl \
             git
       - name: Checkout code
         uses: actions/checkout@de0fac2e4500dabe0009e67214ff5f5447ce83dd # v6.0.2
         with:
           fetch-depth: 0
           persist-credentials: false
-      - name: Install gha-tools
-        run: |
-          context/scripts/install-gha-tools
       - name: Get RAPIDS GitHub Info
         id: get-rapids-github-info
         uses: rapidsai/shared-actions/rapids-github-info@main # zizmor: ignore[unpinned-uses]
       - name: Print environment
         run: |
-          rapids-print-env
-          rapids-logger "nvidia-smi"
+          set +x
           nvidia-smi
+          conda info
+          conda config --show-sources
+          conda list --show-channel-urls
       - name: Test notebooks
         run: /home/rapids/test_notebooks.py -i /home/rapids/notebooks -o /home/rapids/notebooks_output
-      - name: Install awscli
-        if: '!cancelled()'
-        run: |
-          rapids-conda-retry install -n base awscli
-      - uses: aws-actions/configure-aws-credentials@e1253824e5c10ff9df46874f81ed3ec929e19cfd # v6.3.0
-        if: '!cancelled()'
-        with:
-          role-to-assume: ${{ vars.AWS_ROLE_ARN }}
-          aws-region: ${{ vars.AWS_REGION }}
-          role-duration-seconds: 1800 # 30m
-      - name: Upload notebook test outputs
-        if: '!cancelled()'
-        env:
-          ARCH: ${{ inputs.ARCH }}
-          CUDA_VER: ${{ inputs.CUDA_VER }}
-          PYTHON_VER: ${{ inputs.PYTHON_VER }}
-          GPU: ${{ inputs.GPU }}
-          DRIVER: ${{ inputs.DRIVER }}
-        run: |
-          rapids-upload-to-s3 test_notebooks_output_${ARCH}_cuda${CUDA_VER}_py${PYTHON_VER}_${GPU}-${DRIVER}.tar.gz /home/rapids/notebooks_output

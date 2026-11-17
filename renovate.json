@@ -18,7 +18,7 @@
       "description": "Update most GitHub actions together",
       "groupName": "gh-actions",
       "matchPackageNames": [
-        "/^(actions/.*|aws-actions/*|docker/*|go|peter-evans/dockerhub-description|pre-commit/)$/"
+        "/^(actions/.*|docker/*|go|peter-evans/dockerhub-description|pre-commit/)$/"
       ]
     },
     {
